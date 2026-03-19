@@ -83,47 +83,114 @@ repository:
       - match: \b(?i)(texttrunc)\b
       - match: \b(?i)(textunderline)\b
   fallout-base-functions:
+    # This stanza is generated from server/data/fallout-ssl-base.yml.
+    # Do not edit manually.
     name: support.function.fallout-ssl.base
     patterns:
-      - match: \b(?i)(REG_ANIM_FUNC)\b
+      - match: \b(?i)(ActivateRegion)\b
+      - match: \b(?i)(AddButton)\b
+      - match: \b(?i)(AddButtonFlag)\b
+      - match: \b(?i)(AddButtonGFX)\b
+      - match: \b(?i)(AddButtonProc)\b
+      - match: \b(?i)(AddButtonRightProc)\b
+      - match: \b(?i)(AddButtonText)\b
+      - match: \b(?i)(AddKey)\b
+      - match: \b(?i)(AddNamedEvent)\b
+      - match: \b(?i)(AddNamedHandler)\b
+      - match: \b(?i)(AddRegion)\b
+      - match: \b(?i)(AddRegionFlag)\b
+      - match: \b(?i)(AddRegionProc)\b
+      - match: \b(?i)(AddRegionRightProc)\b
+      - match: \b(?i)(CheckRegion)\b
+      - match: \b(?i)(ClearNamed)\b
+      - match: \b(?i)(CreateWin)\b
+      - match: \b(?i)(DeleteButton)\b
+      - match: \b(?i)(DeleteKey)\b
+      - match: \b(?i)(DeleteRegion)\b
+      - match: \b(?i)(DeleteWin)\b
+      - match: \b(?i)(DisplayGFX)\b
+      - match: \b(?i)(DisplayRaw)\b
+      - match: \b(?i)(FadeIn)\b
+      - match: \b(?i)(FadeOut)\b
+      - match: \b(?i)(FillRect)\b
+      - match: \b(?i)(FillWin)\b
+      - match: \b(?i)(FillWin3x3)\b
+      - match: \b(?i)(GotoXY)\b
+      - match: \b(?i)(HideMouse)\b
+      - match: \b(?i)(LoadPaletteTable)\b
+      - match: \b(?i)(MouseShape)\b
+      - match: \b(?i)(MovieFlags)\b
+      - match: \b(?i)(PlayMovie)\b
+      - match: \b(?i)(PlayMovieRect)\b
+      - match: \b(?i)(PrintRect)\b
+      - match: \b(?i)(RefreshMouse)\b
+      - match: \b(?i)(ResizeWin)\b
+      - match: \b(?i)(SayBorder)\b
+      - match: \b(?i)(SayEnd)\b
+      - match: \b(?i)(SayGetLastPos)\b
+      - match: \b(?i)(SayGotoReply)\b
+      - match: \b(?i)(SayMessage)\b
+      - match: \b(?i)(SayMessageTimeout)\b
+      - match: \b(?i)(SayOption)\b
+      - match: \b(?i)(SayOptionColor)\b
+      - match: \b(?i)(SayOptionFlags)\b
+      - match: \b(?i)(SayOptionWindow)\b
+      - match: \b(?i)(SayQuit)\b
+      - match: \b(?i)(SayReply)\b
+      - match: \b(?i)(SayReplyColor)\b
+      - match: \b(?i)(SayReplyFlags)\b
+      - match: \b(?i)(SayReplyTitle)\b
+      - match: \b(?i)(SayReplyWindow)\b
+      - match: \b(?i)(SayRestart)\b
+      - match: \b(?i)(SayScrollDown)\b
+      - match: \b(?i)(SayScrollUp)\b
+      - match: \b(?i)(SaySetSpacing)\b
+      - match: \b(?i)(SayStart)\b
+      - match: \b(?i)(SayStartPos)\b
+      - match: \b(?i)(ScaleWin)\b
+      - match: \b(?i)(SelectFileList)\b
+      - match: \b(?i)(SelectWin)\b
+      - match: \b(?i)(SetFont)\b
+      - match: \b(?i)(SetHighlightColor)\b
+      - match: \b(?i)(SetOneOptPause)\b
+      - match: \b(?i)(SetTextColor)\b
+      - match: \b(?i)(SetTextFlags)\b
+      - match: \b(?i)(ShowMouse)\b
+      - match: \b(?i)(ShowWin)\b
+      - match: \b(?i)(SignalNamed)\b
+      - match: \b(?i)(SoundDelete)\b
+      - match: \b(?i)(SoundPause)\b
+      - match: \b(?i)(SoundPlay)\b
+      - match: \b(?i)(SoundResume)\b
+      - match: \b(?i)(SoundRewind)\b
+      - match: \b(?i)(SoundStop)\b
+      - match: \b(?i)(StopMovie)\b
       - match: \b(?i)(action_being_used)\b
-      - match: \b(?i)(activateregion)\b
       - match: \b(?i)(add_mult_objs_to_inven)\b
       - match: \b(?i)(add_obj_to_inven)\b
       - match: \b(?i)(add_timer_event)\b
-      - match: \b(?i)(addbutton)\b
-      - match: \b(?i)(addbuttonflag)\b
-      - match: \b(?i)(addbuttongfx)\b
-      - match: \b(?i)(addbuttonproc)\b
-      - match: \b(?i)(addbuttonrightproc)\b
-      - match: \b(?i)(addbuttontext)\b
-      - match: \b(?i)(addkey)\b
-      - match: \b(?i)(addnamedevent)\b
-      - match: \b(?i)(addnamedhandler)\b
-      - match: \b(?i)(addregion)\b
-      - match: \b(?i)(addregionflag)\b
-      - match: \b(?i)(addregionproc)\b
-      - match: \b(?i)(addregionrightproc)\b
       - match: \b(?i)(anim)\b
       - match: \b(?i)(anim_action_frame)\b
       - match: \b(?i)(anim_busy)\b
-      - match: \b(?i)(animate_jump)\b
       - match: \b(?i)(animate_move_obj_to_tile)\b
+      - match: \b(?i)(animate_rotation)\b
+      - match: \b(?i)(animate_run_to_tile)\b
+      - match: \b(?i)(animate_set_frame)\b
+      - match: \b(?i)(animate_stand)\b
       - match: \b(?i)(animate_stand_obj)\b
+      - match: \b(?i)(animate_stand_reverse)\b
       - match: \b(?i)(animate_stand_reverse_obj)\b
       - match: \b(?i)(art_anim)\b
       - match: \b(?i)(attack)\b
       - match: \b(?i)(attack_complex)\b
       - match: \b(?i)(attack_setup)\b
-      - match: \b(?i)(barter_asking)\b
-      - match: \b(?i)(barter_offer)\b
-      - match: \b(?i)(checkregion)\b
-      - match: \b(?i)(clearnamed)\b
+      - match: \b(?i)(car_current_town)\b
+      - match: \b(?i)(car_give_gas)\b
+      - match: \b(?i)(car_give_to_party)\b
       - match: \b(?i)(combat_difficulty)\b
       - match: \b(?i)(combat_is_initialized)\b
       - match: \b(?i)(create_object)\b
       - match: \b(?i)(create_object_sid)\b
-      - match: \b(?i)(createwin)\b
       - match: \b(?i)(critter_add_trait)\b
       - match: \b(?i)(critter_attempt_placement)\b
       - match: \b(?i)(critter_damage)\b
@@ -136,15 +203,13 @@ repository:
       - match: \b(?i)(critter_mod_skill)\b
       - match: \b(?i)(critter_rm_trait)\b
       - match: \b(?i)(critter_set_flee_state)\b
+      - match: \b(?i)(critter_skill_level)\b
       - match: \b(?i)(critter_state)\b
       - match: \b(?i)(critter_stop_attacking)\b
       - match: \b(?i)(cur_map_index)\b
+      - match: \b(?i)(cur_town)\b
       - match: \b(?i)(days_since_visited)\b
       - match: \b(?i)(debug_msg)\b
-      - match: \b(?i)(deletebutton)\b
-      - match: \b(?i)(deletekey)\b
-      - match: \b(?i)(deleteregion)\b
-      - match: \b(?i)(deletewin)\b
       - match: \b(?i)(destroy_mult_objs)\b
       - match: \b(?i)(destroy_object)\b
       - match: \b(?i)(dialogue_reaction)\b
@@ -152,24 +217,25 @@ repository:
       - match: \b(?i)(difficulty_level)\b
       - match: \b(?i)(display)\b
       - match: \b(?i)(display_msg)\b
-      - match: \b(?i)(displaygfx)\b
-      - match: \b(?i)(displayraw)\b
       - match: \b(?i)(do_check)\b
       - match: \b(?i)(drop_obj)\b
+      - match: \b(?i)(drug_influence)\b
       - match: \b(?i)(dude_obj)\b
       - match: \b(?i)(elevation)\b
       - match: \b(?i)(end_dialogue)\b
       - match: \b(?i)(endgame_movie)\b
       - match: \b(?i)(endgame_slideshow)\b
       - match: \b(?i)(explosion)\b
-      - match: \b(?i)(fadein)\b
-      - match: \b(?i)(fadeout)\b
-      - match: \b(?i)(fillrect)\b
-      - match: \b(?i)(fillwin)\b
-      - match: \b(?i)(fillwin3x3)\b
       - match: \b(?i)(fixed_param)\b
       - match: \b(?i)(float_msg)\b
+      - match: \b(?i)(floor)\b
+        name: invalid.deprecated.bgforge
       - match: \b(?i)(format)\b
+      - match: \b(?i)(gSay_End)\b
+      - match: \b(?i)(gSay_Message)\b
+      - match: \b(?i)(gSay_Option)\b
+      - match: \b(?i)(gSay_Reply)\b
+      - match: \b(?i)(gSay_Start)\b
       - match: \b(?i)(game_ticks)\b
       - match: \b(?i)(game_time)\b
       - match: \b(?i)(game_time_advance)\b
@@ -178,6 +244,7 @@ repository:
       - match: \b(?i)(game_ui_disable)\b
       - match: \b(?i)(game_ui_enable)\b
       - match: \b(?i)(game_ui_is_disabled)\b
+      - match: \b(?i)(gdialog_barter)\b
       - match: \b(?i)(gdialog_mod_barter)\b
       - match: \b(?i)(gdialog_set_barter_mod)\b
       - match: \b(?i)(get_critter_stat)\b
@@ -187,51 +254,50 @@ repository:
       - match: \b(?i)(get_poison)\b
       - match: \b(?i)(gfade_in)\b
       - match: \b(?i)(gfade_out)\b
-      - match: \b(?i)(giq_option)\b
+      - match: \b(?i)(giQ_Option)\b
       - match: \b(?i)(give_exp_points)\b
       - match: \b(?i)(global_var)\b
-      - match: \b(?i)(gotoxy)\b
-      - match: \b(?i)(gsay_end)\b
-      - match: \b(?i)(gsay_message)\b
-      - match: \b(?i)(gsay_option)\b
-      - match: \b(?i)(gsay_reply)\b
-      - match: \b(?i)(gsay_start)\b
+      - match: \b(?i)(goto_xy)\b
       - match: \b(?i)(has_skill)\b
       - match: \b(?i)(has_trait)\b
-      - match: \b(?i)(hidemouse)\b
       - match: \b(?i)(how_much)\b
       - match: \b(?i)(inven_cmds)\b
+      - match: \b(?i)(inven_count)\b
+      - match: \b(?i)(inven_ptr)\b
       - match: \b(?i)(inven_unwield)\b
       - match: \b(?i)(is_critical)\b
+      - match: \b(?i)(is_loading_game)\b
+      - match: \b(?i)(is_skill_tagged)\b
       - match: \b(?i)(is_success)\b
       - match: \b(?i)(item_caps_adjust)\b
       - match: \b(?i)(item_caps_total)\b
       - match: \b(?i)(jam_lock)\b
       - match: \b(?i)(kill_critter)\b
       - match: \b(?i)(kill_critter_type)\b
+      - match: \b(?i)(language_filter_is_on)\b
       - match: \b(?i)(load_map)\b
-      - match: \b(?i)(loadpalettetable)\b
       - match: \b(?i)(local_var)\b
-      - match: \b(?i)(make_daytime)\b
       - match: \b(?i)(map_first_run)\b
+      - match: \b(?i)(map_is_known)\b
+      - match: \b(?i)(map_known)\b
       - match: \b(?i)(map_var)\b
       - match: \b(?i)(mark_area_known)\b
       - match: \b(?i)(message_str)\b
       - match: \b(?i)(metarule)\b
       - match: \b(?i)(metarule3)\b
-      - match: \b(?i)(mouseshape)\b
       - match: \b(?i)(move_obj_inven_to_obj)\b
       - match: \b(?i)(move_to)\b
-      - match: \b(?i)(movieflags)\b
       - match: \b(?i)(obj_art_fid)\b
       - match: \b(?i)(obj_being_used_with)\b
       - match: \b(?i)(obj_can_hear_obj)\b
       - match: \b(?i)(obj_can_see_obj)\b
       - match: \b(?i)(obj_carrying_pid_obj)\b
       - match: \b(?i)(obj_close)\b
+      - match: \b(?i)(obj_drop_everything)\b
       - match: \b(?i)(obj_is_carrying_obj_pid)\b
       - match: \b(?i)(obj_is_locked)\b
       - match: \b(?i)(obj_is_open)\b
+      - match: \b(?i)(obj_is_visible_flag)\b
       - match: \b(?i)(obj_item_subtype)\b
       - match: \b(?i)(obj_lock)\b
       - match: \b(?i)(obj_name)\b
@@ -243,34 +309,32 @@ repository:
       - match: \b(?i)(obj_unlock)\b
       - match: \b(?i)(override_map_start)\b
       - match: \b(?i)(party_add)\b
+      - match: \b(?i)(party_member_count)\b
       - match: \b(?i)(party_member_obj)\b
       - match: \b(?i)(party_remove)\b
       - match: \b(?i)(pickup_obj)\b
       - match: \b(?i)(play_gmovie)\b
       - match: \b(?i)(play_sfx)\b
-      - match: \b(?i)(playmovie)\b
-      - match: \b(?i)(playmoviealpha)\b
-      - match: \b(?i)(playmoviealpharect)\b
-      - match: \b(?i)(playmovierect)\b
       - match: \b(?i)(poison)\b
       - match: \b(?i)(print)\b
-      - match: \b(?i)(printrect)\b
       - match: \b(?i)(proto_data)\b
       - match: \b(?i)(radiation_dec)\b
       - match: \b(?i)(radiation_inc)\b
       - match: \b(?i)(random)\b
-      - match: \b(?i)(reaction)\b
       - match: \b(?i)(reaction_influence)\b
-      - match: \b(?i)(refreshmouse)\b
       - match: \b(?i)(reg_anim_animate)\b
       - match: \b(?i)(reg_anim_animate_forever)\b
       - match: \b(?i)(reg_anim_animate_reverse)\b
+      - match: \b(?i)(reg_anim_begin)\b
+      - match: \b(?i)(reg_anim_clear)\b
+      - match: \b(?i)(reg_anim_end)\b
+      - match: \b(?i)(reg_anim_func)\b
       - match: \b(?i)(reg_anim_obj_move_to_obj)\b
       - match: \b(?i)(reg_anim_obj_move_to_tile)\b
       - match: \b(?i)(reg_anim_obj_run_to_obj)\b
       - match: \b(?i)(reg_anim_obj_run_to_tile)\b
       - match: \b(?i)(reg_anim_play_sfx)\b
-      - match: \b(?i)(resizewin)\b
+      - match: \b(?i)(rm_fixed_timer_event)\b
       - match: \b(?i)(rm_mult_objs_from_inven)\b
       - match: \b(?i)(rm_obj_from_inven)\b
       - match: \b(?i)(rm_timer_event)\b
@@ -278,34 +342,9 @@ repository:
       - match: \b(?i)(roll_vs_skill)\b
       - match: \b(?i)(rotation_to_tile)\b
       - match: \b(?i)(running_burning_guy)\b
-      - match: \b(?i)(sayborder)\b
-      - match: \b(?i)(sayend)\b
-      - match: \b(?i)(saygetlastpos)\b
-      - match: \b(?i)(saygotoreply)\b
-      - match: \b(?i)(saymessage)\b
-      - match: \b(?i)(saymessagetimeout)\b
-      - match: \b(?i)(sayoption)\b
-      - match: \b(?i)(sayoptioncolor)\b
-      - match: \b(?i)(sayoptionflags)\b
-      - match: \b(?i)(sayoptionwindow)\b
-      - match: \b(?i)(sayquit)\b
-      - match: \b(?i)(sayreply)\b
-      - match: \b(?i)(sayreplycolor)\b
-      - match: \b(?i)(sayreplyflags)\b
-      - match: \b(?i)(sayreplytitle)\b
-      - match: \b(?i)(sayreplywindow)\b
-      - match: \b(?i)(sayrestart)\b
-      - match: \b(?i)(sayscrolldown)\b
-      - match: \b(?i)(sayscrollup)\b
-      - match: \b(?i)(saysetspacing)\b
-      - match: \b(?i)(saystart)\b
-      - match: \b(?i)(saystartpos)\b
-      - match: \b(?i)(scalewin)\b
       - match: \b(?i)(scr_return)\b
       - match: \b(?i)(script_action)\b
       - match: \b(?i)(script_overrides)\b
-      - match: \b(?i)(selectfilelist)\b
-      - match: \b(?i)(selectwin)\b
       - match: \b(?i)(self_obj)\b
       - match: \b(?i)(set_critter_stat)\b
       - match: \b(?i)(set_exit_grids)\b
@@ -316,12 +355,6 @@ repository:
       - match: \b(?i)(set_map_start)\b
       - match: \b(?i)(set_map_var)\b
       - match: \b(?i)(set_obj_visibility)\b
-      - match: \b(?i)(setfont)\b
-      - match: \b(?i)(setglobalmousefunc)\b
-      - match: \b(?i)(sethighlightcolor)\b
-      - match: \b(?i)(setoneoptpause)\b
-      - match: \b(?i)(settextcolor)\b
-      - match: \b(?i)(settextflags)\b
       - match: \b(?i)(sfx_build_ambient_name)\b
       - match: \b(?i)(sfx_build_char_name)\b
       - match: \b(?i)(sfx_build_interface_name)\b
@@ -329,19 +362,10 @@ repository:
       - match: \b(?i)(sfx_build_open_name)\b
       - match: \b(?i)(sfx_build_scenery_name)\b
       - match: \b(?i)(sfx_build_weapon_name)\b
-      - match: \b(?i)(showmouse)\b
-      - match: \b(?i)(showwin)\b
-      - match: \b(?i)(signalnamed)\b
+      - match: \b(?i)(signal_end_game)\b
       - match: \b(?i)(skill_contest)\b
-      - match: \b(?i)(sounddelete)\b
-      - match: \b(?i)(soundpause)\b
-      - match: \b(?i)(soundplay)\b
-      - match: \b(?i)(soundresume)\b
-      - match: \b(?i)(soundrewind)\b
-      - match: \b(?i)(soundstop)\b
       - match: \b(?i)(source_obj)\b
       - match: \b(?i)(start_gdialog)\b
-      - match: \b(?i)(stopmovie)\b
       - match: \b(?i)(target_obj)\b
       - match: \b(?i)(terminate_combat)\b
       - match: \b(?i)(tile_contains_obj_pid)\b
@@ -353,15 +377,18 @@ repository:
       - match: \b(?i)(tile_num)\b
       - match: \b(?i)(tile_num_in_direction)\b
       - match: \b(?i)(tokenize)\b
+      - match: \b(?i)(town_known)\b
       - match: \b(?i)(town_map)\b
-      - match: \b(?i)(turn_off_objs_in_area)\b
-      - match: \b(?i)(turn_on_objs_in_area)\b
       - match: \b(?i)(use_obj)\b
       - match: \b(?i)(use_obj_on_obj)\b
       - match: \b(?i)(using_skill)\b
+      - match: \b(?i)(violence_level_setting)\b
+      - match: \b(?i)(wield_obj)\b
       - match: \b(?i)(wield_obj_critter)\b
       - match: \b(?i)(wm_area_set_pos)\b
       - match: \b(?i)(world_map)\b
+      - match: \b(?i)(world_map_x_pos)\b
+      - match: \b(?i)(world_map_y_pos)\b
   function-declaration:
     patterns:
       - captures:
@@ -486,8 +513,6 @@ repository:
         name: keyword.control.fallout-ssl
       - match: (=|:|>|<|\+\+|\-|\+|;|!|%)
         name: keyword.control.fallout-ssl
-      - match: floor
-        name: invalid.deprecated.bgforge
   sfall-functions:
     name: support.function.fallout-ssl.sfall
     patterns:

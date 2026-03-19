@@ -8,7 +8,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
-import { IELIB_STANZAS, IESDP_STANZAS } from "../../../shared/stanza-names.js";
 import {
     cmpStr,
     COMPLETION_TYPE_FUNCTION,
@@ -26,6 +25,7 @@ import type {
     IEData,
     TypeEntry,
 } from "./ie/index.js";
+import { IELIB_STANZAS, IESDP_STANZAS } from "./stanza-names.js";
 
 /** IElib documentation base URL */
 const IELIB_URL = "https://ielib.bgforge.net";

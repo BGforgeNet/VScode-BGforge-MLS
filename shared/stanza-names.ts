@@ -24,6 +24,15 @@ export const FALLOUT_SSL_STANZAS = {
     window_functions: "window_functions",
 } as const;
 
+export const FALLOUT_SSL_BUILTIN_FUNCTION_STANZAS = [
+    FALLOUT_SSL_STANZAS.base_functions,
+    FALLOUT_SSL_STANZAS.key_functions,
+    FALLOUT_SSL_STANZAS.movie_functions,
+    FALLOUT_SSL_STANZAS.say_functions,
+    FALLOUT_SSL_STANZAS.sound_functions,
+    FALLOUT_SSL_STANZAS.window_functions,
+] as const;
+
 export const WEIDU_TP2_STANZAS = {
     action_functions: "action_functions",
     action_macros: "action_macros",
@@ -36,29 +45,6 @@ export const WEIDU_TP2_STANZAS = {
     opt_glob: "opt_glob",
     patch_functions: "patch_functions",
     patch_macros: "patch_macros",
-} as const;
-
-/**
- * TP2 stanza names that also act as completion category identifiers.
- * Keep this set aligned with the stanza-backed entries in CompletionCategory.
- */
-export const WEIDU_TP2_CATEGORY_STANZAS = WEIDU_TP2_STANZAS;
-
-export const IESDP_STANZAS = {
-    iesdp_byte: "iesdp_byte",
-    iesdp_char: "iesdp_char",
-    iesdp_dword: "iesdp_dword",
-    iesdp_other: "iesdp_other",
-    iesdp_resref: "iesdp_resref",
-    iesdp_strref: "iesdp_strref",
-    iesdp_word: "iesdp_word",
-} as const;
-
-export const IELIB_STANZAS = {
-    action_functions: WEIDU_TP2_STANZAS.action_functions,
-    ielib_int: "ielib_int",
-    ielib_resref: "ielib_resref",
-    patch_functions: WEIDU_TP2_STANZAS.patch_functions,
 } as const;
 
 export const WEIDU_TP2_CALLABLE_PREFIX: Record<string, string> = {

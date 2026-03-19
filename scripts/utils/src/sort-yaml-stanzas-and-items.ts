@@ -29,11 +29,8 @@ interface TokenWithSource extends SourceTokenLike {
 }
 
 interface PairLike {
-    readonly key: { readonly range?: readonly number[] } | null;
-    readonly srcToken?: {
-        readonly start?: readonly TokenWithSource[];
-        readonly sep?: readonly TokenWithSource[];
-    };
+    readonly key: unknown;
+    readonly srcToken?: unknown;
 }
 
 interface ItemSlice {
@@ -43,26 +40,72 @@ interface ItemSlice {
 
 interface SeqLike {
     readonly items: readonly unknown[];
-    readonly range?: readonly number[];
-    readonly srcToken?: {
-        readonly items?: readonly {
-            readonly start?: readonly TokenWithSource[];
-            readonly value?: { readonly offset?: number };
-        }[];
-    };
+    readonly range?: readonly number[] | null;
+    readonly srcToken?: unknown;
+}
+
+interface PairSrcToken {
+    readonly start?: readonly TokenWithSource[];
+    readonly sep?: readonly TokenWithSource[];
+}
+
+interface SequenceItemToken {
+    readonly start?: readonly TokenWithSource[];
+    readonly value?: { readonly offset?: number };
+}
+
+interface SequenceSrcToken {
+    readonly items?: readonly SequenceItemToken[];
 }
 
 interface SortSequenceOptions {
     readonly compactItems?: boolean;
 }
 
+function isTokenWithSource(value: unknown): value is TokenWithSource {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+    const token = value as Partial<TokenWithSource>;
+    return typeof token.offset === "number" && typeof token.source === "string" && typeof token.type === "string";
+}
+
+function getPairSrcToken(srcToken: unknown): PairSrcToken | undefined {
+    if (typeof srcToken !== "object" || srcToken === null) {
+        return undefined;
+    }
+    const token = srcToken as {
+        readonly start?: readonly unknown[];
+        readonly sep?: readonly unknown[];
+    };
+    const start = token.start?.every(isTokenWithSource) ? token.start : undefined;
+    const sep = token.sep?.every(isTokenWithSource) ? token.sep : undefined;
+    if (start === undefined && sep === undefined) {
+        return undefined;
+    }
+    return { start, sep };
+}
+
+function getSequenceSrcToken(srcToken: unknown): SequenceSrcToken | undefined {
+    if (typeof srcToken !== "object" || srcToken === null) {
+        return undefined;
+    }
+    const token = srcToken as {
+        readonly items?: readonly SequenceItemToken[];
+    };
+    if (token.items === undefined) {
+        return undefined;
+    }
+    return { items: token.items };
+}
+
 function getStanzaStart(pair: PairLike): number {
-    const startTokens = pair.srcToken?.start;
+    const startTokens = getPairSrcToken(pair.srcToken)?.start;
     if (startTokens !== undefined && startTokens.length > 0) {
         return startTokens[0]!.offset;
     }
 
-    const keyStart = pair.key?.range?.[0];
+    const keyStart = isScalar(pair.key) ? pair.key.range?.[0] : undefined;
     if (keyStart === undefined) {
         throw new Error("Encountered a top-level YAML pair without a key range");
     }
@@ -82,7 +125,7 @@ function getTopLevelName(item: unknown): string | undefined {
 }
 
 function getItemsHeadEnd(pair: PairLike): number | undefined {
-    const sepTokens = pair.srcToken?.sep;
+    const sepTokens = getPairSrcToken(pair.srcToken)?.sep;
     if (sepTokens === undefined) {
         return undefined;
     }
@@ -183,7 +226,7 @@ function sortSequenceItemsInSource(
     sortKey: string,
     options: SortSequenceOptions = {},
 ): string {
-    const seqTokens = sequence.srcToken?.items;
+    const seqTokens = getSequenceSrcToken(sequence.srcToken)?.items;
     const slices: ItemSlice[] = sequence.items.map((item: unknown, index: number, items: readonly unknown[]) => {
         const name = getScalarField(item, sortKey);
         if (name === undefined) {

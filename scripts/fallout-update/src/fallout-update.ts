@@ -46,9 +46,8 @@ const sfallHooks = loadSfallHooks(srcDir);
 dumpFalloutCompletion(sfallFile, sfallFunctions.completionItems, sfallHooks.completionItems);
 
 // Dump highlight YAML
-dumpFalloutHighlight(
-    highlightFile,
-    sfallFunctions.highlightPatterns,
-    sfallHooks.highlightPatterns,
+dumpFalloutHighlight(highlightFile, {
+    sfallFunctionPatterns: sfallFunctions.highlightPatterns,
+    hookPatterns: sfallHooks.highlightPatterns,
     headerDefines,
-);
+});

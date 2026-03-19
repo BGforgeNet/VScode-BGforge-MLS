@@ -9,10 +9,11 @@
 import fs from "node:fs";
 import YAML, { Document, YAMLMap, YAMLSeq, isMap } from "yaml";
 import { makeBlockScalar, YAML_DUMP_OPTIONS } from "../../../utils/src/yaml-helpers.js";
-import type { DefineKind, FalloutCompletionItem, HighlightPattern } from "./types.js";
+import type { FalloutCompletionItem, FalloutHighlightDumpInput, HighlightPattern } from "./types.js";
 import {
     COMPLETION_TYPE_CONSTANT,
     COMPLETION_TYPE_FUNCTION,
+    GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT,
     HIGHLIGHT_STANZAS,
     SFALL_FUNCTIONS_STANZA,
     SFALL_HOOKS_STANZA,
@@ -92,9 +93,12 @@ export function dumpFalloutCompletion(
  */
 export function dumpFalloutHighlight(
     fpath: string,
-    sfallFunctionPatterns: readonly HighlightPattern[],
-    hookPatterns: readonly HighlightPattern[],
-    headerDefines: ReadonlyMap<string, DefineKind>,
+    {
+        baseFunctionPatterns,
+        sfallFunctionPatterns,
+        hookPatterns,
+        headerDefines,
+    }: FalloutHighlightDumpInput,
 ): void {
     const content = fs.readFileSync(fpath, "utf8");
     // Cast to Document to avoid ParsedNode generic constraints on set()
@@ -112,43 +116,50 @@ export function dumpFalloutHighlight(
     const headerDefinesWithVars: HighlightPattern[] = [];
     const headerAliases: HighlightPattern[] = [];
 
-    for (const [name, kind] of headerDefines) {
-        const pattern = { match: `\\b(${name})\\b` };
-        switch (kind) {
-            case "variable":
-                headerVariables.push(pattern);
-                break;
-            case "constant":
-                headerConstants.push(pattern);
-                break;
-            case "define_with_vars":
-                headerDefinesWithVars.push(pattern);
-                break;
-            case "alias":
-                headerAliases.push(pattern);
-                break;
-            case "procedure":
-                headerProcedures.push(pattern);
-                break;
+    if (headerDefines !== undefined) {
+        for (const [name, kind] of headerDefines) {
+            const pattern = { match: `\\b(${name})\\b` };
+            switch (kind) {
+                case "variable":
+                    headerVariables.push(pattern);
+                    break;
+                case "constant":
+                    headerConstants.push(pattern);
+                    break;
+                case "define_with_vars":
+                    headerDefinesWithVars.push(pattern);
+                    break;
+                case "alias":
+                    headerAliases.push(pattern);
+                    break;
+                case "procedure":
+                    headerProcedures.push(pattern);
+                    break;
+            }
         }
     }
 
     // Update each stanza's patterns
-    const stanzaData: ReadonlyArray<readonly [string, readonly HighlightPattern[]]> = [
-        [HIGHLIGHT_STANZAS.sfallFunctions, sfallFunctionPatterns],
-        [HIGHLIGHT_STANZAS.hooks, hookPatterns],
-        [HIGHLIGHT_STANZAS.headerConstants, headerConstants],
-        [HIGHLIGHT_STANZAS.headerVariables, headerVariables],
-        [HIGHLIGHT_STANZAS.headerProcedures, headerProcedures],
-        [HIGHLIGHT_STANZAS.headerDefinesWithVars, headerDefinesWithVars],
-        [HIGHLIGHT_STANZAS.headerAliases, headerAliases],
-    ];
+    const stanzaData: Array<readonly [string, readonly HighlightPattern[]]> = [];
+    if (baseFunctionPatterns !== undefined) stanzaData.push([HIGHLIGHT_STANZAS.falloutBaseFunctions, baseFunctionPatterns]);
+    if (sfallFunctionPatterns !== undefined) stanzaData.push([HIGHLIGHT_STANZAS.sfallFunctions, sfallFunctionPatterns]);
+    if (hookPatterns !== undefined) stanzaData.push([HIGHLIGHT_STANZAS.hooks, hookPatterns]);
+    if (headerDefines !== undefined) {
+        stanzaData.push([HIGHLIGHT_STANZAS.headerConstants, headerConstants]);
+        stanzaData.push([HIGHLIGHT_STANZAS.headerVariables, headerVariables]);
+        stanzaData.push([HIGHLIGHT_STANZAS.headerProcedures, headerProcedures]);
+        stanzaData.push([HIGHLIGHT_STANZAS.headerDefinesWithVars, headerDefinesWithVars]);
+        stanzaData.push([HIGHLIGHT_STANZAS.headerAliases, headerAliases]);
+    }
 
     for (const [stanza, patterns] of stanzaData) {
         const stanzaNode = repository.get(stanza, true);
         if (isMap(stanzaNode)) {
             const patternsSeq = doc.createNode(patterns);
             stanzaNode.set("patterns", patternsSeq);
+            if (stanza === HIGHLIGHT_STANZAS.falloutBaseFunctions) {
+                stanzaNode.commentBefore = GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT;
+            }
         }
     }
 

@@ -239,39 +239,319 @@
       "name": "support.function.fallout-ssl.base",
       "patterns": [
         {
+          "match": "\\b(?i)(ActivateRegion)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddButton)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddButtonFlag)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddButtonGFX)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddButtonProc)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddButtonRightProc)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddButtonText)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddKey)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddNamedEvent)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddNamedHandler)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddRegion)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddRegionFlag)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddRegionProc)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(AddRegionRightProc)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(CheckRegion)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(ClearNamed)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(CreateWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(DeleteButton)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(DeleteKey)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(DeleteRegion)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(DeleteWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(DisplayGFX)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(DisplayRaw)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(FadeIn)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(FadeOut)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(FillRect)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(FillWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(FillWin3x3)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(GotoXY)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(HideMouse)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(LoadPaletteTable)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(MouseShape)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(MovieFlags)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(PlayMovie)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(PlayMovieRect)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(PrintRect)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(RefreshMouse)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(ResizeWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayBorder)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayEnd)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayGetLastPos)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayGotoReply)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayMessage)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayMessageTimeout)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayOption)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayOptionColor)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayOptionFlags)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayOptionWindow)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayQuit)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayReply)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayReplyColor)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayReplyFlags)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayReplyTitle)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayReplyWindow)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayRestart)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayScrollDown)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayScrollUp)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SaySetSpacing)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayStart)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SayStartPos)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(ScaleWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SelectFileList)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SelectWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SetFont)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SetHighlightColor)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SetOneOptPause)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SetTextColor)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SetTextFlags)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(ShowMouse)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(ShowWin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SignalNamed)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SoundDelete)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SoundPause)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SoundPlay)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SoundResume)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SoundRewind)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(SoundStop)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(StopMovie)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(action_being_used)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(activateregion)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addbutton)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addbuttonflag)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addbuttongfx)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addbuttonproc)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addbuttonrightproc)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addbuttontext)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addkey)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -279,31 +559,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(addnamedevent)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addnamedhandler)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(add_obj_to_inven)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addregion)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addregionflag)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addregionproc)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(addregionrightproc)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -319,7 +575,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(animate_jump)\\b",
+          "match": "\\b(?i)(anim_busy)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -327,15 +583,31 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(animate_rotation)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(animate_run_to_tile)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(animate_set_frame)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(animate_stand)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(animate_stand_obj)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(animate_stand_reverse_obj)\\b",
+          "match": "\\b(?i)(animate_stand_reverse)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(anim_busy)\\b",
+          "match": "\\b(?i)(animate_stand_reverse_obj)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -355,19 +627,15 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(barter_asking)\\b",
+          "match": "\\b(?i)(car_current_town)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(barter_offer)\\b",
+          "match": "\\b(?i)(car_give_gas)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(checkregion)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(clearnamed)\\b",
+          "match": "\\b(?i)(car_give_to_party)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -384,10 +652,6 @@
         },
         {
           "match": "\\b(?i)(create_object_sid)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(createwin)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -435,6 +699,10 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(critter_skill_level)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(critter_state)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -447,27 +715,15 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(cur_town)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(days_since_visited)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
           "match": "\\b(?i)(debug_msg)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(deletebutton)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(deletekey)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(deleteregion)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(deletewin)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -495,15 +751,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(displaygfx)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(display_msg)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(displayraw)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -512,6 +760,10 @@
         },
         {
           "match": "\\b(?i)(drop_obj)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(drug_influence)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -539,26 +791,6 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(fadein)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(fadeout)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(fillrect)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(fillwin)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(fillwin3x3)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(fixed_param)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -567,7 +799,31 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(floor)\\b",
+          "name": "invalid.deprecated.bgforge"
+        },
+        {
           "match": "\\b(?i)(format)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(gSay_End)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(gSay_Message)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(gSay_Option)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(gSay_Reply)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(gSay_Start)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -600,6 +856,10 @@
         },
         {
           "match": "\\b(?i)(game_ui_is_disabled)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(gdialog_barter)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -639,7 +899,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(giq_option)\\b",
+          "match": "\\b(?i)(giQ_Option)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -651,27 +911,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(gotoxy)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(gsay_end)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(gsay_message)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(gsay_option)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(gsay_reply)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(gsay_start)\\b",
+          "match": "\\b(?i)(goto_xy)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -683,10 +923,6 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(hidemouse)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(how_much)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -695,11 +931,27 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(inven_count)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(inven_ptr)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(inven_unwield)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
           "match": "\\b(?i)(is_critical)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(is_loading_game)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(is_skill_tagged)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -727,11 +979,11 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(load_map)\\b",
+          "match": "\\b(?i)(language_filter_is_on)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(loadpalettetable)\\b",
+          "match": "\\b(?i)(load_map)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -739,11 +991,15 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(make_daytime)\\b",
+          "match": "\\b(?i)(map_first_run)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(map_first_run)\\b",
+          "match": "\\b(?i)(map_is_known)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(map_known)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -767,19 +1023,11 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(mouseshape)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(move_obj_inven_to_obj)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
           "match": "\\b(?i)(move_to)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(movieflags)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -807,6 +1055,10 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(obj_drop_everything)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(obj_is_carrying_obj_pid)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -816,6 +1068,10 @@
         },
         {
           "match": "\\b(?i)(obj_is_open)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(obj_is_visible_flag)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -863,6 +1119,10 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(party_member_count)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(party_member_obj)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -879,22 +1139,6 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(playmovie)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(playmoviealpha)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(playmoviealpharect)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(playmovierect)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(play_sfx)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -904,10 +1148,6 @@
         },
         {
           "match": "\\b(?i)(print)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(printrect)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -927,15 +1167,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(reaction)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(reaction_influence)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(refreshmouse)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -951,7 +1183,19 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(REG_ANIM_FUNC)\\b",
+          "match": "\\b(?i)(reg_anim_begin)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_clear)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_end)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_func)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -975,7 +1219,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(resizewin)\\b",
+          "match": "\\b(?i)(rm_fixed_timer_event)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1007,95 +1251,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(sayborder)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayend)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saygetlastpos)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saygotoreply)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saymessage)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saymessagetimeout)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayoption)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayoptioncolor)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayoptionflags)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayoptionwindow)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayquit)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayreply)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayreplycolor)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayreplyflags)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayreplytitle)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayreplywindow)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayrestart)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayscrolldown)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sayscrollup)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saysetspacing)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saystart)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(saystartpos)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(scalewin)\\b",
+          "match": "\\b(?i)(scr_return)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1104,18 +1260,6 @@
         },
         {
           "match": "\\b(?i)(script_overrides)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(scr_return)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(selectfilelist)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(selectwin)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1131,19 +1275,7 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(setfont)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(setglobalmousefunc)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(set_global_var)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sethighlightcolor)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1168,18 +1300,6 @@
         },
         {
           "match": "\\b(?i)(set_obj_visibility)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(setoneoptpause)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(settextcolor)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(settextflags)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1211,43 +1331,11 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(showmouse)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(showwin)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(signalnamed)\\b",
+          "match": "\\b(?i)(signal_end_game)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
           "match": "\\b(?i)(skill_contest)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(sounddelete)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(soundpause)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(soundplay)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(soundresume)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(soundrewind)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(soundstop)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1256,10 +1344,6 @@
         },
         {
           "match": "\\b(?i)(start_gdialog)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(stopmovie)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1307,15 +1391,11 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(town_known)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(town_map)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(turn_off_objs_in_area)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
-          "match": "\\b(?i)(turn_on_objs_in_area)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -1331,6 +1411,14 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
+          "match": "\\b(?i)(violence_level_setting)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(wield_obj)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
           "match": "\\b(?i)(wield_obj_critter)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -1340,6 +1428,14 @@
         },
         {
           "match": "\\b(?i)(world_map)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(world_map_x_pos)\\b",
+          "name": "support.function.fallout-ssl.base"
+        },
+        {
+          "match": "\\b(?i)(world_map_y_pos)\\b",
           "name": "support.function.fallout-ssl.base"
         }
       ]
@@ -1652,10 +1748,6 @@
         {
           "match": "(=|:|>|<|\\+\\+|\\-|\\+|;|!|%)",
           "name": "keyword.control.fallout-ssl"
-        },
-        {
-          "match": "floor",
-          "name": "invalid.deprecated.bgforge"
         }
       ]
     },
