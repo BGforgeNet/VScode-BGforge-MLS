@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sortYamlStanzasAndItems } from "../src/sort-yaml-stanzas-and-items.js";
+import { sortYamlSequenceByPath, sortYamlStanzasAndItems } from "../src/sort-yaml-stanzas-and-items.js";
 
 describe("sortYamlStanzasAndItems", () => {
     it("sorts top-level stanzas alphabetically while preserving stanza formatting", () => {
@@ -76,5 +76,54 @@ zeta:
     - name: zeta
       doc: z
 `);
+    });
+
+    it("sorts a specific nested sequence by key while preserving item comments", () => {
+        const input = `repository:
+  fallout-base-functions:
+    name: support.function.fallout-ssl.base
+    patterns:
+      - match: \\b(?i)(zeta)\\b
+
+      # keep this comment with deprecated entry
+      - match: \\b(?i)(beta)\\b
+        name: invalid.deprecated.bgforge
+
+      - match: \\b(?i)(alpha)\\b
+
+other:
+  untouched: true
+`;
+
+        const result = sortYamlSequenceByPath(input, ["repository", "fallout-base-functions", "patterns"], "match");
+
+        expect(result).toBe(`repository:
+  fallout-base-functions:
+    name: support.function.fallout-ssl.base
+    patterns:
+      - match: \\b(?i)(alpha)\\b
+
+      # keep this comment with deprecated entry
+      - match: \\b(?i)(beta)\\b
+        name: invalid.deprecated.bgforge
+
+      - match: \\b(?i)(zeta)\\b
+
+other:
+  untouched: true
+`);
+    });
+
+    it("leaves the file unchanged when the target sequence path is missing", () => {
+        const input = `repository:
+  fallout-base-functions:
+    patterns:
+      - match: z
+      - match: a
+`;
+
+        const result = sortYamlSequenceByPath(input, ["repository", "missing", "patterns"], "match");
+
+        expect(result).toBe(input);
     });
 });

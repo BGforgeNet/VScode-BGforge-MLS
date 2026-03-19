@@ -4,9 +4,11 @@
  *
  * Usage:
  *   pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts input.yml
+ *   pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts input.yml --sequence-path a.b.c --sort-key name
  */
 
 import fs from "node:fs";
+import { parseArgs } from "node:util";
 import YAML, { isMap, isScalar, isSeq } from "yaml";
 import { cmpStr } from "./yaml-helpers.js";
 
@@ -36,6 +38,17 @@ interface PairLike {
 interface ItemSlice {
     readonly name: string;
     readonly text: string;
+}
+
+interface SeqLike {
+    readonly items: readonly unknown[];
+    readonly range?: readonly number[];
+    readonly srcToken?: {
+        readonly items?: readonly {
+            readonly start?: readonly TokenWithSource[];
+            readonly value?: { readonly offset?: number };
+        }[];
+    };
 }
 
 function getStanzaStart(pair: PairLike): number {
@@ -89,6 +102,18 @@ function getSequenceItemStart(item: {
         throw new Error("Encountered a YAML sequence item without a source range");
     }
     return start;
+}
+
+function getScalarField(item: unknown, fieldName: string): string | undefined {
+    if (!isMap(item)) {
+        return undefined;
+    }
+    for (const pair of item.items) {
+        if (isScalar(pair.key) && pair.key.value === fieldName && isScalar(pair.value) && typeof pair.value.value === "string") {
+            return pair.value.value;
+        }
+    }
+    return undefined;
 }
 
 function sortItemsInStanzaBody(body: string): string {
@@ -145,6 +170,79 @@ function sortItemsInStanzaBody(body: string): string {
     return result;
 }
 
+function sortSequenceItemsInSource(
+    source: string,
+    sequence: SeqLike,
+    headEnd: number,
+    seqEnd: number,
+    sortKey: string,
+): string {
+    const seqTokens = sequence.srcToken?.items;
+    const slices: ItemSlice[] = sequence.items.map((item: unknown, index: number, items: readonly unknown[]) => {
+        const name = getScalarField(item, sortKey);
+        if (name === undefined) {
+            throw new Error(`Expected each YAML sequence entry to have a top-level string ${sortKey}`);
+        }
+        const start = index === 0 ? headEnd : getSequenceItemStart(seqTokens?.[index] ?? {});
+        const nextItem = items[index + 1];
+        const end = nextItem !== undefined ? getSequenceItemStart(seqTokens?.[index + 1] ?? {}) : seqEnd;
+        return {
+            name,
+            text: source.slice(start, end),
+        };
+    });
+
+    return [...slices]
+        .sort((a, b) => cmpStr(a.name, b.name))
+        .reduce((text, item, index) => {
+            const itemText = index === 0
+                ? item.text.replace(/^\n+/, "")
+                : (item.text.startsWith("\n") ? item.text : `\n${item.text}`);
+            return `${text}${itemText}`;
+        }, "");
+}
+
+export function sortYamlSequenceByPath(source: string, path: readonly string[], sortKey: string): string {
+    const doc = YAML.parseDocument(source, { keepSourceTokens: true });
+    if (doc.errors.length > 0) {
+        throw new Error(doc.errors[0]!.message);
+    }
+    if (!isMap(doc.contents)) {
+        throw new Error("Expected top-level YAML document to be a mapping");
+    }
+    if (path.length === 0) {
+        return source;
+    }
+
+    const target = doc.getIn(path, true);
+    if (!isSeq(target) || target.items.length <= 1) {
+        return source;
+    }
+
+    const parentPath = path.slice(0, -1);
+    const finalKey = path[path.length - 1]!;
+    const parent = doc.getIn(parentPath, true);
+    if (!isMap(parent)) {
+        return source;
+    }
+
+    const pair = parent.items.find((item) => isScalar(item.key) && item.key.value === finalKey);
+    if (pair === undefined || !isSeq(pair.value)) {
+        return source;
+    }
+
+    const pairStart = getStanzaStart(pair);
+    const headEnd = getItemsHeadEnd(pair);
+    const seqEnd = pair.value.range?.[2];
+    if (headEnd === undefined || seqEnd === undefined) {
+        return source;
+    }
+
+    const sortedItems = sortSequenceItemsInSource(source, pair.value, headEnd, seqEnd, sortKey);
+    const head = source.slice(pairStart, headEnd);
+    return `${source.slice(0, pairStart)}${head}${sortedItems}${source.slice(seqEnd)}`;
+}
+
 export function sortYamlStanzasAndItems(source: string): string {
     const doc = YAML.parseDocument(source, { keepSourceTokens: true });
     if (doc.errors.length > 0) {
@@ -185,14 +283,33 @@ export function sortYamlStanzasAndItems(source: string): string {
 
 /* v8 ignore start -- CLI wrapper tested via execSync integration tests */
 function main(): void {
-    const inputFile = process.argv[2];
+    const { positionals, values } = parseArgs({
+        args: process.argv.slice(2),
+        options: {
+            "sequence-path": { type: "string" },
+            "sort-key": { type: "string" },
+        },
+        allowPositionals: true,
+        strict: true,
+    });
+
+    const inputFile = positionals[0];
     if (inputFile === undefined) {
-        console.error("Usage: sort-yaml-stanzas-and-items <input.yml>");
+        console.error("Usage: sort-yaml-stanzas-and-items <input.yml> [--sequence-path a.b.c --sort-key key]");
         process.exit(1);
     }
 
     const source = fs.readFileSync(inputFile, "utf8");
-    const sorted = sortYamlStanzasAndItems(source);
+    const sequencePath = values["sequence-path"];
+    const sortKey = values["sort-key"];
+    if ((sequencePath === undefined) !== (sortKey === undefined)) {
+        console.error("Both --sequence-path and --sort-key must be provided together");
+        process.exit(1);
+    }
+
+    const sorted = sequencePath !== undefined && sortKey !== undefined
+        ? sortYamlSequenceByPath(source, sequencePath.split("."), sortKey)
+        : sortYamlStanzasAndItems(source);
     fs.writeFileSync(inputFile, sorted, "utf8");
 }
 

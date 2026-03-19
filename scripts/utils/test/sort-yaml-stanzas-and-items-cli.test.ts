@@ -33,4 +33,27 @@ b:
   value: 2
 `);
     });
+
+    it("sorts a specific YAML sequence path in place", () => {
+        const inputFile = path.join(tmpDir, "input.yml");
+        fs.writeFileSync(inputFile, `repository:
+  fallout-base-functions:
+    patterns:
+      - match: z
+      - match: a
+`, "utf8");
+
+        execSync(
+            `pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts "${inputFile}" --sequence-path repository.fallout-base-functions.patterns --sort-key match`,
+            { cwd: process.cwd() },
+        );
+
+        expect(fs.readFileSync(inputFile, "utf8")).toBe(`repository:
+  fallout-base-functions:
+    patterns:
+      - match: a
+
+      - match: z
+`);
+    });
 });
