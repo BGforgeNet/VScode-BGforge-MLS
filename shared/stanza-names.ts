@@ -15,6 +15,8 @@ export const FALLOUT_SSL_STANZAS = {
     base_functions: "base_functions",
     engine_procedures: "engine_procedures",
     hooks: "hooks",
+    key_functions: "key_functions",
+    movie_functions: "movie_functions",
     preprocessor_directives: "preprocessor_directives",
     say_functions: "say_functions",
     sfall_functions: "sfall_functions",

@@ -1,25 +1,5 @@
 [
     {
-        "label": "ActivateRegion",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid ActivateRegion(string name, int flag)\n```\nEnables or disables a named screen region. When flag is non-zero, the region is activated; when zero, it is deactivated."
-        }
-    },
-    {
-        "label": "AddKey",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid AddKey(int key, Procedure proc)\n```\nRegisters a keyboard handler procedure for a given key. When the key is pressed, the associated procedure is called."
-        }
-    },
-    {
         "label": "AddNamedEvent",
         "kind": 3,
         "source": "builtin",
@@ -50,56 +30,6 @@
         }
     },
     {
-        "label": "DeleteKey",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid DeleteKey(int key)\n```\nRemoves a previously registered keyboard handler for the given key."
-        }
-    },
-    {
-        "label": "MovieFlags",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid MovieFlags(int flags)\n```\nSets playback flags for the next movie to be played with PlayMovie or PlayMovieRect."
-        }
-    },
-    {
-        "label": "PlayMovie",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid PlayMovie(string filename)\n```\nPlays a movie file full-screen and waits for completion."
-        }
-    },
-    {
-        "label": "PlayMovieRect",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid PlayMovieRect(string filename, int x, int y, int width, int height)\n```\nPlays a movie file within a specified rectangular area on screen."
-        }
-    },
-    {
-        "label": "SelectFileList",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid SelectFileList(string pattern, string title)\n```\nOpens a file picker dialog with the given file pattern and title."
-        }
-    },
-    {
         "label": "SignalNamed",
         "kind": 3,
         "source": "builtin",
@@ -107,16 +37,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid SignalNamed(string event)\n```\nCalls events and/or handler for given name (event). See AddNamedEvent and AddNamedHandler to add handlers. This basically just calls the appropriate procedures."
-        }
-    },
-    {
-        "label": "StopMovie",
-        "kind": 3,
-        "source": "builtin",
-        "category": "base_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid StopMovie\n```\nStops the currently playing movie."
         }
     },
     {
@@ -3036,6 +2956,26 @@
         }
     },
     {
+        "label": "AddKey",
+        "kind": 3,
+        "source": "builtin",
+        "category": "key_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddKey(int key, Procedure proc)\n```\nRegisters a keyboard handler procedure for a given key. When the key is pressed, the associated procedure is called."
+        }
+    },
+    {
+        "label": "DeleteKey",
+        "kind": 3,
+        "source": "builtin",
+        "category": "key_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DeleteKey(int key)\n```\nRemoves a previously registered keyboard handler for the given key."
+        }
+    },
+    {
         "label": "begin",
         "kind": 14,
         "source": "builtin",
@@ -3076,6 +3016,46 @@
         "kind": 14,
         "source": "builtin",
         "category": "keywords"
+    },
+    {
+        "label": "MovieFlags",
+        "kind": 3,
+        "source": "builtin",
+        "category": "movie_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid MovieFlags(int flags)\n```\nSets playback flags for the next movie to be played with PlayMovie or PlayMovieRect."
+        }
+    },
+    {
+        "label": "PlayMovie",
+        "kind": 3,
+        "source": "builtin",
+        "category": "movie_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid PlayMovie(string filename)\n```\nPlays a movie file full-screen and waits for completion."
+        }
+    },
+    {
+        "label": "PlayMovieRect",
+        "kind": 3,
+        "source": "builtin",
+        "category": "movie_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid PlayMovieRect(string filename, int x, int y, int width, int height)\n```\nPlays a movie file within a specified rectangular area on screen."
+        }
+    },
+    {
+        "label": "StopMovie",
+        "kind": 3,
+        "source": "builtin",
+        "category": "movie_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid StopMovie\n```\nStops the currently playing movie."
+        }
     },
     {
         "label": "define",
@@ -7570,6 +7550,16 @@
         }
     },
     {
+        "label": "ActivateRegion",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid ActivateRegion(string name, int flag)\n```\nEnables or disables a named screen region. When flag is non-zero, the region is activated; when zero, it is deactivated."
+        }
+    },
+    {
         "label": "AddButton",
         "kind": 3,
         "source": "builtin",
@@ -7867,6 +7857,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid ScaleWin(string name, int x, int y, int width, int height)\n```\nScales the named window to the specified position and dimensions."
+        }
+    },
+    {
+        "label": "SelectFileList",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SelectFileList(string pattern, string title)\n```\nOpens a file picker dialog with the given file pattern and title."
         }
     },
     {

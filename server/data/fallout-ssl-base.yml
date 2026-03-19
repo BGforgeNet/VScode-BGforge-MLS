@@ -1,16 +1,6 @@
 base_functions:
   type: 3
   items:
-    - name: ActivateRegion
-      detail: void ActivateRegion(string name, int flag)
-      doc: |-
-        Enables or disables a named screen region. When flag is non-zero, the region is activated; when zero, it is deactivated.
-
-    - name: AddKey
-      detail: void AddKey(int key, Procedure proc)
-      doc: |-
-        Registers a keyboard handler procedure for a given key. When the key is pressed, the associated procedure is called.
-
     - name: AddNamedEvent
       detail: void AddNamedEvent(ObjectPtr name, Procedure proc)
       doc: |-
@@ -26,40 +16,10 @@ base_functions:
       doc: |-
         Removes all handlers for named event.
 
-    - name: DeleteKey
-      detail: void DeleteKey(int key)
-      doc: |-
-        Removes a previously registered keyboard handler for the given key.
-
-    - name: MovieFlags
-      detail: void MovieFlags(int flags)
-      doc: |-
-        Sets playback flags for the next movie to be played with PlayMovie or PlayMovieRect.
-
-    - name: PlayMovie
-      detail: void PlayMovie(string filename)
-      doc: |-
-        Plays a movie file full-screen and waits for completion.
-
-    - name: PlayMovieRect
-      detail: void PlayMovieRect(string filename, int x, int y, int width, int height)
-      doc: |-
-        Plays a movie file within a specified rectangular area on screen.
-
-    - name: SelectFileList
-      detail: void SelectFileList(string pattern, string title)
-      doc: |-
-        Opens a file picker dialog with the given file pattern and title.
-
     - name: SignalNamed
       detail: void SignalNamed(string event)
       doc: |-
         Calls events and/or handler for given name (event). See AddNamedEvent and AddNamedHandler to add handlers. This basically just calls the appropriate procedures.
-
-    - name: StopMovie
-      detail: void StopMovie
-      doc: |-
-        Stops the currently playing movie.
 
     - name: action_being_used
       detail: int action_being_used
@@ -1342,6 +1302,19 @@ engine_procedures:
       doc: |-
         Called when a skill is used on the object. The skill number is passed via `action_being_used` (see DEFINE.H, Skill Equates).
 
+key_functions:
+  type: 3
+  items:
+    - name: AddKey
+      detail: void AddKey(int key, Procedure proc)
+      doc: |-
+        Registers a keyboard handler procedure for a given key. When the key is pressed, the associated procedure is called.
+
+    - name: DeleteKey
+      detail: void DeleteKey(int key)
+      doc: |-
+        Removes a previously registered keyboard handler for the given key.
+
 keywords:
   type: 14 # keyword
   items:
@@ -1358,6 +1331,29 @@ keywords:
     - name: then
 
     - name: variable
+
+movie_functions:
+  type: 3
+  items:
+    - name: MovieFlags
+      detail: void MovieFlags(int flags)
+      doc: |-
+        Sets playback flags for the next movie to be played with PlayMovie or PlayMovieRect.
+
+    - name: PlayMovie
+      detail: void PlayMovie(string filename)
+      doc: |-
+        Plays a movie file full-screen and waits for completion.
+
+    - name: PlayMovieRect
+      detail: void PlayMovieRect(string filename, int x, int y, int width, int height)
+      doc: |-
+        Plays a movie file within a specified rectangular area on screen.
+
+    - name: StopMovie
+      detail: void StopMovie
+      doc: |-
+        Stops the currently playing movie.
 
 preprocessor_directives:
   type: 14 # keyword
@@ -1536,6 +1532,11 @@ sound_functions:
 window_functions:
   type: 3
   items:
+    - name: ActivateRegion
+      detail: void ActivateRegion(string name, int flag)
+      doc: |-
+        Enables or disables a named screen region. When flag is non-zero, the region is activated; when zero, it is deactivated.
+
     - name: AddButton
       detail: void AddButton(string name, int x, int y, int width, int height)
       doc: |-
@@ -1685,6 +1686,11 @@ window_functions:
       detail: void ScaleWin(string name, int x, int y, int width, int height)
       doc: |-
         Scales the named window to the specified position and dimensions.
+
+    - name: SelectFileList
+      detail: void SelectFileList(string pattern, string title)
+      doc: |-
+        Opens a file picker dialog with the given file pattern and title.
 
     - name: SelectWin
       detail: void SelectWin(string name)
