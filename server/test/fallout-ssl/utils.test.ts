@@ -449,7 +449,7 @@ procedure foo begin end
             ]);
         });
 
-        it("handles expression default values", () => {
+        it("does not extract invalid expression defaults from procedure params", () => {
             const text = "procedure foo(variable x = (1 + 2)) begin end";
             const tree = parseWithCache(text);
             expect(tree).not.toBeNull();
@@ -458,10 +458,9 @@ procedure foo begin end
             expect(proc).not.toBeNull();
 
             const params = extractParams(proc!);
-            expect(params.length).toBe(1);
-            expect(params[0].name).toBe("x");
-            // Default value should capture the expression
-            expect(params[0].defaultValue).toContain("1");
+            expect(params).toEqual([
+                { name: "x", defaultValue: undefined },
+            ]);
         });
     });
 });

@@ -22,6 +22,7 @@ import {
 
 import type { IndexedSymbol } from "./core/symbol";
 import { MLSsettings } from "./settings";
+import type { SemanticTokenSpan } from "./shared/semantic-tokens";
 
 /**
  * Result from a provider's hover method.
@@ -129,6 +130,9 @@ export interface LanguageProvider {
 
     /** Get inlay hints for the given range. */
     inlayHints?(text: string, uri: string, range: Range): InlayHint[];
+
+    /** Get full-document semantic token spans. Shared infrastructure handles encoding. */
+    semanticTokens?(text: string, uri: string): SemanticTokenSpan[];
 
     /** Search workspace symbols by query string (for Ctrl+T). */
     workspaceSymbols?(query: string): SymbolInformation[];

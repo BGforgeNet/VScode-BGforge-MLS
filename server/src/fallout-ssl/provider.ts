@@ -37,6 +37,8 @@ import { parseFile } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
 import { SyntaxType } from "./tree-sitter.d";
+import { getSemanticTokenSpans } from "./semantic-tokens";
+import type { SemanticTokenSpan } from "../shared/semantic-tokens";
 
 /** SSL block-level node types for code folding. */
 const SSL_FOLDABLE_TYPES = new Set([
@@ -188,6 +190,10 @@ class FalloutSslProvider implements LanguageProvider {
             return null;
         }
         return getLocalSignature(text, symbol, paramIndex);
+    }
+
+    semanticTokens(text: string, _uri: string): SemanticTokenSpan[] {
+        return getSemanticTokenSpans(text);
     }
 
     prepareRename(text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {

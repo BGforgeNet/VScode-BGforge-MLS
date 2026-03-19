@@ -19,7 +19,6 @@ import {
     TextDocumentPositionParams,
     TextDocuments,
     TextDocumentEdit,
-    TextDocumentSyncKind,
 } from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
 import { type NormalizedUri, normalizeUri } from "./core/normalized-uri";
@@ -51,6 +50,7 @@ import { weiduDProvider } from "./weidu-d/provider";
 import { weiduTp2Provider } from "./weidu-tp2/provider";
 import { initLspConnection } from "./lsp-connection";
 import { initSettingsService } from "./settings-service";
+import { getServerCapabilities } from "./server-capabilities";
 import {
     LSP_COMMAND_PARSE_DIALOG,
     NOTIFICATION_LOAD_FINISHED,
@@ -118,30 +118,7 @@ connection.onInitialize((params: InitializeParams) => {
     );
 
     const result: InitializeResult = {
-        capabilities: {
-            textDocumentSync: TextDocumentSyncKind.Incremental,
-            // Tell the client that this server supports code completion.
-            completionProvider: {
-                resolveProvider: true,
-                completionItem: { labelDetailsSupport: true },
-                triggerCharacters: ["@"],
-            },
-            hoverProvider: true,
-            signatureHelpProvider: {
-                triggerCharacters: ["("],
-            },
-            inlayHintProvider: true,
-            definitionProvider: true,
-            referencesProvider: true,
-            renameProvider: { prepareProvider: true },
-            documentFormattingProvider: true,
-            documentSymbolProvider: true,
-            workspaceSymbolProvider: true,
-            foldingRangeProvider: true,
-            executeCommandProvider: {
-                commands: [COMMAND_compile, LSP_COMMAND_PARSE_DIALOG],
-            },
-        },
+        capabilities: getServerCapabilities(),
     };
     if (hasWorkspaceFolderCapability) {
         result.capabilities.workspace = {
@@ -678,6 +655,15 @@ connection.onDocumentSymbol((params) => {
         return [];
     }
     return registry.symbols(textDoc.languageId, textDoc.getText());
+});
+
+connection.languages.semanticTokens.on((params) => {
+    const textDoc = documents.get(params.textDocument.uri);
+    if (!textDoc) {
+        return { data: [] };
+    }
+
+    return registry.semanticTokens(textDoc.languageId, textDoc.getText(), params.textDocument.uri);
 });
 
 connection.onWorkspaceSymbol((params) => {

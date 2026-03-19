@@ -296,6 +296,9 @@ export const enum SyntaxType {
   MapExpr = "map_expr",
   MemberExpr = "member_expr",
   Param = "param",
+  ParamDefault = "param_default",
+  ParamDefaultGroup = "param_default_group",
+  ParamDefaultUnary = "param_default_unary",
   ParamList = "param_list",
   ParenExpr = "paren_expr",
   PpElse = "pp_else",
@@ -427,6 +430,9 @@ export type SyntaxNode =
   | MapExprNode
   | MemberExprNode
   | ParamNode
+  | ParamDefaultNode
+  | ParamDefaultGroupNode
+  | ParamDefaultUnaryNode
   | ParamListNode
   | ParenExprNode
   | PpElseNode
@@ -681,8 +687,22 @@ export interface MemberExprNode extends NamedNodeBase {
 
 export interface ParamNode extends NamedNodeBase {
   type: SyntaxType.Param;
-  defaultNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  defaultNode?: ParamDefaultNode;
   nameNode: IdentifierNode;
+}
+
+export interface ParamDefaultNode extends NamedNodeBase {
+  type: SyntaxType.ParamDefault;
+}
+
+export interface ParamDefaultGroupNode extends NamedNodeBase {
+  type: SyntaxType.ParamDefaultGroup;
+}
+
+export interface ParamDefaultUnaryNode extends NamedNodeBase {
+  type: SyntaxType.ParamDefaultUnary;
+  exprNode: ParamDefaultNode;
+  opNode: UnnamedNode<"-"> | UnnamedNode<"bnot"> | UnnamedNode<"not">;
 }
 
 export interface ParamListNode extends NamedNodeBase {

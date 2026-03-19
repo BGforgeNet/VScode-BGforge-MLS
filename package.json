@@ -498,6 +498,8 @@
         "typescript": "^5.9.3",
         "vite": "^8.0.0",
         "vitest": "^4.1.0",
+        "vscode-oniguruma": "^2.0.1",
+        "vscode-textmate": "^9.3.2",
         "yaml": "^2.8.2"
     },
     "categories": [

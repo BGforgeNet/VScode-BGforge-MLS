@@ -25,6 +25,47 @@ interface ParamInfo {
     defaultValue?: string;
 }
 
+function isSimpleParamDefault(node: Node): boolean {
+    switch (node.type) {
+        case SyntaxType.ParamDefault: {
+            if (node.hasError || node.namedChildren.length !== 1) {
+                return false;
+            }
+            const [inner] = node.namedChildren;
+            return inner !== undefined && isSimpleParamDefault(inner);
+        }
+        case SyntaxType.ParamDefaultGroup: {
+            if (node.hasError || node.namedChildren.length !== 1) {
+                return false;
+            }
+            const [inner] = node.namedChildren;
+            return inner !== undefined && isSimpleParamDefault(inner);
+        }
+        case SyntaxType.ParamDefaultUnary: {
+            if (node.hasError) {
+                return false;
+            }
+            const expr = node.childForFieldName("expr");
+            return expr ? isSimpleParamDefault(expr) : false;
+        }
+        case SyntaxType.Identifier:
+        case SyntaxType.Number:
+        case SyntaxType.Boolean:
+        case SyntaxType.String:
+            return true;
+        case SyntaxType.ParenExpr: {
+            const inner = node.namedChildren[0];
+            return inner ? isSimpleParamDefault(inner) : false;
+        }
+        case SyntaxType.UnaryExpr: {
+            const expr = node.childForFieldName("expr");
+            return expr ? isSimpleParamDefault(expr) : false;
+        }
+        default:
+            return false;
+    }
+}
+
 /**
  * Extract parameters with default values from a procedure/forward node.
  * Parses "variable x = 0" to { name: "x", defaultValue: "0" }.
@@ -41,7 +82,7 @@ export function extractParams(procNode: Node): ParamInfo[] {
             if (nameNode) {
                 result.push({
                     name: nameNode.text,
-                    defaultValue: defaultNode?.text,
+                    defaultValue: defaultNode && isSimpleParamDefault(defaultNode) ? defaultNode.text : undefined,
                 });
             }
         }

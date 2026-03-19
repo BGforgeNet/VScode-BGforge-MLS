@@ -26,6 +26,7 @@ import {
     Position,
     Range,
     InlayHint,
+    SemanticTokens,
     SignatureHelp,
     SymbolInformation,
     WatchKind,
@@ -36,6 +37,7 @@ import { conlog, findFiles, pathToUri } from "./common";
 import { validLocationOrNull } from "./core/location-utils";
 import { normalizeUri } from "./core/normalized-uri";
 import { decodeWorkspaceSymbolQuery } from "../../shared/protocol";
+import { encodeSemanticTokens } from "./shared/semantic-tokens";
 
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
@@ -275,6 +277,12 @@ class ProviderRegistry {
             return provider.inlayHints(text, normUri, range);
         }
         return [];
+    }
+
+    semanticTokens(langId: string, text: string, uri: string): SemanticTokens {
+        const normUri = normalizeUri(uri);
+        const provider = this.get(langId);
+        return encodeSemanticTokens(provider?.semanticTokens?.(text, normUri) ?? []);
     }
 
     prepareRename(langId: string, text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {

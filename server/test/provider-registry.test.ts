@@ -17,7 +17,9 @@ import {
     SymbolKind,
     InlayHint,
     InlayHintKind,
+    SemanticTokenTypes,
     SignatureHelp,
+    SemanticTokens,
     SymbolInformation,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
@@ -287,6 +289,35 @@ describe("ProviderRegistry", () => {
 
             expect(mockFormat).toHaveBeenCalledWith("input", "file:///test.txt");
             expect(result).toBe(formatResult);
+        });
+    });
+
+    describe("semanticTokens()", () => {
+        it("returns empty semantic tokens for unknown provider", async () => {
+            const registry = await createRegistry();
+
+            expect(registry.semanticTokens("nonexistent", "text", "file:///test.txt")).toEqual({ data: [] });
+        });
+
+        it("routes semantic token spans through the shared encoder", async () => {
+            const registry = await createRegistry();
+            registry.register(createMockProvider("test", {
+                semanticTokens: vi.fn().mockReturnValue([
+                    {
+                        line: 1,
+                        startChar: 4,
+                        length: 5,
+                        tokenType: SemanticTokenTypes.parameter,
+                        tokenModifiers: 0,
+                    },
+                ]),
+            }));
+
+            const result = registry.semanticTokens("test", "text", "file:///test.txt");
+
+            expect(result).toEqual<SemanticTokens>({
+                data: [1, 4, 5, 0, 0],
+            });
         });
     });
 
