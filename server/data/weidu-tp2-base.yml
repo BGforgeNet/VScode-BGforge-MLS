@@ -615,7 +615,7 @@ action:
         Creates a new TRA scope copied from the surrounding scope, loads all traName files (variable substitution is done; the file can be inlined) and evaluates the TP2 Actions. When WITH_TRA exits, the new TRA scope is discarded, that is, all TRA changes made by WITH_TRA or any of its enclosed actions are forgotten.
 
 
-actionFunctions:
+action_functions:
   type: 3 # function
   items:
     - name: HANDLE_AUDIO
@@ -708,7 +708,7 @@ actionFunctions:
         - INT_VAR `visited` to 1 if you want the ''visited'' flag to be set;
         - RET `areNum` returns the worldmap entry number for the new area;
 
-actionMacros:
+action_macros:
   type: 3 # function
   items:
     - name: READ_SOUNDSET
@@ -733,7 +733,7 @@ actionMacros:
          - SPRINT `tb#fix_file_size_category` to a descriptive name.
          - SPRINT `tb#fix_file_size_regexp` to the regexp for the file(s) to be checked for a match.
 
-arraySortType:
+array_sort_type:
   type: 14 # keyword
   items:
     - name: LEXICOGRAPHICALLY
@@ -755,7 +755,7 @@ caching:
       doc: |-
         A cached result is cleared and the result is calculated anew.
 
-componentFlag:
+component_flag:
   type: 14 # keyword
   items:
     - name: DEPRECATED
@@ -931,7 +931,7 @@ constants:
       doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
 
 
-dimorphicFunctions:
+dimorphic_functions:
   type: 3 # function
   items:
     - name: DIRECTORY_OF_FILESPEC
@@ -1107,7 +1107,7 @@ flag:
       doc: |-
         "String" (variables evaluated) will be appended to every component's name in the weidu.log file.
 
-funcVarKeyword:
+func_var_keyword:
   type: 14 # keyword
   items:
     - name: INT_VAR
@@ -1134,7 +1134,7 @@ language:
       doc: |-
         The languageName is the name of the language as it is presented to the user. "American English" and "Italiano" are examples. The languageDirectory is the name of the subdirectory in which you have stored the TRA files for that language. Examples include "american" and "spanish". The variable named LANGUAGE is set to languageDirectory if the user selects this language.. Finally, all of the TRA files in the defaultLanguageTRA list are loaded as soon as the user selects a language.
 
-optCase:
+opt_case:
   type: 14 # keyword
   items:
     - name: CASE_INSENSITIVE
@@ -1145,7 +1145,7 @@ optCase:
       doc: |-
         Matching is case-sensitive.
 
-optExact:
+opt_exact:
   type: 14 # keyword
   items:
     - name: EVALUATE_REGEXP
@@ -1160,7 +1160,7 @@ optExact:
       doc: |-
         Only the given string is searched for.
 
-optGlob:
+opt_glob:
   type: 14 # keyword
   items:
     - name: GLOB
@@ -2201,7 +2201,7 @@ patch:
         Update variable so that it is equal to value.
 
 
-patchFunctions:
+patch_functions:
   type: 3 # function
   items:
     - name: ADD_AREA_ITEM
@@ -3159,7 +3159,7 @@ patchFunctions:
         - INT_VAR `fj_target` to the target ID;
         - STR_VAR `fj_embedded_eff0` to  path/to/v2.eff  or eff resref containing to projectile's effects^*^;
 
-patchMacros:
+patch_macros:
   type: 3 # function
   items:
     - name: tb#factorial

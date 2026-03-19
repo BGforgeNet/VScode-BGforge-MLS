@@ -19,7 +19,7 @@ import {
 } from "./types.js";
 
 /**
- * Creates a YAML sequence of completion items for the sfall-functions stanza.
+ * Creates a YAML sequence of completion items for the sfall_functions stanza.
  * Doc fields use block scalar style (|-) for multiline content.
  */
 function createCompletionSeq(
@@ -53,7 +53,7 @@ function createCompletionSeq(
 
 /**
  * Dumps sfall completion data into the completion YAML file (round-trip).
- * Updates the sfall-functions and hooks stanzas, preserving all other content.
+ * Updates the sfall_functions and hooks stanzas, preserving all other content.
  */
 export function dumpFalloutCompletion(
     fpath: string,
@@ -69,7 +69,7 @@ export function dumpFalloutCompletion(
         throw new Error(`Expected map contents in ${fpath}`);
     }
 
-    // Update sfall-functions stanza
+    // Update sfall_functions stanza
     const functionsMap = new YAMLMap();
     functionsMap.add(doc.createPair("type", COMPLETION_TYPE_FUNCTION));
     functionsMap.add(doc.createPair("items", createCompletionSeq(doc, sfallFunctions)));

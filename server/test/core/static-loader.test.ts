@@ -364,12 +364,12 @@ describe("static-loader", () => {
             expect(value).toBe("```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```\nCopies a file.");
         });
 
-        it("should pass through pre-baked callable prefix (patchFunctions)", () => {
+        it("should pass through pre-baked callable prefix (patch_functions)", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {
                     label: "ADD_SPELL_EFFECT",
                     kind: CompletionItemKind.Function,
-                    category: "patchFunctions",
+                    category: "patch_functions",
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.",
@@ -383,12 +383,12 @@ describe("static-loader", () => {
             expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.");
         });
 
-        it("should pass through pre-baked callable prefix (actionFunctions)", () => {
+        it("should pass through pre-baked callable prefix (action_functions)", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {
                     label: "ADD_WORLDMAP",
                     kind: CompletionItemKind.Function,
-                    category: "actionFunctions",
+                    category: "action_functions",
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\naction function ADD_WORLDMAP\n```\nAdds a worldmap.",
@@ -407,7 +407,7 @@ describe("static-loader", () => {
                 {
                     label: "ADD_AREA_ITEM",
                     kind: CompletionItemKind.Function,
-                    category: "patchFunctions",
+                    category: "patch_functions",
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\npatch function ADD_AREA_ITEM\n```\nAdds an item to a container.",
@@ -469,7 +469,7 @@ describe("static-loader", () => {
                 {
                     label: "RESOLVE_STR_REF",
                     kind: CompletionItemKind.Function,
-                    category: "dimorphicFunctions",
+                    category: "dimorphic_functions",
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\ndimorphic function RESOLVE_STR_REF\n```\nResolves a string reference.",

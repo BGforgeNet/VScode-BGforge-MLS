@@ -5,7 +5,7 @@
  *   --names: sorted string array of procedure names (used by server for tree-shaking
  *            and by the plugin for TS6133 diagnostic suppression)
  *
- * Single source of truth: server/data/fallout-ssl-base.yml (engine-procedures stanza).
+ * Single source of truth: server/data/fallout-ssl-base.yml (engine_procedures stanza).
  *
  * Usage:
  *   pnpm exec tsx scripts/utils/src/extract-engine-proc-docs.ts \
@@ -74,9 +74,9 @@ function main(): void {
     const hoverData = JSON.parse(fs.readFileSync(values.hover, "utf8")) as Record<string, HoverEntry>;
     const yamlData = YAML.parse(fs.readFileSync(values.yaml, "utf8")) as Record<string, YamlStanza>;
 
-    const engineStanza = yamlData["engine-procedures"];
+    const engineStanza = yamlData["engine_procedures"];
     if (!engineStanza) {
-        console.error("No 'engine-procedures' stanza found in YAML");
+        console.error("No 'engine_procedures' stanza found in YAML");
         process.exit(1);
     }
 

@@ -245,4 +245,3 @@ function extractPreserveFunctions(text: string): string[] {
     }
     return preserve;
 }
-

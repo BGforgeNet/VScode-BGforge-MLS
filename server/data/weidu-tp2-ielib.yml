@@ -1,4 +1,4 @@
-patchFunctions:
+patch_functions:
   type: 3
   items:
     - name: ALTER_AREA_REGION_MATCH
@@ -137,7 +137,7 @@ patchFunctions:
         | offset | strref offset | [int](https://ielib.bgforge.net/types/#int) | _required_ |
         | old_substring_traref | traref of text to be replaced | [int](https://ielib.bgforge.net/types/#int) | _required_ |
       type: patch
-actionFunctions:
+action_functions:
   type: 3
   items:
     - name: CREATE_MINION
@@ -250,7 +250,7 @@ actionFunctions:
         |:--------|:-----|:--------|
         | present | does the creature possess the item? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
-ielibResref:
+ielib_resref:
   type: 21
   items:
     - name: ABAZIGAL_SHOCKWAVE
@@ -4000,7 +4000,7 @@ ielibResref:
     - name: ZOMBIE_SICKNESS
       detail: resref ZOMBIE_SICKNESS = "SPIN899"
       doc: IElib define
-ielibInt:
+ielib_int:
   type: 21
   items:
     - name: AC_MOD_TYPE_all
@@ -8053,7 +8053,7 @@ ielibInt:
     - name: TIMING_while_equipped
       detail: int TIMING_while_equipped = 2
       doc: IElib define
-iesdpOther:
+iesdp_other:
   type: 21
   items:
     - name: EFF2_signature
@@ -8099,7 +8099,7 @@ iesdpOther:
     - name: STO_version
       detail: other offset STO_version = 0x4
       doc: Version ('V1.0')
-iesdpStrref:
+iesdp_strref:
   type: 21
   items:
     - name: ITM_identified_desc
@@ -8120,7 +8120,7 @@ iesdpStrref:
     - name: STO_name
       detail: strref offset STO_name = 0xc
       doc: name
-iesdpResref:
+iesdp_resref:
   type: 21
   items:
     - name: EFF2_parent_resource
@@ -8191,7 +8191,7 @@ iesdpResref:
     - name: STO_rumors_temple
       detail: resref offset STO_rumors_temple = 0x54
       doc: Rumours (Temple)
-iesdpDword:
+iesdp_dword:
   type: 21
   items:
     - name: EFF2_caster_level
@@ -8646,7 +8646,7 @@ iesdpDword:
     - name: STO_type
       detail: dword offset STO_type = 0x8
       doc: Type (0=Store, 1=Tavern, 2=Inn, 3=Temple, 5=Container)
-iesdpWord:
+iesdp_word:
   type: 21
   items:
     - name: EFF2_probability1
@@ -8935,7 +8935,7 @@ iesdpWord:
     - name: STO_chance_of_steal_failure
       detail: word offset STO_chance_of_steal_failure = 0x20
       doc: "% chance of steal failure"
-iesdpByte:
+iesdp_byte:
   type: 21
   items:
     - name: EFF_power
@@ -9146,7 +9146,7 @@ iesdpByte:
       doc: |-
         **[Primary Type (School)](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/spl_v1.htm#splv1_Header_0x25)** (IWD: school.2da, BG2:mschool.2da)
         For subspells, [`Primary Type`](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/spl_v1.htm#splv1_Header_0x25) should always match parent spell, both for interaction with opcodes [#220](https://gibberlings3.github.io/iesdp/opcodes/bgee.htm#op220)/[#229](https://gibberlings3.github.io/iesdp/opcodes/bgee.htm#op229), and with the specialists save bonus/penalty (and [opcode #346](https://gibberlings3.github.io/iesdp/opcodes/bgee.htm#op346)).
-iesdpChar:
+iesdp_char:
   type: 21
   items:
     - name: FX_power

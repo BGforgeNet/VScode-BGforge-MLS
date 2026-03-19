@@ -20,7 +20,7 @@ describe("dumpFalloutCompletion", () => {
         tmpDir = fs.mkdtempSync(path.join(TMP_BASE, ".fallout-test-"));
         filePath = path.join(tmpDir, "sfall.yml");
         // Create initial YAML with existing stanzas
-        const initial = `sfall-functions:
+        const initial = `sfall_functions:
   type: 3
   items: []
 hooks:
@@ -45,7 +45,7 @@ other-stanza:
         dumpFalloutCompletion(filePath, functions, hooks);
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
-        const stanza = result["sfall-functions"] as { type: number; items: Array<{ name: string }> };
+        const stanza = result["sfall_functions"] as { type: number; items: Array<{ name: string }> };
         expect(stanza.type).toBe(3);
         expect(stanza.items).toHaveLength(1);
         expect(stanza.items[0]!.name).toBe("my_func");
@@ -95,7 +95,7 @@ describe("dumpFalloutHighlight", () => {
         filePath = path.join(tmpDir, "highlight.yml");
         const initial = `scopeName: source.fallout-ssl
 repository:
-  sfall-functions:
+  sfall_functions:
     name: support.function.fallout-ssl.sfall
     patterns: []
   hooks:
@@ -126,7 +126,7 @@ repository:
         fs.rmSync(tmpDir, { recursive: true });
     });
 
-    it("updates sfall-functions patterns", () => {
+    it("updates sfall_functions patterns", () => {
         const sfallPatterns: HighlightPattern[] = [
             { match: "\\b(?i)(my_func)\\b" },
         ];
@@ -134,8 +134,8 @@ repository:
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { patterns: Array<{ match: string }> }>;
-        expect(repo["sfall-functions"]!.patterns).toHaveLength(1);
-        expect(repo["sfall-functions"]!.patterns[0]!.match).toBe("\\b(?i)(my_func)\\b");
+        expect(repo["sfall_functions"]!.patterns).toHaveLength(1);
+        expect(repo["sfall_functions"]!.patterns[0]!.match).toBe("\\b(?i)(my_func)\\b");
     });
 
     it("updates hook patterns", () => {
@@ -192,7 +192,7 @@ repository:
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { name: string }>;
-        expect(repo["sfall-functions"]!.name).toBe("support.function.fallout-ssl.sfall");
+        expect(repo["sfall_functions"]!.name).toBe("support.function.fallout-ssl.sfall");
         expect(repo["hooks"]!.name).toBe("constant.language.fallout-ssl");
     });
 });

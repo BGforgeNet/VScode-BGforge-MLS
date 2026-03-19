@@ -19,7 +19,7 @@ import { CompletionItem } from "vscode-languageserver/node";
  * Categories determine where completions should appear based on context.
  *
  * String values must match the category strings in generated JSON data files
- * (produced by scripts/generate_data.py from YAML).
+ * (produced by generate-data from YAML).
  *
  * Category groups:
  * - Structural: Prologue, Flag, ComponentFlag, Language - File/component structure directives
@@ -35,7 +35,7 @@ export enum CompletionCategory {
     // Structural directives
     Prologue = "prologue",
     Flag = "flag",
-    ComponentFlag = "componentFlag",
+    ComponentFlag = "component_flag",
     Language = "language",
     // Action context (value position)
     Action = "action",
@@ -46,27 +46,27 @@ export enum CompletionCategory {
     Vars = "vars",
     Value = "value",
     When = "when",
-    OptGlob = "optGlob",
-    OptCase = "optCase",
-    OptExact = "optExact",
+    OptGlob = "opt_glob",
+    OptCase = "opt_case",
+    OptExact = "opt_exact",
     Caching = "caching",
-    ArraySortType = "arraySortType",
+    ArraySortType = "array_sort_type",
     // Function parameter keywords (INT_VAR, STR_VAR, RET, RET_ARRAY)
-    FuncVarKeyword = "funcVarKeyword",
+    FuncVarKeyword = "func_var_keyword",
     // Function libraries
-    ActionFunctions = "actionFunctions",
-    PatchFunctions = "patchFunctions",
-    DimorphicFunctions = "dimorphicFunctions",
+    ActionFunctions = "action_functions",
+    PatchFunctions = "patch_functions",
+    DimorphicFunctions = "dimorphic_functions",
     // Macro libraries
-    ActionMacros = "actionMacros",
-    PatchMacros = "patchMacros",
+    ActionMacros = "action_macros",
+    PatchMacros = "patch_macros",
     // JSDoc tags and types
     Jsdoc = "jsdoc",
 }
 
 /**
  * Extended completion item with optional category metadata.
- * The category field is added by scripts/generate_data.py at build time.
+ * The category field is added by generate-data at build time.
  */
 export interface CompletionItemWithCategory extends CompletionItem {
     /**
@@ -133,4 +133,3 @@ export function getUtf8ByteOffset(text: string, line: number, character: number)
     const docEndOffset = Buffer.byteLength(text, "utf8");
     return docEndOffset + (character - charCount);
 }
-

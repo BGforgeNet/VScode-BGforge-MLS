@@ -536,36 +536,36 @@ END`;
     });
 
     describe("completion category assignment", () => {
-        it("assigns actionFunctions category to DEFINE_ACTION_FUNCTION symbols", () => {
+        it("assigns action_functions category to DEFINE_ACTION_FUNCTION symbols", () => {
             const input = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const completion = symbols[0].completion as CompletionItemWithCategory;
 
-            expect(completion.category).toBe("actionFunctions");
+            expect(completion.category).toBe("action_functions");
         });
 
-        it("assigns patchFunctions category to DEFINE_PATCH_FUNCTION symbols", () => {
+        it("assigns patch_functions category to DEFINE_PATCH_FUNCTION symbols", () => {
             const input = `DEFINE_PATCH_FUNCTION my_patch BEGIN END`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const completion = symbols[0].completion as CompletionItemWithCategory;
 
-            expect(completion.category).toBe("patchFunctions");
+            expect(completion.category).toBe("patch_functions");
         });
 
-        it("assigns actionMacros category to DEFINE_ACTION_MACRO symbols", () => {
+        it("assigns action_macros category to DEFINE_ACTION_MACRO symbols", () => {
             const input = `DEFINE_ACTION_MACRO my_macro BEGIN END`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const completion = symbols[0].completion as CompletionItemWithCategory;
 
-            expect(completion.category).toBe("actionMacros");
+            expect(completion.category).toBe("action_macros");
         });
 
-        it("assigns patchMacros category to DEFINE_PATCH_MACRO symbols", () => {
+        it("assigns patch_macros category to DEFINE_PATCH_MACRO symbols", () => {
             const input = `DEFINE_PATCH_MACRO my_patch_macro BEGIN END`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const completion = symbols[0].completion as CompletionItemWithCategory;
 
-            expect(completion.category).toBe("patchMacros");
+            expect(completion.category).toBe("patch_macros");
         });
 
         it("assigns vars category to OUTER_SET variable symbols", () => {

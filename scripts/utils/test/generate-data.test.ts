@@ -310,37 +310,37 @@ describe("getDetail (WeiDU)", () => {
 describe("getDetail (stanza prefix)", () => {
     it("prepends callable prefix from stanza name", () => {
         const item = { name: "HANDLE_AUDIO" };
-        expect(getDetail(item, true, "actionFunctions")).toBe("action function HANDLE_AUDIO");
+        expect(getDetail(item, true, "action_functions")).toBe("action function HANDLE_AUDIO");
     });
 
     it("prepends patch function prefix", () => {
         const item = { name: "ADD_AREA_ITEM" };
-        expect(getDetail(item, true, "patchFunctions")).toBe("patch function ADD_AREA_ITEM");
+        expect(getDetail(item, true, "patch_functions")).toBe("patch function ADD_AREA_ITEM");
     });
 
     it("prepends dimorphic function prefix", () => {
         const item = { name: "RESOLVE_STR_REF" };
-        expect(getDetail(item, true, "dimorphicFunctions")).toBe("dimorphic function RESOLVE_STR_REF");
+        expect(getDetail(item, true, "dimorphic_functions")).toBe("dimorphic function RESOLVE_STR_REF");
     });
 
     it("prepends action macro prefix", () => {
         const item = { name: "READ_SOUNDSET" };
-        expect(getDetail(item, true, "actionMacros")).toBe("action macro READ_SOUNDSET");
+        expect(getDetail(item, true, "action_macros")).toBe("action macro READ_SOUNDSET");
     });
 
     it("prepends patch macro prefix", () => {
         const item = { name: "tb_factorial" };
-        expect(getDetail(item, true, "patchMacros")).toBe("patch macro tb_factorial");
+        expect(getDetail(item, true, "patch_macros")).toBe("patch macro tb_factorial");
     });
 
     it("does not double-prefix when detail already has prefix", () => {
         const item = { name: "ALTER_AREA_REGION_MATCH", detail: "patch function ALTER_AREA_REGION_MATCH" };
-        expect(getDetail(item, true, "patchFunctions")).toBe("patch function ALTER_AREA_REGION_MATCH");
+        expect(getDetail(item, true, "patch_functions")).toBe("patch function ALTER_AREA_REGION_MATCH");
     });
 
     it("does not add prefix when includeTypes is false", () => {
         const item = { name: "HANDLE_AUDIO" };
-        expect(getDetail(item, false, "actionFunctions")).toBe("HANDLE_AUDIO");
+        expect(getDetail(item, false, "action_functions")).toBe("HANDLE_AUDIO");
     });
 
     it("does not add prefix for non-callable stanzas", () => {
@@ -391,7 +391,7 @@ describe("deprecation in hover output", () => {
 describe("generateCompletion (WeiDU)", () => {
     it("generates documentation for WeiDU items with args", () => {
         const data = {
-            dimorphicFunctions: {
+            dimorphic_functions: {
                 type: 3,
                 items: [{
                     name: "SUBSTRING",
@@ -414,7 +414,7 @@ describe("generateCompletion (WeiDU)", () => {
 describe("generateHover (WeiDU)", () => {
     it("generates hover with WeiDU tables", () => {
         const data = {
-            dimorphicFunctions: {
+            dimorphic_functions: {
                 type: 3,
                 items: [{
                     name: "SUBSTRING",
@@ -439,7 +439,7 @@ describe("generateHover (WeiDU)", () => {
 
     it("generates hover for items with only rets", () => {
         const data = {
-            patchFunctions: {
+            patch_functions: {
                 type: 3,
                 items: [{
                     name: "GET_AC",
@@ -456,7 +456,7 @@ describe("generateHover (WeiDU)", () => {
 describe("generateSignatures (WeiDU)", () => {
     it("includes category prefix in WeiDU parameter docs", () => {
         const data = {
-            dimorphicFunctions: {
+            dimorphic_functions: {
                 type: 3,
                 items: [{
                     name: "SUBSTRING",

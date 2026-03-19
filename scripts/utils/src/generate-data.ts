@@ -88,11 +88,11 @@ const WEIDU_ITEM_TYPES = new Set(["patch", "action", "dimorphic"]);
  * (items with args already get the prefix via getDetail's WeiDU path).
  */
 const STANZA_CALLABLE_PREFIX: Record<string, string> = {
-    actionFunctions: "action function ",
-    patchFunctions: "patch function ",
-    dimorphicFunctions: "dimorphic function ",
-    actionMacros: "action macro ",
-    patchMacros: "patch macro ",
+    action_functions: "action function ",
+    patch_functions: "patch function ",
+    dimorphic_functions: "dimorphic function ",
+    action_macros: "action macro ",
+    patch_macros: "patch macro ",
 };
 
 /**
@@ -177,7 +177,7 @@ export function loadData(yamlPaths: readonly string[]): DataFile {
  * WeiDU format: "dimorphic function SUBSTRING" (no args in signature)
  * When includeTypes is false, omits types (used for signature labels).
  *
- * @param stanzaName Optional stanza key (e.g., "actionFunctions"). When provided,
+ * @param stanzaName Optional stanza key (e.g., "action_functions"). When provided,
  *   items without structured args/rets get the callable prefix from STANZA_CALLABLE_PREFIX.
  */
 export function getDetail(item: DataItem, includeTypes = true, stanzaName?: string): string {

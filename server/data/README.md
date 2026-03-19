@@ -19,7 +19,16 @@ stanza_name:
     - name: ...
 ```
 
-Stanza names also serve as category identifiers. For TP2, callable stanza names (`actionFunctions`, `patchFunctions`, `dimorphicFunctions`, `actionMacros`, `patchMacros`) determine the hover prefix (e.g., "action function", "patch macro").
+Stanza names also serve as category identifiers. The repository standard is `snake_case` for stanza names.
+
+Rationale:
+- Stanza names are consumed as string identifiers in TypeScript loaders, generators, tests, and derived JSON.
+- `snake_case` aligns with the repo's grammar-oriented naming and avoids mixing YAML identifiers with JavaScript-style casing.
+- A single identifier-oriented convention makes refactors and string-based lookups less error-prone while remaining easy to read in YAML.
+
+This naming rule applies to YAML stanza/category identifiers only. Tree-sitter grammar rules and node types are a separate domain and should also use `snake_case`, following normal tree-sitter convention. Do not conflate YAML stanza renames with grammar-derived identifiers unless you are intentionally changing the grammar itself.
+
+For TP2, callable stanza names (`action_functions`, `patch_functions`, `dimorphic_functions`, `action_macros`, `patch_macros`) determine the hover prefix (e.g., "action function", "patch macro").
 
 ### Item fields
 
@@ -106,7 +115,7 @@ functions:
 ### WeiDU format (structured args + rets)
 
 ```yaml
-dimorphicFunctions:
+dimorphic_functions:
   type: 3
   items:
     - name: SUBSTRING

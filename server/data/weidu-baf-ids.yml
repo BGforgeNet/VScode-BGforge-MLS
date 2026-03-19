@@ -1,4 +1,4 @@
-bg2-animate-ids:
+bg2_animate_ids:
   type: 21
   items:
     - name: FIRE_RING
@@ -966,7 +966,7 @@ bg2-animate-ids:
       doc: animate.ids
 
 
-bg2-slots-ids:
+bg2_slots_ids:
   type: 21
   items:
     - name: SLOT_AMULET

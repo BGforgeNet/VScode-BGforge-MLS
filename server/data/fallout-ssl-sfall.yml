@@ -1,4 +1,4 @@
-sfall-functions:
+sfall_functions:
   type: 3
   items:
     - name: set_npc_stat_max

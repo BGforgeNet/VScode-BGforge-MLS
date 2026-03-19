@@ -61,12 +61,12 @@ export const COMPLETION_TYPE_FUNCTION = 3;
 export const COMPLETION_TYPE_CONSTANT = 21;
 
 /** Stanza names in the completion YAML */
-export const SFALL_FUNCTIONS_STANZA = "sfall-functions";
+export const SFALL_FUNCTIONS_STANZA = "sfall_functions";
 export const SFALL_HOOKS_STANZA = "hooks";
 
 /** Repository stanza names in the highlight YAML */
 export const HIGHLIGHT_STANZAS = {
-    sfallFunctions: "sfall-functions",
+    sfallFunctions: "sfall_functions",
     hooks: "hooks",
     headerConstants: "header-constants",
     headerVariables: "header-variables",

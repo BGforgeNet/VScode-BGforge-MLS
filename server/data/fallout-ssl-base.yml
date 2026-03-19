@@ -1,4 +1,4 @@
-base-functions:
+base_functions:
   type: 3
   items:
     - name: ActivateRegion
@@ -1186,7 +1186,7 @@ base-functions:
       doc: |-
         Returns the current Y position of the party on the World Map.
 
-engine-procedures:
+engine_procedures:
   type: 3 # function
   items:
     - name: barter_init_p_proc
@@ -1382,7 +1382,7 @@ preprocessor_directives:
 
     - name: "undef"
 
-say-functions:
+say_functions:
   type: 3
   items:
     - name: SayBorder
@@ -1495,7 +1495,7 @@ say-functions:
       doc: |-
         Initiates a new dialog sequence starting at the specified position index.
 
-sound-functions:
+sound_functions:
   type: 3
   items:
     - name: SetOneOptPause
@@ -1533,7 +1533,7 @@ sound-functions:
       doc: |-
         Stops playback of the sound identified by the given handle.
 
-window-functions:
+window_functions:
   type: 3
   items:
     - name: AddButton

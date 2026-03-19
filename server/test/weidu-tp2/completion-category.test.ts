@@ -38,7 +38,7 @@ describe("Completion Category Safeguards", () => {
             expect(result).toHaveLength(0);
         });
 
-        it("includes actionFunctions in general context (empty contexts)", () => {
+        it("includes action_functions in general context (empty contexts)", () => {
             const funcItem: Tp2CompletionItem = {
                 label: "my_function",
                 kind: CompletionItemKind.Function,
@@ -50,7 +50,7 @@ describe("Completion Category Safeguards", () => {
             expect(result).toHaveLength(1);
         });
 
-        it("excludes actionFunctions from LpfName context", () => {
+        it("excludes action_functions from LpfName context", () => {
             const funcItem: Tp2CompletionItem = {
                 label: "my_function",
                 kind: CompletionItemKind.Function,
@@ -93,18 +93,18 @@ describe("Completion Category Safeguards", () => {
     });
 
     describe("parameter completions have category", () => {
-        it("parameter completions have category funcVarKeyword", () => {
+        it("parameter completions have category func_var_keyword", () => {
             const paramItem: Tp2CompletionItem = {
                 label: "count",
                 kind: CompletionItemKind.Field,
                 category: CompletionCategory.FuncVarKeyword,
             };
 
-            // funcVarKeyword is excluded from FuncParamValue context
+            // func_var_keyword is excluded from FuncParamValue context
             const resultValue = filterItemsByContext([paramItem], [CompletionContext.FuncParamValue]);
             expect(resultValue).toHaveLength(0);
 
-            // funcVarKeyword is allowed in funcParamName context
+            // func_var_keyword is allowed in funcParamName context
             const resultParam = filterItemsByContext([paramItem], [CompletionContext.FuncParamName]);
             expect(resultParam).toHaveLength(1);
         });
