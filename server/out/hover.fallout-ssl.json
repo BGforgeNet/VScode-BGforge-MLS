@@ -575,6 +575,12 @@
             "value": "```fallout-ssl-tooltip\nint how_much(int val)\n```\nReturns the value of a completed skill vs. skill contest (how much the rolls differed by). This requires that you first call one of the contest roll commands, such as roll_vs_skill, skill_contest, etc."
         }
     },
+    "inven_cmds": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nObjectPtr inven_cmds(ObjectPtr who, int inven_cmd, int slotNum)\n```\nReturns a pointer to the object in the inventory."
+        }
+    },
     "inven_count": {
         "contents": {
             "kind": "markdown",
@@ -963,6 +969,12 @@
         "contents": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid reg_anim_end\n```\nActivates the animation sequence-list. Without this call the animation will never occur. Note: All animation sequences must be registered at ONCE! In other words, you cannot let the script end and finish registering the animations later."
+        }
+    },
+    "reg_anim_func": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid reg_anim_func(int par1, int par2)\n```\nWorks with a list of animations."
         }
     },
     "reg_anim_obj_move_to_obj": {

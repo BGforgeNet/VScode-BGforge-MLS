@@ -61,6 +61,10 @@ base_functions:
       doc: |-
         Sets up an animation for a critter (who) to walk to a given tile (hex) at a given speed (speed). Speed (walk/run) can also have a flag attached (see define.h) to force the object (who) to stop it's current animation (for instance, if it was already walking somewhere) and then walk/run to the new location (tile).
 
+    # Source: sslc extra.c only. Compiler-recognized token with arity 0; no reliable user-facing docs found.
+    # - name: animate_jump
+    #   detail: void animate_jump()
+
     - name: animate_rotation
       detail: void animate_rotation(int direction)
       doc: |-
@@ -115,6 +119,14 @@ base_functions:
       detail: void attack_setup(ObjectPtr who, ObjectPtr victim)
       doc: |-
         Sets up an attack from who on victim, without expecting this script to be involved. Can be used to setup attacks on critters from the map script.
+
+    # Source: sslc extra.c only. Compiler-recognized token with arity 3; no reliable user-facing docs found.
+    # - name: barter_asking
+    #   detail: void barter_asking(?, ?, ?)
+
+    # Source: sslc extra.c only. Compiler-recognized token with arity 3; no reliable user-facing docs found.
+    # - name: barter_offer
+    #   detail: void barter_offer(?, ?, ?)
 
     - name: car_current_town
       detail: int car_current_town
@@ -498,6 +510,13 @@ base_functions:
       doc: |-
         Returns the value of a completed skill vs. skill contest (how much the rolls differed by). This requires that you first call one of the contest roll commands, such as roll_vs_skill, skill_contest, etc.
 
+    # Source: sfall_script_editor opcodes.txt full signature + short description;
+    # also recognized by sslc extra.c with arity 3 and referenced by RP/sfall header macros.
+    - name: inven_cmds
+      detail: ObjectPtr inven_cmds(ObjectPtr who, int inven_cmd, int slotNum)
+      doc: |-
+        Returns a pointer to the object in the inventory.
+
     - name: inven_count
       detail: int inven_count(ObjectPtr what)
       doc: |-
@@ -593,8 +612,10 @@ base_functions:
       doc: |-
         Returns the value of a map-global variable of a given index # (var_index).
 
+    # Source: existing commented data; also recognized by sslc extra.c with arity 0.
+    # No-op stub in the engine. Keep commented out.
     # - name: make_daytime
-    #   detail: void make_daytime
+    #   detail: void make_daytime()
     #   doc: |-
     #     No-op stub in the engine. Does nothing when called.
     - name: mark_area_known
@@ -793,6 +814,10 @@ base_functions:
       doc: |-
         Returns a random value between (min) and (max), inclusive.
 
+    # Source: sslc extra.c only. Compiler-recognized token with arity 3; no reliable user-facing docs found.
+    # - name: reaction
+    #   detail: int reaction(?, ?, ?)
+
     - name: reaction_influence
       detail: int reaction_influence(int param1, int param2, int param3)
       doc: |-
@@ -827,6 +852,13 @@ base_functions:
       detail: void reg_anim_end
       doc: |-
         Activates the animation sequence-list. Without this call the animation will never occur. Note: All animation sequences must be registered at ONCE! In other words, you cannot let the script end and finish registering the animations later.
+
+    # Source: sfall_script_editor opcodes.txt full signature + short description;
+    # also recognized by sslc extra.c with arity 2 and used by RP animation helper macros.
+    - name: reg_anim_func
+      detail: void reg_anim_func(int par1, int par2)
+      doc: |-
+        Works with a list of animations.
 
     - name: reg_anim_obj_move_to_obj
       detail: void reg_anim_obj_move_to_obj(ObjectPtr who, ObjectPtr dest_obj, int delay)
@@ -1096,6 +1128,14 @@ base_functions:
       doc: |-
         (Fallout 1 only) Sends a request for the game engine to bring up the Town Map screen, for the player to go to different locations in an area (different areas in Vault13, for example).
 
+    # Source: sslc extra.c only. Compiler-recognized token with arity 4; no reliable user-facing docs found.
+    # - name: turn_off_objs_in_area
+    #   detail: void turn_off_objs_in_area(?, ?, ?, ?)
+
+    # Source: sslc extra.c only. Compiler-recognized token with arity 4; no reliable user-facing docs found.
+    # - name: turn_on_objs_in_area
+    #   detail: void turn_on_objs_in_area(?, ?, ?, ?)
+
     - name: use_obj
       detail: void use_obj(ObjectPtr obj)
       doc: |-
@@ -1340,10 +1380,20 @@ movie_functions:
       doc: |-
         Sets playback flags for the next movie to be played with PlayMovie or PlayMovieRect.
 
+    # Source: sslc parselib.c only. Compiler-recognized token with arity 2.
+    # Full parameter types/names are not documented in current repo sources, so keep commented out.
+    # - name: PlayMovieAlpha
+    #   detail: void PlayMovieAlpha(?, ?)
+
     - name: PlayMovie
       detail: void PlayMovie(string filename)
       doc: |-
         Plays a movie file full-screen and waits for completion.
+
+    # Source: sslc parselib.c only. Compiler-recognized token with arity 6.
+    # Full parameter types/names are not documented in current repo sources, so keep commented out.
+    # - name: PlayMovieAlphaRect
+    #   detail: void PlayMovieAlphaRect(?, ?, ?, ?, ?, ?)
 
     - name: PlayMovieRect
       detail: void PlayMovieRect(string filename, int x, int y, int width, int height)
@@ -1702,10 +1752,13 @@ window_functions:
       doc: |-
         Sets the current text font for the active window.
 
+    # Source: existing commented data; sslc parselib.c recognizes it as a 4-procedure callback registration.
+    # Not implemented in the engine (no-op). Keep commented out.
     # - name: SetGlobalMouseFunc
-    #   detail: void SetGlobalMouseFunc
+    #   detail: void SetGlobalMouseFunc(Procedure a, Procedure b, Procedure c, Procedure d)
     #   doc: |-
     #     Registers a global mouse function handler. Not implemented in the engine (no-op).
+
     - name: SetHighlightColor
       detail: void SetHighlightColor(int r, int g, int b)
       doc: |-
