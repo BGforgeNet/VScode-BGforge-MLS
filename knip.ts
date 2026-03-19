@@ -73,6 +73,8 @@ const config: KnipConfig = {
         "esbuild",
         // invoked via pnpm vsce in scripts/package.sh
         "@vscode/vsce",
+        // loaded by remark CLI via --use in package.json scripts, not statically imported
+        "remark-validate-links",
     ],
 };
 
