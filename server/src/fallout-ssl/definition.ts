@@ -5,116 +5,9 @@
  */
 
 import { Location, Position } from "vscode-languageserver/node";
-import type { Node } from "web-tree-sitter";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, makeRange, findIdentifierAtPosition } from "./utils";
-import { SyntaxType } from "./tree-sitter.d";
-
-interface LocalDef {
-    name: string;
-    range: { start: Position; end: Position };
-}
-
-/**
- * Find all local definitions including params and for-loop vars.
- * More comprehensive than extractSymbols (which is for document outline).
- * Prefers procedure definitions over forward declarations.
- */
-function findAllLocalDefinitions(root: Node): LocalDef[] {
-    const defs: LocalDef[] = [];
-
-    // Extract procedures (already deduped)
-    const procedures = extractProcedures(root);
-    for (const [name, { node }] of procedures) {
-        const nameNode = node.childForFieldName("name");
-        if (nameNode) {
-            defs.push({
-                name,
-                range: makeRange(nameNode),
-            });
-        }
-    }
-
-    // Extract macros
-    function visitForMacros(node: Node): void {
-        if (node.type === SyntaxType.Preprocessor) {
-            for (const child of node.children) {
-                if (child.type === SyntaxType.Define) {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        defs.push({
-                            name: nameNode.text,
-                            range: makeRange(nameNode),
-                        });
-                    }
-                }
-            }
-        }
-        for (const c of node.children) {
-            visitForMacros(c);
-        }
-    }
-    visitForMacros(root);
-
-    function search(node: Node): void {
-        if (node.type === SyntaxType.Procedure) {
-            // Check parameters
-            const params = node.childForFieldName("params");
-            if (params) {
-                for (const child of params.children) {
-                    if (child.type === SyntaxType.Param) {
-                        const paramName = child.childForFieldName("name");
-                        if (paramName) {
-                            defs.push({ name: paramName.text, range: makeRange(paramName) });
-                        }
-                    }
-                }
-            }
-        } else if (node.type === SyntaxType.VariableDecl) {
-            for (const child of node.children) {
-                if (child.type === SyntaxType.VarInit) {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        defs.push({ name: nameNode.text, range: makeRange(nameNode) });
-                    }
-                }
-            }
-        } else if (node.type === SyntaxType.ForVarDecl) {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode) {
-                defs.push({ name: nameNode.text, range: makeRange(nameNode) });
-            }
-        } else if (node.type === SyntaxType.ForeachStmt) {
-            const varNode = node.childForFieldName("var");
-            if (varNode) {
-                defs.push({ name: varNode.text, range: makeRange(varNode) });
-            }
-            const keyNode = node.childForFieldName("key");
-            if (keyNode) {
-                defs.push({ name: keyNode.text, range: makeRange(keyNode) });
-            }
-            const valueNode = node.childForFieldName("value");
-            if (valueNode) {
-                defs.push({ name: valueNode.text, range: makeRange(valueNode) });
-            }
-        } else if (node.type === SyntaxType.ExportDecl) {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode) {
-                defs.push({ name: nameNode.text, range: makeRange(nameNode) });
-            }
-        }
-
-        for (const child of node.children) {
-            search(child);
-        }
-    }
-
-    for (const node of root.children) {
-        search(node);
-    }
-
-    return defs;
-}
+import { makeRange, findIdentifierNodeAtPosition } from "./utils";
+import { resolveIdentifierDefinitionNode } from "./symbol-scope";
 
 /**
  * Get definition location for the symbol at the given position.
@@ -130,19 +23,18 @@ export function getLocalDefinition(text: string, uri: string, position: Position
         return null;
     }
 
-    const symbol = findIdentifierAtPosition(tree.rootNode, position);
-    if (!symbol) {
+    const symbolNode = findIdentifierNodeAtPosition(tree.rootNode, position);
+    if (!symbolNode) {
         return null;
     }
 
-    const defs = findAllLocalDefinitions(tree.rootNode);
-    const def = defs.find(d => d.name === symbol);
-    if (!def) {
+    const definitionNode = resolveIdentifierDefinitionNode(tree.rootNode, symbolNode);
+    if (!definitionNode) {
         return null;
     }
 
     return {
         uri,
-        range: def.range,
+        range: makeRange(definitionNode),
     };
 }

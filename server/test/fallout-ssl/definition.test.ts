@@ -94,6 +94,20 @@ end
             expect(result === null || result !== null).toBe(true);
         });
 
+        it("finds macro parameter definition from macro body usage", () => {
+            const text = `
+#define SCALE(value) ((value) * 2)
+`;
+            const uri = "file:///test.ssl";
+            const position: Position = { line: 1, character: 24 };
+            const result = getLocalDefinition(text, uri, position);
+
+            expect(result).not.toBeNull();
+            expect(result?.uri).toBe(uri);
+            expect(result?.range.start.line).toBe(1);
+            expect(result?.range.start.character).toBe(14);
+        });
+
         it("returns null when cursor is on undefined symbol", () => {
             const text = `
 procedure foo begin

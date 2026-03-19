@@ -9,7 +9,7 @@
 
 import type { Node } from "web-tree-sitter";
 import type { SslSymbolScope } from "./symbol-scope";
-import { isLocalToProc } from "./symbol-scope";
+import { isLocalToProc, resolveIdentifierDefinitionNode } from "./symbol-scope";
 import { parseMacroParams } from "./macro-utils";
 import { SyntaxType } from "./tree-sitter.d";
 
@@ -50,6 +50,28 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
     const searchRoot = symbolInfo.scope === "procedure" && symbolInfo.procedureNode
         ? symbolInfo.procedureNode
         : rootNode;
+
+    if (symbolInfo.definitionNode) {
+        function visitResolved(node: Node): void {
+            if (node.type === SyntaxType.Identifier) {
+                if (node.id === symbolInfo.definitionNode!.id) {
+                    refs.push(node);
+                } else {
+                    const definitionNode = resolveIdentifierDefinitionNode(rootNode, node);
+                    if (definitionNode && definitionNode.id === symbolInfo.definitionNode!.id) {
+                        refs.push(node);
+                    }
+                }
+            }
+
+            for (const child of node.children) {
+                visitResolved(child);
+            }
+        }
+
+        visitResolved(searchRoot);
+        return refs;
+    }
 
     function visit(node: Node): void {
         // Shadow exclusion: when searching file-scope, skip entire procedure
