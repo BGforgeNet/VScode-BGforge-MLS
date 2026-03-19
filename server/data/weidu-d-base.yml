@@ -1,14 +1,3 @@
-keywords:
-  type: 14 #keyword
-  items:
-    - name: THEN
-    - name: RESPONSE
-    - name: OR
-    - name: GLOBAL
-    - name: LOCALS
-    - name: MYAREA
-    - name: END
-
 actions:
   type: 3 # function
   items:
@@ -99,13 +88,6 @@ actions:
       detail: R_A_T_P_R filenameRegexp oldText newText [ moreFilenameRegexps ] dActionWhen list
       doc: Just like REPLACE_ACTION_TEXT_PROCESS, but the filenames are regexps. The .DLG is implied. R_A_T_P_R is shorthand for REPLACE_ACTION_TEXT_PROCESS_REGEXP (to avoid undue scrollbars in the readme on a 1024x768 monitor).
 
-when:
-  type: 14 #keyword
-  items:
-    - name: UNLESS
-      detail: UNLESS String
-      doc: The action is not processed if the element being altered/replaced/added to contains a substring matching against the String regexp.
-
 chain_epilogue:
   type: 14 #keyword
   items:
@@ -139,70 +121,17 @@ chain_epilogue:
     #   detail: END transition list
     #   doc: Execute the given transitions after the final state in the CHAIN.
 
-state:
-  type: 14 #keyword
-  items:
-    - name: APPENDI
-      detail: APPENDI filename state list END
-      doc: This is legacy syntax that behaves just like the D Action APPEND but is considered a state. Avoid it.
-    - name: CHAIN2
-      detail: CHAIN2 entryFilename entryLabel chain2Text list exitFilename exitLabel
-      doc: This is legacy syntax that behaves somewhat like the D Action CHAIN but is considered a state. In addition, chain2Text is slightly different from chainText. Avoid this construction.
 
-say_text:
+keywords:
   type: 14 #keyword
   items:
-    - name: text
-      detail: text
-      doc: sayText and replyText are both text.
-
-transition:
-  type: 14 #keyword
-  items:
-    - name: +
-      detail: + [ transTriggerString ] + replyText transFeature list transNext
-      doc: This abbreviated syntax for transitions that would contain REPLY (which is by far the most common case) allows you to save yourself some time and typing. It behaves like the full form above.
-    - name: COPY_TRANS
-      detail: COPY_TRANS [ SAFE ] filename stateLabel
-      doc: "This instructs WeiDU to copy all of the transitions from the state with the given stateLabel in filename.DLG. This copying takes place before all other D Actions. For example, this is a valid transition list: IF ~Before()~ THEN GOTO my_state COPY_TRANS PLAYER1 33 IF ~After()~ THEN EXTERN SOLA 55 If SAFE is specified, COPY_TRANS will not warn about potentially unsafe uses (use this if you know it is safe)."
-    - name: COPY_TRANS_LATE
-      detail: COPY_TRANS_LATE [ SAFE ] filename stateLabel
-      doc: Same as COPY_TRANS, but is invoked after all other D Actions.
-
-trans_feature:
-  type: 14 #keyword
-  items:
-    - name: REPLY
-      detail: REPLY replyText
-      doc: If this transition is taken, the PC says the replyText.
-    - name: DO
-      detail: DO stateActionString
-      doc: If this transition is taken, the stateActionString is executed.
-    - name: JOURNAL
-      detail: JOURNAL text
-      doc: If this transition is taken, the text is added to the PC's journal.
-    - name: SOLVED_JOURNAL
-      detail: SOLVED_JOURNAL text
-      doc: If this transition is taken, the text is added to the "solved" section of the PC's journal.
-    - name: UNSOLVED_JOURNAL
-      detail: UNSOLVED_JOURNAL text
-      doc: If this transition is taken, the text is added to the "unsolved" section of the PC's journal.
-    - name: FLAGS
-      detail: FLAGS integer
-      doc: This allows you to set the features associated with a transition directly using the binary format of DLG files.
-
-tran_next:
-  type: 14 #keyword
-  items:
-    - name: GOTO
-      detail: GOTO stateLabel
-      doc: The dialogue continues at the state with label stateLabel in the same DLG file as the current state.
-    - name: EXTERN
-      detail: EXTERN [ IF_FILE_EXISTS ] filename stateLabel
-      doc: The dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist.
-    - name: EXIT
-      detail: EXIT
-      doc: The conversation ends.
+    - name: THEN
+    - name: RESPONSE
+    - name: OR
+    - name: GLOBAL
+    - name: LOCALS
+    - name: MYAREA
+    - name: END
 
 # D format is quirky, it's hard to figure out the context.
 # Items with same label and different usages are temporarily placed here, their docs joined.
@@ -273,9 +202,82 @@ multi:
 #       detail: ( AT "var" )
 #       doc: The last definition of the translation string (with value defined by a variable) given in any TRA file should be used.
 
+
+say_text:
+  type: 14 #keyword
+  items:
+    - name: text
+      detail: text
+      doc: sayText and replyText are both text.
+
+state:
+  type: 14 #keyword
+  items:
+    - name: APPENDI
+      detail: APPENDI filename state list END
+      doc: This is legacy syntax that behaves just like the D Action APPEND but is considered a state. Avoid it.
+    - name: CHAIN2
+      detail: CHAIN2 entryFilename entryLabel chain2Text list exitFilename exitLabel
+      doc: This is legacy syntax that behaves somewhat like the D Action CHAIN but is considered a state. In addition, chain2Text is slightly different from chainText. Avoid this construction.
+
 string:
   type: 14 #keyword
   items:
     - name: ^
       detail: "String ^ String"
       doc: String literal concatenation. The second string is appended to the first string. No whitespace is added. Thus "hello" ^ "World" is the same as "helloWorld".
+
+tran_next:
+  type: 14 #keyword
+  items:
+    - name: GOTO
+      detail: GOTO stateLabel
+      doc: The dialogue continues at the state with label stateLabel in the same DLG file as the current state.
+    - name: EXTERN
+      detail: EXTERN [ IF_FILE_EXISTS ] filename stateLabel
+      doc: The dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist.
+    - name: EXIT
+      detail: EXIT
+      doc: The conversation ends.
+
+trans_feature:
+  type: 14 #keyword
+  items:
+    - name: REPLY
+      detail: REPLY replyText
+      doc: If this transition is taken, the PC says the replyText.
+    - name: DO
+      detail: DO stateActionString
+      doc: If this transition is taken, the stateActionString is executed.
+    - name: JOURNAL
+      detail: JOURNAL text
+      doc: If this transition is taken, the text is added to the PC's journal.
+    - name: SOLVED_JOURNAL
+      detail: SOLVED_JOURNAL text
+      doc: If this transition is taken, the text is added to the "solved" section of the PC's journal.
+    - name: UNSOLVED_JOURNAL
+      detail: UNSOLVED_JOURNAL text
+      doc: If this transition is taken, the text is added to the "unsolved" section of the PC's journal.
+    - name: FLAGS
+      detail: FLAGS integer
+      doc: This allows you to set the features associated with a transition directly using the binary format of DLG files.
+
+transition:
+  type: 14 #keyword
+  items:
+    - name: +
+      detail: + [ transTriggerString ] + replyText transFeature list transNext
+      doc: This abbreviated syntax for transitions that would contain REPLY (which is by far the most common case) allows you to save yourself some time and typing. It behaves like the full form above.
+    - name: COPY_TRANS
+      detail: COPY_TRANS [ SAFE ] filename stateLabel
+      doc: "This instructs WeiDU to copy all of the transitions from the state with the given stateLabel in filename.DLG. This copying takes place before all other D Actions. For example, this is a valid transition list: IF ~Before()~ THEN GOTO my_state COPY_TRANS PLAYER1 33 IF ~After()~ THEN EXTERN SOLA 55 If SAFE is specified, COPY_TRANS will not warn about potentially unsafe uses (use this if you know it is safe)."
+    - name: COPY_TRANS_LATE
+      detail: COPY_TRANS_LATE [ SAFE ] filename stateLabel
+      doc: Same as COPY_TRANS, but is invoked after all other D Actions.
+
+when:
+  type: 14 #keyword
+  items:
+    - name: UNLESS
+      detail: UNLESS String
+      doc: The action is not processed if the element being altered/replaced/added to contains a substring matching against the String regexp.

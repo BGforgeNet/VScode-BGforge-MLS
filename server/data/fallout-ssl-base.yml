@@ -1,162 +1,3 @@
-preprocessor_directives:
-  type: 14 # keyword
-  # Completion provider doesn't trigger on # character by default.
-  # It's possible to modifye trigger characters, however what will require additional filtering based on language id and the actual word.
-  # For now it's easier to just type a few more charactes to get a suggestion.
-  # Or call it manually with ctrl-space.
-  items:
-    # - name: "#if"
-    - name: "elif"
-    # - name: "#else"
-    - name: "endif"
-
-    - name: "define"
-    - name: "undef"
-    - name: "ifdef"
-    - name: "ifndef"
-
-    - name: "include"
-
-keywords:
-  type: 14 # keyword
-  items:
-    - name: begin
-    - name: end
-    - name: procedure
-    - name: if
-    - name: then
-    - name: else
-    - name: variable
-
-engine-procedures:
-  type: 3 # function
-  items:
-    - name: barter_init_p_proc
-      detail: void barter_init_p_proc()
-      doc: |-
-        Called when the barter screen is initialized.
-    - name: barter_p_proc
-      detail: void barter_p_proc()
-      doc: |-
-        Called when the player initiates bartering with the critter.
-    - name: combat_p_proc
-      detail: void combat_p_proc()
-      doc: |-
-        Called in combat (every turn?). The specific combat event number is passed via `fixed_param`.
-    - name: combat_is_starting_p_proc
-      detail: void combat_is_starting_p_proc()
-      doc: |-
-        Called every time before the start of combat.
-    - name: combat_is_over_p_proc
-      detail: void combat_is_over_p_proc()
-      doc: |-
-        Called every time before combat ends.
-    - name: create_p_proc
-      detail: void create_p_proc()
-      doc: |-
-        Called when the object is first created on the map.
-    - name: critter_p_proc
-      detail: void critter_p_proc()
-      doc: |-
-        This procedure is called every "heartbeat", which means it's run ten times each second, except during combat.
-        Note: if this procedure is not present in the script, errors can occur, and the first encountered procedure may be treated as this handler.
-    - name: damage_p_proc
-      detail: void damage_p_proc()
-      doc: |-
-        Called when the critter takes damage. The amount of damage received is passed via `fixed_param`.
-        Note: not called if the damage is fully absorbed by armor.
-    - name: description_p_proc
-      detail: void description_p_proc()
-      doc: |-
-        Called when the player inspects the object (binoculars). By default, the description from the prototype object is shown.
-        Note: must use `script_overrides` to prevent simultaneous execution with the default description.
-    - name: destroy_p_proc
-      detail: void destroy_p_proc()
-      doc: |-
-        Called on death of the critter or destruction of the object (except when using `destroy_object(self_obj)`).
-    - name: drop_p_proc
-      detail: void drop_p_proc()
-      doc: |-
-        Called when the self-object is dropped to the ground.
-    - name: is_dropping_p_proc
-      detail: void is_dropping_p_proc()
-      doc: |-
-        Called when trying to drop an object.
-    - name: look_at_p_proc
-      detail: void look_at_p_proc()
-      doc: |-
-        Called when the player passes the cursor over any object. By default, the prototype name of the object is displayed.
-        Note: must use `script_overrides` to prevent simultaneous execution with the default name display.
-    - name: map_enter_p_proc
-      detail: void map_enter_p_proc()
-      doc: |-
-        Called once by the engine each time the map is entered from another map. It is not run when the elevation is changed.
-    - name: map_exit_p_proc
-      detail: void map_exit_p_proc()
-      doc: |-
-        Called when the player leaves the map.
-    - name: map_update_p_proc
-      detail: void map_update_p_proc()
-      doc: |-
-        Called every 250 game ticks (1 tick = 1/10 second, so roughly every 25 seconds). It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation.
-    - name: pickup_p_proc
-      detail: void pickup_p_proc()
-      doc: |-
-        In object scripts, called when a critter tries to pick up this item.
-        For container objects, called when a critter tries to open them or steal something.
-        In critter scripts, called when someone tries to steal from this critter.
-    - name: push_p_proc
-      detail: void push_p_proc()
-      doc: |-
-        Called when trying to push the object.
-    - name: spatial_p_proc
-      detail: void spatial_p_proc()
-      doc: |-
-        Called when an object passes over the self-object's spatial trigger area.
-    - name: start
-      detail: void start()
-      doc: |-
-        Called by the engine when the script is first run or the game object is first created, then never again, unless specifically called from somewhere else.
-    - name: talk_p_proc
-      detail: void talk_p_proc()
-      doc: |-
-        Called when the player tries to initiate dialogue with the critter.
-    - name: timed_event_p_proc
-      detail: void timed_event_p_proc()
-      doc: |-
-        This procedure is called by the function `add_timer_event(ObjectPtr obj, int time, int fixed_param)`.
-        `ObjectPtr` points to the object whose script's `timed_event_p_proc` procedure you want to access.
-        Time is the number of game ticks (1 game tick = 1/10 seconds) you want to pass before the `timed_event_p_proc` is called.
-        `fixed_param` is a variable you can set to differentiate between various timed events.
-        In `timed_event_p_proc`, you can check the value of `fixed_param` against whatever number you used when calling `add_timer_event`.
-        This allows for multiple uses of `timed_event_p_proc` in the same script.
-    - name: use_ad_on_p_proc
-      detail: void use_ad_on_p_proc()
-      doc: |-
-        Called when an advantage is used on the object.
-    - name: use_disad_on_p_proc
-      detail: void use_disad_on_p_proc()
-      doc: |-
-        Called when a disadvantage is used on the object.
-    - name: use_obj_on_p_proc
-      detail: void use_obj_on_p_proc()
-      doc: |
-        Called when:
-        - A critter uses an object on another critter. (Or themselves).
-        - A critter uses an object from inventory screen AND this object does not have "Use" action flag set and it's not active flare or explosive.
-        - Player or AI uses any drug.
-        The parameter `obj_being_used_with` receives a pointer to the object that was used.
-    - name: use_p_proc
-      detail: void use_p_proc()
-      doc: |
-        Called when:
-        - A critter uses an object from inventory which have "Use" action flag set or it's an active flare or dynamite.
-        - Player uses an object from main interface.
-        Use `source_obj` to get the object being used. Note: not called for some item types when working with inventory.
-    - name: use_skill_on_p_proc
-      detail: void use_skill_on_p_proc()
-      doc: |-
-        Called when a skill is used on the object. The skill number is passed via `action_being_used` (see DEFINE.H, Skill Equates).
 base-functions:
   type: 3
   items:
@@ -1119,6 +960,290 @@ base-functions:
       doc: |-
         Returns the current Y position of the party on the World Map.
 
+engine-procedures:
+  type: 3 # function
+  items:
+    - name: barter_init_p_proc
+      detail: void barter_init_p_proc()
+      doc: |-
+        Called when the barter screen is initialized.
+    - name: barter_p_proc
+      detail: void barter_p_proc()
+      doc: |-
+        Called when the player initiates bartering with the critter.
+    - name: combat_p_proc
+      detail: void combat_p_proc()
+      doc: |-
+        Called in combat (every turn?). The specific combat event number is passed via `fixed_param`.
+    - name: combat_is_starting_p_proc
+      detail: void combat_is_starting_p_proc()
+      doc: |-
+        Called every time before the start of combat.
+    - name: combat_is_over_p_proc
+      detail: void combat_is_over_p_proc()
+      doc: |-
+        Called every time before combat ends.
+    - name: create_p_proc
+      detail: void create_p_proc()
+      doc: |-
+        Called when the object is first created on the map.
+    - name: critter_p_proc
+      detail: void critter_p_proc()
+      doc: |-
+        This procedure is called every "heartbeat", which means it's run ten times each second, except during combat.
+        Note: if this procedure is not present in the script, errors can occur, and the first encountered procedure may be treated as this handler.
+    - name: damage_p_proc
+      detail: void damage_p_proc()
+      doc: |-
+        Called when the critter takes damage. The amount of damage received is passed via `fixed_param`.
+        Note: not called if the damage is fully absorbed by armor.
+    - name: description_p_proc
+      detail: void description_p_proc()
+      doc: |-
+        Called when the player inspects the object (binoculars). By default, the description from the prototype object is shown.
+        Note: must use `script_overrides` to prevent simultaneous execution with the default description.
+    - name: destroy_p_proc
+      detail: void destroy_p_proc()
+      doc: |-
+        Called on death of the critter or destruction of the object (except when using `destroy_object(self_obj)`).
+    - name: drop_p_proc
+      detail: void drop_p_proc()
+      doc: |-
+        Called when the self-object is dropped to the ground.
+    - name: is_dropping_p_proc
+      detail: void is_dropping_p_proc()
+      doc: |-
+        Called when trying to drop an object.
+    - name: look_at_p_proc
+      detail: void look_at_p_proc()
+      doc: |-
+        Called when the player passes the cursor over any object. By default, the prototype name of the object is displayed.
+        Note: must use `script_overrides` to prevent simultaneous execution with the default name display.
+    - name: map_enter_p_proc
+      detail: void map_enter_p_proc()
+      doc: |-
+        Called once by the engine each time the map is entered from another map. It is not run when the elevation is changed.
+    - name: map_exit_p_proc
+      detail: void map_exit_p_proc()
+      doc: |-
+        Called when the player leaves the map.
+    - name: map_update_p_proc
+      detail: void map_update_p_proc()
+      doc: |-
+        Called every 250 game ticks (1 tick = 1/10 second, so roughly every 25 seconds). It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation.
+    - name: pickup_p_proc
+      detail: void pickup_p_proc()
+      doc: |-
+        In object scripts, called when a critter tries to pick up this item.
+        For container objects, called when a critter tries to open them or steal something.
+        In critter scripts, called when someone tries to steal from this critter.
+    - name: push_p_proc
+      detail: void push_p_proc()
+      doc: |-
+        Called when trying to push the object.
+    - name: spatial_p_proc
+      detail: void spatial_p_proc()
+      doc: |-
+        Called when an object passes over the self-object's spatial trigger area.
+    - name: start
+      detail: void start()
+      doc: |-
+        Called by the engine when the script is first run or the game object is first created, then never again, unless specifically called from somewhere else.
+    - name: talk_p_proc
+      detail: void talk_p_proc()
+      doc: |-
+        Called when the player tries to initiate dialogue with the critter.
+    - name: timed_event_p_proc
+      detail: void timed_event_p_proc()
+      doc: |-
+        This procedure is called by the function `add_timer_event(ObjectPtr obj, int time, int fixed_param)`.
+        `ObjectPtr` points to the object whose script's `timed_event_p_proc` procedure you want to access.
+        Time is the number of game ticks (1 game tick = 1/10 seconds) you want to pass before the `timed_event_p_proc` is called.
+        `fixed_param` is a variable you can set to differentiate between various timed events.
+        In `timed_event_p_proc`, you can check the value of `fixed_param` against whatever number you used when calling `add_timer_event`.
+        This allows for multiple uses of `timed_event_p_proc` in the same script.
+    - name: use_ad_on_p_proc
+      detail: void use_ad_on_p_proc()
+      doc: |-
+        Called when an advantage is used on the object.
+    - name: use_disad_on_p_proc
+      detail: void use_disad_on_p_proc()
+      doc: |-
+        Called when a disadvantage is used on the object.
+    - name: use_obj_on_p_proc
+      detail: void use_obj_on_p_proc()
+      doc: |
+        Called when:
+        - A critter uses an object on another critter. (Or themselves).
+        - A critter uses an object from inventory screen AND this object does not have "Use" action flag set and it's not active flare or explosive.
+        - Player or AI uses any drug.
+        The parameter `obj_being_used_with` receives a pointer to the object that was used.
+    - name: use_p_proc
+      detail: void use_p_proc()
+      doc: |
+        Called when:
+        - A critter uses an object from inventory which have "Use" action flag set or it's an active flare or dynamite.
+        - Player uses an object from main interface.
+        Use `source_obj` to get the object being used. Note: not called for some item types when working with inventory.
+    - name: use_skill_on_p_proc
+      detail: void use_skill_on_p_proc()
+      doc: |-
+        Called when a skill is used on the object. The skill number is passed via `action_being_used` (see DEFINE.H, Skill Equates).
+
+keywords:
+  type: 14 # keyword
+  items:
+    - name: begin
+    - name: end
+    - name: procedure
+    - name: if
+    - name: then
+    - name: else
+    - name: variable
+
+preprocessor_directives:
+  type: 14 # keyword
+  # Completion provider doesn't trigger on # character by default.
+  # It's possible to modifye trigger characters, however what will require additional filtering based on language id and the actual word.
+  # For now it's easier to just type a few more charactes to get a suggestion.
+  # Or call it manually with ctrl-space.
+  items:
+    # - name: "#if"
+    - name: "elif"
+    # - name: "#else"
+    - name: "endif"
+
+    - name: "define"
+    - name: "undef"
+    - name: "ifdef"
+    - name: "ifndef"
+
+    - name: "include"
+
+say-functions:
+  type: 3
+  items:
+    - name: SayBorder
+      detail: void SayBorder(int x, int y)
+      doc: |-
+        Sets the border dimensions for the dialog window.
+    - name: SayEnd
+      detail: void SayEnd
+      doc: |-
+        Ends the current dialog sequence and enters a wait state for player input.
+    - name: SayGetLastPos
+      detail: int SayGetLastPos
+      doc: |-
+        Returns the exit point (last position) of the most recent dialog interaction.
+    - name: SayGotoReply
+      detail: void SayGotoReply(string label)
+      doc: |-
+        Jumps to a labeled reply target within the dialog tree.
+    - name: SayMessage
+      detail: void SayMessage(string text1, string text2)
+      doc: |-
+        Displays a dialog message with two text fields. The message is shown with a timeout.
+    - name: SayMessageTimeout
+      detail: void SayMessageTimeout(int timeout)
+      doc: |-
+        Sets the display duration in milliseconds for dialog messages shown with SayMessage.
+    - name: SayOption
+      detail: void SayOption(string text, string proc)
+      doc: |-
+        Adds a selectable dialog option with the given text and callback procedure name.
+    - name: SayOptionColor
+      detail: void SayOptionColor(int r, int g, int b)
+      doc: |-
+        Sets the text color for dialog options using RGB values.
+    - name: SayOptionFlags
+      detail: void SayOptionFlags(int flags)
+      doc: |-
+        Sets formatting flags for dialog option text.
+    - name: SayOptionWindow
+      detail: void SayOptionWindow(int x, int y, int width, int height, string filename)
+      doc: |-
+        Configures the display window for dialog options with position, size, and background image.
+    - name: SayQuit
+      detail: void SayQuit
+      doc: |-
+        Immediately quits the dialog system, closing all dialog windows.
+    - name: SayReply
+      detail: void SayReply(string label, string text)
+      doc: |-
+        Adds a reply entry to the dialog with the given label and text content.
+    - name: SayReplyColor
+      detail: void SayReplyColor(int r, int g, int b)
+      doc: |-
+        Sets the text color for dialog replies using RGB values.
+    - name: SayReplyFlags
+      detail: void SayReplyFlags(int flags)
+      doc: |-
+        Sets formatting flags for dialog reply text.
+    - name: SayReplyTitle
+      detail: void SayReplyTitle(string title)
+      doc: |-
+        Sets the title text displayed in the reply section of the dialog.
+    - name: SayReplyWindow
+      detail: void SayReplyWindow(int x, int y, int width, int height, string filename)
+      doc: |-
+        Configures the display window for dialog replies with position, size, and background image.
+    - name: SayRestart
+      detail: void SayRestart
+      doc: |-
+        Restarts the dialog system from the beginning.
+    - name: SayScrollDown
+      detail: void SayScrollDown(int x, int y, string normal, string hover, string pressed, string disabled)
+      doc: |-
+        Configures the scroll-down button for the dialog window with position and graphics for each button state.
+    - name: SayScrollUp
+      detail: void SayScrollUp(int x, int y, string normal, string hover, string pressed, string disabled)
+      doc: |-
+        Configures the scroll-up button for the dialog window with position and graphics for each button state.
+    - name: SaySetSpacing
+      detail: void SaySetSpacing(int spacing)
+      doc: |-
+        Sets the vertical line spacing in pixels between dialog entries.
+    - name: SayStart
+      detail: void SayStart
+      doc: |-
+        Initiates a new dialog sequence from the beginning.
+    - name: SayStartPos
+      detail: void SayStartPos(int position)
+      doc: |-
+        Initiates a new dialog sequence starting at the specified position index.
+
+sound-functions:
+  type: 3
+  items:
+    - name: SetOneOptPause
+      detail: void SetOneOptPause(int flag)
+      doc: |-
+        Toggles the pause-on-focus-loss behavior for media playback. When flag is non-zero, media pauses when the game loses focus.
+    - name: SoundDelete
+      detail: void SoundDelete(int handle)
+      doc: |-
+        Frees and releases a sound resource identified by the given handle.
+    - name: SoundPause
+      detail: void SoundPause(int handle)
+      doc: |-
+        Pauses playback of the sound identified by the given handle.
+    - name: SoundPlay
+      detail: int SoundPlay(string filename, int flags)
+      doc: |-
+        Plays a sound file with the specified flags and returns a handle that can be used with SoundPause, SoundResume, SoundStop, SoundRewind, and SoundDelete.
+    - name: SoundResume
+      detail: void SoundResume(int handle)
+      doc: |-
+        Resumes playback of a previously paused sound identified by the given handle.
+    - name: SoundRewind
+      detail: void SoundRewind(int handle)
+      doc: |-
+        Rewinds the sound identified by the given handle back to the beginning.
+    - name: SoundStop
+      detail: void SoundStop(int handle)
+      doc: |-
+        Stops playback of the sound identified by the given handle.
+
 window-functions:
   type: 3
   items:
@@ -1286,127 +1411,3 @@ window-functions:
       detail: void ShowWin
       doc: |-
         Redraws and displays the currently selected window.
-
-say-functions:
-  type: 3
-  items:
-    - name: SayBorder
-      detail: void SayBorder(int x, int y)
-      doc: |-
-        Sets the border dimensions for the dialog window.
-    - name: SayEnd
-      detail: void SayEnd
-      doc: |-
-        Ends the current dialog sequence and enters a wait state for player input.
-    - name: SayGetLastPos
-      detail: int SayGetLastPos
-      doc: |-
-        Returns the exit point (last position) of the most recent dialog interaction.
-    - name: SayGotoReply
-      detail: void SayGotoReply(string label)
-      doc: |-
-        Jumps to a labeled reply target within the dialog tree.
-    - name: SayMessage
-      detail: void SayMessage(string text1, string text2)
-      doc: |-
-        Displays a dialog message with two text fields. The message is shown with a timeout.
-    - name: SayMessageTimeout
-      detail: void SayMessageTimeout(int timeout)
-      doc: |-
-        Sets the display duration in milliseconds for dialog messages shown with SayMessage.
-    - name: SayOption
-      detail: void SayOption(string text, string proc)
-      doc: |-
-        Adds a selectable dialog option with the given text and callback procedure name.
-    - name: SayOptionColor
-      detail: void SayOptionColor(int r, int g, int b)
-      doc: |-
-        Sets the text color for dialog options using RGB values.
-    - name: SayOptionFlags
-      detail: void SayOptionFlags(int flags)
-      doc: |-
-        Sets formatting flags for dialog option text.
-    - name: SayOptionWindow
-      detail: void SayOptionWindow(int x, int y, int width, int height, string filename)
-      doc: |-
-        Configures the display window for dialog options with position, size, and background image.
-    - name: SayQuit
-      detail: void SayQuit
-      doc: |-
-        Immediately quits the dialog system, closing all dialog windows.
-    - name: SayReply
-      detail: void SayReply(string label, string text)
-      doc: |-
-        Adds a reply entry to the dialog with the given label and text content.
-    - name: SayReplyColor
-      detail: void SayReplyColor(int r, int g, int b)
-      doc: |-
-        Sets the text color for dialog replies using RGB values.
-    - name: SayReplyFlags
-      detail: void SayReplyFlags(int flags)
-      doc: |-
-        Sets formatting flags for dialog reply text.
-    - name: SayReplyTitle
-      detail: void SayReplyTitle(string title)
-      doc: |-
-        Sets the title text displayed in the reply section of the dialog.
-    - name: SayReplyWindow
-      detail: void SayReplyWindow(int x, int y, int width, int height, string filename)
-      doc: |-
-        Configures the display window for dialog replies with position, size, and background image.
-    - name: SayRestart
-      detail: void SayRestart
-      doc: |-
-        Restarts the dialog system from the beginning.
-    - name: SayScrollDown
-      detail: void SayScrollDown(int x, int y, string normal, string hover, string pressed, string disabled)
-      doc: |-
-        Configures the scroll-down button for the dialog window with position and graphics for each button state.
-    - name: SayScrollUp
-      detail: void SayScrollUp(int x, int y, string normal, string hover, string pressed, string disabled)
-      doc: |-
-        Configures the scroll-up button for the dialog window with position and graphics for each button state.
-    - name: SaySetSpacing
-      detail: void SaySetSpacing(int spacing)
-      doc: |-
-        Sets the vertical line spacing in pixels between dialog entries.
-    - name: SayStart
-      detail: void SayStart
-      doc: |-
-        Initiates a new dialog sequence from the beginning.
-    - name: SayStartPos
-      detail: void SayStartPos(int position)
-      doc: |-
-        Initiates a new dialog sequence starting at the specified position index.
-
-sound-functions:
-  type: 3
-  items:
-    - name: SetOneOptPause
-      detail: void SetOneOptPause(int flag)
-      doc: |-
-        Toggles the pause-on-focus-loss behavior for media playback. When flag is non-zero, media pauses when the game loses focus.
-    - name: SoundDelete
-      detail: void SoundDelete(int handle)
-      doc: |-
-        Frees and releases a sound resource identified by the given handle.
-    - name: SoundPause
-      detail: void SoundPause(int handle)
-      doc: |-
-        Pauses playback of the sound identified by the given handle.
-    - name: SoundPlay
-      detail: int SoundPlay(string filename, int flags)
-      doc: |-
-        Plays a sound file with the specified flags and returns a handle that can be used with SoundPause, SoundResume, SoundStop, SoundRewind, and SoundDelete.
-    - name: SoundResume
-      detail: void SoundResume(int handle)
-      doc: |-
-        Resumes playback of a previously paused sound identified by the given handle.
-    - name: SoundRewind
-      detail: void SoundRewind(int handle)
-      doc: |-
-        Rewinds the sound identified by the given handle back to the beginning.
-    - name: SoundStop
-      detail: void SoundStop(int handle)
-      doc: |-
-        Stops playback of the sound identified by the given handle.

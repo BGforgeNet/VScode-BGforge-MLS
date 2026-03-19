@@ -1,269 +1,3 @@
-constants:
-  type: 21 # constant
-  items:
-    - name: ARE_V10_ACTORS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_REGIONS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_SPAWN_POINTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_ENTRANCES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_CONTAINERS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_AMBIENTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_DOORS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V10_ANIMATIONS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ARE_V91_ACTORS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: CRE_V10_KNOWN_SPELLS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: CRE_V10_SPELL_MEM_INFO
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: CRE_V10_EFFECTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: CRE_V10_ITEMS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ITM_V10_HEADERS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: ITM_V10_GEN_EFFECTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: SPL_V10_HEADERS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: SPL_V10_GEN_EFFECTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: STO_V10_ITEMS_PURCHASED
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: STO_V10_ITEMS_SOLD
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: STO_V10_DRINKS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: STO_V10_CURES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: WMP_AREAS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-    - name: WMP_LINKS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
-
-    - name: ARE_V10_ITEMS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ARE_V10_REGION_VERTICES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ARE_V10_CONTAINER_VERTICES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ARE_V10_DOOR_OPEN_OUTLINE_VERTICES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ARE_V10_DOOR_OPEN_CELL_VERTICES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ARE_V10_DOOR_CLOSED_CELL_VERTICES
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: CRE_V10_SPELL_MEM
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: ITM_V10_HEAD_EFFECTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: SPL_V10_HEAD_EFFECTS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: WMP_NORTH_LINKS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: WMP_WEST_LINKS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: WMP_SOUTH_LINKS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-    - name: WMP_EAST_LINKS
-      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-
-vars:
-  type: 21 # constant
-  items:
-    - name: SOURCE_FILE
-      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_FILE` is `bigboss.cre`.
-    - name: SOURCE_DIRECTORY
-      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_DIRECTORY` is `mymod/cre`.
-    - name: SOURCE_FILESPEC
-      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_FILESPEC` is ` mymod/cre/bigboss.cre`.
-    - name: SOURCE_RES
-      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_RES` is `bigboss`.
-    - name: SOURCE_EXT
-      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_EXT` is `cre`.
-    - name: SOURCE_SIZE
-      doc: Set by `COPY_*` family of functions. It is set to the size (in bytes) of the source file.
-    - name: DEST_FILE
-      doc: Set by `COPY_*` family of functions. Like `SOURCE_FILE`, but based on `toFile`.
-    - name: DEST_DIRECTORY
-      doc: Set by `COPY_*` family of functions. Like `SOURCE_DIRECTORY`, but based on `toFile`.
-    - name: DEST_FILESPEC
-      doc: Set by `COPY_*` family of functions. Like `SOURCE_FILESPEC`, but based on `toFile`.
-    - name: DEST_RES
-      doc: Set by `COPY_*` family of functions. Like `SOURCE_RES`, but based on `toFile`.
-    - name: DEST_EXT
-      doc: Set by `COPY_*` family of functions. Like `SOURCE_EXT`, but based on `toFile`.
-    - name: "%COMPONENT_NUMBER%"
-      doc: |-
-        The special variable `COMPONENT_NUMBER` is set to the number of the component being installed.
-    - name: "%INTERACTIVE%"
-      doc: |-
-        The special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall).
-    - name: "%WEIDU_ARCH%"
-      doc: |-
-        The special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
-    - name: "%WEIDU_EXECUTABLE%"
-      doc: |-
-        The special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance.
-    - name: "%WEIDU_OS%"
-      doc: |-
-        The special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
-    - name: "%WEIDU_VER%"
-      doc: |-
-        The special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`).
-    - name: "%MOD_FOLDER%"
-      doc: |-
-        The `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).
-        As of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**.
-
-prologue:
-  type: 14 # keyword
-  items:
-    - name: AUTHOR
-      doc: |-
-        The AUTHOR directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
-
-    - name: BACKUP
-      doc: |-
-        The BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing.
-flag:
-  type: 14 #keyword
-  items:
-    - name: ALLOW_MISSING
-      detail: ALLOW_MISSING file list
-      doc: |-
-        Allows you to specify files that can be missing (when you try to copy them or reference them from D files). Empty versions of those files will be created on demand. Try to use ACTION_IF instead of this.
-    - name: ALWAYS
-      detail: ALWAYS TP2 Action list END
-      doc: |-
-        This flag specified a TP2 Action that is executed at the beginning of each Component, before the component-specific TP2 Action.
-    - name: ASK_EVERY_COMPONENT
-      doc: |-
-        This flag instructs WeiDU to ask about installing every component in this TP2 file individually, rather than asking questions like "Would you like to install them all?"
-    - name: AUTO_EVAL_STRINGS
-      doc: |-
-        EVALUATE_BUFFER is used whenever variables are evaluated. In particular, you can now "forget" about using it in FUNCTIONs and arrays. Note, TP2 defines multiple instances of EVALUATE_BUFFER, like EVALUATE_BUFFER, but these are not affected by AUTO_EVAL_STRINGS.
-
-    - name: AUTO_TRA
-      detail: AUTO_TRA path [ subdir ]
-      doc: |-
-        The `AUTO_TRA` flag is used with the `COMPILE` and
-        `EXTEND_TOP (TP2)` `TP2 Action`s. It automatically loads
-        `TRA` files that match your `D` files. The
-        expression `%s`, occurring in path, is replaced with the
-        `languageDirectory` of the `LANGUAGE` the user
-        selected. The `TRA` file loaded by `AUTO_TRA` takes
-        precedence over all other `TRA` files. Variables are
-        evaluated when the action is processed. If a subdirectory is
-        provided, any matching `TRA` file in this directory is loaded
-        after the corresponding `TRA` file in the normal directory on
-        **EE-type** games. Only the name of the subdirectory itself should
-        be given. If `foo` is your mod folder, `bar` is your `TRA` folder
-        and `baz` is your subdirectory, your `AUTO_TRA` might look
-        like `AUTO_TRA ~foo/bar~ ~baz~`.
-    - name: MODDER
-      detail: MODDER String list
-      doc: |-
-        Enable additional debug info. By default, these messages are verbose but do not halt the installation. Some options are configurable, see the MODDER in-depth description.
-    - name: NO_IF_EVAL_BUG
-      doc: |-
-        This action solves a long-standing bug with the IF_EVAL action. Since solving it is not directly possible without damaging backwards compatibility, you have to use this action (preferably in an ALWAYS statement) to solve the bug for yourself. IF_EVAL will not work with this action in the TP2 - use PATCH_IF and BUT_ONLY_IF_IT_CHANGES instead.
-    - name: QUICK_MENU
-      detail: QUICK_MENU lots of parameters
-      doc: |-
-        Used to specify one or more groups of components that can be installed in a single step. See the QUICK_MENU tutorial for syntax, usage instructions, and caveats.
-    - name: README
-      detail: README file list
-      doc: |-
-        The given file is displayed to the user after choosing the language, but before installing any component. If more than one file name is provided, they are checked for existence in the order they're provided, and the first available one will be opened. If you wish to open multiple readme files, use multiple README statements.
-
-    - name: SCRIPT_STYLE
-      detail: SCRIPT_STYLE style
-      doc: |-
-        This flag determines how WeiDU will read in BAF and BCS files and write out BAF and BCS files. Possible options for "style" include BG (the default), IWD1, IWD2, and PST. See the Scripting Styles tutorial.
-    - name: UNINSTALL_ORDER
-      detail: UNINSTALL_ORDER String list
-      doc: |-
-        Do not use this without a real reason.
-        Specifies the order in which uninstallation operations are handled. The operations are STRSET (uninstall STRING_SET and ALTER_TLK), MOVE (uninstall MOVE), AT (perform AT_UNINSTALL and AT_INTERACTIVE_UNINSTALL) and COPY (uninstall all various file operations).
-        If not specified, the order is MOVE - STRSET - COPY - AT.
-        If this is specified, then ALL operations must be specified (if any isn't, a warning is printed). Please note that this means that your mod might start printing warnings three years down the line if a new uninstall action is coded.
-
-    - name: VERSION
-      detail: VERSION String
-      doc: |-
-        "String" (variables evaluated) will be appended to every component's name in the weidu.log file.
-    - name: BEGIN
-      detail: BEGIN componentName [ component flags... ] TP2 Action list
-      doc: |-
-        Starts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform.
-language:
-  type: 14 #keyword
-  items:
-    - name: LANGUAGE
-      detail: LANGUAGE languageName languageDirectory defaultLanguageTRA list
-      doc: |-
-        The languageName is the name of the language as it is presented to the user. "American English" and "Italiano" are examples. The languageDirectory is the name of the subdirectory in which you have stored the TRA files for that language. Examples include "american" and "spanish". The variable named LANGUAGE is set to languageDirectory if the user selects this language.. Finally, all of the TRA files in the defaultLanguageTRA list are loaded as soon as the user selects a language.
-
-componentFlag:
-  type: 14 # keyword
-  items:
-    - name: DEPRECATED
-      detail: DEPRECATED String
-      doc: |-
-        Mark the given component as deprecated. If it is currently installed, it will be uninstalled and the given String will be displayed. The user will never be asked to install the given component -- it will be silently skipped in all listings. However, it will still take up a "component number".
-    - name: DESIGNATED
-      detail: DESIGNATED forcedNumber
-      doc: |-
-        Normally module components are numbered based on their order in the TP2 file (starting from 0). This flag sets the current component number to forcedNumber. The next component (if it lacks a DESIGNATED flag) will be forcedNumber+1. You can easily shoot yourself in the foot by setting forcedNumber too low (e.g., so that multiple components have the same number).
-    - name: FORBID_COMPONENT
-      detail: FORBID_COMPONENT modToUninstall modComponent String
-      doc: |-
-        Make this component so that it can only be installed if another component is not installed. This does the opposite of REQUIRE_COMPONENT.
-    - name: FORCED_SUBCOMPONENT
-      detail: FORCED_SUBCOMPONENT String [ value ]
-      doc: |-
-        See the SUBCOMPONENT tutorial.
-    - name: GROUP
-      detail: GROUP String [ value ]
-      doc: |-
-        Used for grouping components; the user will be asked to display these or not. See the GROUP tutorial.
-    - name: INSTALL_BY_DEFAULT
-      doc: |-
-        If WeiDU would ask the user whether to install this component or not, and this component is not already installed, WeiDU will instead install it by default (without asking the user). If there is an error or the component is already installed, WeiDU will ask the user. The --uninstall command-line argument overrides this. See also REQUIRE_COMPONENT and ALWAYS.
-    - name: LABEL
-      detail: LABEL String
-      doc: |-
-        Defines the LABEL, or unique textual identifier, of this module. Any component can have zero or more LABELs. Will print a warning if two components in the same tp2 share a LABEL. Do not alter a component's LABEL once you publish that mod.
-    - name: METADATA
-      detail: METADATA String
-      doc: |-
-        Associates a string of metadata with this component. WeiDU does not use the metadata for anything, but external programs might. `METADATA` may be used multiple times per component.
-
-    - name: NO_LOG_RECORD
-      doc: |-
-        Normally all module components are recorded in WeiDU.log and can be uninstalled later. This component flag prevents this component from writing a log record when it is successfully installed. As a result it is “invisible” to WeiDU, can be installed multiple times, and cannot be uninstalled with WeiDU. Do not use this flag without a real reason.
-    - name: REQUIRE_COMPONENT
-      detail: REQUIRE_COMPONENT modToUninstall modComponent String
-      doc: |-
-        Make this component so that it can only be installed if another component is installed. If that other component is not installed, the String will be displayed and the user will not get a chance to install this component. This is in some sense the opposite of the UNINSTALL TP2 Action. For example, REQUIRE_COMPONENT "setup-ease.tp2" "0" "You must have infinite stacking installed!" prevents a component from being installed unless the infinite stacking part of the Ease-of-Use mod is installed.
-    - name: REQUIRE_PREDICATE
-      detail: REQUIRE_PREDICATE value String
-      doc: |-
-        This component can only be installed if the value evaluates to true (non-zero).
-    - name: SUBCOMPONENT
-      detail: SUBCOMPONENT String [ value ]
-      doc: |-
-        At most one component of the given subcomponent group can be installed at any time. All subcomponents of the same group are listed together for the user. See the SUBCOMPONENT tutorial.
 action:
   type: 3 # function
   items:
@@ -815,40 +549,121 @@ action:
       doc: |-
         This is just the `ACTION` counterpart of `SPRINTF`.
 
-optGlob:
-  type: 14 # keyword
+
+actionFunctions:
+  type: 3 # function
   items:
-    - name: GLOB
-      doc: |-
-        Use local filesystem globbing. Globbing is generally architecture specific!
-    - name: NOGLOB
-      doc: |-
-        Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
+    - name: HANDLE_AUDIO
+      doc: |
+        Install Ogg--Vorbis compressed audio files in a safe and easy manner. This is an ACTION function.
 
-optCase:
-  type: 14 # keyword
+        This function supports Windows, OS X, GNU/Linux and all IE games, including BG:EE. If the game is not BG:EE, the audio will be decompressed and the resulting .wav files will be `MOVE`d to the override. If the game is BG:EE, the .ogg files are copied into the override and renamed into .wav files. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
+
+        If the audio files need to be decompressed, this function will use oggdec.exe on Windows, which is by default expected to be found in `audio_path`. The most recent version of oggdec can be downloaded [http://downloads.xiph.org/releases/vorbis/vorbis-tools-win32-bin.7z here] (direct link). On OS X, SoX will be used, which is by default also expected to be found in `audio_path`. SoX compiled for OS X can be downloaded [http://sourceforge.net/projects/sox/files/sox/14.4.1/sox-14.4.1-macosx.zip/download here]. On GNU/Linux, oggdec will be used, but it is expected to be found on the system path and the user should install it him/herself. If you provide installation instructions for GNU/Linux, just include something to the effect of "install oggdec, which is usually part of the package vorbis-tools".
+
+        If the decompression utility cannot be found, the user is warned that the audio files were not installed.
+
+        - INT_VAR `music` if this variable is not `0` and the game is BG:EE, the audio files are given the extension `.acm` instead of `.wav`. This variable has no effect if the game is not BG:EE. By default its value is `0`.
+        - INT_VAR `quiet` if this variable is `1`, the function will suppress output from oggdec and sox. By default this is `0`.
+        - STR_VAR `audio_path` to the path your `.ogg` files are stored in. By default this variable is `~%MOD_FOLDER%/audio~`.
+        - STR_VAR `oggdec_path` to the path oggdec is located in. By default this variable is `~%audio_path%~`.
+        - STR_VAR `sox_path` to the path SoX is located in. By default this variable is `~%audio_path%~`.
+        - STR_VAR `output_path` to the path the audio should be installed into. By default this variable is `override`.
+
+    - name: HANDLE_CHARSETS
+      doc: |
+        Runtime-convert `TRA` files into `UTF-8` in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X and GNU/Linux. If the game is BG:EE or BG2:EE, `TRA` files are encoded into `UTF-8` so the text can be installed without causing problems. `HANDLE_CHARSETS` needs to be used before any text is installed and is compatible with `AUTO_TRA` and all other methods of loading `TRA` files.
+
+        Conversion is handled by the program `iconv`. The program is available as part of the base system on OS X and GNU/Linux but a Windows version needs to be included in your mod. A Windows version can be downloaded [http://gnuwin32.sourceforge.net/packages/libiconv.htm here].
+
+        In order to function, `HANDLE_CHARSETS` needs to know a few things. First, you need to specify where you keep your `TRA` files. You do this with the variable `tra_path`. Second, `HANDLE_CHARSETS` needs to know where the Windows version of `iconv` is located. You do this with the variable `iconv_path`. Third, `HANDLE_CHARSETS` needs to know which character set the `TRA` files are in. Note that they can only be converted into `UTF-8` and cannot already be in `UTF-8`. You provide this information with `charset_table` or tell `HANDLE_CHARSETS` to try to infer this by itself with `infer_charsets`. Lastly, `HANDLE_CHARSETS` needs to know which `TRA` files to convert and whether any of them should be reloaded. You can do this with `noconvert_array`, `convert_array` and `reload_array`.
+
+        Unless `convert_array` is specified, `HANDLE_CHARSETS` will recursively convert all `TRA` files in `tra_path` except those listed in `noconvert_array`. If `convert_array` is specified, only those `TRA` files listed in the array will be converted. `convert_array` may contain references to `TRA` files in subdirectories of `tra_path`.
+
+        - INT_VAR `infer_charsets` to whether `HANDLE_CHARSETS` should try to infer which character set the `TRA` files are encoded in. It uses the contents of the `%language%` variable (''vide infra''). If the contents of the variable can be recognised, `HANDLE_CHARSETS` will use the character set used by the localised version of BG2 for this language. If the contents of the variable cannot be recognised, or if the `TRA` files use a different character set than the expected one, `HANDLE_CHARSETS` will fail. Refer to the compatibility matrix below for additional information. `infer_charsets` overrides `charset_table`. Defaults to `0`.
+        - INT_VAR `from_utf8` to whether the function should assume the source `TRA` files are in UTF-8 or not. The default value is `0`, that is, the function assumes the `TRA` files use language-dependent charater sets and should be converted into UTF-8 when the mod is installed on EE-type games; the function produces no results on the original editions of the games. If set to `1`, the source `TRA` files are assumed to be in UTF-8 and are to be converted into language-dependent character sets when the mod is installed on original editions of the games; the function produces no results when installed on EE-type games.
+        - INT_VAR `verbose` to whether the function should print debug information. Defaults to `0`.
+        - STR_VAR `language` to the name of the language directory you wish to convert. The default value of this variable is `\%LANGUAGE\%`, in other words, the directory corresponding to the language the user selected at the start of the installation. You should never need to alter the value of this variable.
+        - STR_VAR `default_language` to the name of the directory used by the default language of your mod, if your mod has one. The default language is typically one for which the translation is always complete and up to date and which you use to guard against incomplete translations. `HANDLE_CHARSETS` will convert the `TRA` files of the default language in addition to those of the user-selected language. Should these two languages be the same, the `TRA` files will only be converted once. Additionally, any `TRA` files listed in the `reload_array` (''vide infra'') will be reloaded for the default language before they are reloaded for the user-selected language. The default value of this variable is `~~` (the empty string).
+        - STR_VAR `tra_path` to the path where your mod's language directories are located. `%tra_path%/%language%` should be a valid directory containing `TRA` files.
+        - STR_VAR `out_path` to the path to which the converted files should be directed. The default value of this variable is `%tra_path%`, that is, the converted files reversibly overwrite the originals and the conversion is transparent to the rest of your mod. Note that if `%tra_path%` and `%out_path%` are the same directory, the conversion will naturally happen only once regardless of how many times `HANDLE_CHARSETS` are invoked, but if the directories are different, the conversion will happen for every invocation (notably, if `HANDLE_CHARSETS` is invoked among the `ALWAYS` actions).
+        - STR_VAR `iconv_path` to the path where iconv.exe is located. Defaults to `%tra_path%/iconv`.
+        - STR_VAR `charset_table` to the name of an associative array where the keys are the names of your language directories and the corresponding values are the character sets used by the respective language. The keys must be entirely in lowercase. `charset_table` is not used if you also specify `infer_charsets`.
+        - STR_VAR `noconvert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should not be converted into `UTF-8`. All `TRA` files in the language directory and its subdirectories except the ones listed in `noconvert_array` will be converted. The .tra file extension is optional. This variable should not be provided if you also provide `convert_array`.
+        - STR_VAR `convert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should be converted into `UTF-8`. Only those `TRA` files in the language directory or its subdirectories which are listed in `convert_array` will be converted. The .tra file extension is optional. If this variable is provided, `noconvert_array` will not be used.
+        - STR_VAR `reload_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files which should be reloaded after they have been converted. The .tra file extension is optional. You should use this variable for reloading those `TRA` files loaded by `LANGUAGE` which should also be converted.
+        - STR_VAR `exclude_directories` to the name of an array indexed by monotonically increasing integers starting from `0`. The values should be the names of directories whose contents should not be converted. The directories should be subdirectories within `%tra_path%/%language%` or its subdirectories. Only the directory name itself should be specified, not its path.
+        - STR_VAR `file_regexp` to a regexp expression with the file names that must be converted. Defaults to `~.+\.tra~`.
+
+    - name: HANDLE_TILESETS
+      doc: |
+        Install TISpack-compressed tilesets in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X, GNU/Linux and all IE games that support the `TIS V1` file format. The program tisunpack, part of `TISpack`, is used to decompress the provided .tiz files and the resulting .tis files are placed in the override. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
+
+        This function expects to find tisunpack for one or more of Windows, OS X or GNU/Linux in a common directory under the subdirectories `win32`, `osx`, and `unix`, respectively. For example, in `mymod/tiz/win32`, `mymod/tiz/osx` and `mymod/tiz/unix`, the common directory is `mymod/tiz` and `mymod/tiz/win32/tisunpack.exe` should be a valid file. For GNU/Linux, this function also supports tisunpack being located on the system path (something the user would take care of). If you choose to leave tisunpack to the user, you should mention this requirement in any installation instructions you provide.
+
+        If tisunpack for the user's platform could not be found, the installation fails.
+
+        - STR_VAR `tiz_path` to the path your .tiz files are stored in. By default this variable is `~%MOD_FOLDER%/tiz~`.
+        - STR_VAR `tisunpack_path` to the common directory where the subdirectories `win32`, `osx` and `unix` are located. By default this variable is `~%tiz_path%~`.
+        - STR_VAR `output_path` to the path the tilesets should be installed into. By default this variable is `override`.
+
+    - name: INSTALL_PVRZ
+      doc: |-
+        Install a PVRZ file and updates the PVRZ index. This is an ACTION function.
+         This function copies the specified PVRZ file into the target folder and updates the PVRZ index. This function should be used in conjunction with UPDATE_PVRZ_INDICES.
+         - INT_VAR `original_base_index` to the current base index. This value is returned by the function UPDATE_PVRZ_INDICES as `original_base_index`.
+         - INT_VAR `new_base_index` to the new base index. This value is returned by the function UPDATE_PVRZ_INDICES as `new_base_index`.
+         - STR_VAR `source_file` to the source file to copy. The filename must match the regular expression ~MOS[0-9]+\.PVRZ~ (e.g., MOS0000.PVRZ, mos1592.pvrz or Mos12345.PVRZ). Case is ignored.
+         - STR_VAR `target_folder` to the target folder to copy the source file into. The default value is "override".
+         - RET `success` is set to non-zero if the function returned successfully and is set to zero on error.
+         This function can additionally return all the variables automatically set by COPY.
+    - name: sc#addWmpAre
+      doc: |
+        Adds an area to the worldmap. All variables are zero or blank by default unless otherwise indicated. This is an ACTION function.
+
+        - ACTION_DEFINE_ASSOCIATIVE_ARRAY `toNewArea` to the area references that lead to the new area;
+        - ACTION_DEFINE_ASSOCIATIVE_ARRAY `fromNewArea` to the area references that lead away from the new area;
+        - STR_VAR `areName` to the resource reference of the area to add (like \"ar0700\");
+        - STR_VAR `strName` to the descriptive name of the area (like \"Waukeen's Promenade\");
+        - STR_VAR `strDesc` to the area description that will show up when hovering the cursor over the area on the worldmap;
+        - STR_VAR `worldmap` to the name of the .wmp file you want patched (default is \"worldmap\");
+        - INT_VAR `mapIcon` to the area's map icon index (from mapicons.bam);
+        - INT_VAR `xCoord` to the area's X (east-west) coordinate;
+        - INT_VAR `yCoord` to the area's Y (north-south) coordinate;
+        - INT_VAR `tTime` to the area's travel time in hours * 4 (so 2 = 8 hours);
+        - INT_VAR `inclSv` to 1 if you want to patch saved game worldmaps as well as the master worldmap. '''NB:''' changes to saved games are uninstallable;
+        - INT_VAR `visible` to 1 if you want the ''visible'' flag to be set;
+        - INT_VAR `visibleAdjacent` to 1 if you want the ''visible from adjacent'' flag to be set;
+        - INT_VAR `reachable` to 1 if you want the ''reachable'' flag to be set;
+        - INT_VAR `visited` to 1 if you want the ''visited'' flag to be set;
+        - RET `areNum` returns the worldmap entry number for the new area;
+
+actionMacros:
+  type: 3 # function
   items:
-    - name: CASE_INSENSITIVE
+    - name: READ_SOUNDSET
       doc: |-
-        Matching is case-insensitive.
-
-    - name: CASE_SENSITIVE
+        Reads soundset of a creature and stores it as an array of string references This is an ACTION macro.
+         - SPRINT `npc` to the target creature (with .cre extension)
+         - SPRINT `soundset` to the name of soundset you want.
+    - name: WRITE_SOUNDSET
       doc: |-
-        Matching is case-sensitive.
-optExact:
-  type: 14 # keyword
-  items:
-    - name: EVALUATE_REGEXP
+        Writes soundset to all matching creatures. Regexp allowed. This is an ACTION macro.
+         - SPRINT `npc` to a creature in question (with .cre extension)
+         - SPRINT `soundset` to name of soundset you have.
+         - SET `overwrite` to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones.
+    - name: tb#fix_file_size
       doc: |-
-        Matching is evaluated following the usual regexp conventions.
-
-    - name: EXACT_MATCH
-      doc: |-
-        Only the given string is searched for.
-
-    - name: EXACT
-      doc: |-
-        In AT_EXIT and sister ACTIONs, If EXACT is specified, / and \ will be preserved as they are.
+        Overwrites all files matching a certain regexp with a certain standard file, if they are under a certain size.
+         This is an ACTION macro.
+         - SET `tb#fix_file_size_min` to the maximum allowed size (files whose size is exactly this value are NOT overwritten).
+         - SPRINT `tb#fix_file_size_target` to the standard file used to replace file(s) that match the regexp.
+         - SPRINT `tb#fix_file_size_category` to a descriptive name.
+         - SPRINT `tb#fix_file_size_regexp` to the regexp for the file(s) to be checked for a match.
 
 arraySortType:
   type: 14 # keyword
@@ -869,6 +684,355 @@ caching:
     - name: CLEAR
       doc: |-
         A cached result is cleared and the result is calculated anew.
+
+componentFlag:
+  type: 14 # keyword
+  items:
+    - name: DEPRECATED
+      detail: DEPRECATED String
+      doc: |-
+        Mark the given component as deprecated. If it is currently installed, it will be uninstalled and the given String will be displayed. The user will never be asked to install the given component -- it will be silently skipped in all listings. However, it will still take up a "component number".
+    - name: DESIGNATED
+      detail: DESIGNATED forcedNumber
+      doc: |-
+        Normally module components are numbered based on their order in the TP2 file (starting from 0). This flag sets the current component number to forcedNumber. The next component (if it lacks a DESIGNATED flag) will be forcedNumber+1. You can easily shoot yourself in the foot by setting forcedNumber too low (e.g., so that multiple components have the same number).
+    - name: FORBID_COMPONENT
+      detail: FORBID_COMPONENT modToUninstall modComponent String
+      doc: |-
+        Make this component so that it can only be installed if another component is not installed. This does the opposite of REQUIRE_COMPONENT.
+    - name: FORCED_SUBCOMPONENT
+      detail: FORCED_SUBCOMPONENT String [ value ]
+      doc: |-
+        See the SUBCOMPONENT tutorial.
+    - name: GROUP
+      detail: GROUP String [ value ]
+      doc: |-
+        Used for grouping components; the user will be asked to display these or not. See the GROUP tutorial.
+    - name: INSTALL_BY_DEFAULT
+      doc: |-
+        If WeiDU would ask the user whether to install this component or not, and this component is not already installed, WeiDU will instead install it by default (without asking the user). If there is an error or the component is already installed, WeiDU will ask the user. The --uninstall command-line argument overrides this. See also REQUIRE_COMPONENT and ALWAYS.
+    - name: LABEL
+      detail: LABEL String
+      doc: |-
+        Defines the LABEL, or unique textual identifier, of this module. Any component can have zero or more LABELs. Will print a warning if two components in the same tp2 share a LABEL. Do not alter a component's LABEL once you publish that mod.
+    - name: METADATA
+      detail: METADATA String
+      doc: |-
+        Associates a string of metadata with this component. WeiDU does not use the metadata for anything, but external programs might. `METADATA` may be used multiple times per component.
+
+    - name: NO_LOG_RECORD
+      doc: |-
+        Normally all module components are recorded in WeiDU.log and can be uninstalled later. This component flag prevents this component from writing a log record when it is successfully installed. As a result it is “invisible” to WeiDU, can be installed multiple times, and cannot be uninstalled with WeiDU. Do not use this flag without a real reason.
+    - name: REQUIRE_COMPONENT
+      detail: REQUIRE_COMPONENT modToUninstall modComponent String
+      doc: |-
+        Make this component so that it can only be installed if another component is installed. If that other component is not installed, the String will be displayed and the user will not get a chance to install this component. This is in some sense the opposite of the UNINSTALL TP2 Action. For example, REQUIRE_COMPONENT "setup-ease.tp2" "0" "You must have infinite stacking installed!" prevents a component from being installed unless the infinite stacking part of the Ease-of-Use mod is installed.
+    - name: REQUIRE_PREDICATE
+      detail: REQUIRE_PREDICATE value String
+      doc: |-
+        This component can only be installed if the value evaluates to true (non-zero).
+    - name: SUBCOMPONENT
+      detail: SUBCOMPONENT String [ value ]
+      doc: |-
+        At most one component of the given subcomponent group can be installed at any time. All subcomponents of the same group are listed together for the user. See the SUBCOMPONENT tutorial.
+
+constants:
+  type: 21 # constant
+  items:
+    - name: ARE_V10_ACTORS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_REGIONS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_SPAWN_POINTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_ENTRANCES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_CONTAINERS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_AMBIENTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_DOORS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_ANIMATIONS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V91_ACTORS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_KNOWN_SPELLS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_SPELL_MEM_INFO
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_ITEMS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ITM_V10_HEADERS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ITM_V10_GEN_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: SPL_V10_HEADERS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: SPL_V10_GEN_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_ITEMS_PURCHASED
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_ITEMS_SOLD
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_DRINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_CURES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: WMP_AREAS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: WMP_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+
+    - name: ARE_V10_ITEMS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_REGION_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_CONTAINER_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_OPEN_OUTLINE_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_OPEN_CELL_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_CLOSED_CELL_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: CRE_V10_SPELL_MEM
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ITM_V10_HEAD_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: SPL_V10_HEAD_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_NORTH_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_WEST_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_SOUTH_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_EAST_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+
+
+dimorphicFunctions:
+  type: 3 # function
+  items:
+    - name: DIRECTORY_OF_FILESPEC
+      doc: |-
+        Returns the directory of a file specification. Compare to SOURCE_DIRECTORY. This is an ACTION and PATCH function.
+         - STR_VAR `filespec` to the file specification, which must include an identifiable directory, or a warning will be raised.
+         - RET `directory` returns the directory of the file specification.
+    - name: EXT_OF_FILESPEC
+      doc: |-
+        Returns the resource extension of a file specification. Compare to SOURCE_EXT. This is an ACTION and PATCH function.
+         - STR_VAR `filespec` to the file specification, which must include an identifiable resource extension, or a warning will be raised.
+         - RET `ext` returns the resource extension of the file specification.
+    - name: FILE_OF_FILESPEC
+      doc: |-
+        Returns the file of a file specification. Compare to SOURCE_FILE. This is an ACTION and PATCH function.
+         - STR_VAR `filespec` to the file specification, which may or may not include a directory.
+         - RET `file` returns the file of the file specification.
+    - name: FIND_FREE_PVRZ_INDEX
+      doc: |-
+        Attempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.
+        This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.
+      args:
+        - name: num_to_reserve
+          type: int
+          doc: the minimum required size of the contiguous block of free indices (1-999)
+          default: "1"
+        - name: start_index
+          type: int
+          doc: the index the search should begin at
+          default: "1000"
+      rets:
+        - name: free_index
+          type: int
+          doc: the first available index matching the specified parameters, -1 on errors
+      type: dimorphic
+    - name: GET_UNIQUE_FILE_NAME
+      doc: |-
+        Creates a file name that is currently unallocated. This is a PATCH and ACTION function. This function will create a filename using __ as a prefix. __ is reserved by The Bigg and writeable by anybody, as long as you dynamically create the file name (either by using this function or other code of your devising). The algorithm creates file names in base 36, going from __0000.ext to __zzzz.ext; this allows for 36 ^ 4 = 1679616 unique file names.
+         To allow users to reinstall your mod without breaking the identity of these files, you can use the `base` parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you're iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you're working on, for instance":" ~tb#spellbooks_%SOURCE_RES%~
+         - STR_VAR `extension` to the desired extension (required).
+         - STR_VAR `base` to a string unique to your mod and current file (optional).
+         - RET `filename` the currently unallocated file name (sans the extension).
+    - name: NAME_NUM_OF_SPELL_RES
+      doc: |-
+        Converts a spell resource name to a spell.ids reference. This is an ACTION and PATCH macro and function.
+         - SPRINT `spell_res` to the resource name for the referenced spell.
+         - RET `spell_num` to the IDS numerical reference of that spell.
+         - RET `spell_name` to the IDS symbolic reference of a spell.
+    - name: RES_NAME_OF_SPELL_NUM
+      doc: |-
+        Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.
+         - SET `spell_num` to the IDS numerical reference of that spell.
+         - RET `spell_name` to the IDS symbolic reference of a spell.
+         - RET `spell_res` to the resource name for the referenced spell.
+    - name: RES_NUM_OF_SPELL_NAME
+      doc: |-
+        Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.
+         - SPRINT `spell_name` to the IDS symbolic reference of a spell.
+         - RET `spell_num` to the IDS numerical reference of that spell.
+         - RET `spell_res` to the resource name for the referenced spell.
+    - name: RES_OF_FILESPEC
+      doc: |-
+        Returns the resource name of a file specification. Compare to SOURCE_RES. This is an ACTION and PATCH function.
+         - STR_VAR `filespec` to the file specification, which must include an identifiable resource name, or a warning will be raised.
+         - RET `res` returns the resource name of the file specification.
+    - name: SUBSTRING
+      doc: |-
+        Returns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.
+        The function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.
+      args:
+        - name: start
+          type: int
+          doc: the string index (0 based) from which the start of the substring should be read
+        - name: length
+          type: int
+          doc: the length of the substring to be read
+        - name: string
+          type: string
+          doc: the string the substring should be read from
+      rets:
+        - name: substring
+          type: string
+          doc: the substring read from the provided string
+      type: dimorphic
+
+flag:
+  type: 14 #keyword
+  items:
+    - name: ALLOW_MISSING
+      detail: ALLOW_MISSING file list
+      doc: |-
+        Allows you to specify files that can be missing (when you try to copy them or reference them from D files). Empty versions of those files will be created on demand. Try to use ACTION_IF instead of this.
+    - name: ALWAYS
+      detail: ALWAYS TP2 Action list END
+      doc: |-
+        This flag specified a TP2 Action that is executed at the beginning of each Component, before the component-specific TP2 Action.
+    - name: ASK_EVERY_COMPONENT
+      doc: |-
+        This flag instructs WeiDU to ask about installing every component in this TP2 file individually, rather than asking questions like "Would you like to install them all?"
+    - name: AUTO_EVAL_STRINGS
+      doc: |-
+        EVALUATE_BUFFER is used whenever variables are evaluated. In particular, you can now "forget" about using it in FUNCTIONs and arrays. Note, TP2 defines multiple instances of EVALUATE_BUFFER, like EVALUATE_BUFFER, but these are not affected by AUTO_EVAL_STRINGS.
+
+    - name: AUTO_TRA
+      detail: AUTO_TRA path [ subdir ]
+      doc: |-
+        The `AUTO_TRA` flag is used with the `COMPILE` and
+        `EXTEND_TOP (TP2)` `TP2 Action`s. It automatically loads
+        `TRA` files that match your `D` files. The
+        expression `%s`, occurring in path, is replaced with the
+        `languageDirectory` of the `LANGUAGE` the user
+        selected. The `TRA` file loaded by `AUTO_TRA` takes
+        precedence over all other `TRA` files. Variables are
+        evaluated when the action is processed. If a subdirectory is
+        provided, any matching `TRA` file in this directory is loaded
+        after the corresponding `TRA` file in the normal directory on
+        **EE-type** games. Only the name of the subdirectory itself should
+        be given. If `foo` is your mod folder, `bar` is your `TRA` folder
+        and `baz` is your subdirectory, your `AUTO_TRA` might look
+        like `AUTO_TRA ~foo/bar~ ~baz~`.
+    - name: MODDER
+      detail: MODDER String list
+      doc: |-
+        Enable additional debug info. By default, these messages are verbose but do not halt the installation. Some options are configurable, see the MODDER in-depth description.
+    - name: NO_IF_EVAL_BUG
+      doc: |-
+        This action solves a long-standing bug with the IF_EVAL action. Since solving it is not directly possible without damaging backwards compatibility, you have to use this action (preferably in an ALWAYS statement) to solve the bug for yourself. IF_EVAL will not work with this action in the TP2 - use PATCH_IF and BUT_ONLY_IF_IT_CHANGES instead.
+    - name: QUICK_MENU
+      detail: QUICK_MENU lots of parameters
+      doc: |-
+        Used to specify one or more groups of components that can be installed in a single step. See the QUICK_MENU tutorial for syntax, usage instructions, and caveats.
+    - name: README
+      detail: README file list
+      doc: |-
+        The given file is displayed to the user after choosing the language, but before installing any component. If more than one file name is provided, they are checked for existence in the order they're provided, and the first available one will be opened. If you wish to open multiple readme files, use multiple README statements.
+
+    - name: SCRIPT_STYLE
+      detail: SCRIPT_STYLE style
+      doc: |-
+        This flag determines how WeiDU will read in BAF and BCS files and write out BAF and BCS files. Possible options for "style" include BG (the default), IWD1, IWD2, and PST. See the Scripting Styles tutorial.
+    - name: UNINSTALL_ORDER
+      detail: UNINSTALL_ORDER String list
+      doc: |-
+        Do not use this without a real reason.
+        Specifies the order in which uninstallation operations are handled. The operations are STRSET (uninstall STRING_SET and ALTER_TLK), MOVE (uninstall MOVE), AT (perform AT_UNINSTALL and AT_INTERACTIVE_UNINSTALL) and COPY (uninstall all various file operations).
+        If not specified, the order is MOVE - STRSET - COPY - AT.
+        If this is specified, then ALL operations must be specified (if any isn't, a warning is printed). Please note that this means that your mod might start printing warnings three years down the line if a new uninstall action is coded.
+
+    - name: VERSION
+      detail: VERSION String
+      doc: |-
+        "String" (variables evaluated) will be appended to every component's name in the weidu.log file.
+    - name: BEGIN
+      detail: BEGIN componentName [ component flags... ] TP2 Action list
+      doc: |-
+        Starts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform.
+
+funcVarKeyword:
+  type: 14 # keyword
+  items:
+    - name: INT_VAR
+      doc: |-
+        Integer variable
+    - name: STR_VAR
+      doc: |-
+        String variable
+    - name: RET
+      doc: |-
+        Return value
+    - name: RET_ARRAY
+      doc: |-
+        Return value (arrays)
+
+language:
+  type: 14 #keyword
+  items:
+    - name: LANGUAGE
+      detail: LANGUAGE languageName languageDirectory defaultLanguageTRA list
+      doc: |-
+        The languageName is the name of the language as it is presented to the user. "American English" and "Italiano" are examples. The languageDirectory is the name of the subdirectory in which you have stored the TRA files for that language. Examples include "american" and "spanish". The variable named LANGUAGE is set to languageDirectory if the user selects this language.. Finally, all of the TRA files in the defaultLanguageTRA list are loaded as soon as the user selects a language.
+
+optCase:
+  type: 14 # keyword
+  items:
+    - name: CASE_INSENSITIVE
+      doc: |-
+        Matching is case-insensitive.
+
+    - name: CASE_SENSITIVE
+      doc: |-
+        Matching is case-sensitive.
+
+optExact:
+  type: 14 # keyword
+  items:
+    - name: EVALUATE_REGEXP
+      doc: |-
+        Matching is evaluated following the usual regexp conventions.
+
+    - name: EXACT_MATCH
+      doc: |-
+        Only the given string is searched for.
+
+    - name: EXACT
+      doc: |-
+        In AT_EXIT and sister ACTIONs, If EXACT is specified, / and \ will be preserved as they are.
+
+optGlob:
+  type: 14 # keyword
+  items:
+    - name: GLOB
+      doc: |-
+        Use local filesystem globbing. Globbing is generally architecture specific!
+    - name: NOGLOB
+      doc: |-
+        Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
 
 patch:
   type: 3 # function
@@ -1755,974 +1919,6 @@ patch:
       detail: variable = value
       doc: |-
         Update variable so that it is equal to value.
-when:
-  type: 14 # keyword
-  items:
-    - name: BUT_ONLY
-      doc: |-
-        True only if the file is actually changed by patching actions. Unlike all other when clauses, this one is evaluated just before the result would be written out to the disk. You may use BUT_ONLY as a synonym for BUT_ONLY_IF_IT_CHANGES.
-    - name: BUT_ONLY_IF_IT_CHANGES
-      doc: |-
-        True only if the file is actually changed by patching actions. Unlike all other when clauses, this one is evaluated just before the result would be written out to the disk. You may use BUT_ONLY as a synonym for BUT_ONLY_IF_IT_CHANGES.
-    - name: IF
-      detail: IF regexp
-      doc: |-
-        True if the input file contains regexp.
-    - name: IF_EXISTS
-      doc: |-
-        True only if the file exists. For COPY, this check is done with FILE_EXISTS. For COPY_EXISTING, COPY_EXISTING_REGEXP, COPY_RANDOM, APPEND and APPEND_COL this check is done with FILE_EXISTS_IN_GAME. For COPY_ALL_GAM_FILES, this when clause is redundant.
-
-    - name: IF_SIZE_IS
-      detail: IF_SIZE_IS fileSize
-      doc: |-
-        True if the input file size is fileSize. You may use I_S_I as a synonym for IF_SIZE_IS.
-    - name: UNLESS
-      detail: UNLESS regexp
-      doc: |-
-        False if the input file contains regexp.
-value:
-  type: 14 # keyword
-  items:
-    - name: ABS
-      detail: ABS Value
-      doc: |-
-        Absolute value. If the value is >= 0, the result is x. Otherwise the result is -x.
-    - name: AND
-      detail: value AND value
-      doc: |-
-        Conjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`.
-    - name: AREA_CITY
-      doc: |-
-        0xFC
-    - name: AREA_DAY
-      doc: |-
-        0x104
-    - name: AREA_DUNGEON
-      doc: |-
-        0x100
-    - name: AREA_FOREST
-      doc: |-
-        0xF8
-    - name: AREA_NIGHT
-      doc: |-
-        0x108
-    - name: AREA_SCRIPT
-      doc: |-
-        0x94
-
-    - name: ATTACK1
-      doc: |-
-        0xDC
-    - name: ATTACK2
-      doc: |-
-        0xE0
-    - name: ATTACK3
-      doc: |-
-        0xE4
-    - name: ATTACK4
-      doc: |-
-        0xE8
-    - name: BAND
-      detail: value BAND value
-      doc: |-
-        Bitwise And. 0b101 BAND 0b110 = 0b100. Synonym: &.
-    - name: BASR
-      detail: value BASR value
-      doc: |-
-        Bitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1.
-
-    - name: BATTLE_CRY1
-      doc: |-
-        0xC8
-    - name: BATTLE_CRY2
-      doc: |-
-        0xCC
-    - name: BATTLE_CRY3
-      doc: |-
-        0xD0
-    - name: BATTLE_CRY4
-      doc: |-
-        0xD4
-    - name: BATTLE_CRY5
-      doc: |-
-        0xD8
-    - name: BEGIN
-    - name: ELSE
-    - name: ALWAYS_ASK
-      doc: |-
-        For use with `QUICK_MENU`.
-    - name: WHEN
-      doc: |-
-        For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
-    - name: ANY
-      doc: |-
-        When using `ACTION_MATCH` and `PATCH_MATCH`, it is also possible to have a condition without a guard, in which case the syntax is:
-
-        ```
-        ACTION_MATCH ~%something%~
-        WITH
-          ANY GAME_IS ~BG1 TotSC~
-          BEGIN
-            // the game is BG1
-          END
-          ANY GAME_IS ~SoA ToB~
-          BEGIN
-            // the game is BG2
-          END
-          DEFAULT
-            // not BG1 or BG2
-        END
-        ```
-    - name: ERROR_MESSAGE
-      doc: |-
-        For use with `ACTION_TRY` and `PATCH_TRY`.
-
-        ```
-        ACTION_TRY
-          COPY ~override/sw1h01.itm~ ~override~
-          DO_SOMETHING_ELSE
-        WITH
-          ~Unix.Unix_error(20, "stat", "override/sw1h01.itm")~
-          BEGIN
-            PRINT ~I caught sw1h01.itm not found!~
-          END
-          ~Unix.Unix_error(20, "stat", "override/.*.itm")~
-          BEGIN
-            PRINT ~I caught another missing item!~
-          END
-          DEFAULT
-            PRINT ~I caught another error!~
-        END
-        ```
-
-        The actions in `ACTION_TRY` are executed. If none of those fails, the `WITH` part is skipped; otherwise, the error message is printed as usual (use `SILENT`), the exception text (from the `ERROR: blah blah` line) is saved to the `%ERROR_MESSAGE%` variable, and a `MATCH` is executed on that.
-
-        After running the correct error handling code, execution continues after the end of the `ACTION_TRY` block. If you still want to block the installation, use `ACTION_RERAISE` (in theory, you could use `FAIL ~%ERROR_MESSAGE%~`, but this changes the exception and its text, which would cause you headaches when nesting multiple `TRY`s).
-    - name: THIS
-      doc: |-
-        Current (unsigned) value.
-        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
-    - name: STHIS
-      doc: |-
-        Current (signed) value.
-        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
-    - name: BIFF_IS_COMPRESSED
-      detail: BIFF_IS_COMPRESSED fileName
-      doc: |-
-        Evaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command.
-    - name: BIO
-      doc: |-
-        The offset within an infinity engine resource where NPC Biography is stored (i.e., 0x1CC).
-    - name: BIT0
-      doc: |-
-        0b00000000000000000000000000000001
-    - name: BIT1
-      doc: |-
-        0b00000000000000000000000000000010
-    - name: BIT10
-      doc: |-
-        0b00000000000000000000010000000000
-    - name: BIT11
-      doc: |-
-        0b00000000000000000000100000000000
-    - name: BIT12
-      doc: |-
-        0b00000000000000000001000000000000
-    - name: BIT13
-      doc: |-
-        0b00000000000000000010000000000000
-    - name: BIT14
-      doc: |-
-        0b00000000000000000100000000000000
-    - name: BIT15
-      doc: |-
-        0b00000000000000001000000000000000
-    - name: BIT16
-      doc: |-
-        0b00000000000000010000000000000000
-    - name: BIT17
-      doc: |-
-        0b00000000000000100000000000000000
-    - name: BIT18
-      doc: |-
-        0b00000000000001000000000000000000
-    - name: BIT19
-      doc: |-
-        0b00000000000010000000000000000000
-    - name: BIT2
-      doc: |-
-        0b00000000000000000000000000000100
-    - name: BIT20
-      doc: |-
-        0b00000000000100000000000000000000
-    - name: BIT21
-      doc: |-
-        0b00000000001000000000000000000000
-    - name: BIT22
-      doc: |-
-        0b00000000010000000000000000000000
-    - name: BIT23
-      doc: |-
-        0b00000000100000000000000000000000
-    - name: BIT24
-      doc: |-
-        0b00000001000000000000000000000000
-    - name: BIT25
-      doc: |-
-        0b00000010000000000000000000000000
-    - name: BIT26
-      doc: |-
-        0b00000100000000000000000000000000
-    - name: BIT27
-      doc: |-
-        0b00001000000000000000000000000000
-    - name: BIT28
-      doc: |-
-        0b00010000000000000000000000000000
-    - name: BIT29
-      doc: |-
-        0b00100000000000000000000000000000
-    - name: BIT3
-      doc: |-
-        0b00000000000000000000000000001000
-    - name: BIT30
-      doc: |-
-        0b01000000000000000000000000000000
-    - name: BIT31
-      doc: |-
-        0b10000000000000000000000000000000
-
-    - name: BIT4
-      doc: |-
-        0b00000000000000000000000000010000
-    - name: BIT5
-      doc: |-
-        0b00000000000000000000000000100000
-    - name: BIT6
-      doc: |-
-        0b00000000000000000000000001000000
-    - name: BIT7
-      doc: |-
-        0b00000000000000000000000010000000
-    - name: BIT8
-      doc: |-
-        0b00000000000000000000000100000000
-    - name: BIT9
-      doc: |-
-        0b00000000000000000000001000000000
-    - name: BLSL
-      detail: value BLSL value
-      doc: |-
-        Bitwise Logical Shift Left. 0b101 BLSL 2 = 0b10100. Synonym: <<.
-    - name: BLSR
-      detail: value BLSR value
-      doc: |-
-        Bitwise Logical Shift Right. 0b101 BLSR 2 = 0b1. Synonym: >>.
-    - name: BNOT
-      detail: BNOT value
-      doc: |-
-        Bitwise Not. BNOT 0b111 = 0b1111111111111111111111111111000. Synonym: `.
-    - name: BOR
-      detail: value BOR value
-      doc: |-
-        Bitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |.
-    - name: BORED
-      doc: |-
-        0xC4
-    - name: BUFFER_LENGTH
-      doc: |-
-        Returns the length of the string currently being patched, or 0 if outside of a patch expression.
-    - name: BXOR
-      detail: value BXOR value
-      doc: |-
-        Bitwise Exclusive Or. 0b101 BXOR 0b110 = 0b011. Synonym: ^^.
-    - name: BYTE_AT
-      detail: BYTE_AT offset
-      doc: |-
-        The 8-bit value from the file at the given offset.
-    - name: COMPLIMENT1
-      doc: |-
-        0x160
-    - name: COMPLIMENT2
-      doc: |-
-        0x164
-    - name: COMPLIMENT3
-      doc: |-
-        0x168
-    - name: CRITICAL_HIT
-      doc: |-
-        0x1A8
-    - name: CRITICAL_MISS
-      doc: |-
-        0x1AC
-    - name: DAMAGE
-      doc: |-
-        0xEC
-    - name: DEATHVAR
-      doc: |-
-        0x280
-    - name: DESC
-      doc: |-
-        0x54
-    - name: DIALOG
-      doc: |-
-        0x2CC
-    - name: DIALOG_DEFAULT
-      doc: |-
-        0x19C
-    - name: DIALOG_HOSTILE
-      doc: |-
-        0x198
-    - name: DIRECTORY_EXISTS
-      detail: DIRECTORY_EXISTS dirName
-      doc: |-
-        Evaluates to 1 if dirName is a directory and exists in the filesystem and evaluates to 0 otherwise.
-    - name: DYING
-      doc: |-
-        0xF0
-    - name: EE_LANGUAGE
-      doc: |-
-        Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
-
-    - name: END
-
-    - name: ENGINE_IS
-      detail: ENGINE_IS Caching String
-      doc: |-
-        Functions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.
-        If caching (disabled by default), `ENGINE_IS` will return the same result for the same string, and do so much faster.
-
-    - name: EVALUATE_BUFFER
-      detail: EVALUATE_BUFFER variable
-      doc: |-
-        User variables inside the given string are evaluated one additional time. You may prepend `EVALUATE_BUFFER` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
-        ```
-        SPRINT x ~y~
-        SET y = 5
-        SPRINT z EVALUATE_BUFFER ~tricky %%x%%~
-        SET EVALUATE_BUFFER "%x%" += 77
-        PATCH_PRINT "y is %y% ; z is %z%"
-        ```
-        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
-    - name: EVAL
-      detail: EVAL variable
-      doc: |-
-        User variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
-        ```
-        SPRINT x ~y~
-        SET y = 5
-        SPRINT z EVAL ~tricky %%x%%~
-        SET EVAL "%x%" += 77
-        PATCH_PRINT "y is %y% ; z is %z%"
-        ```
-        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
-
-    #    - name: $array(index
-    #      detail: $array(index list)
-    #      doc: The so-called array construct. See the tutorial.
-    - name: EXISTANCE1
-    - name: EXISTANCE2
-    - name: EXISTANCE3
-    - name: EXISTANCE4
-      doc: |-
-        0x1C8
-    - name: EXISTANCE5
-    - name: FILE_CONTAINS
-      detail: FILE_CONTAINS fileName regexp
-      doc: |-
-        Evaluates to 1 if the file fileName contains the regular expression regexp and 0 otherwise. Case is ignored.
-    - name: FILE_CONTAINS_EVALUATED
-      detail: FILE_CONTAINS_EVALUATED ( fileName varsRegexp )
-      doc: |-
-        First, all WeiDU variables enclosed in %s in varsRegexp and fileName are substituted. The expression is 1 if the resulting regexp occurs in fileName and 0 otherwise. If fileName does not exist or has size 0, the result is 0. The comparison ignores case. See also FILE_CONTAINS. Example: COPY_EXISTING_REGEXP ~.*\.CRE~ ~override~ READ_BYTE 0x273 class READ_ASCII 0x280 deathvar PATCH_IF (class = 14) AND // class 14 = CLERIC_MAGE (NOT FILE_CONTAINS_EVALUATED(~pdialog.2da~ ~%deathvar%~)) THEN BEGIN ADD_CRE_ITEM ~POTN08~ #10 #10 #10 ~IDENTIFIED~ ~INV15~ END BUT_ONLY_IF_IT_CHANGES The example gives ten healing potions to all cleric-mages who cannot join the party. Notably it excludes Aerie since she has the death variable Aerie and pdialog.2da contains AERIE.
-    - name: RESOURCE_CONTAINS
-      detail: RESOURCE_CONTAINS fileName varsRegexp
-      doc: |-
-        `fileName` and `varsRegexp` are evaluated for variables. `fileName` is loaded as a game resource (searching only the `biffs` and the `override` directories) and a regexp search is performed on the file contents. The result is 1 if the regexp `varsRegexp` occurs within `fileName`, or otherwise 0. The comparison ignores case. If `fileName` does not exist or has a file size 0, the result is 0.
-    - name: FILE_EXISTS
-      detail: FILE_EXISTS fileName
-      doc: |-
-        Evaluates to 1 if the file exists in the filesystem (or the bif file is referenced inside the chitin.key) and evaluates to 0 otherwise. The results of FILE_EXISTS are undefined if fileName is a directory.
-    - name: FILE_EXISTS_IN_GAME
-      detail: FILE_EXISTS_IN_GAME fileName
-      doc: |-
-        Evaluates to 1 if the file exists as a game resource and has non-zero size. Evaluates to 0 otherwise. BIFFs and the override directory are searched in the standard manner. Evaluates to 0 for a file that does not exist but has been ALLOW_MISSING'd.
-    - name: FILE_IS_IN_COMPRESSED_BIFF
-      detail: FILE_IS_IN_COMPRESSED_BIFF fileName
-      doc: |-
-        Evaluates to 1 if the file is stored in a compressed biff (ignoring copies in the override). Evaluates to 0 otherwise (the file is not in a biff, or it is in an uncompressed biff).
-    - name: FILE_MD5
-      detail: FILE_MD5 fileName md5sum
-      doc: |-
-        Evaluates to 1 if the file exists and has the given MD5 checksum. Evaluates to 0 otherwise. Two different files are exceptionally unlikely to have the same MD5 checksum. In any event, the discovered checksum is printed to the log. If the file does not exist, it evaluates to 0.
-    - name: FILE_SIZE
-      detail: FILE_SIZE fileName fileSize
-      doc: |-
-        Evaluates to 1 if the size of the file fileName is exactly fileSize. Evaluates to 0 otherwise.
-    - name: GAME_INCLUDES
-      detail: GAME_INCLUDES Caching String
-      doc: |-
-        Returns `true` if the IE game variant includes the game content specified by String, otherwise returns `false`.
-        String is a single game chosen from
-        - bg1
-        - bg2=soa
-        - ca
-        - iwd=iwd1
-        - iwd2
-        - how
-        - pst
-        - sod
-        - tob
-        - totlm
-        - totsc
-
-        In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
-        Please note that unlike `GAME_IS` you only specify a single game, rather than a list of games.
-        As an example, `GAME_INCLUDES ~tob~` will return true for any game which includes the ToB content, such as ToB itself, BGT or BG2EE.
-        If caching (disabled by default), `GAME_INCLUDES` will return the same result for the same string, and do so much faster.
-    - name: GAME_IS
-      detail: GAME_IS Caching String
-      doc: |-
-        Returns `true` if the IE game variant is one of the entries in String, otherwise returns `false`.
-        String is a list of whitespace-separated entries, chosen from (case doesn't matter)
-        - bg1
-        - bg2=soa
-        - bgee
-        - bg2ee
-        - bgt
-        - ca
-        - eet
-        - how
-        - iwd=iwd1
-        - iwd2
-        - iwd_in_bg2
-        - iwdee
-        - pst
-        - pstee
-        - totsc
-        - tob
-        - totlm
-        - tutu
-        - tutu_totsc
-
-        In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
-        Please note that the items in the list are defined to be mutually exclusive
-        (except `tob` will detect both plain ToB and ToB with BGT installed, for legacy purposes),
-        so bg2 will detect a SoA-only game, without either ToB or Tutu installed.
-        As such, a mod which is usable with any flavor of BG2 and any flavor of Tutu or BG: EE would contain
-        `REQUIRE_PREDICATE GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~`.
-        If caching (disabled by default), `GAME_IS` will return the same result for the same string, and do so much faster.
-    - name: HAPPY
-      doc: |-
-        0xAC
-    - name: HIDDEN_IN_SHADOWS
-      doc: |-
-        0x1BC
-    - name: HURT
-      doc: |-
-        0xF4
-    - name: IDENTIFIED_DESC
-      doc: |-
-        The offset within an infinity engine resource where the identified description is stored.
-    - name: IDS_OF_SYMBOL
-      detail: IDS_OF_SYMBOL ( File String )
-      doc: |-
-        Will return the number associated with String in File.ids, or -1 if String is not associated in File.ids.
-    - name: ID_OF_LABEL
-      detail: ID_OF_LABEL modTp2Name String
-      doc: |-
-        Returns the numerical identifier (component number) of the component in modTp2Name which has the given LABEL. Returns -231 if no such tp2 exists, said tp2 has no component with that LABEL, or two or more components have that LABEL. In the last two cases will print a WARNING.
-    - name: INDEX
-      detail: INDEX ( optcase optexact string1 string2 [ value ] )
-      doc: |-
-        Returns the index of the first regexp match of string1 inside string2, or -1 if not found. If provided, value specifies from what point of string2 the searching should begin (instead of 0).
-    - name: INDEX_BUFFER
-      detail: INDEX_BUFFER ( optcase optexact string [ value ] )
-      doc: |-
-        Returns the index of the first regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of 0).
-    - name: INITIAL_MEETING
-      doc: |-
-        0xA4
-    - name: INSTALL_ORDER
-      detail: INSTALL_ORDER modTp2Name1 modComponent1 BEFORE modTp2Name2 modComponent2
-      doc: |-
-        Returns true if the modComponent1 of modTp2Name1 is installed before the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT.
-    - name: INSULT
-    - name: INTERACTION1
-      doc: |-
-        0x140
-    - name: INTERACTION2
-      doc: |-
-        0x144
-    - name: INTERACTION3
-      doc: |-
-        0x148
-    - name: INTERACTION4
-      doc: |-
-        0x14C
-    - name: INTERACTION5
-      doc: |-
-        0x150
-    - name: INVENTORY_FULL
-      doc: |-
-        0x1B4
-    - name: IS_AN_INT
-      detail: IS_AN_INT String
-      doc: |-
-        Returns true if the variable String is set to an integer (there's a variable called either String or %String% with integer value).
-    - name: IS_SILENT
-      doc: |-
-        Returns true if the output is currently silenced, false otherwise.
-    - name: LEADER
-      doc: |-
-        0xBC
-    - name: LONG_AT
-      detail: LONG_AT offset
-      doc: |-
-        The 32-bit value from the file at the given offset.
-    - name: MISCELLANEOUS
-    - name: MODULO
-      detail: value MODULO value
-      doc: |-
-        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym.
-    - name: REM
-      detail: value REM value
-      doc: |-
-        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym.
-    - name: MOD_IS_INSTALLED
-      detail: MOD_IS_INSTALLED modTp2Name modComponent
-      doc: |-
-        Returns true if the modComponent of modTp2Name is installed. The syntax is the same as with REQUIRE_COMPONENT.
-    - name: MORALE
-      doc: |-
-        0xA8
-    - name: MPSAVE_DIRECTORY
-      doc: |-
-        Evaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead.
-    - name: NAME1
-      doc: |-
-        The offset within an infinity engine resource where the unidentified general name (e.g., "Battle Axe") is stored.
-    - name: NAME2
-      doc: |-
-        The offset within an infinity engine resource where the identified general name (e.g., "K'logarath +4") is stored.
-    - name: NEXT_STRREF
-      doc: |-
-        Returns the next available string reference in the TLK file.
-    - name: NOT
-      detail: NOT value
-      doc: |-
-        Negation. If the value is 0, the result is 1. Otherwise the result is 0.
-    - name: OR
-      detail: value OR value
-      doc: |-
-        Disjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`.
-    - name: PICKED_POCKET
-      doc: |-
-        0x1B8
-    - name: PORTRAIT_SMALL
-      doc: |-
-        0x34
-    - name: PORTRAIT_LARGE
-      doc: |-
-        0x3C
-    - name: RANDOM
-      detail: RANDOM ( value value )
-      doc: |-
-        A random-number generator. The first value is the lower bound, the second value is the upper bound. A random integer between the lower bound and the upper bound (inclusive) is returned. Thus RANDOM(3 5) can return 3, 4 or 5. If the lower bound is greater than the upper bound, zero is returned. See also RANDOM_SEED.
-    - name: REACT_TO_DIE_GENERAL
-      doc: |-
-        0x178
-    - name: REACT_TO_DIE_SPECIFIC
-      doc: |-
-        0x17C
-    - name: REGISTRY_BG1_PATH
-      doc: |-
-        The path of BG1 (as read from the registry), or empty if not available.
-    - name: REGISTRY_BG2_PATH
-      doc: |-
-        The path of BG2 (as read from the registry), or empty if not available.
-    - name: REGISTRY_IWD1_PATH
-      doc: |-
-        The path of IWD1 (as read from the registry), or empty if not available.
-    - name: REGISTRY_IWD2_PATH
-      doc: |-
-        The path of IWD2 (as read from the registry), or empty if not available.
-    - name: REGISTRY_PST_PATH
-      doc: |-
-        The path of PST (as read from the registry), or empty if not available.
-    - name: RESOLVE_STR_REF
-      detail: RESOLVE_STR_REF ( text )
-      doc: |-
-        Resolves the given text (adding it to the tlk), and returns its TLK index (so you can pass the result of this command to a function which then uses WRITE_LONG rather than SAY).
-    - name: RESPONSE_TO_COMPLIMENT1
-      doc: |-
-        0x180
-    - name: RESPONSE_TO_COMPLIMENT2
-      doc: |-
-        0x184
-    - name: RESPONSE_TO_COMPLIMENT3
-      doc: |-
-        0x188
-    - name: RESPONSE_TO_INSULT1
-      doc: |-
-        0x18C
-    - name: RESPONSE_TO_INSULT2
-      doc: |-
-        0x190
-    - name: RESPONSE_TO_INSULT3
-      doc: |-
-        0x194
-    - name: RINDEX
-      detail: RINDEX ( optcase optexact string1 string2 [ value ] )
-      doc: |-
-        Returns the index of the last regexp match of string1 inside string2, or -1 if not found. If provided, value specifies from what point of string2 the searching should begin (instead of STRING_LENGTH string2).
-    - name: RINDEX_BUFFER
-      detail: RINDEX_BUFFER ( optcase optexact string [ value ] )
-      doc: |-
-        Returns the index of the last regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of BUFFER_LENGTH).
-    - name: SAVE_DIRECTORY
-      doc: |-
-        Evaluates to the directory in which the current game type stores its saved games. This is "%USER_DIRECTORY%/save".
-    - name: SBYTE_AT
-      detail: SBYTE_AT offset
-      doc: |-
-        The 8-bit signed value from the file at the given offset.
-    - name: SCRIPT_CLASS
-      doc: |-
-        0x250
-    - name: SCRIPT_DEFAULT
-      doc: |-
-        0x268
-    - name: SCRIPT_GENERAL
-      doc: |-
-        0x260
-    - name: SCRIPT_OVERRIDE
-      doc: |-
-        0x248
-    - name: SCRIPT_RACE
-      doc: |-
-        0x258
-    - name: SELECT_ACTION1
-      doc: |-
-        0x124
-    - name: SELECT_ACTION2
-      doc: |-
-        0x128
-    - name: SELECT_ACTION3
-      doc: |-
-        0x12C
-    - name: SELECT_ACTION4
-      doc: |-
-        0x130
-    - name: SELECT_ACTION5
-      doc: |-
-        0x134
-    - name: SELECT_ACTION6
-      doc: |-
-        0x138
-    - name: SELECT_ACTION7
-      doc: |-
-        0x13C
-    - name: SELECT_COMMON1
-      doc: |-
-        0x10C
-    - name: SELECT_COMMON2
-      doc: |-
-        0x110
-    - name: SELECT_COMMON3
-      doc: |-
-        0x114
-    - name: SELECT_COMMON4
-      doc: |-
-        0x118
-    - name: SELECT_COMMON5
-      doc: |-
-        0x11C
-    - name: SELECT_COMMON6
-      doc: |-
-        0x120
-    - name: SELECT_RARE1
-      doc: |-
-        0x1A0
-    - name: SELECT_RARE2
-      doc: |-
-        0x1A4
-    - name: SET_A_TRAP
-      doc: |-
-        0x1C4
-    - name: SHORT_AT
-      detail: SHORT_AT offset
-      doc: |-
-        The 16-bit value from the file at the given offset.
-    - name: SIZE_OF_FILE
-      detail: SIZE_OF_FILE fileName
-      doc: |-
-        Returns the size of fileName or -1 if the file does not exist. Variables in fileName are evaluated. fileName can be a file on the local file system or an inlined file.
-    - name: SLONG_AT
-      detail: SLONG_AT offset
-      doc: |-
-        The 32-bit signed value from the file at the given offset.
-    - name: SPECIAL1
-      doc: |-
-        0x16C
-    - name: SPECIAL2
-      doc: |-
-        0x170
-    - name: SPECIAL3
-      doc: |-
-        0x174
-    - name: SPELL_DISRUPTED
-      doc: |-
-        0x1C0
-    - name: SSHORT_AT
-      detail: SSHORT_AT offset
-      doc: |-
-        The 16-bit signed value from the file at the given offset.
-    - name: STATE_WHICH_SAYS
-      detail: STATE_WHICH_SAYS text FROM String
-      doc: |-
-        String must be an in-game or in-override `.dlg` file. Returns:
-        - Fails the installation if it can't evaluate the text (an `@x` reference out of bounds)
-        - `-3` if the text is not currently in the tlk or in the list of strings to add
-        - `-2` if the text is spoken (`= SAY ~Foo~`) at least twice in the file `String`
-        - `-1` if the text is never spoken in the file String Otherwise it returns the number of the state in which text is spoken in the file `String`. `@x` references are taken from the loaded TRA files (the ones defined in the Language part).
-
-        **Alternative form**: `STATE_WHICH_SAYS value IN String1 FROM String2`
-        As above, except that `@x` references are taken from the `String1` tra file. In particular, one `%s` in `String1` is expanded to the list of directories; for example (as of Sola `v102`), `solarom/%s/epilogue.tra` would match
-        - `solarom/american/epilogue.tra`
-        - `solarom/french/epilogue.tra`
-        - `solarom/german/epilogue.tra`
-        - `solarom/italian/epilogue.tra`
-        - `solarom/polski/epilogue.tra`
-        - `solarom/portuguese/epilogue.tra`
-        - `solarom/russian/epilogue.tra`
-    - name: STORE_NAME
-      doc: |-
-        0xC
-    - name: STRING_COMPARE
-      detail: String STRING_COMPARE String
-      doc: |-
-        This is legacy syntax for STRING_EQUAL: This expression evaluates to 0 if and only if its two string arguments are equal (have the same length and the same contents). Otherwise it will evaluate to a negative or positive integer, depending on whether the first string argument would sort lexicographically before or after the second string argument. variables within the strings (e.g., "%mykit%") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. You may use STR_CMP as a synonym for STRING_COMPARE. This function works just like C's strcmp. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values.
-    - name: STRING_COMPARE_CASE
-      detail: String STRING_COMPARE_CASE String
-      doc: |-
-        This is legacy syntax for STRING_EQUAL_CASE: As STRING_COMPARE, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
-    - name: STRING_COMPARE_REGEXP
-      detail: String STRING_COMPARE_REGEXP String
-      doc: |-
-        As STRING_COMPARE_CASE, but the second string is treated as a regexp. Thus "AR1005" STRING_MATCHES_REGEXP "AR[0-9]+" evaluates to 0 ("no difference" ). You may use STRING_COMPARE_REGEXP as a synonym.
-    - name: STRING_CONTAINS_REGEXP
-      detail: String STRING_CONTAINS_REGEXP String
-      doc: |-
-        As STRING_MATCHES_REGEXP, but it evaluates to 0 if the first string contains the second regexp. Thus "AR1005" STRING_CONTAINS_REGEXP "[w-z]" evaluates to 1 ("mismatch").Be warned that this does the exact opposite of what the name suggests.
-    - name: STRING_EQUAL
-      detail: String STRING_EQUAL String
-      doc: |-
-        This expression evaluates to 1 if and only if its two string arguments are equal (have the same length and the same contents), otherwise it values to 0. variables within the strings (e.g., "%mykit%") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values.
-    - name: STRING_EQUAL_CASE
-      detail: String STRING_EQUAL_CASE String
-      doc: |-
-        As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal. You may use STR_EQ as a synonym for STRING_EQUAL_CASE.
-    - name: STRING_LENGTH
-      detail: STRING_LENGTH String
-      doc: |-
-        Returns the length of the argument String (after variable evaluation).
-    - name: STRING_MATCHES_REGEXP
-      detail: String STRING_MATCHES_REGEXP String
-      doc: |-
-        As STRING_COMPARE_CASE, but the second string is treated as a regexp. Thus "AR1005" STRING_MATCHES_REGEXP "AR[0-9]+" evaluates to 0 ("no difference" ). You may use STRING_COMPARE_REGEXP as a synonym.
-    - name: STR_CMP
-      detail: String STR_CMP String
-      doc: |-
-        This is legacy syntax for STRING_EQUAL: This expression evaluates to 0 if and only if its two string arguments are equal (have the same length and the same contents). Otherwise it will evaluate to a negative or positive integer, depending on whether the first string argument would sort lexicographically before or after the second string argument. variables within the strings (e.g., "%mykit%") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. This function works just like C's strcmp. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values.
-    - name: STR_EQ
-      detail: String STR_EQ String
-      doc: |-
-        As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
-    - name: TAB
-      doc: |-
-        Tabulation character (`\t`).
-    - name: STR_VAR
-      doc: |-
-        String variable
-    - name: TARGET_IMMUNE
-      doc: |-
-        0x1B0
-    - name: TIRED
-      doc: |-
-        0xC0
-    - name: TRA_ENTRY_EXISTS
-      detail: TRA_ENTRY_EXISTS ( String String list )
-      doc: |-
-        returns true if the variable String maps to a valid TRA entry. 	If the String list is empty the tra entry is looked for into the loaded TRAs, 	otherwise it's looked for into the listed TRA files.
-    - name: UNHAPPY_ANNOYED
-      doc: |-
-        0xB0
-    - name: UNHAPPY_BREAKING
-      doc: |-
-        0xB8
-    - name: UNHAPPY_SERIOUS
-      doc: |-
-        0xB4
-    - name: UNIDENTIFIED_DESC
-      doc: |-
-        The offset within an infinity engine resource where the unidentified description is stored.
-    - name: USER_DIRECTORY
-      doc: |-
-        Evaluates to the directory in which user files are kept. This is the game path on non-EE-type games. On EE-type games, the USER_DIRECTORY variable is constructed from two parts, the user directory and a game-specific directory. If the file engine.lua exists, WeiDU will attempt to read the game-specific directory from it. If the engine.lua does not exist or does not contain the necessary information, WeiDU will use default paths. On Windows, the user directory is the user's personal directory, as read from the Windows registry. On macOS, the user directory is "$HOME/Documents". On Linux, the user directory is "$HOME/.local/share". In both cases, $HOME is the user's home directory, as read from the pwd database. The default game-specific path for BG: EE is "Baldur's Gate - Enhanced Edition"; for BGII: EE it is "Baldur's Gate II - Enhanced Edition"; for IWD: EE it is "Icewind Dale - Enhanced Edition"; and for PST: EE it is "Planescape Torment - Enhanced Edition".
-    - name: VALID_SCRIPT_ACTIONS
-      detail: VALID_SCRIPT_ACTIONS variable
-      doc: |-
-        Variable can be an array construct and should be or evaluate to a string of whitespace-separated Infinity Engine actions. Returns true if the string compiles into BCS without unrecoverable errors, otherwise false.
-    - name: VALID_SCRIPT_TRIGGERS
-      detail: VALID_SCRIPT_TRIGGERS variable
-      doc: |-
-        Variable can be an array construct and should be or evaluate to a string of whitespace-separated Infinity Engine triggers. Returns true of the string compiles into BCS without unrecoverable errors, otherwise false.
-    - name: VARIABLE_IS_SET
-      detail: VARIABLE_IS_SET String
-      doc: |-
-        Returns true if the variable String is set (there's a variable called either String or %String%, regardless of whether it is a string or an integer).
-    - name: WNL
-      doc: |-
-        Windows new line (`\r\n`).
-    - name: MNL
-      doc: |-
-        (Pre-OSX) Macintosh new line (`\r`).
-    - name: LNL
-      doc: |-
-        Linux/Unix/OSX new line (`\n`).
-
-    # as of v251
-    - name: VARIABLE_IS_IN_ARRAY
-      detail: VARIABLE_IS_IN_ARRAY arrayConstruct
-      doc: |-
-        Returns true if the array variable is set, as per
-        `VARIABLE_IS_SET`, and if it is a member of an array, in the way
-        that has it, for example, iterated over by `PHP_EACH`.
-    - name: DEFINED_AS_FUNCTION
-      detail: DEFINED_AS_FUNCTION variable
-      doc: |-
-        Variable can be a string (variables are evaluated) or an array
-        construct that evaluates to a string. Returns `1` if the string is the
-        name of an action function, `2` if the string is the name of a patch
-        function, `3` if the string is the name of both an action function and a
-        patch function, and `0` if string is not the name of any defined
-        function. Note that `1`, `2` and `3` are all `true` in a boolean context.
-    - name: DEFINED_AS_INLINED
-      detail: DEFINED_AS_INLINED variable
-      doc: |-
-        Variable can be a string (variables are evaluated) or an array
-        construct that evaluates to a string. Returns `1` if the string is the
-        path of a defined inlined file, otherwise `0`.
-
-funcVarKeyword:
-  type: 14 # keyword
-  items:
-    - name: INT_VAR
-      doc: |-
-        Integer variable
-    - name: STR_VAR
-      doc: |-
-        String variable
-    - name: RET
-      doc: |-
-        Return value
-    - name: RET_ARRAY
-      doc: |-
-        Return value (arrays)
-
-
-actionFunctions:
-  type: 3 # function
-  items:
-    - name: HANDLE_AUDIO
-      doc: |
-        Install Ogg--Vorbis compressed audio files in a safe and easy manner. This is an ACTION function.
-
-        This function supports Windows, OS X, GNU/Linux and all IE games, including BG:EE. If the game is not BG:EE, the audio will be decompressed and the resulting .wav files will be `MOVE`d to the override. If the game is BG:EE, the .ogg files are copied into the override and renamed into .wav files. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
-
-        If the audio files need to be decompressed, this function will use oggdec.exe on Windows, which is by default expected to be found in `audio_path`. The most recent version of oggdec can be downloaded [http://downloads.xiph.org/releases/vorbis/vorbis-tools-win32-bin.7z here] (direct link). On OS X, SoX will be used, which is by default also expected to be found in `audio_path`. SoX compiled for OS X can be downloaded [http://sourceforge.net/projects/sox/files/sox/14.4.1/sox-14.4.1-macosx.zip/download here]. On GNU/Linux, oggdec will be used, but it is expected to be found on the system path and the user should install it him/herself. If you provide installation instructions for GNU/Linux, just include something to the effect of "install oggdec, which is usually part of the package vorbis-tools".
-
-        If the decompression utility cannot be found, the user is warned that the audio files were not installed.
-
-        - INT_VAR `music` if this variable is not `0` and the game is BG:EE, the audio files are given the extension `.acm` instead of `.wav`. This variable has no effect if the game is not BG:EE. By default its value is `0`.
-        - INT_VAR `quiet` if this variable is `1`, the function will suppress output from oggdec and sox. By default this is `0`.
-        - STR_VAR `audio_path` to the path your `.ogg` files are stored in. By default this variable is `~%MOD_FOLDER%/audio~`.
-        - STR_VAR `oggdec_path` to the path oggdec is located in. By default this variable is `~%audio_path%~`.
-        - STR_VAR `sox_path` to the path SoX is located in. By default this variable is `~%audio_path%~`.
-        - STR_VAR `output_path` to the path the audio should be installed into. By default this variable is `override`.
-
-    - name: HANDLE_CHARSETS
-      doc: |
-        Runtime-convert `TRA` files into `UTF-8` in a safe and easy manner. This is an ACTION function.
-
-        This function supports Windows, OS X and GNU/Linux. If the game is BG:EE or BG2:EE, `TRA` files are encoded into `UTF-8` so the text can be installed without causing problems. `HANDLE_CHARSETS` needs to be used before any text is installed and is compatible with `AUTO_TRA` and all other methods of loading `TRA` files.
-
-        Conversion is handled by the program `iconv`. The program is available as part of the base system on OS X and GNU/Linux but a Windows version needs to be included in your mod. A Windows version can be downloaded [http://gnuwin32.sourceforge.net/packages/libiconv.htm here].
-
-        In order to function, `HANDLE_CHARSETS` needs to know a few things. First, you need to specify where you keep your `TRA` files. You do this with the variable `tra_path`. Second, `HANDLE_CHARSETS` needs to know where the Windows version of `iconv` is located. You do this with the variable `iconv_path`. Third, `HANDLE_CHARSETS` needs to know which character set the `TRA` files are in. Note that they can only be converted into `UTF-8` and cannot already be in `UTF-8`. You provide this information with `charset_table` or tell `HANDLE_CHARSETS` to try to infer this by itself with `infer_charsets`. Lastly, `HANDLE_CHARSETS` needs to know which `TRA` files to convert and whether any of them should be reloaded. You can do this with `noconvert_array`, `convert_array` and `reload_array`.
-
-        Unless `convert_array` is specified, `HANDLE_CHARSETS` will recursively convert all `TRA` files in `tra_path` except those listed in `noconvert_array`. If `convert_array` is specified, only those `TRA` files listed in the array will be converted. `convert_array` may contain references to `TRA` files in subdirectories of `tra_path`.
-
-        - INT_VAR `infer_charsets` to whether `HANDLE_CHARSETS` should try to infer which character set the `TRA` files are encoded in. It uses the contents of the `%language%` variable (''vide infra''). If the contents of the variable can be recognised, `HANDLE_CHARSETS` will use the character set used by the localised version of BG2 for this language. If the contents of the variable cannot be recognised, or if the `TRA` files use a different character set than the expected one, `HANDLE_CHARSETS` will fail. Refer to the compatibility matrix below for additional information. `infer_charsets` overrides `charset_table`. Defaults to `0`.
-        - INT_VAR `from_utf8` to whether the function should assume the source `TRA` files are in UTF-8 or not. The default value is `0`, that is, the function assumes the `TRA` files use language-dependent charater sets and should be converted into UTF-8 when the mod is installed on EE-type games; the function produces no results on the original editions of the games. If set to `1`, the source `TRA` files are assumed to be in UTF-8 and are to be converted into language-dependent character sets when the mod is installed on original editions of the games; the function produces no results when installed on EE-type games.
-        - INT_VAR `verbose` to whether the function should print debug information. Defaults to `0`.
-        - STR_VAR `language` to the name of the language directory you wish to convert. The default value of this variable is `\%LANGUAGE\%`, in other words, the directory corresponding to the language the user selected at the start of the installation. You should never need to alter the value of this variable.
-        - STR_VAR `default_language` to the name of the directory used by the default language of your mod, if your mod has one. The default language is typically one for which the translation is always complete and up to date and which you use to guard against incomplete translations. `HANDLE_CHARSETS` will convert the `TRA` files of the default language in addition to those of the user-selected language. Should these two languages be the same, the `TRA` files will only be converted once. Additionally, any `TRA` files listed in the `reload_array` (''vide infra'') will be reloaded for the default language before they are reloaded for the user-selected language. The default value of this variable is `~~` (the empty string).
-        - STR_VAR `tra_path` to the path where your mod's language directories are located. `%tra_path%/%language%` should be a valid directory containing `TRA` files.
-        - STR_VAR `out_path` to the path to which the converted files should be directed. The default value of this variable is `%tra_path%`, that is, the converted files reversibly overwrite the originals and the conversion is transparent to the rest of your mod. Note that if `%tra_path%` and `%out_path%` are the same directory, the conversion will naturally happen only once regardless of how many times `HANDLE_CHARSETS` are invoked, but if the directories are different, the conversion will happen for every invocation (notably, if `HANDLE_CHARSETS` is invoked among the `ALWAYS` actions).
-        - STR_VAR `iconv_path` to the path where iconv.exe is located. Defaults to `%tra_path%/iconv`.
-        - STR_VAR `charset_table` to the name of an associative array where the keys are the names of your language directories and the corresponding values are the character sets used by the respective language. The keys must be entirely in lowercase. `charset_table` is not used if you also specify `infer_charsets`.
-        - STR_VAR `noconvert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should not be converted into `UTF-8`. All `TRA` files in the language directory and its subdirectories except the ones listed in `noconvert_array` will be converted. The .tra file extension is optional. This variable should not be provided if you also provide `convert_array`.
-        - STR_VAR `convert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should be converted into `UTF-8`. Only those `TRA` files in the language directory or its subdirectories which are listed in `convert_array` will be converted. The .tra file extension is optional. If this variable is provided, `noconvert_array` will not be used.
-        - STR_VAR `reload_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files which should be reloaded after they have been converted. The .tra file extension is optional. You should use this variable for reloading those `TRA` files loaded by `LANGUAGE` which should also be converted.
-        - STR_VAR `exclude_directories` to the name of an array indexed by monotonically increasing integers starting from `0`. The values should be the names of directories whose contents should not be converted. The directories should be subdirectories within `%tra_path%/%language%` or its subdirectories. Only the directory name itself should be specified, not its path.
-        - STR_VAR `file_regexp` to a regexp expression with the file names that must be converted. Defaults to `~.+\.tra~`.
-
-    - name: HANDLE_TILESETS
-      doc: |
-        Install TISpack-compressed tilesets in a safe and easy manner. This is an ACTION function.
-
-        This function supports Windows, OS X, GNU/Linux and all IE games that support the `TIS V1` file format. The program tisunpack, part of `TISpack`, is used to decompress the provided .tiz files and the resulting .tis files are placed in the override. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
-
-        This function expects to find tisunpack for one or more of Windows, OS X or GNU/Linux in a common directory under the subdirectories `win32`, `osx`, and `unix`, respectively. For example, in `mymod/tiz/win32`, `mymod/tiz/osx` and `mymod/tiz/unix`, the common directory is `mymod/tiz` and `mymod/tiz/win32/tisunpack.exe` should be a valid file. For GNU/Linux, this function also supports tisunpack being located on the system path (something the user would take care of). If you choose to leave tisunpack to the user, you should mention this requirement in any installation instructions you provide.
-
-        If tisunpack for the user's platform could not be found, the installation fails.
-
-        - STR_VAR `tiz_path` to the path your .tiz files are stored in. By default this variable is `~%MOD_FOLDER%/tiz~`.
-        - STR_VAR `tisunpack_path` to the common directory where the subdirectories `win32`, `osx` and `unix` are located. By default this variable is `~%tiz_path%~`.
-        - STR_VAR `output_path` to the path the tilesets should be installed into. By default this variable is `override`.
-
-    - name: INSTALL_PVRZ
-      doc: |-
-        Install a PVRZ file and updates the PVRZ index. This is an ACTION function.
-         This function copies the specified PVRZ file into the target folder and updates the PVRZ index. This function should be used in conjunction with UPDATE_PVRZ_INDICES.
-         - INT_VAR `original_base_index` to the current base index. This value is returned by the function UPDATE_PVRZ_INDICES as `original_base_index`.
-         - INT_VAR `new_base_index` to the new base index. This value is returned by the function UPDATE_PVRZ_INDICES as `new_base_index`.
-         - STR_VAR `source_file` to the source file to copy. The filename must match the regular expression ~MOS[0-9]+\.PVRZ~ (e.g., MOS0000.PVRZ, mos1592.pvrz or Mos12345.PVRZ). Case is ignored.
-         - STR_VAR `target_folder` to the target folder to copy the source file into. The default value is "override".
-         - RET `success` is set to non-zero if the function returned successfully and is set to zero on error.
-         This function can additionally return all the variables automatically set by COPY.
-    - name: sc#addWmpAre
-      doc: |
-        Adds an area to the worldmap. All variables are zero or blank by default unless otherwise indicated. This is an ACTION function.
-
-        - ACTION_DEFINE_ASSOCIATIVE_ARRAY `toNewArea` to the area references that lead to the new area;
-        - ACTION_DEFINE_ASSOCIATIVE_ARRAY `fromNewArea` to the area references that lead away from the new area;
-        - STR_VAR `areName` to the resource reference of the area to add (like \"ar0700\");
-        - STR_VAR `strName` to the descriptive name of the area (like \"Waukeen's Promenade\");
-        - STR_VAR `strDesc` to the area description that will show up when hovering the cursor over the area on the worldmap;
-        - STR_VAR `worldmap` to the name of the .wmp file you want patched (default is \"worldmap\");
-        - INT_VAR `mapIcon` to the area's map icon index (from mapicons.bam);
-        - INT_VAR `xCoord` to the area's X (east-west) coordinate;
-        - INT_VAR `yCoord` to the area's Y (north-south) coordinate;
-        - INT_VAR `tTime` to the area's travel time in hours * 4 (so 2 = 8 hours);
-        - INT_VAR `inclSv` to 1 if you want to patch saved game worldmaps as well as the master worldmap. '''NB:''' changes to saved games are uninstallable;
-        - INT_VAR `visible` to 1 if you want the ''visible'' flag to be set;
-        - INT_VAR `visibleAdjacent` to 1 if you want the ''visible from adjacent'' flag to be set;
-        - INT_VAR `reachable` to 1 if you want the ''reachable'' flag to be set;
-        - INT_VAR `visited` to 1 if you want the ''visited'' flag to be set;
-        - RET `areNum` returns the worldmap entry number for the new area;
 
 
 patchFunctions:
@@ -3641,116 +2837,6 @@ patchFunctions:
         - INT_VAR `fj_target` to the target ID;
         - STR_VAR `fj_embedded_eff0` to  path/to/v2.eff  or eff resref containing to projectile's effects^*^;
 
-
-dimorphicFunctions:
-  type: 3 # function
-  items:
-    - name: DIRECTORY_OF_FILESPEC
-      doc: |-
-        Returns the directory of a file specification. Compare to SOURCE_DIRECTORY. This is an ACTION and PATCH function.
-         - STR_VAR `filespec` to the file specification, which must include an identifiable directory, or a warning will be raised.
-         - RET `directory` returns the directory of the file specification.
-    - name: EXT_OF_FILESPEC
-      doc: |-
-        Returns the resource extension of a file specification. Compare to SOURCE_EXT. This is an ACTION and PATCH function.
-         - STR_VAR `filespec` to the file specification, which must include an identifiable resource extension, or a warning will be raised.
-         - RET `ext` returns the resource extension of the file specification.
-    - name: FILE_OF_FILESPEC
-      doc: |-
-        Returns the file of a file specification. Compare to SOURCE_FILE. This is an ACTION and PATCH function.
-         - STR_VAR `filespec` to the file specification, which may or may not include a directory.
-         - RET `file` returns the file of the file specification.
-    - name: FIND_FREE_PVRZ_INDEX
-      doc: |-
-        Attempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.
-        This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.
-      args:
-        - name: num_to_reserve
-          type: int
-          doc: the minimum required size of the contiguous block of free indices (1-999)
-          default: "1"
-        - name: start_index
-          type: int
-          doc: the index the search should begin at
-          default: "1000"
-      rets:
-        - name: free_index
-          type: int
-          doc: the first available index matching the specified parameters, -1 on errors
-      type: dimorphic
-    - name: GET_UNIQUE_FILE_NAME
-      doc: |-
-        Creates a file name that is currently unallocated. This is a PATCH and ACTION function. This function will create a filename using __ as a prefix. __ is reserved by The Bigg and writeable by anybody, as long as you dynamically create the file name (either by using this function or other code of your devising). The algorithm creates file names in base 36, going from __0000.ext to __zzzz.ext; this allows for 36 ^ 4 = 1679616 unique file names.
-         To allow users to reinstall your mod without breaking the identity of these files, you can use the `base` parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you're iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you're working on, for instance":" ~tb#spellbooks_%SOURCE_RES%~
-         - STR_VAR `extension` to the desired extension (required).
-         - STR_VAR `base` to a string unique to your mod and current file (optional).
-         - RET `filename` the currently unallocated file name (sans the extension).
-    - name: NAME_NUM_OF_SPELL_RES
-      doc: |-
-        Converts a spell resource name to a spell.ids reference. This is an ACTION and PATCH macro and function.
-         - SPRINT `spell_res` to the resource name for the referenced spell.
-         - RET `spell_num` to the IDS numerical reference of that spell.
-         - RET `spell_name` to the IDS symbolic reference of a spell.
-    - name: RES_NAME_OF_SPELL_NUM
-      doc: |-
-        Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.
-         - SET `spell_num` to the IDS numerical reference of that spell.
-         - RET `spell_name` to the IDS symbolic reference of a spell.
-         - RET `spell_res` to the resource name for the referenced spell.
-    - name: RES_NUM_OF_SPELL_NAME
-      doc: |-
-        Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.
-         - SPRINT `spell_name` to the IDS symbolic reference of a spell.
-         - RET `spell_num` to the IDS numerical reference of that spell.
-         - RET `spell_res` to the resource name for the referenced spell.
-    - name: RES_OF_FILESPEC
-      doc: |-
-        Returns the resource name of a file specification. Compare to SOURCE_RES. This is an ACTION and PATCH function.
-         - STR_VAR `filespec` to the file specification, which must include an identifiable resource name, or a warning will be raised.
-         - RET `res` returns the resource name of the file specification.
-    - name: SUBSTRING
-      doc: |-
-        Returns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.
-        The function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.
-      args:
-        - name: start
-          type: int
-          doc: the string index (0 based) from which the start of the substring should be read
-        - name: length
-          type: int
-          doc: the length of the substring to be read
-        - name: string
-          type: string
-          doc: the string the substring should be read from
-      rets:
-        - name: substring
-          type: string
-          doc: the substring read from the provided string
-      type: dimorphic
-
-actionMacros:
-  type: 3 # function
-  items:
-    - name: READ_SOUNDSET
-      doc: |-
-        Reads soundset of a creature and stores it as an array of string references This is an ACTION macro.
-         - SPRINT `npc` to the target creature (with .cre extension)
-         - SPRINT `soundset` to the name of soundset you want.
-    - name: WRITE_SOUNDSET
-      doc: |-
-        Writes soundset to all matching creatures. Regexp allowed. This is an ACTION macro.
-         - SPRINT `npc` to a creature in question (with .cre extension)
-         - SPRINT `soundset` to name of soundset you have.
-         - SET `overwrite` to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones.
-    - name: tb#fix_file_size
-      doc: |-
-        Overwrites all files matching a certain regexp with a certain standard file, if they are under a certain size.
-         This is an ACTION macro.
-         - SET `tb#fix_file_size_min` to the maximum allowed size (files whose size is exactly this value are NOT overwritten).
-         - SPRINT `tb#fix_file_size_target` to the standard file used to replace file(s) that match the regexp.
-         - SPRINT `tb#fix_file_size_category` to a descriptive name.
-         - SPRINT `tb#fix_file_size_regexp` to the regexp for the file(s) to be checked for a match.
-
 patchMacros:
   type: 3 # function
   items:
@@ -3761,3 +2847,923 @@ patchMacros:
          - SET `tb#factorial_index` to the factorial you'd like to compute.
          - SET `tb#factorial_result` to 1;
          - The result is `tb#factorial_result`.
+
+prologue:
+  type: 14 # keyword
+  items:
+    - name: AUTHOR
+      doc: |-
+        The AUTHOR directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
+
+    - name: BACKUP
+      doc: |-
+        The BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing.
+
+value:
+  type: 14 # keyword
+  items:
+    - name: ABS
+      detail: ABS Value
+      doc: |-
+        Absolute value. If the value is >= 0, the result is x. Otherwise the result is -x.
+    - name: AND
+      detail: value AND value
+      doc: |-
+        Conjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`.
+    - name: AREA_CITY
+      doc: |-
+        0xFC
+    - name: AREA_DAY
+      doc: |-
+        0x104
+    - name: AREA_DUNGEON
+      doc: |-
+        0x100
+    - name: AREA_FOREST
+      doc: |-
+        0xF8
+    - name: AREA_NIGHT
+      doc: |-
+        0x108
+    - name: AREA_SCRIPT
+      doc: |-
+        0x94
+
+    - name: ATTACK1
+      doc: |-
+        0xDC
+    - name: ATTACK2
+      doc: |-
+        0xE0
+    - name: ATTACK3
+      doc: |-
+        0xE4
+    - name: ATTACK4
+      doc: |-
+        0xE8
+    - name: BAND
+      detail: value BAND value
+      doc: |-
+        Bitwise And. 0b101 BAND 0b110 = 0b100. Synonym: &.
+    - name: BASR
+      detail: value BASR value
+      doc: |-
+        Bitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1.
+
+    - name: BATTLE_CRY1
+      doc: |-
+        0xC8
+    - name: BATTLE_CRY2
+      doc: |-
+        0xCC
+    - name: BATTLE_CRY3
+      doc: |-
+        0xD0
+    - name: BATTLE_CRY4
+      doc: |-
+        0xD4
+    - name: BATTLE_CRY5
+      doc: |-
+        0xD8
+    - name: BEGIN
+    - name: ELSE
+    - name: ALWAYS_ASK
+      doc: |-
+        For use with `QUICK_MENU`.
+    - name: WHEN
+      doc: |-
+        For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
+    - name: ANY
+      doc: |-
+        When using `ACTION_MATCH` and `PATCH_MATCH`, it is also possible to have a condition without a guard, in which case the syntax is:
+
+        ```
+        ACTION_MATCH ~%something%~
+        WITH
+          ANY GAME_IS ~BG1 TotSC~
+          BEGIN
+            // the game is BG1
+          END
+          ANY GAME_IS ~SoA ToB~
+          BEGIN
+            // the game is BG2
+          END
+          DEFAULT
+            // not BG1 or BG2
+        END
+        ```
+    - name: ERROR_MESSAGE
+      doc: |-
+        For use with `ACTION_TRY` and `PATCH_TRY`.
+
+        ```
+        ACTION_TRY
+          COPY ~override/sw1h01.itm~ ~override~
+          DO_SOMETHING_ELSE
+        WITH
+          ~Unix.Unix_error(20, "stat", "override/sw1h01.itm")~
+          BEGIN
+            PRINT ~I caught sw1h01.itm not found!~
+          END
+          ~Unix.Unix_error(20, "stat", "override/.*.itm")~
+          BEGIN
+            PRINT ~I caught another missing item!~
+          END
+          DEFAULT
+            PRINT ~I caught another error!~
+        END
+        ```
+
+        The actions in `ACTION_TRY` are executed. If none of those fails, the `WITH` part is skipped; otherwise, the error message is printed as usual (use `SILENT`), the exception text (from the `ERROR: blah blah` line) is saved to the `%ERROR_MESSAGE%` variable, and a `MATCH` is executed on that.
+
+        After running the correct error handling code, execution continues after the end of the `ACTION_TRY` block. If you still want to block the installation, use `ACTION_RERAISE` (in theory, you could use `FAIL ~%ERROR_MESSAGE%~`, but this changes the exception and its text, which would cause you headaches when nesting multiple `TRY`s).
+    - name: THIS
+      doc: |-
+        Current (unsigned) value.
+        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
+    - name: STHIS
+      doc: |-
+        Current (signed) value.
+        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
+    - name: BIFF_IS_COMPRESSED
+      detail: BIFF_IS_COMPRESSED fileName
+      doc: |-
+        Evaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command.
+    - name: BIO
+      doc: |-
+        The offset within an infinity engine resource where NPC Biography is stored (i.e., 0x1CC).
+    - name: BIT0
+      doc: |-
+        0b00000000000000000000000000000001
+    - name: BIT1
+      doc: |-
+        0b00000000000000000000000000000010
+    - name: BIT10
+      doc: |-
+        0b00000000000000000000010000000000
+    - name: BIT11
+      doc: |-
+        0b00000000000000000000100000000000
+    - name: BIT12
+      doc: |-
+        0b00000000000000000001000000000000
+    - name: BIT13
+      doc: |-
+        0b00000000000000000010000000000000
+    - name: BIT14
+      doc: |-
+        0b00000000000000000100000000000000
+    - name: BIT15
+      doc: |-
+        0b00000000000000001000000000000000
+    - name: BIT16
+      doc: |-
+        0b00000000000000010000000000000000
+    - name: BIT17
+      doc: |-
+        0b00000000000000100000000000000000
+    - name: BIT18
+      doc: |-
+        0b00000000000001000000000000000000
+    - name: BIT19
+      doc: |-
+        0b00000000000010000000000000000000
+    - name: BIT2
+      doc: |-
+        0b00000000000000000000000000000100
+    - name: BIT20
+      doc: |-
+        0b00000000000100000000000000000000
+    - name: BIT21
+      doc: |-
+        0b00000000001000000000000000000000
+    - name: BIT22
+      doc: |-
+        0b00000000010000000000000000000000
+    - name: BIT23
+      doc: |-
+        0b00000000100000000000000000000000
+    - name: BIT24
+      doc: |-
+        0b00000001000000000000000000000000
+    - name: BIT25
+      doc: |-
+        0b00000010000000000000000000000000
+    - name: BIT26
+      doc: |-
+        0b00000100000000000000000000000000
+    - name: BIT27
+      doc: |-
+        0b00001000000000000000000000000000
+    - name: BIT28
+      doc: |-
+        0b00010000000000000000000000000000
+    - name: BIT29
+      doc: |-
+        0b00100000000000000000000000000000
+    - name: BIT3
+      doc: |-
+        0b00000000000000000000000000001000
+    - name: BIT30
+      doc: |-
+        0b01000000000000000000000000000000
+    - name: BIT31
+      doc: |-
+        0b10000000000000000000000000000000
+
+    - name: BIT4
+      doc: |-
+        0b00000000000000000000000000010000
+    - name: BIT5
+      doc: |-
+        0b00000000000000000000000000100000
+    - name: BIT6
+      doc: |-
+        0b00000000000000000000000001000000
+    - name: BIT7
+      doc: |-
+        0b00000000000000000000000010000000
+    - name: BIT8
+      doc: |-
+        0b00000000000000000000000100000000
+    - name: BIT9
+      doc: |-
+        0b00000000000000000000001000000000
+    - name: BLSL
+      detail: value BLSL value
+      doc: |-
+        Bitwise Logical Shift Left. 0b101 BLSL 2 = 0b10100. Synonym: <<.
+    - name: BLSR
+      detail: value BLSR value
+      doc: |-
+        Bitwise Logical Shift Right. 0b101 BLSR 2 = 0b1. Synonym: >>.
+    - name: BNOT
+      detail: BNOT value
+      doc: |-
+        Bitwise Not. BNOT 0b111 = 0b1111111111111111111111111111000. Synonym: `.
+    - name: BOR
+      detail: value BOR value
+      doc: |-
+        Bitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |.
+    - name: BORED
+      doc: |-
+        0xC4
+    - name: BUFFER_LENGTH
+      doc: |-
+        Returns the length of the string currently being patched, or 0 if outside of a patch expression.
+    - name: BXOR
+      detail: value BXOR value
+      doc: |-
+        Bitwise Exclusive Or. 0b101 BXOR 0b110 = 0b011. Synonym: ^^.
+    - name: BYTE_AT
+      detail: BYTE_AT offset
+      doc: |-
+        The 8-bit value from the file at the given offset.
+    - name: COMPLIMENT1
+      doc: |-
+        0x160
+    - name: COMPLIMENT2
+      doc: |-
+        0x164
+    - name: COMPLIMENT3
+      doc: |-
+        0x168
+    - name: CRITICAL_HIT
+      doc: |-
+        0x1A8
+    - name: CRITICAL_MISS
+      doc: |-
+        0x1AC
+    - name: DAMAGE
+      doc: |-
+        0xEC
+    - name: DEATHVAR
+      doc: |-
+        0x280
+    - name: DESC
+      doc: |-
+        0x54
+    - name: DIALOG
+      doc: |-
+        0x2CC
+    - name: DIALOG_DEFAULT
+      doc: |-
+        0x19C
+    - name: DIALOG_HOSTILE
+      doc: |-
+        0x198
+    - name: DIRECTORY_EXISTS
+      detail: DIRECTORY_EXISTS dirName
+      doc: |-
+        Evaluates to 1 if dirName is a directory and exists in the filesystem and evaluates to 0 otherwise.
+    - name: DYING
+      doc: |-
+        0xF0
+    - name: EE_LANGUAGE
+      doc: |-
+        Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
+
+    - name: END
+
+    - name: ENGINE_IS
+      detail: ENGINE_IS Caching String
+      doc: |-
+        Functions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.
+        If caching (disabled by default), `ENGINE_IS` will return the same result for the same string, and do so much faster.
+
+    - name: EVALUATE_BUFFER
+      detail: EVALUATE_BUFFER variable
+      doc: |-
+        User variables inside the given string are evaluated one additional time. You may prepend `EVALUATE_BUFFER` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
+        ```
+        SPRINT x ~y~
+        SET y = 5
+        SPRINT z EVALUATE_BUFFER ~tricky %%x%%~
+        SET EVALUATE_BUFFER "%x%" += 77
+        PATCH_PRINT "y is %y% ; z is %z%"
+        ```
+        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
+    - name: EVAL
+      detail: EVAL variable
+      doc: |-
+        User variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
+        ```
+        SPRINT x ~y~
+        SET y = 5
+        SPRINT z EVAL ~tricky %%x%%~
+        SET EVAL "%x%" += 77
+        PATCH_PRINT "y is %y% ; z is %z%"
+        ```
+        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
+
+    #    - name: $array(index
+    #      detail: $array(index list)
+    #      doc: The so-called array construct. See the tutorial.
+    - name: EXISTANCE1
+    - name: EXISTANCE2
+    - name: EXISTANCE3
+    - name: EXISTANCE4
+      doc: |-
+        0x1C8
+    - name: EXISTANCE5
+    - name: FILE_CONTAINS
+      detail: FILE_CONTAINS fileName regexp
+      doc: |-
+        Evaluates to 1 if the file fileName contains the regular expression regexp and 0 otherwise. Case is ignored.
+    - name: FILE_CONTAINS_EVALUATED
+      detail: FILE_CONTAINS_EVALUATED ( fileName varsRegexp )
+      doc: |-
+        First, all WeiDU variables enclosed in %s in varsRegexp and fileName are substituted. The expression is 1 if the resulting regexp occurs in fileName and 0 otherwise. If fileName does not exist or has size 0, the result is 0. The comparison ignores case. See also FILE_CONTAINS. Example: COPY_EXISTING_REGEXP ~.*\.CRE~ ~override~ READ_BYTE 0x273 class READ_ASCII 0x280 deathvar PATCH_IF (class = 14) AND // class 14 = CLERIC_MAGE (NOT FILE_CONTAINS_EVALUATED(~pdialog.2da~ ~%deathvar%~)) THEN BEGIN ADD_CRE_ITEM ~POTN08~ #10 #10 #10 ~IDENTIFIED~ ~INV15~ END BUT_ONLY_IF_IT_CHANGES The example gives ten healing potions to all cleric-mages who cannot join the party. Notably it excludes Aerie since she has the death variable Aerie and pdialog.2da contains AERIE.
+    - name: RESOURCE_CONTAINS
+      detail: RESOURCE_CONTAINS fileName varsRegexp
+      doc: |-
+        `fileName` and `varsRegexp` are evaluated for variables. `fileName` is loaded as a game resource (searching only the `biffs` and the `override` directories) and a regexp search is performed on the file contents. The result is 1 if the regexp `varsRegexp` occurs within `fileName`, or otherwise 0. The comparison ignores case. If `fileName` does not exist or has a file size 0, the result is 0.
+    - name: FILE_EXISTS
+      detail: FILE_EXISTS fileName
+      doc: |-
+        Evaluates to 1 if the file exists in the filesystem (or the bif file is referenced inside the chitin.key) and evaluates to 0 otherwise. The results of FILE_EXISTS are undefined if fileName is a directory.
+    - name: FILE_EXISTS_IN_GAME
+      detail: FILE_EXISTS_IN_GAME fileName
+      doc: |-
+        Evaluates to 1 if the file exists as a game resource and has non-zero size. Evaluates to 0 otherwise. BIFFs and the override directory are searched in the standard manner. Evaluates to 0 for a file that does not exist but has been ALLOW_MISSING'd.
+    - name: FILE_IS_IN_COMPRESSED_BIFF
+      detail: FILE_IS_IN_COMPRESSED_BIFF fileName
+      doc: |-
+        Evaluates to 1 if the file is stored in a compressed biff (ignoring copies in the override). Evaluates to 0 otherwise (the file is not in a biff, or it is in an uncompressed biff).
+    - name: FILE_MD5
+      detail: FILE_MD5 fileName md5sum
+      doc: |-
+        Evaluates to 1 if the file exists and has the given MD5 checksum. Evaluates to 0 otherwise. Two different files are exceptionally unlikely to have the same MD5 checksum. In any event, the discovered checksum is printed to the log. If the file does not exist, it evaluates to 0.
+    - name: FILE_SIZE
+      detail: FILE_SIZE fileName fileSize
+      doc: |-
+        Evaluates to 1 if the size of the file fileName is exactly fileSize. Evaluates to 0 otherwise.
+    - name: GAME_INCLUDES
+      detail: GAME_INCLUDES Caching String
+      doc: |-
+        Returns `true` if the IE game variant includes the game content specified by String, otherwise returns `false`.
+        String is a single game chosen from
+        - bg1
+        - bg2=soa
+        - ca
+        - iwd=iwd1
+        - iwd2
+        - how
+        - pst
+        - sod
+        - tob
+        - totlm
+        - totsc
+
+        In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
+        Please note that unlike `GAME_IS` you only specify a single game, rather than a list of games.
+        As an example, `GAME_INCLUDES ~tob~` will return true for any game which includes the ToB content, such as ToB itself, BGT or BG2EE.
+        If caching (disabled by default), `GAME_INCLUDES` will return the same result for the same string, and do so much faster.
+    - name: GAME_IS
+      detail: GAME_IS Caching String
+      doc: |-
+        Returns `true` if the IE game variant is one of the entries in String, otherwise returns `false`.
+        String is a list of whitespace-separated entries, chosen from (case doesn't matter)
+        - bg1
+        - bg2=soa
+        - bgee
+        - bg2ee
+        - bgt
+        - ca
+        - eet
+        - how
+        - iwd=iwd1
+        - iwd2
+        - iwd_in_bg2
+        - iwdee
+        - pst
+        - pstee
+        - totsc
+        - tob
+        - totlm
+        - tutu
+        - tutu_totsc
+
+        In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
+        Please note that the items in the list are defined to be mutually exclusive
+        (except `tob` will detect both plain ToB and ToB with BGT installed, for legacy purposes),
+        so bg2 will detect a SoA-only game, without either ToB or Tutu installed.
+        As such, a mod which is usable with any flavor of BG2 and any flavor of Tutu or BG: EE would contain
+        `REQUIRE_PREDICATE GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~`.
+        If caching (disabled by default), `GAME_IS` will return the same result for the same string, and do so much faster.
+    - name: HAPPY
+      doc: |-
+        0xAC
+    - name: HIDDEN_IN_SHADOWS
+      doc: |-
+        0x1BC
+    - name: HURT
+      doc: |-
+        0xF4
+    - name: IDENTIFIED_DESC
+      doc: |-
+        The offset within an infinity engine resource where the identified description is stored.
+    - name: IDS_OF_SYMBOL
+      detail: IDS_OF_SYMBOL ( File String )
+      doc: |-
+        Will return the number associated with String in File.ids, or -1 if String is not associated in File.ids.
+    - name: ID_OF_LABEL
+      detail: ID_OF_LABEL modTp2Name String
+      doc: |-
+        Returns the numerical identifier (component number) of the component in modTp2Name which has the given LABEL. Returns -231 if no such tp2 exists, said tp2 has no component with that LABEL, or two or more components have that LABEL. In the last two cases will print a WARNING.
+    - name: INDEX
+      detail: INDEX ( optcase optexact string1 string2 [ value ] )
+      doc: |-
+        Returns the index of the first regexp match of string1 inside string2, or -1 if not found. If provided, value specifies from what point of string2 the searching should begin (instead of 0).
+    - name: INDEX_BUFFER
+      detail: INDEX_BUFFER ( optcase optexact string [ value ] )
+      doc: |-
+        Returns the index of the first regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of 0).
+    - name: INITIAL_MEETING
+      doc: |-
+        0xA4
+    - name: INSTALL_ORDER
+      detail: INSTALL_ORDER modTp2Name1 modComponent1 BEFORE modTp2Name2 modComponent2
+      doc: |-
+        Returns true if the modComponent1 of modTp2Name1 is installed before the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT.
+    - name: INSULT
+    - name: INTERACTION1
+      doc: |-
+        0x140
+    - name: INTERACTION2
+      doc: |-
+        0x144
+    - name: INTERACTION3
+      doc: |-
+        0x148
+    - name: INTERACTION4
+      doc: |-
+        0x14C
+    - name: INTERACTION5
+      doc: |-
+        0x150
+    - name: INVENTORY_FULL
+      doc: |-
+        0x1B4
+    - name: IS_AN_INT
+      detail: IS_AN_INT String
+      doc: |-
+        Returns true if the variable String is set to an integer (there's a variable called either String or %String% with integer value).
+    - name: IS_SILENT
+      doc: |-
+        Returns true if the output is currently silenced, false otherwise.
+    - name: LEADER
+      doc: |-
+        0xBC
+    - name: LONG_AT
+      detail: LONG_AT offset
+      doc: |-
+        The 32-bit value from the file at the given offset.
+    - name: MISCELLANEOUS
+    - name: MODULO
+      detail: value MODULO value
+      doc: |-
+        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym.
+    - name: REM
+      detail: value REM value
+      doc: |-
+        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym.
+    - name: MOD_IS_INSTALLED
+      detail: MOD_IS_INSTALLED modTp2Name modComponent
+      doc: |-
+        Returns true if the modComponent of modTp2Name is installed. The syntax is the same as with REQUIRE_COMPONENT.
+    - name: MORALE
+      doc: |-
+        0xA8
+    - name: MPSAVE_DIRECTORY
+      doc: |-
+        Evaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead.
+    - name: NAME1
+      doc: |-
+        The offset within an infinity engine resource where the unidentified general name (e.g., "Battle Axe") is stored.
+    - name: NAME2
+      doc: |-
+        The offset within an infinity engine resource where the identified general name (e.g., "K'logarath +4") is stored.
+    - name: NEXT_STRREF
+      doc: |-
+        Returns the next available string reference in the TLK file.
+    - name: NOT
+      detail: NOT value
+      doc: |-
+        Negation. If the value is 0, the result is 1. Otherwise the result is 0.
+    - name: OR
+      detail: value OR value
+      doc: |-
+        Disjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`.
+    - name: PICKED_POCKET
+      doc: |-
+        0x1B8
+    - name: PORTRAIT_SMALL
+      doc: |-
+        0x34
+    - name: PORTRAIT_LARGE
+      doc: |-
+        0x3C
+    - name: RANDOM
+      detail: RANDOM ( value value )
+      doc: |-
+        A random-number generator. The first value is the lower bound, the second value is the upper bound. A random integer between the lower bound and the upper bound (inclusive) is returned. Thus RANDOM(3 5) can return 3, 4 or 5. If the lower bound is greater than the upper bound, zero is returned. See also RANDOM_SEED.
+    - name: REACT_TO_DIE_GENERAL
+      doc: |-
+        0x178
+    - name: REACT_TO_DIE_SPECIFIC
+      doc: |-
+        0x17C
+    - name: REGISTRY_BG1_PATH
+      doc: |-
+        The path of BG1 (as read from the registry), or empty if not available.
+    - name: REGISTRY_BG2_PATH
+      doc: |-
+        The path of BG2 (as read from the registry), or empty if not available.
+    - name: REGISTRY_IWD1_PATH
+      doc: |-
+        The path of IWD1 (as read from the registry), or empty if not available.
+    - name: REGISTRY_IWD2_PATH
+      doc: |-
+        The path of IWD2 (as read from the registry), or empty if not available.
+    - name: REGISTRY_PST_PATH
+      doc: |-
+        The path of PST (as read from the registry), or empty if not available.
+    - name: RESOLVE_STR_REF
+      detail: RESOLVE_STR_REF ( text )
+      doc: |-
+        Resolves the given text (adding it to the tlk), and returns its TLK index (so you can pass the result of this command to a function which then uses WRITE_LONG rather than SAY).
+    - name: RESPONSE_TO_COMPLIMENT1
+      doc: |-
+        0x180
+    - name: RESPONSE_TO_COMPLIMENT2
+      doc: |-
+        0x184
+    - name: RESPONSE_TO_COMPLIMENT3
+      doc: |-
+        0x188
+    - name: RESPONSE_TO_INSULT1
+      doc: |-
+        0x18C
+    - name: RESPONSE_TO_INSULT2
+      doc: |-
+        0x190
+    - name: RESPONSE_TO_INSULT3
+      doc: |-
+        0x194
+    - name: RINDEX
+      detail: RINDEX ( optcase optexact string1 string2 [ value ] )
+      doc: |-
+        Returns the index of the last regexp match of string1 inside string2, or -1 if not found. If provided, value specifies from what point of string2 the searching should begin (instead of STRING_LENGTH string2).
+    - name: RINDEX_BUFFER
+      detail: RINDEX_BUFFER ( optcase optexact string [ value ] )
+      doc: |-
+        Returns the index of the last regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of BUFFER_LENGTH).
+    - name: SAVE_DIRECTORY
+      doc: |-
+        Evaluates to the directory in which the current game type stores its saved games. This is "%USER_DIRECTORY%/save".
+    - name: SBYTE_AT
+      detail: SBYTE_AT offset
+      doc: |-
+        The 8-bit signed value from the file at the given offset.
+    - name: SCRIPT_CLASS
+      doc: |-
+        0x250
+    - name: SCRIPT_DEFAULT
+      doc: |-
+        0x268
+    - name: SCRIPT_GENERAL
+      doc: |-
+        0x260
+    - name: SCRIPT_OVERRIDE
+      doc: |-
+        0x248
+    - name: SCRIPT_RACE
+      doc: |-
+        0x258
+    - name: SELECT_ACTION1
+      doc: |-
+        0x124
+    - name: SELECT_ACTION2
+      doc: |-
+        0x128
+    - name: SELECT_ACTION3
+      doc: |-
+        0x12C
+    - name: SELECT_ACTION4
+      doc: |-
+        0x130
+    - name: SELECT_ACTION5
+      doc: |-
+        0x134
+    - name: SELECT_ACTION6
+      doc: |-
+        0x138
+    - name: SELECT_ACTION7
+      doc: |-
+        0x13C
+    - name: SELECT_COMMON1
+      doc: |-
+        0x10C
+    - name: SELECT_COMMON2
+      doc: |-
+        0x110
+    - name: SELECT_COMMON3
+      doc: |-
+        0x114
+    - name: SELECT_COMMON4
+      doc: |-
+        0x118
+    - name: SELECT_COMMON5
+      doc: |-
+        0x11C
+    - name: SELECT_COMMON6
+      doc: |-
+        0x120
+    - name: SELECT_RARE1
+      doc: |-
+        0x1A0
+    - name: SELECT_RARE2
+      doc: |-
+        0x1A4
+    - name: SET_A_TRAP
+      doc: |-
+        0x1C4
+    - name: SHORT_AT
+      detail: SHORT_AT offset
+      doc: |-
+        The 16-bit value from the file at the given offset.
+    - name: SIZE_OF_FILE
+      detail: SIZE_OF_FILE fileName
+      doc: |-
+        Returns the size of fileName or -1 if the file does not exist. Variables in fileName are evaluated. fileName can be a file on the local file system or an inlined file.
+    - name: SLONG_AT
+      detail: SLONG_AT offset
+      doc: |-
+        The 32-bit signed value from the file at the given offset.
+    - name: SPECIAL1
+      doc: |-
+        0x16C
+    - name: SPECIAL2
+      doc: |-
+        0x170
+    - name: SPECIAL3
+      doc: |-
+        0x174
+    - name: SPELL_DISRUPTED
+      doc: |-
+        0x1C0
+    - name: SSHORT_AT
+      detail: SSHORT_AT offset
+      doc: |-
+        The 16-bit signed value from the file at the given offset.
+    - name: STATE_WHICH_SAYS
+      detail: STATE_WHICH_SAYS text FROM String
+      doc: |-
+        String must be an in-game or in-override `.dlg` file. Returns:
+        - Fails the installation if it can't evaluate the text (an `@x` reference out of bounds)
+        - `-3` if the text is not currently in the tlk or in the list of strings to add
+        - `-2` if the text is spoken (`= SAY ~Foo~`) at least twice in the file `String`
+        - `-1` if the text is never spoken in the file String Otherwise it returns the number of the state in which text is spoken in the file `String`. `@x` references are taken from the loaded TRA files (the ones defined in the Language part).
+
+        **Alternative form**: `STATE_WHICH_SAYS value IN String1 FROM String2`
+        As above, except that `@x` references are taken from the `String1` tra file. In particular, one `%s` in `String1` is expanded to the list of directories; for example (as of Sola `v102`), `solarom/%s/epilogue.tra` would match
+        - `solarom/american/epilogue.tra`
+        - `solarom/french/epilogue.tra`
+        - `solarom/german/epilogue.tra`
+        - `solarom/italian/epilogue.tra`
+        - `solarom/polski/epilogue.tra`
+        - `solarom/portuguese/epilogue.tra`
+        - `solarom/russian/epilogue.tra`
+    - name: STORE_NAME
+      doc: |-
+        0xC
+    - name: STRING_COMPARE
+      detail: String STRING_COMPARE String
+      doc: |-
+        This is legacy syntax for STRING_EQUAL: This expression evaluates to 0 if and only if its two string arguments are equal (have the same length and the same contents). Otherwise it will evaluate to a negative or positive integer, depending on whether the first string argument would sort lexicographically before or after the second string argument. variables within the strings (e.g., "%mykit%") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. You may use STR_CMP as a synonym for STRING_COMPARE. This function works just like C's strcmp. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values.
+    - name: STRING_COMPARE_CASE
+      detail: String STRING_COMPARE_CASE String
+      doc: |-
+        This is legacy syntax for STRING_EQUAL_CASE: As STRING_COMPARE, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
+    - name: STRING_COMPARE_REGEXP
+      detail: String STRING_COMPARE_REGEXP String
+      doc: |-
+        As STRING_COMPARE_CASE, but the second string is treated as a regexp. Thus "AR1005" STRING_MATCHES_REGEXP "AR[0-9]+" evaluates to 0 ("no difference" ). You may use STRING_COMPARE_REGEXP as a synonym.
+    - name: STRING_CONTAINS_REGEXP
+      detail: String STRING_CONTAINS_REGEXP String
+      doc: |-
+        As STRING_MATCHES_REGEXP, but it evaluates to 0 if the first string contains the second regexp. Thus "AR1005" STRING_CONTAINS_REGEXP "[w-z]" evaluates to 1 ("mismatch").Be warned that this does the exact opposite of what the name suggests.
+    - name: STRING_EQUAL
+      detail: String STRING_EQUAL String
+      doc: |-
+        This expression evaluates to 1 if and only if its two string arguments are equal (have the same length and the same contents), otherwise it values to 0. variables within the strings (e.g., "%mykit%") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values.
+    - name: STRING_EQUAL_CASE
+      detail: String STRING_EQUAL_CASE String
+      doc: |-
+        As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal. You may use STR_EQ as a synonym for STRING_EQUAL_CASE.
+    - name: STRING_LENGTH
+      detail: STRING_LENGTH String
+      doc: |-
+        Returns the length of the argument String (after variable evaluation).
+    - name: STRING_MATCHES_REGEXP
+      detail: String STRING_MATCHES_REGEXP String
+      doc: |-
+        As STRING_COMPARE_CASE, but the second string is treated as a regexp. Thus "AR1005" STRING_MATCHES_REGEXP "AR[0-9]+" evaluates to 0 ("no difference" ). You may use STRING_COMPARE_REGEXP as a synonym.
+    - name: STR_CMP
+      detail: String STR_CMP String
+      doc: |-
+        This is legacy syntax for STRING_EQUAL: This expression evaluates to 0 if and only if its two string arguments are equal (have the same length and the same contents). Otherwise it will evaluate to a negative or positive integer, depending on whether the first string argument would sort lexicographically before or after the second string argument. variables within the strings (e.g., "%mykit%") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. This function works just like C's strcmp. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values.
+    - name: STR_EQ
+      detail: String STR_EQ String
+      doc: |-
+        As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
+    - name: TAB
+      doc: |-
+        Tabulation character (`\t`).
+    - name: STR_VAR
+      doc: |-
+        String variable
+    - name: TARGET_IMMUNE
+      doc: |-
+        0x1B0
+    - name: TIRED
+      doc: |-
+        0xC0
+    - name: TRA_ENTRY_EXISTS
+      detail: TRA_ENTRY_EXISTS ( String String list )
+      doc: |-
+        returns true if the variable String maps to a valid TRA entry. 	If the String list is empty the tra entry is looked for into the loaded TRAs, 	otherwise it's looked for into the listed TRA files.
+    - name: UNHAPPY_ANNOYED
+      doc: |-
+        0xB0
+    - name: UNHAPPY_BREAKING
+      doc: |-
+        0xB8
+    - name: UNHAPPY_SERIOUS
+      doc: |-
+        0xB4
+    - name: UNIDENTIFIED_DESC
+      doc: |-
+        The offset within an infinity engine resource where the unidentified description is stored.
+    - name: USER_DIRECTORY
+      doc: |-
+        Evaluates to the directory in which user files are kept. This is the game path on non-EE-type games. On EE-type games, the USER_DIRECTORY variable is constructed from two parts, the user directory and a game-specific directory. If the file engine.lua exists, WeiDU will attempt to read the game-specific directory from it. If the engine.lua does not exist or does not contain the necessary information, WeiDU will use default paths. On Windows, the user directory is the user's personal directory, as read from the Windows registry. On macOS, the user directory is "$HOME/Documents". On Linux, the user directory is "$HOME/.local/share". In both cases, $HOME is the user's home directory, as read from the pwd database. The default game-specific path for BG: EE is "Baldur's Gate - Enhanced Edition"; for BGII: EE it is "Baldur's Gate II - Enhanced Edition"; for IWD: EE it is "Icewind Dale - Enhanced Edition"; and for PST: EE it is "Planescape Torment - Enhanced Edition".
+    - name: VALID_SCRIPT_ACTIONS
+      detail: VALID_SCRIPT_ACTIONS variable
+      doc: |-
+        Variable can be an array construct and should be or evaluate to a string of whitespace-separated Infinity Engine actions. Returns true if the string compiles into BCS without unrecoverable errors, otherwise false.
+    - name: VALID_SCRIPT_TRIGGERS
+      detail: VALID_SCRIPT_TRIGGERS variable
+      doc: |-
+        Variable can be an array construct and should be or evaluate to a string of whitespace-separated Infinity Engine triggers. Returns true of the string compiles into BCS without unrecoverable errors, otherwise false.
+    - name: VARIABLE_IS_SET
+      detail: VARIABLE_IS_SET String
+      doc: |-
+        Returns true if the variable String is set (there's a variable called either String or %String%, regardless of whether it is a string or an integer).
+    - name: WNL
+      doc: |-
+        Windows new line (`\r\n`).
+    - name: MNL
+      doc: |-
+        (Pre-OSX) Macintosh new line (`\r`).
+    - name: LNL
+      doc: |-
+        Linux/Unix/OSX new line (`\n`).
+
+    # as of v251
+    - name: VARIABLE_IS_IN_ARRAY
+      detail: VARIABLE_IS_IN_ARRAY arrayConstruct
+      doc: |-
+        Returns true if the array variable is set, as per
+        `VARIABLE_IS_SET`, and if it is a member of an array, in the way
+        that has it, for example, iterated over by `PHP_EACH`.
+    - name: DEFINED_AS_FUNCTION
+      detail: DEFINED_AS_FUNCTION variable
+      doc: |-
+        Variable can be a string (variables are evaluated) or an array
+        construct that evaluates to a string. Returns `1` if the string is the
+        name of an action function, `2` if the string is the name of a patch
+        function, `3` if the string is the name of both an action function and a
+        patch function, and `0` if string is not the name of any defined
+        function. Note that `1`, `2` and `3` are all `true` in a boolean context.
+    - name: DEFINED_AS_INLINED
+      detail: DEFINED_AS_INLINED variable
+      doc: |-
+        Variable can be a string (variables are evaluated) or an array
+        construct that evaluates to a string. Returns `1` if the string is the
+        path of a defined inlined file, otherwise `0`.
+
+vars:
+  type: 21 # constant
+  items:
+    - name: SOURCE_FILE
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_FILE` is `bigboss.cre`.
+    - name: SOURCE_DIRECTORY
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_DIRECTORY` is `mymod/cre`.
+    - name: SOURCE_FILESPEC
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_FILESPEC` is ` mymod/cre/bigboss.cre`.
+    - name: SOURCE_RES
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_RES` is `bigboss`.
+    - name: SOURCE_EXT
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_EXT` is `cre`.
+    - name: SOURCE_SIZE
+      doc: Set by `COPY_*` family of functions. It is set to the size (in bytes) of the source file.
+    - name: DEST_FILE
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_FILE`, but based on `toFile`.
+    - name: DEST_DIRECTORY
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_DIRECTORY`, but based on `toFile`.
+    - name: DEST_FILESPEC
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_FILESPEC`, but based on `toFile`.
+    - name: DEST_RES
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_RES`, but based on `toFile`.
+    - name: DEST_EXT
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_EXT`, but based on `toFile`.
+    - name: "%COMPONENT_NUMBER%"
+      doc: |-
+        The special variable `COMPONENT_NUMBER` is set to the number of the component being installed.
+    - name: "%INTERACTIVE%"
+      doc: |-
+        The special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall).
+    - name: "%WEIDU_ARCH%"
+      doc: |-
+        The special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
+    - name: "%WEIDU_EXECUTABLE%"
+      doc: |-
+        The special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance.
+    - name: "%WEIDU_OS%"
+      doc: |-
+        The special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
+    - name: "%WEIDU_VER%"
+      doc: |-
+        The special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`).
+    - name: "%MOD_FOLDER%"
+      doc: |-
+        The `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).
+        As of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**.
+
+when:
+  type: 14 # keyword
+  items:
+    - name: BUT_ONLY
+      doc: |-
+        True only if the file is actually changed by patching actions. Unlike all other when clauses, this one is evaluated just before the result would be written out to the disk. You may use BUT_ONLY as a synonym for BUT_ONLY_IF_IT_CHANGES.
+    - name: BUT_ONLY_IF_IT_CHANGES
+      doc: |-
+        True only if the file is actually changed by patching actions. Unlike all other when clauses, this one is evaluated just before the result would be written out to the disk. You may use BUT_ONLY as a synonym for BUT_ONLY_IF_IT_CHANGES.
+    - name: IF
+      detail: IF regexp
+      doc: |-
+        True if the input file contains regexp.
+    - name: IF_EXISTS
+      doc: |-
+        True only if the file exists. For COPY, this check is done with FILE_EXISTS. For COPY_EXISTING, COPY_EXISTING_REGEXP, COPY_RANDOM, APPEND and APPEND_COL this check is done with FILE_EXISTS_IN_GAME. For COPY_ALL_GAM_FILES, this when clause is redundant.
+
+    - name: IF_SIZE_IS
+      detail: IF_SIZE_IS fileSize
+      doc: |-
+        True if the input file size is fileSize. You may use I_S_I as a synonym for IF_SIZE_IS.
+    - name: UNLESS
+      detail: UNLESS regexp
+      doc: |-
+        False if the input file contains regexp.
