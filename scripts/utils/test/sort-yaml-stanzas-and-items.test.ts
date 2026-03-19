@@ -114,6 +114,30 @@ other:
 `);
     });
 
+    it("sorts a specific nested sequence in compact mode without blank lines between items", () => {
+        const input = `repository:
+  fallout-base-functions:
+    patterns:
+      - match: z
+
+      - match: a
+`;
+
+        const result = sortYamlSequenceByPath(
+            input,
+            ["repository", "fallout-base-functions", "patterns"],
+            "match",
+            { compactItems: true },
+        );
+
+        expect(result).toBe(`repository:
+  fallout-base-functions:
+    patterns:
+      - match: a
+      - match: z
+`);
+    });
+
     it("leaves the file unchanged when the target sequence path is missing", () => {
         const input = `repository:
   fallout-base-functions:
