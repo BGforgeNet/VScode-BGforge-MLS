@@ -99,6 +99,22 @@ procedure foo(variable a, variable b);
         name: (identifier)))))
 
 --------------------------------------------------------------------------------
+Procedure params reject call-expression defaults
+--------------------------------------------------------------------------------
+
+procedure foo(variable x := random(1, 2));
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure_forward
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier)
+        default: (ERROR)))))
+
+--------------------------------------------------------------------------------
 Simple procedure
 --------------------------------------------------------------------------------
 

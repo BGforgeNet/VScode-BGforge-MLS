@@ -63,6 +63,10 @@ Preprocessor directives start with `#`. Supports line continuation with `\`.
 #endif
 ```
 
+Function-like macros require the opening `(` immediately after the macro name.
+`#define MACRO(x)` is parameterized; `#define MACRO (x)` is an object-like macro whose
+replacement text starts with parentheses.
+
 ### Procedures
 
 Forward declaration:
@@ -81,6 +85,10 @@ procedure name(variable arg1, variable arg2 = default_value) begin
     // statements
 end
 ```
+
+Parameter defaults are limited to simple values: identifiers, numbers, strings, booleans,
+optional parentheses around a simple value, and unary forms such as `-1` or `not false`.
+Function calls and compound expressions are not valid parameter defaults.
 
 ### Variables
 

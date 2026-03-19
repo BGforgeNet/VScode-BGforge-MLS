@@ -136,8 +136,26 @@ export default grammar({
     param_list: ($) =>
       seq("(", optional(commaSep($.param)), ")"),
 
+    // SSL parameter defaults are simple values only.
+    // Function calls and other compound expressions are not valid here.
     param: ($) =>
-      seq("variable", field("name", $.identifier), optional(seq(choice("=", ":="), field("default", $._expression)))),
+      seq("variable", field("name", $.identifier), optional(seq(choice("=", ":="), field("default", $.param_default)))),
+
+    param_default: ($) =>
+      choice(
+        $.identifier,
+        $.number,
+        $.boolean,
+        $.string,
+        $.param_default_group,
+        $.param_default_unary
+      ),
+
+    param_default_group: ($) =>
+      seq("(", $.param_default, ")"),
+
+    param_default_unary: ($) =>
+      prec(11, seq(field("op", choice(alias(/[Nn][Oo][Tt]/, "not"), alias(/[Bb][Nn][Oo][Tt]/, "bnot"), "-")), field("expr", $.param_default))),
 
     // Variable: variable name; or variable name := expr; or variable a = 1, b = 2;
     // Begin blocks support comma-separated var_inits per line: variable begin a = 0, b = 0; end
