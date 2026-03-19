@@ -1443,30 +1443,22 @@
     "function-declaration": {
       "patterns": [
         {
-          "captures": {
+          "begin": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)[[:blank:]]*(\\()",
+          "beginCaptures": {
             "1": {
               "name": "support.type.fallout-ssl.procedure"
             },
             "2": {
               "name": "entity.name.function.fallout-ssl"
-            },
-            "3": {
-              "patterns": [
-                {
-                  "include": "#variable"
-                }
-              ]
-            },
-            "4": {
-              "name": "keyword.control.fallout-ssl"
             }
           },
-          "match": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)(\\(.+\\))?[[:blank:]]*(;)"
-        }
-      ]
-    },
-    "function-definition": {
-      "patterns": [
+          "end": "(\\))",
+          "patterns": [
+            {
+              "include": "#procedure-params"
+            }
+          ]
+        },
         {
           "captures": {
             "1": {
@@ -1476,14 +1468,42 @@
               "name": "entity.name.function.fallout-ssl"
             },
             "3": {
-              "patterns": [
-                {
-                  "include": "#variable"
-                }
-              ]
+              "name": "keyword.control.fallout-ssl"
             }
           },
-          "match": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)(\\(.+\\))?\\b"
+          "match": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)[[:blank:]]*(;)"
+        }
+      ]
+    },
+    "function-definition": {
+      "patterns": [
+        {
+          "begin": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)[[:blank:]]*(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "support.type.fallout-ssl.procedure"
+            },
+            "2": {
+              "name": "entity.name.function.fallout-ssl"
+            }
+          },
+          "end": "(\\))",
+          "patterns": [
+            {
+              "include": "#procedure-params"
+            }
+          ]
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "support.type.fallout-ssl.procedure"
+            },
+            "2": {
+              "name": "entity.name.function.fallout-ssl"
+            }
+          },
+          "match": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)\\b"
         }
       ]
     },
@@ -1551,6 +1571,23 @@
     "defines": {
       "patterns": [
         {
+          "begin": "(?i)(\\#define)[[:blank:]]+(\\w+)(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.fallout-ssl"
+            },
+            "2": {
+              "name": "entity.name.function.fallout-ssl.macro"
+            }
+          },
+          "end": "(\\))",
+          "patterns": [
+            {
+              "include": "#macro-params"
+            }
+          ]
+        },
+        {
           "match": "(?i)(\\#(define|ifdef|ifndef|undef))[[:blank:]]+(\\w+)",
           "captures": {
             "1": {
@@ -1587,6 +1624,29 @@
         },
         {
           "include": "#keywords-core"
+        }
+      ]
+    },
+    "procedure-params": {
+      "patterns": [
+        {
+          "match": "\\b(?i)(variable)\\b[[:blank:]]+(\\w+)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.control.fallout-ssl"
+            },
+            "2": {
+              "name": "variable.parameter.fallout-ssl"
+            }
+          }
+        }
+      ]
+    },
+    "macro-params": {
+      "patterns": [
+        {
+          "match": "\\b([A-Za-z_]\\w*)\\b",
+          "name": "variable.parameter.fallout-ssl"
         }
       ]
     },
