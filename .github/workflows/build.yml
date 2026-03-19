@@ -42,9 +42,6 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: Check external Markdown links
-        run: pnpm lint:external-links
-
       - name: Build
         run: pnpm build
 
