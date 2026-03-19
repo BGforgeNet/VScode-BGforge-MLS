@@ -18,6 +18,7 @@
 import fs from "node:fs";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
+import { FALLOUT_SSL_STANZAS } from "./shared/stanza-names.js";
 
 /** Closing code fence that separates the signature from the doc text in hover markdown. */
 const CODE_FENCE_END = "```\n";
@@ -74,9 +75,9 @@ function main(): void {
     const hoverData = JSON.parse(fs.readFileSync(values.hover, "utf8")) as Record<string, HoverEntry>;
     const yamlData = YAML.parse(fs.readFileSync(values.yaml, "utf8")) as Record<string, YamlStanza>;
 
-    const engineStanza = yamlData["engine_procedures"];
+    const engineStanza = yamlData[FALLOUT_SSL_STANZAS.engine_procedures];
     if (!engineStanza) {
-        console.error("No 'engine_procedures' stanza found in YAML");
+        console.error(`No '${FALLOUT_SSL_STANZAS.engine_procedures}' stanza found in YAML`);
         process.exit(1);
     }
 

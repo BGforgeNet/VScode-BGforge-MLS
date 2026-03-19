@@ -13,13 +13,19 @@
  */
 
 import { CompletionItem } from "vscode-languageserver/node";
+import { WEIDU_TP2_STANZAS } from "./stanza-names";
 
 /**
  * Valid completion item categories for WeiDU TP2.
  * Categories determine where completions should appear based on context.
  *
- * String values must match the category strings in generated JSON data files
- * (produced by generate-data from YAML).
+ * Split of responsibility:
+ * - YAML stanza-backed category strings come from shared/stanza-names.ts.
+ * - Non-stanza categories ("action", "patch", "vars", etc.) stay local here
+ *   because they are runtime filtering buckets, not YAML stanza identifiers.
+ *
+ * When adding or renaming a stanza-backed TP2 category, update both this file
+ * and shared/stanza-names.ts together.
  *
  * Category groups:
  * - Structural: Prologue, Flag, ComponentFlag, Language - File/component structure directives
@@ -31,38 +37,40 @@ import { CompletionItem } from "vscode-languageserver/node";
  *
  * @see CATEGORY_EXCLUSIONS in filter.ts for exclusion rules per category
  */
-export enum CompletionCategory {
+export const CompletionCategory = {
     // Structural directives
-    Prologue = "prologue",
-    Flag = "flag",
-    ComponentFlag = "component_flag",
-    Language = "language",
+    Prologue: "prologue",
+    Flag: "flag",
+    ComponentFlag: WEIDU_TP2_STANZAS.component_flag,
+    Language: "language",
     // Action context (value position)
-    Action = "action",
+    Action: "action",
     // Patch context (value position)
-    Patch = "patch",
+    Patch: "patch",
     // Value items (not commands)
-    Constants = "constants",
-    Vars = "vars",
-    Value = "value",
-    When = "when",
-    OptGlob = "opt_glob",
-    OptCase = "opt_case",
-    OptExact = "opt_exact",
-    Caching = "caching",
-    ArraySortType = "array_sort_type",
+    Constants: "constants",
+    Vars: "vars",
+    Value: "value",
+    When: "when",
+    OptGlob: WEIDU_TP2_STANZAS.opt_glob,
+    OptCase: WEIDU_TP2_STANZAS.opt_case,
+    OptExact: WEIDU_TP2_STANZAS.opt_exact,
+    Caching: "caching",
+    ArraySortType: WEIDU_TP2_STANZAS.array_sort_type,
     // Function parameter keywords (INT_VAR, STR_VAR, RET, RET_ARRAY)
-    FuncVarKeyword = "func_var_keyword",
+    FuncVarKeyword: WEIDU_TP2_STANZAS.func_var_keyword,
     // Function libraries
-    ActionFunctions = "action_functions",
-    PatchFunctions = "patch_functions",
-    DimorphicFunctions = "dimorphic_functions",
+    ActionFunctions: WEIDU_TP2_STANZAS.action_functions,
+    PatchFunctions: WEIDU_TP2_STANZAS.patch_functions,
+    DimorphicFunctions: WEIDU_TP2_STANZAS.dimorphic_functions,
     // Macro libraries
-    ActionMacros = "action_macros",
-    PatchMacros = "patch_macros",
+    ActionMacros: WEIDU_TP2_STANZAS.action_macros,
+    PatchMacros: WEIDU_TP2_STANZAS.patch_macros,
     // JSDoc tags and types
-    Jsdoc = "jsdoc",
-}
+    Jsdoc: "jsdoc",
+} as const;
+
+export type CompletionCategory = (typeof CompletionCategory)[keyof typeof CompletionCategory];
 
 /**
  * Extended completion item with optional category metadata.

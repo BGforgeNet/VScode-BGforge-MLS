@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
+import { IELIB_STANZAS, IESDP_STANZAS } from "../../../shared/stanza-names.js";
 import {
     cmpStr,
     COMPLETION_TYPE_FUNCTION,
@@ -380,7 +381,7 @@ function main(): void {
     // Build final data structure with all items populated
     const ielibData: IEData = {
         patch_functions: {
-            stanza: "patch_functions",
+            stanza: IELIB_STANZAS.patch_functions,
             highlightStanza: "ielib-patch-functions",
             scope: "entity.name.function.weidu-tp2.patch-function-name",
             completion_type: COMPLETION_TYPE_FUNCTION,
@@ -388,7 +389,7 @@ function main(): void {
             items: patchFunctions,
         },
         action_functions: {
-            stanza: "action_functions",
+            stanza: IELIB_STANZAS.action_functions,
             highlightStanza: "ielib-action-functions",
             scope: "support.function.weidu-tp2.action-function-name",
             completion_type: COMPLETION_TYPE_FUNCTION,
@@ -396,57 +397,57 @@ function main(): void {
             items: actionFunctions,
         },
         resrefs: {
-            stanza: "ielib_resref",
+            stanza: IELIB_STANZAS.ielib_resref,
             highlightStanza: "ielib-resref",
             scope: "constant.language.ielib.resref",
             string: true,
             items: resrefItems,
         },
         ints: {
-            stanza: "ielib_int",
+            stanza: IELIB_STANZAS.ielib_int,
             highlightStanza: "ielib-int",
             scope: "constant.language.ielib.int",
             items: intItems,
         },
         // Structure offsets from IElib iesdp.tph files (previously from IESDP YAML)
         iesdp_other: {
-            stanza: "iesdp_other",
+            stanza: IESDP_STANZAS.iesdp_other,
             highlightStanza: "iesdp-other",
             scope: "constant.language.iesdp.other",
             items: offsetsByType.get("other")!,
         },
         iesdp_strrefs: {
-            stanza: "iesdp_strref",
+            stanza: IESDP_STANZAS.iesdp_strref,
             highlightStanza: "iesdp-strref",
             scope: "constant.language.iesdp.strref",
             items: offsetsByType.get("strref")!,
         },
         iesdp_resrefs: {
-            stanza: "iesdp_resref",
+            stanza: IESDP_STANZAS.iesdp_resref,
             highlightStanza: "iesdp-resref",
             scope: "constant.language.iesdp.resref",
             items: offsetsByType.get("resref")!,
         },
         iesdp_dwords: {
-            stanza: "iesdp_dword",
+            stanza: IESDP_STANZAS.iesdp_dword,
             highlightStanza: "iesdp-dword",
             scope: "constant.language.iesdp.dword",
             items: offsetsByType.get("dword")!,
         },
         iesdp_words: {
-            stanza: "iesdp_word",
+            stanza: IESDP_STANZAS.iesdp_word,
             highlightStanza: "iesdp-word",
             scope: "constant.language.iesdp.word",
             items: offsetsByType.get("word")!,
         },
         iesdp_bytes: {
-            stanza: "iesdp_byte",
+            stanza: IESDP_STANZAS.iesdp_byte,
             highlightStanza: "iesdp-byte",
             scope: "constant.language.iesdp.byte",
             items: offsetsByType.get("byte")!,
         },
         iesdp_chars: {
-            stanza: "iesdp_char",
+            stanza: IESDP_STANZAS.iesdp_char,
             highlightStanza: "iesdp-char",
             scope: "constant.language.iesdp.char",
             items: offsetsByType.get("char")!,

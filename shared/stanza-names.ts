@@ -1,0 +1,68 @@
+/**
+ * Canonical YAML stanza/category identifiers shared across build-time scripts
+ * and runtime code. Keep stringly-typed stanza names here instead of spreading
+ * them through generators, loaders, and updater scripts.
+ *
+ * Sync note:
+ * - TP2 stanza-backed completion categories are consumed from here by
+ *   server/src/shared/completion-context.ts.
+ * - Non-stanza TP2 categories such as "action", "patch", and "vars" remain
+ *   local to completion-context.ts because they are cursor-context categories,
+ *   not YAML stanza names.
+ */
+
+export const FALLOUT_SSL_STANZAS = {
+    base_functions: "base_functions",
+    engine_procedures: "engine_procedures",
+    hooks: "hooks",
+    preprocessor_directives: "preprocessor_directives",
+    say_functions: "say_functions",
+    sfall_functions: "sfall_functions",
+    sound_functions: "sound_functions",
+    window_functions: "window_functions",
+} as const;
+
+export const WEIDU_TP2_STANZAS = {
+    action_functions: "action_functions",
+    action_macros: "action_macros",
+    array_sort_type: "array_sort_type",
+    component_flag: "component_flag",
+    dimorphic_functions: "dimorphic_functions",
+    func_var_keyword: "func_var_keyword",
+    opt_case: "opt_case",
+    opt_exact: "opt_exact",
+    opt_glob: "opt_glob",
+    patch_functions: "patch_functions",
+    patch_macros: "patch_macros",
+} as const;
+
+/**
+ * TP2 stanza names that also act as completion category identifiers.
+ * Keep this set aligned with the stanza-backed entries in CompletionCategory.
+ */
+export const WEIDU_TP2_CATEGORY_STANZAS = WEIDU_TP2_STANZAS;
+
+export const IESDP_STANZAS = {
+    iesdp_byte: "iesdp_byte",
+    iesdp_char: "iesdp_char",
+    iesdp_dword: "iesdp_dword",
+    iesdp_other: "iesdp_other",
+    iesdp_resref: "iesdp_resref",
+    iesdp_strref: "iesdp_strref",
+    iesdp_word: "iesdp_word",
+} as const;
+
+export const IELIB_STANZAS = {
+    action_functions: WEIDU_TP2_STANZAS.action_functions,
+    ielib_int: "ielib_int",
+    ielib_resref: "ielib_resref",
+    patch_functions: WEIDU_TP2_STANZAS.patch_functions,
+} as const;
+
+export const WEIDU_TP2_CALLABLE_PREFIX: Record<string, string> = {
+    [WEIDU_TP2_STANZAS.action_functions]: "action function ",
+    [WEIDU_TP2_STANZAS.patch_functions]: "patch function ",
+    [WEIDU_TP2_STANZAS.dimorphic_functions]: "dimorphic function ",
+    [WEIDU_TP2_STANZAS.action_macros]: "action macro ",
+    [WEIDU_TP2_STANZAS.patch_macros]: "patch macro ",
+};

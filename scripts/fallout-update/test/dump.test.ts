@@ -7,7 +7,14 @@ import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import YAML from "yaml";
 import { dumpFalloutCompletion, dumpFalloutHighlight } from "../src/fallout/dump.js";
-import type { DefineKind, FalloutCompletionItem, HighlightPattern } from "../src/fallout/types.js";
+import {
+    HIGHLIGHT_STANZAS,
+    SFALL_FUNCTIONS_STANZA,
+    SFALL_HOOKS_STANZA,
+    type DefineKind,
+    type FalloutCompletionItem,
+    type HighlightPattern,
+} from "../src/fallout/types.js";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
@@ -45,7 +52,7 @@ other-stanza:
         dumpFalloutCompletion(filePath, functions, hooks);
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
-        const stanza = result["sfall_functions"] as { type: number; items: Array<{ name: string }> };
+        const stanza = result[SFALL_FUNCTIONS_STANZA] as { type: number; items: Array<{ name: string }> };
         expect(stanza.type).toBe(3);
         expect(stanza.items).toHaveLength(1);
         expect(stanza.items[0]!.name).toBe("my_func");
@@ -60,7 +67,7 @@ other-stanza:
         dumpFalloutCompletion(filePath, functions, hooks);
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
-        const stanza = result["hooks"] as { type: number; items: Array<{ name: string }> };
+        const stanza = result[SFALL_HOOKS_STANZA] as { type: number; items: Array<{ name: string }> };
         expect(stanza.type).toBe(21);
         expect(stanza.items).toHaveLength(1);
         expect(stanza.items[0]!.name).toBe("HOOK_TEST");
@@ -134,8 +141,8 @@ repository:
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { patterns: Array<{ match: string }> }>;
-        expect(repo["sfall_functions"]!.patterns).toHaveLength(1);
-        expect(repo["sfall_functions"]!.patterns[0]!.match).toBe("\\b(?i)(my_func)\\b");
+        expect(repo[HIGHLIGHT_STANZAS.sfallFunctions]!.patterns).toHaveLength(1);
+        expect(repo[HIGHLIGHT_STANZAS.sfallFunctions]!.patterns[0]!.match).toBe("\\b(?i)(my_func)\\b");
     });
 
     it("updates hook patterns", () => {
@@ -146,8 +153,8 @@ repository:
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { patterns: Array<{ match: string }> }>;
-        expect(repo["hooks"]!.patterns).toHaveLength(1);
-        expect(repo["hooks"]!.patterns[0]!.match).toBe("\\b(HOOK_TEST)\\b");
+        expect(repo[HIGHLIGHT_STANZAS.hooks]!.patterns).toHaveLength(1);
+        expect(repo[HIGHLIGHT_STANZAS.hooks]!.patterns[0]!.match).toBe("\\b(HOOK_TEST)\\b");
     });
 
     it("partitions header defines into correct stanzas", () => {
@@ -192,7 +199,7 @@ repository:
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { name: string }>;
-        expect(repo["sfall_functions"]!.name).toBe("support.function.fallout-ssl.sfall");
-        expect(repo["hooks"]!.name).toBe("constant.language.fallout-ssl");
+        expect(repo[HIGHLIGHT_STANZAS.sfallFunctions]!.name).toBe("support.function.fallout-ssl.sfall");
+        expect(repo[HIGHLIGHT_STANZAS.hooks]!.name).toBe("constant.language.fallout-ssl");
     });
 });

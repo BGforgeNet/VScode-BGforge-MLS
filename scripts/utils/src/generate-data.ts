@@ -16,6 +16,7 @@ import { parseArgs } from "node:util";
 import YAML from "yaml";
 import { buildSignatureBlock, buildWeiduHoverContent, formatDeprecation } from "./shared/tooltip-format.js";
 import { buildFalloutArgsTable, buildWeiduTable, type VarRow, type VarSection } from "./shared/tooltip-table.js";
+import { WEIDU_TP2_CALLABLE_PREFIX } from "./shared/stanza-names.js";
 import { WEIDU_JSDOC_TYPES } from "./shared/weidu-types.js";
 import { cmpStr } from "./yaml-helpers.js";
 
@@ -87,13 +88,7 @@ const WEIDU_ITEM_TYPES = new Set(["patch", "action", "dimorphic"]);
  * at build time. Only applies when item has no structured args/rets
  * (items with args already get the prefix via getDetail's WeiDU path).
  */
-const STANZA_CALLABLE_PREFIX: Record<string, string> = {
-    action_functions: "action function ",
-    patch_functions: "patch function ",
-    dimorphic_functions: "dimorphic function ",
-    action_macros: "action macro ",
-    patch_macros: "patch macro ",
-};
+const STANZA_CALLABLE_PREFIX = WEIDU_TP2_CALLABLE_PREFIX;
 
 /**
  * Returns true if the item uses WeiDU-style structured format.

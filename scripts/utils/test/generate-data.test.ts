@@ -6,6 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { WEIDU_TP2_STANZAS } from "../src/shared/stanza-names.js";
 import {
     generateCompletion,
     generateHover,
@@ -310,37 +311,37 @@ describe("getDetail (WeiDU)", () => {
 describe("getDetail (stanza prefix)", () => {
     it("prepends callable prefix from stanza name", () => {
         const item = { name: "HANDLE_AUDIO" };
-        expect(getDetail(item, true, "action_functions")).toBe("action function HANDLE_AUDIO");
+        expect(getDetail(item, true, WEIDU_TP2_STANZAS.action_functions)).toBe("action function HANDLE_AUDIO");
     });
 
     it("prepends patch function prefix", () => {
         const item = { name: "ADD_AREA_ITEM" };
-        expect(getDetail(item, true, "patch_functions")).toBe("patch function ADD_AREA_ITEM");
+        expect(getDetail(item, true, WEIDU_TP2_STANZAS.patch_functions)).toBe("patch function ADD_AREA_ITEM");
     });
 
     it("prepends dimorphic function prefix", () => {
         const item = { name: "RESOLVE_STR_REF" };
-        expect(getDetail(item, true, "dimorphic_functions")).toBe("dimorphic function RESOLVE_STR_REF");
+        expect(getDetail(item, true, WEIDU_TP2_STANZAS.dimorphic_functions)).toBe("dimorphic function RESOLVE_STR_REF");
     });
 
     it("prepends action macro prefix", () => {
         const item = { name: "READ_SOUNDSET" };
-        expect(getDetail(item, true, "action_macros")).toBe("action macro READ_SOUNDSET");
+        expect(getDetail(item, true, WEIDU_TP2_STANZAS.action_macros)).toBe("action macro READ_SOUNDSET");
     });
 
     it("prepends patch macro prefix", () => {
         const item = { name: "tb_factorial" };
-        expect(getDetail(item, true, "patch_macros")).toBe("patch macro tb_factorial");
+        expect(getDetail(item, true, WEIDU_TP2_STANZAS.patch_macros)).toBe("patch macro tb_factorial");
     });
 
     it("does not double-prefix when detail already has prefix", () => {
         const item = { name: "ALTER_AREA_REGION_MATCH", detail: "patch function ALTER_AREA_REGION_MATCH" };
-        expect(getDetail(item, true, "patch_functions")).toBe("patch function ALTER_AREA_REGION_MATCH");
+        expect(getDetail(item, true, WEIDU_TP2_STANZAS.patch_functions)).toBe("patch function ALTER_AREA_REGION_MATCH");
     });
 
     it("does not add prefix when includeTypes is false", () => {
         const item = { name: "HANDLE_AUDIO" };
-        expect(getDetail(item, false, "action_functions")).toBe("HANDLE_AUDIO");
+        expect(getDetail(item, false, WEIDU_TP2_STANZAS.action_functions)).toBe("HANDLE_AUDIO");
     });
 
     it("does not add prefix for non-callable stanzas", () => {

@@ -1,3 +1,5 @@
+import { FALLOUT_SSL_STANZAS } from "../../../../shared/stanza-names.js";
+
 /**
  * Type definitions for Fallout sfall data structures.
  * Used when parsing sfall's functions.yml and hooks.yml, and when
@@ -61,13 +63,13 @@ export const COMPLETION_TYPE_FUNCTION = 3;
 export const COMPLETION_TYPE_CONSTANT = 21;
 
 /** Stanza names in the completion YAML */
-export const SFALL_FUNCTIONS_STANZA = "sfall_functions";
-export const SFALL_HOOKS_STANZA = "hooks";
+export const SFALL_FUNCTIONS_STANZA = FALLOUT_SSL_STANZAS.sfall_functions;
+export const SFALL_HOOKS_STANZA = FALLOUT_SSL_STANZAS.hooks;
 
 /** Repository stanza names in the highlight YAML */
 export const HIGHLIGHT_STANZAS = {
-    sfallFunctions: "sfall_functions",
-    hooks: "hooks",
+    sfallFunctions: FALLOUT_SSL_STANZAS.sfall_functions,
+    hooks: FALLOUT_SSL_STANZAS.hooks,
     headerConstants: "header-constants",
     headerVariables: "header-variables",
     headerProcedures: "header-procedures",

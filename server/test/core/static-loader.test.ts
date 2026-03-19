@@ -6,6 +6,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
 import { SymbolKind, ScopeLevel, SourceType, type CallableSymbol } from "../../src/core/symbol";
 import { CompletionCategory, type CompletionItemWithCategory } from "../../src/shared/completion-context";
+import { WEIDU_TP2_STANZAS } from "../../src/shared/stanza-names";
 
 // Mock fs.readFileSync before importing the module
 vi.mock("fs", () => ({
@@ -369,7 +370,7 @@ describe("static-loader", () => {
                 {
                     label: "ADD_SPELL_EFFECT",
                     kind: CompletionItemKind.Function,
-                    category: "patch_functions",
+                    category: WEIDU_TP2_STANZAS.patch_functions,
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.",
@@ -388,7 +389,7 @@ describe("static-loader", () => {
                 {
                     label: "ADD_WORLDMAP",
                     kind: CompletionItemKind.Function,
-                    category: "action_functions",
+                    category: WEIDU_TP2_STANZAS.action_functions,
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\naction function ADD_WORLDMAP\n```\nAdds a worldmap.",
@@ -407,7 +408,7 @@ describe("static-loader", () => {
                 {
                     label: "ADD_AREA_ITEM",
                     kind: CompletionItemKind.Function,
-                    category: "patch_functions",
+                    category: WEIDU_TP2_STANZAS.patch_functions,
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\npatch function ADD_AREA_ITEM\n```\nAdds an item to a container.",
@@ -469,7 +470,7 @@ describe("static-loader", () => {
                 {
                     label: "RESOLVE_STR_REF",
                     kind: CompletionItemKind.Function,
-                    category: "dimorphic_functions",
+                    category: WEIDU_TP2_STANZAS.dimorphic_functions,
                     documentation: {
                         kind: "markdown",
                         value: "```weidu-tp2-tooltip\ndimorphic function RESOLVE_STR_REF\n```\nResolves a string reference.",

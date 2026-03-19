@@ -21,6 +21,7 @@ import {
     type MarkupContent,
 } from "vscode-languageserver/node";
 import type { CompletionItemWithCategory, CompletionCategory } from "../shared/completion-context";
+import { WEIDU_TP2_STANZAS } from "../shared/stanza-names";
 import { conlog } from "../common";
 import {
     type IndexedSymbol,
@@ -69,11 +70,11 @@ const CATEGORY_TO_KIND: Record<string, SymbolKind> = {
     // are shared between TP2 (CompletionItemKind.Function) and worldmap
     // (CompletionItemKind.Keyword). Those use the CompletionItemKind fallback.
     // TP2 typed function/macro categories
-    action_functions: SymbolKind.Function,
-    patch_functions: SymbolKind.Function,
-    dimorphic_functions: SymbolKind.Function,
-    action_macros: SymbolKind.Macro,
-    patch_macros: SymbolKind.Macro,
+    [WEIDU_TP2_STANZAS.action_functions]: SymbolKind.Function,
+    [WEIDU_TP2_STANZAS.patch_functions]: SymbolKind.Function,
+    [WEIDU_TP2_STANZAS.dimorphic_functions]: SymbolKind.Function,
+    [WEIDU_TP2_STANZAS.action_macros]: SymbolKind.Macro,
+    [WEIDU_TP2_STANZAS.patch_macros]: SymbolKind.Macro,
 };
 
 /**
@@ -85,13 +86,13 @@ const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: 
     // Note: `action` and `patch` are intentionally excluded. They contain commands
     // (LAF, COPY, WRITE_BYTE, etc.) which are not user-defined callables and should
     // not get "action function" / "patch function" prefix in tooltips.
-    action_functions: { context: CallableContext.Action, dtype: CallableDefType.Function },
-    patch_functions: { context: CallableContext.Patch, dtype: CallableDefType.Function },
+    [WEIDU_TP2_STANZAS.action_functions]: { context: CallableContext.Action, dtype: CallableDefType.Function },
+    [WEIDU_TP2_STANZAS.patch_functions]: { context: CallableContext.Patch, dtype: CallableDefType.Function },
     // Dimorphic functions work in both action and patch contexts, so they get their
     // own context to display "dimorphic function" in hover instead of "action function".
-    dimorphic_functions: { context: CallableContext.Dimorphic, dtype: CallableDefType.Function },
-    action_macros: { context: CallableContext.Action, dtype: CallableDefType.Macro },
-    patch_macros: { context: CallableContext.Patch, dtype: CallableDefType.Macro },
+    [WEIDU_TP2_STANZAS.dimorphic_functions]: { context: CallableContext.Dimorphic, dtype: CallableDefType.Function },
+    [WEIDU_TP2_STANZAS.action_macros]: { context: CallableContext.Action, dtype: CallableDefType.Macro },
+    [WEIDU_TP2_STANZAS.patch_macros]: { context: CallableContext.Patch, dtype: CallableDefType.Macro },
 };
 
 /**
