@@ -6,14 +6,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { WEIDU_TP2_STANZAS } from "../src/shared/stanza-names.js";
+import { WEIDU_TP2_STANZAS } from "../src/shared/stanza-names.ts";
 import {
     generateCompletion,
     generateHover,
     generateSignatures,
     getDetail,
     loadData,
-} from "../src/generate-data.js";
+} from "../src/generate-data.ts";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));

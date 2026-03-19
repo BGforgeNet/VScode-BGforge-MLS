@@ -8,8 +8,8 @@
 
 import fs from "node:fs";
 import YAML, { Document, YAMLMap, YAMLSeq, isMap } from "yaml";
-import { makeBlockScalar, YAML_DUMP_OPTIONS } from "../../../utils/src/yaml-helpers.js";
-import type { FalloutCompletionItem, FalloutHighlightDumpInput, HighlightPattern } from "./types.js";
+import { makeBlockScalar, YAML_DUMP_OPTIONS } from "../../../utils/src/yaml-helpers.ts";
+import type { FalloutCompletionItem, FalloutHighlightDumpInput, HighlightPattern } from "./types.ts";
 import {
     COMPLETION_TYPE_CONSTANT,
     COMPLETION_TYPE_FUNCTION,
@@ -17,7 +17,7 @@ import {
     HIGHLIGHT_STANZAS,
     SFALL_FUNCTIONS_STANZA,
     SFALL_HOOKS_STANZA,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Creates a YAML sequence of completion items for the sfall_functions stanza.

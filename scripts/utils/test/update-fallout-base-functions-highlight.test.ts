@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildFalloutBaseFunctionPatterns } from "../src/update-fallout-base-functions-highlight.ts";
-import { cmpStr } from "../src/yaml-helpers.js";
+import { cmpStr } from "../src/yaml-helpers.ts";
 
 describe("buildFalloutBaseFunctionPatterns", () => {
     it("marks deprecated base-data functions with the deprecated highlight scope", () => {

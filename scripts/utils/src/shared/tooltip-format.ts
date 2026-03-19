@@ -3,4 +3,4 @@ export {
     buildSignatureBlock,
     buildWeiduHoverContent,
     formatDeprecation,
-} from "../../../../shared/tooltip-format.js";
+} from "../../../../shared/tooltip-format.ts";

@@ -2,10 +2,10 @@
  * Re-exports all public APIs from the fallout update modules.
  */
 
-export { collectDefines, definesFromFile, findFile } from "./header-defines.js";
-export { cmpStr, findFiles, litscal } from "../../../utils/src/yaml-helpers.js";
-export { loadSfallFunctions, loadSfallHooks } from "./sfall-data.js";
-export { dumpFalloutCompletion, dumpFalloutHighlight } from "./dump.js";
+export { collectDefines, definesFromFile, findFile } from "./header-defines.ts";
+export { cmpStr, findFiles, litscal } from "../../../utils/src/yaml-helpers.ts";
+export { loadSfallFunctions, loadSfallHooks } from "./sfall-data.ts";
+export { dumpFalloutCompletion, dumpFalloutHighlight } from "./dump.ts";
 export type {
     DefineKind,
     FalloutArg,
@@ -14,4 +14,4 @@ export type {
     SfallCategory,
     SfallFunction,
     SfallHook,
-} from "./types.js";
+} from "./types.ts";

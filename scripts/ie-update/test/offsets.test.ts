@@ -12,8 +12,8 @@ import {
     validateOffset,
     offsetIsUnused,
     offsetsToDefinition,
-} from "../src/ie/offsets.js";
-import type { OffsetItem } from "../src/ie/types.js";
+} from "../src/ie/offsets.ts";
+import type { OffsetItem } from "../src/ie/types.ts";
 
 describe("getOffsetPrefix", () => {
     it("generates prefix for v2 header", () => {

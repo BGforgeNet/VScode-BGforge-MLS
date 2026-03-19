@@ -14,8 +14,8 @@ import {
     optionalString,
     requireString,
     validateArray,
-} from "../../../utils/src/validate-helpers.js";
-import type { FalloutArg, SfallCategory, SfallFunction, SfallHook } from "./types.js";
+} from "../../../utils/src/validate-helpers.ts";
+import type { FalloutArg, SfallCategory, SfallFunction, SfallHook } from "./types.ts";
 
 export { assertArray, assertObject, optionalBoolean, optionalString, requireString, validateArray };
 

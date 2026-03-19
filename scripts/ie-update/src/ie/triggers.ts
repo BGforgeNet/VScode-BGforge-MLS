@@ -3,8 +3,8 @@
  * Extracts trigger signatures and documentation from IESDP trigger HTML pages.
  */
 
-import { normalizeHtmlFragment } from "./common.js";
-import type { CompletionItem } from "./types.js";
+import { normalizeHtmlFragment } from "./common.ts";
+import type { CompletionItem } from "./types.ts";
 
 const TRIGGER_HEADER_RE = /<strong(?:\s+id="[^"]*")?>\s*(0x[0-9A-F]+)\s+([^<]+?)\s*<\/strong>\s*<br\s*\/?>|<div\s+class="triggerHeader">\s*<a(?:\s+name="[^"]*")?(?:\s+id="[^"]*")?[^>]*>\s*(0x[0-9A-F]+)\s+([^<]+?)\s*<\/a>\s*<\/div>/gi;
 

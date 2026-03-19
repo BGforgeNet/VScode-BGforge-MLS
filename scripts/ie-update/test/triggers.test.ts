@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { extractTriggersFromHtml } from "../src/ie/triggers.js";
+import { extractTriggersFromHtml } from "../src/ie/triggers.ts";
 
 const BASE_URL = "https://gibberlings3.github.io/iesdp/scripting/triggers/bgeetriggers.htm";
 

@@ -8,8 +8,8 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { cmpStr, findFiles } from "../../../utils/src/yaml-helpers.js";
-import type { DefineKind } from "./types.js";
+import { cmpStr, findFiles } from "../../../utils/src/yaml-helpers.ts";
+import type { DefineKind } from "./types.ts";
 
 export { cmpStr, findFiles };
 

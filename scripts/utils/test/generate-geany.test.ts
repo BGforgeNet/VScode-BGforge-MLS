@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { generateGeanyConf } from "../src/generate-geany.js";
+import { generateGeanyConf } from "../src/generate-geany.ts";
 
 const SSL_LANG = {
     name: "test-ssl",

@@ -15,6 +15,8 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true
     },

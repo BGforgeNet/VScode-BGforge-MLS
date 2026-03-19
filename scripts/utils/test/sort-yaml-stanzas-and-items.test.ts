@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sortYamlSequenceByPath, sortYamlStanzasAndItems } from "../src/sort-yaml-stanzas-and-items.js";
+import { sortYamlSequenceByPath, sortYamlStanzasAndItems } from "../src/sort-yaml-stanzas-and-items.ts";
 
 describe("sortYamlStanzasAndItems", () => {
     it("sorts top-level stanzas alphabetically while preserving stanza formatting", () => {

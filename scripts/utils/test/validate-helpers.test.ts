@@ -11,7 +11,7 @@ import {
     optionalString,
     requireString,
     validateArray,
-} from "../src/validate-helpers.js";
+} from "../src/validate-helpers.ts";
 
 describe("assertObject", () => {
     it("returns the object when given a valid object", () => {

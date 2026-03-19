@@ -17,15 +17,15 @@ import {
     validateArray,
     validateFuncData,
     validateTypeEntry,
-} from "./ie/index.js";
+} from "./ie/index.ts";
 import type {
     CompletionItem,
     FuncData,
     FuncParam,
     IEData,
     TypeEntry,
-} from "./ie/index.js";
-import { IELIB_STANZAS, IESDP_STANZAS } from "./stanza-names.js";
+} from "./ie/index.ts";
+import { IELIB_STANZAS, IESDP_STANZAS } from "./stanza-names.ts";
 
 /** IElib documentation base URL */
 const IELIB_URL = "https://ielib.bgforge.net";

@@ -7,7 +7,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { loadSfallFunctions, loadSfallHooks } from "../src/fallout/sfall-data.js";
+import { loadSfallFunctions, loadSfallHooks } from "../src/fallout/sfall-data.ts";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));

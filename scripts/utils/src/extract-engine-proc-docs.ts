@@ -18,7 +18,7 @@
 import fs from "node:fs";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
-import { FALLOUT_SSL_STANZAS } from "./shared/stanza-names.js";
+import { FALLOUT_SSL_STANZAS } from "./shared/stanza-names.ts";
 
 /** Closing code fence that separates the signature from the doc text in hover markdown. */
 const CODE_FENCE_END = "```\n";

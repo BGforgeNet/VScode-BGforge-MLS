@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { opcodeNameToId } from "../src/ie/opcodes.js";
+import { opcodeNameToId } from "../src/ie/opcodes.ts";
 
 describe("opcodeNameToId", () => {
     it("converts spaces and special chars to underscores", () => {

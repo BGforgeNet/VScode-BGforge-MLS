@@ -7,7 +7,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { collectDefines, definesFromFile, findFile } from "../src/fallout/header-defines.js";
+import { collectDefines, definesFromFile, findFile } from "../src/fallout/header-defines.ts";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));

@@ -7,7 +7,7 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { generateUdlXml } from "../src/generate-udl.js";
+import { generateUdlXml } from "../src/generate-udl.ts";
 
 const SSL_LANG = {
     name: "test-ssl",

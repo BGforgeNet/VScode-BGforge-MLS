@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { expandRepository } from "../src/yaml2json.js";
+import { expandRepository } from "../src/yaml2json.ts";
 
 describe("expandRepository", () => {
     it("inherits name from parent to child patterns without name", () => {

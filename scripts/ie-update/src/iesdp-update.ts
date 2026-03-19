@@ -21,12 +21,12 @@ import {
     validateActionItem,
     validateArray,
     validateIESDPGame,
-} from "./ie/index.js";
+} from "./ie/index.ts";
 import type {
     ActionItem,
     CompletionItem,
     IESDPGame,
-} from "./ie/index.js";
+} from "./ie/index.ts";
 
 /** IESDP base URL for documentation links */
 const IESDP_BASE_URL = "https://gibberlings3.github.io/iesdp/";

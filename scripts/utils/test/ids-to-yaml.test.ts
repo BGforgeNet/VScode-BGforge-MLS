@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { parseIdsFile } from "../src/ids-to-yaml.js";
+import { parseIdsFile } from "../src/ids-to-yaml.ts";
 
 describe("parseIdsFile", () => {
     it("parses standard IDS lines", () => {

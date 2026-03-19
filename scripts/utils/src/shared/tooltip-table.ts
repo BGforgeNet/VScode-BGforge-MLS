@@ -4,4 +4,4 @@ export {
     buildWeiduTable,
     type VarRow,
     type VarSection,
-} from "../../../../shared/tooltip-table.js";
+} from "../../../../shared/tooltip-table.ts";

@@ -7,9 +7,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
-import { stringToId } from "./offsets.js";
-import type { CompletionItem, ItemType, ItemTypeRaw } from "./types.js";
-import { validateArray, validateItemTypeRaw } from "./validate.js";
+import { stringToId } from "./offsets.ts";
+import type { CompletionItem, ItemType, ItemTypeRaw } from "./types.ts";
+import { validateArray, validateItemTypeRaw } from "./validate.ts";
 
 const ITEM_TYPE_PREFIX = "ITEM_TYPE_";
 

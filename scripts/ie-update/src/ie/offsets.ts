@@ -4,7 +4,7 @@
  * validation, and definition file generation from IESDP offset data.
  */
 
-import type { OffsetItem } from "./types.js";
+import type { OffsetItem } from "./types.ts";
 
 /** Map of offset type names to their byte sizes */
 const SIZE_MAP: Readonly<Record<string, number>> = {

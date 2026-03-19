@@ -3,7 +3,7 @@
  * Serves the same role as the Python ie/__init__.py with wildcard imports.
  */
 
-export { opcodeNameToId } from "./opcodes.js";
+export { opcodeNameToId } from "./opcodes.ts";
 
 export {
     getOffsetPrefix,
@@ -14,9 +14,9 @@ export {
     validateOffset,
     offsetIsUnused,
     offsetsToDefinition,
-} from "./offsets.js";
+} from "./offsets.ts";
 
-export { getItemTypes, saveItemTypesIelib, getItemTypesIsense } from "./item-types.js";
+export { getItemTypes, saveItemTypesIelib, getItemTypesIsense } from "./item-types.ts";
 
 export {
     actionAliasDesc,
@@ -24,9 +24,9 @@ export {
     actionDescAbsoluteUrls,
     appendUnique,
     actionDetail,
-} from "./actions.js";
+} from "./actions.ts";
 
-export { extractTriggersFromHtml } from "./triggers.js";
+export { extractTriggersFromHtml } from "./triggers.ts";
 
 export {
     createItemsSeq,
@@ -35,9 +35,9 @@ export {
     dumpDefinition,
     stripLiquid,
     checkCompletion,
-} from "./common.js";
+} from "./common.ts";
 
-export { cmpStr, litscal, findFiles } from "../../../utils/src/yaml-helpers.js";
+export { cmpStr, litscal, findFiles } from "../../../utils/src/yaml-helpers.ts";
 
 export type {
     CompletionItem,
@@ -55,9 +55,9 @@ export type {
     FuncParam,
     FuncReturn,
     TypeEntry,
-} from "./types.js";
+} from "./types.ts";
 
-export { COMPLETION_TYPE_CONSTANT, COMPLETION_TYPE_FUNCTION } from "./types.js";
+export { COMPLETION_TYPE_CONSTANT, COMPLETION_TYPE_FUNCTION } from "./types.ts";
 
 export {
     validateActionItem,
@@ -67,4 +67,4 @@ export {
     validateItemTypeRaw,
     validateOffsetItem,
     validateTypeEntry,
-} from "./validate.js";
+} from "./validate.ts";

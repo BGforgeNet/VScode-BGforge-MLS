@@ -9,11 +9,11 @@
  */
 
 import { parseArgs } from "node:util";
-import { dumpFalloutHighlight } from "../../fallout-update/src/fallout/dump.js";
-import type { HighlightPattern } from "../../fallout-update/src/fallout/types.js";
+import { dumpFalloutHighlight } from "../../fallout-update/src/fallout/dump.ts";
+import type { HighlightPattern } from "../../fallout-update/src/fallout/types.ts";
 import { loadData } from "./generate-data.ts";
-import { cmpStr } from "./yaml-helpers.js";
-import { FALLOUT_SSL_BUILTIN_FUNCTION_STANZAS } from "../../../shared/stanza-names.js";
+import { cmpStr } from "./yaml-helpers.ts";
+import { FALLOUT_SSL_BUILTIN_FUNCTION_STANZAS } from "../../../shared/stanza-names.ts";
 
 export function buildFalloutBaseFunctionPatterns(yamlPath: string): readonly HighlightPattern[] {
     const data = loadData([yamlPath]);

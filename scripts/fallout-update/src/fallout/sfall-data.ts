@@ -7,14 +7,14 @@
 
 import fs from "node:fs";
 import YAML from "yaml";
-import { cmpStr, litscal } from "../../../utils/src/yaml-helpers.js";
-import { findFile } from "./header-defines.js";
+import { cmpStr, litscal } from "../../../utils/src/yaml-helpers.ts";
+import { findFile } from "./header-defines.ts";
 import type {
     FalloutCompletionItem,
     HighlightPattern,
     SfallCategory,
-} from "./types.js";
-import { validateArray, validateSfallCategory, validateSfallHook } from "./validate.js";
+} from "./types.ts";
+import { validateArray, validateSfallCategory, validateSfallHook } from "./validate.ts";
 
 export { litscal };
 

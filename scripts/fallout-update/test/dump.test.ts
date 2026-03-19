@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import YAML from "yaml";
-import { dumpFalloutCompletion, dumpFalloutHighlight } from "../src/fallout/dump.js";
+import { dumpFalloutCompletion, dumpFalloutHighlight } from "../src/fallout/dump.ts";
 import {
     HIGHLIGHT_STANZAS,
     SFALL_FUNCTIONS_STANZA,
@@ -14,7 +14,7 @@ import {
     type DefineKind,
     type FalloutCompletionItem,
     type HighlightPattern,
-} from "../src/fallout/types.js";
+} from "../src/fallout/types.ts";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));

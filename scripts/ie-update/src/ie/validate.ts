@@ -14,7 +14,7 @@ import {
     optionalString,
     requireString,
     validateArray,
-} from "../../../utils/src/validate-helpers.js";
+} from "../../../utils/src/validate-helpers.ts";
 import type {
     ActionItem,
     ActionParam,
@@ -25,7 +25,7 @@ import type {
     ItemTypeRaw,
     OffsetItem,
     TypeEntry,
-} from "./types.js";
+} from "./types.ts";
 
 export { assertArray, assertObject, optionalBoolean, optionalString, requireString, validateArray };
 

@@ -9,7 +9,7 @@ import {
     validateSfallCategory,
     validateSfallFunction,
     validateSfallHook,
-} from "../src/fallout/validate.js";
+} from "../src/fallout/validate.ts";
 
 describe("validateSfallFunction", () => {
     it("validates a minimal function", () => {

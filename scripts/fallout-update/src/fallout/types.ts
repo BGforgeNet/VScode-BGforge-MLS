@@ -1,4 +1,4 @@
-import { FALLOUT_SSL_STANZAS } from "../../../../shared/stanza-names.js";
+import { FALLOUT_SSL_STANZAS } from "../../../../shared/stanza-names.ts";
 
 /**
  * Type definitions for Fallout sfall data structures.

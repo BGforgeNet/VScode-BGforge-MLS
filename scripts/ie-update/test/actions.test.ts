@@ -9,8 +9,8 @@ import {
     actionDescAbsoluteUrls,
     actionDetail,
     appendUnique,
-} from "../src/ie/actions.js";
-import type { ActionItem, IESDPGame } from "../src/ie/types.js";
+} from "../src/ie/actions.ts";
+import type { ActionItem, IESDPGame } from "../src/ie/types.ts";
 
 const GAMES: IESDPGame[] = [
     { name: "bg2", ids: "/files/ids/bg2", "2da": "/files/2da/bg2", actions: "/scripting/actions/bg2" },

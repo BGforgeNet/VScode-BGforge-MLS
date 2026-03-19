@@ -14,6 +14,8 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
         "rootDir": "..",
         "outDir": "out",
         "resolveJsonModule": true,

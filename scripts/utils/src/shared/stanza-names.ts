@@ -3,4 +3,4 @@ export {
     FALLOUT_SSL_STANZAS,
     WEIDU_TP2_CALLABLE_PREFIX,
     WEIDU_TP2_STANZAS,
-} from "../../../../shared/stanza-names.js";
+} from "../../../../shared/stanza-names.ts";

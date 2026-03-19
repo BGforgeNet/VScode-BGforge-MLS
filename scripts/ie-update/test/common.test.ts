@@ -12,9 +12,9 @@ import {
     dumpDefinition,
     dumpHighlight,
     stripLiquid,
-} from "../src/ie/common.js";
+} from "../src/ie/common.ts";
 import YAML from "yaml";
-import type { IEData } from "../src/ie/types.js";
+import type { IEData } from "../src/ie/types.ts";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));

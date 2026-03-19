@@ -15,7 +15,7 @@ import {
     dumpFalloutHighlight,
     loadSfallFunctions,
     loadSfallHooks,
-} from "./fallout/index.js";
+} from "./fallout/index.ts";
 
 const { values } = parseArgs({
     options: {

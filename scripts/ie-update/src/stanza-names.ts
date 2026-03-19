@@ -1,4 +1,4 @@
-import { WEIDU_TP2_STANZAS } from "../../../shared/stanza-names.js";
+import { WEIDU_TP2_STANZAS } from "../../../shared/stanza-names.ts";
 
 /** IE update-only stanza names used when generating IElib/IESDP data. */
 export const IESDP_STANZAS = {

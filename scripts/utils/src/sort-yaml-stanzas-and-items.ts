@@ -11,7 +11,7 @@
 import fs from "node:fs";
 import { parseArgs } from "node:util";
 import YAML, { isMap, isScalar, isSeq } from "yaml";
-import { cmpStr } from "./yaml-helpers.js";
+import { cmpStr } from "./yaml-helpers.ts";
 
 interface SourceTokenLike {
     readonly offset: number;

@@ -12,7 +12,7 @@ import {
     litscal,
     makeBlockScalar,
     YAML_DUMP_OPTIONS,
-} from "../src/yaml-helpers.js";
+} from "../src/yaml-helpers.ts";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));

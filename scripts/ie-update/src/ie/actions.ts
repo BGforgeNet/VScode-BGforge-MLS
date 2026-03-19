@@ -4,8 +4,8 @@
  * deduplication, and signature formatting.
  */
 
-import { htmlInlineToText, normalizeHtmlFragment } from "./common.js";
-import type { ActionItem, IESDPGame } from "./types.js";
+import { htmlInlineToText, normalizeHtmlFragment } from "./common.ts";
+import type { ActionItem, IESDPGame } from "./types.ts";
 
 const DISPLAY_TYPE_NAMES: Readonly<Record<string, string>> = {
     // Match @bgforge/iets type naming for compound refs (CreRef, ItmRef, SplRef, StrRef)

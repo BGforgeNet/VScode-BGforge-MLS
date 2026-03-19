@@ -4,7 +4,7 @@
  * and JSDoc-parsed tooltip paths.
  */
 
-import { formatTypeLink } from "./weidu-types.js";
+import { formatTypeLink } from "./weidu-types.ts";
 
 export interface VarRow {
     readonly type: string;
