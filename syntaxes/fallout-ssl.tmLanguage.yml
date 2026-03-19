@@ -85,8 +85,12 @@ repository:
   fallout-base-functions:
     name: support.function.fallout-ssl.base
     patterns:
+      - match: \b(?i)(REG_ANIM_FUNC)\b
       - match: \b(?i)(action_being_used)\b
       - match: \b(?i)(activateregion)\b
+      - match: \b(?i)(add_mult_objs_to_inven)\b
+      - match: \b(?i)(add_obj_to_inven)\b
+      - match: \b(?i)(add_timer_event)\b
       - match: \b(?i)(addbutton)\b
       - match: \b(?i)(addbuttonflag)\b
       - match: \b(?i)(addbuttongfx)\b
@@ -94,22 +98,19 @@ repository:
       - match: \b(?i)(addbuttonrightproc)\b
       - match: \b(?i)(addbuttontext)\b
       - match: \b(?i)(addkey)\b
-      - match: \b(?i)(add_mult_objs_to_inven)\b
       - match: \b(?i)(addnamedevent)\b
       - match: \b(?i)(addnamedhandler)\b
-      - match: \b(?i)(add_obj_to_inven)\b
       - match: \b(?i)(addregion)\b
       - match: \b(?i)(addregionflag)\b
       - match: \b(?i)(addregionproc)\b
       - match: \b(?i)(addregionrightproc)\b
-      - match: \b(?i)(add_timer_event)\b
       - match: \b(?i)(anim)\b
       - match: \b(?i)(anim_action_frame)\b
+      - match: \b(?i)(anim_busy)\b
       - match: \b(?i)(animate_jump)\b
       - match: \b(?i)(animate_move_obj_to_tile)\b
       - match: \b(?i)(animate_stand_obj)\b
       - match: \b(?i)(animate_stand_reverse_obj)\b
-      - match: \b(?i)(anim_busy)\b
       - match: \b(?i)(art_anim)\b
       - match: \b(?i)(attack)\b
       - match: \b(?i)(attack_complex)\b
@@ -150,8 +151,8 @@ repository:
       - match: \b(?i)(dialogue_system_enter)\b
       - match: \b(?i)(difficulty_level)\b
       - match: \b(?i)(display)\b
-      - match: \b(?i)(displaygfx)\b
       - match: \b(?i)(display_msg)\b
+      - match: \b(?i)(displaygfx)\b
       - match: \b(?i)(displayraw)\b
       - match: \b(?i)(do_check)\b
       - match: \b(?i)(drop_obj)\b
@@ -246,11 +247,11 @@ repository:
       - match: \b(?i)(party_remove)\b
       - match: \b(?i)(pickup_obj)\b
       - match: \b(?i)(play_gmovie)\b
+      - match: \b(?i)(play_sfx)\b
       - match: \b(?i)(playmovie)\b
       - match: \b(?i)(playmoviealpha)\b
       - match: \b(?i)(playmoviealpharect)\b
       - match: \b(?i)(playmovierect)\b
-      - match: \b(?i)(play_sfx)\b
       - match: \b(?i)(poison)\b
       - match: \b(?i)(print)\b
       - match: \b(?i)(printrect)\b
@@ -264,7 +265,6 @@ repository:
       - match: \b(?i)(reg_anim_animate)\b
       - match: \b(?i)(reg_anim_animate_forever)\b
       - match: \b(?i)(reg_anim_animate_reverse)\b
-      - match: \b(?i)(REG_ANIM_FUNC)\b
       - match: \b(?i)(reg_anim_obj_move_to_obj)\b
       - match: \b(?i)(reg_anim_obj_move_to_tile)\b
       - match: \b(?i)(reg_anim_obj_run_to_obj)\b
@@ -301,24 +301,24 @@ repository:
       - match: \b(?i)(saystart)\b
       - match: \b(?i)(saystartpos)\b
       - match: \b(?i)(scalewin)\b
+      - match: \b(?i)(scr_return)\b
       - match: \b(?i)(script_action)\b
       - match: \b(?i)(script_overrides)\b
-      - match: \b(?i)(scr_return)\b
       - match: \b(?i)(selectfilelist)\b
       - match: \b(?i)(selectwin)\b
       - match: \b(?i)(self_obj)\b
       - match: \b(?i)(set_critter_stat)\b
       - match: \b(?i)(set_exit_grids)\b
-      - match: \b(?i)(setfont)\b
-      - match: \b(?i)(setglobalmousefunc)\b
       - match: \b(?i)(set_global_var)\b
-      - match: \b(?i)(sethighlightcolor)\b
       - match: \b(?i)(set_light_level)\b
       - match: \b(?i)(set_local_var)\b
       - match: \b(?i)(set_map_music)\b
       - match: \b(?i)(set_map_start)\b
       - match: \b(?i)(set_map_var)\b
       - match: \b(?i)(set_obj_visibility)\b
+      - match: \b(?i)(setfont)\b
+      - match: \b(?i)(setglobalmousefunc)\b
+      - match: \b(?i)(sethighlightcolor)\b
       - match: \b(?i)(setoneoptpause)\b
       - match: \b(?i)(settextcolor)\b
       - match: \b(?i)(settextflags)\b
