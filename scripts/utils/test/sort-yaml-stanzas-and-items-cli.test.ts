@@ -1,0 +1,36 @@
+import fs from "node:fs";
+import path from "node:path";
+import { execSync } from "node:child_process";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+const TMP_BASE = "tmp";
+
+beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
+
+describe("sort-yaml-stanzas-and-items CLI", () => {
+    let tmpDir: string;
+
+    beforeEach(() => {
+        tmpDir = fs.mkdtempSync(path.join(TMP_BASE, ".sort-yaml-test-"));
+    });
+
+    afterEach(() => {
+        fs.rmSync(tmpDir, { recursive: true });
+    });
+
+    it("sorts a YAML file in place", () => {
+        const inputFile = path.join(tmpDir, "input.yml");
+        fs.writeFileSync(inputFile, `b:\n  value: 2\n\na:\n  value: 1\n`, "utf8");
+
+        execSync(`pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts "${inputFile}"`, {
+            cwd: process.cwd(),
+        });
+
+        expect(fs.readFileSync(inputFile, "utf8")).toBe(`a:
+  value: 1
+
+b:
+  value: 2
+`);
+    });
+});

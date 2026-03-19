@@ -96,3 +96,10 @@ pnpm test:cli                              # Exit codes and diff output
 | `lint-shell.sh`          | Lint shell scripts (shellcheck).                                                                                                                                                                |
 | `fallout-update.sh`      | Update Fallout engine data.                                                                                                                                                                     |
 | `ie-update.sh`           | Update Infinity Engine data.                                                                                                                                                                    |
+
+## Script utilities
+
+- `scripts/utils/src/sort-yaml-stanzas-and-items.ts`
+  Sorts YAML source files by top-level stanza name and, within each stanza, sorts `items:` entries by `name`.
+  It preserves comments and formatting by moving raw source slices instead of fully parsing and re-stringifying the file.
+  Use this for manual data-file cleanup when you want deterministic ordering without YAML emitter churn.
