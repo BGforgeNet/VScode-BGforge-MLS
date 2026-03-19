@@ -21,26 +21,23 @@ It also works with non-VS Code editors. Setup guides are available for [Sublime]
 
 ## Languages
 
-### Fallout
-
-#### Fallout SSL
-`.ssl` and `.h` support completion, hover, signature help, go to definition, find references, formatting, document symbols, workspace symbols, rename, inlay hints via `.msg`, diagnostics, JSDoc, folding, and dialog preview.
-
-### WeiDU
-
-#### WeiDU BAF
-
-`.baf` supports completion, hover, formatting, inlay hints via `.tra`, diagnostics, and folding.
-
-Aliases: `.slb` and `.ssl` (SCS) are treated as `.baf`.
-
-#### WeiDU D
-
-`.d` supports completion, hover, go to definition, find references, formatting, document symbols, rename, inlay hints via `.tra`, diagnostics, JSDoc, folding, and dialog preview.
-
-#### WeiDU TP2
-
-`.tp2`, `.tpa`, `.tph`, and `.tpp` support completion, hover, go to definition, find references, formatting, document symbols, workspace symbols, rename in the same file, inlay hints via `.tra`, diagnostics, JSDoc, and folding.
+| Feature | Fallout SSL | WeiDU BAF | WeiDU SSL | WeiDU D | WeiDU TP2 |
+| ------- | :---------: | :-------: | :-------: | :-----: | :-------: |
+| Extensions | `.ssl`, `.h` | `.baf` | `.slb`, `.ssl` | `.d` | `.tp2`, `.tpa`, `.tph`, `.tpp` |
+| Completion | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Hover | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Signature help | ✓ |  |  |  |  |
+| Go to definition | ✓ |  |  | ✓ | ✓ |
+| Find references | ✓ |  |  | ✓ | ✓ |
+| Formatting | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Document symbols | ✓ |  |  | ✓ | ✓ |
+| Workspace symbols | ✓ |  |  |  | ✓ |
+| Rename | ✓ |  |  | ✓ | Same file |
+| Inlay hints | `.msg` | `.tra` | `.tra` | `.tra` | `.tra` |
+| Diagnostics | ✓ | ✓ | ✓ | ✓ | ✓ |
+| JSDoc | ✓ |  |  | ✓ | ✓ |
+| Folding | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Dialog preview | ✓ |  |  | ✓ |  |
 
 
 ## Transpilers
