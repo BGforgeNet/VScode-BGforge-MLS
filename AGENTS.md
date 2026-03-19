@@ -15,6 +15,7 @@ This file provides guidance to AI agents (Claude, Gemini, etc.) when working wit
 - **Use `pnpm` exclusively.** Never use `npm` or `npx`. Run commands via `pnpm exec <command>` instead of `npx <command>`.
 - **Prefer canonical tool scoping over hardcoded file lists.** When wiring linters, formatters, or link checkers, use the tool's normal config and ignore mechanisms (`.gitignore`, `.remarkignore`, config files, ignore flags) instead of manually enumerating repo paths in scripts. Only hardcode file lists as a last resort, and document why if you must.
 - **Do not change documentation structure just to satisfy a checker.** Never add fake headings, placeholder sections, or other invented doc structure solely to make anchors pass. Fix the link target, remove the bad link, or add a real section only when the document genuinely needs it.
+- **After completing a milestone, run the full verification pass and review the result.** Default milestone close-out is: run `pnpm build:all`, run `pnpm test:all`, then do a brief self-review of the diff for regressions, dead code, and stale references.
 
 ## Project Overview
 
