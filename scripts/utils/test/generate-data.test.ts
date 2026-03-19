@@ -80,6 +80,15 @@ describe("loadData", () => {
         // s2 from b.yml
         expect(data["s2"]).toBeDefined();
     });
+
+    it("sorts stanzas and item names alphabetically after loading", () => {
+        const yaml = `zeta:\n  type: 3\n  items:\n    - name: zed\n    - name: alpha\nalpha:\n  type: 14\n  items:\n    - name: zulu\n    - name: beta\n`;
+        fs.writeFileSync(path.join(tmpDir, "a.yml"), yaml, "utf8");
+        const data = loadData([path.join(tmpDir, "a.yml")]);
+        expect(Object.keys(data)).toEqual(["alpha", "zeta"]);
+        expect(data["alpha"]!.items.map((item) => item.name)).toEqual(["beta", "zulu"]);
+        expect(data["zeta"]!.items.map((item) => item.name)).toEqual(["alpha", "zed"]);
+    });
 });
 
 describe("generateCompletion", () => {
@@ -153,6 +162,20 @@ describe("generateCompletion", () => {
         expect(result[0]!.documentation!.value).toContain("int f(int a)");
         expect(result[0]!.documentation!.value).toContain("|`a`|&nbsp;&nbsp;val|");
     });
+
+    it("emits completion entries sorted by stanza and item name", () => {
+        const data = {
+            zeta: { type: 3, items: [{ name: "zed" }, { name: "alpha" }] },
+            alpha: { type: 14, items: [{ name: "zulu" }, { name: "beta" }] },
+        };
+        const result = generateCompletion(data, "lang");
+        expect(result.map((item) => `${item.category}:${item.label}`)).toEqual([
+            "alpha:beta",
+            "alpha:zulu",
+            "zeta:alpha",
+            "zeta:zed",
+        ]);
+    });
 });
 
 describe("generateHover", () => {
@@ -210,6 +233,15 @@ describe("generateHover", () => {
         expect(value).toContain("Action doc.");
         expect(value).toContain("Trigger doc.");
         expect(value).toContain("---");
+    });
+
+    it("emits hover object keys in sorted order", () => {
+        const data = {
+            zeta: { type: 3, items: [{ name: "zed", detail: "zed()" }, { name: "alpha", detail: "alpha()" }] },
+            alpha: { type: 3, items: [{ name: "zulu", detail: "zulu()" }, { name: "beta", detail: "beta()" }] },
+        };
+        const result = generateHover(data, "lang");
+        expect(Object.keys(result)).toEqual(["beta", "zulu", "alpha", "zed"]);
     });
 });
 
@@ -475,5 +507,26 @@ describe("generateSignatures", () => {
         };
         const result = generateSignatures(data, "lang");
         expect(Object.keys(result)).toHaveLength(0);
+    });
+
+    it("emits signature object keys in sorted order", () => {
+        const data = {
+            zeta: {
+                type: 3,
+                items: [
+                    { name: "zed", type: "int", args: [{ name: "x", type: "int" }] },
+                    { name: "alpha", type: "int", args: [{ name: "x", type: "int" }] },
+                ],
+            },
+            alpha: {
+                type: 3,
+                items: [
+                    { name: "zulu", type: "int", args: [{ name: "x", type: "int" }] },
+                    { name: "beta", type: "int", args: [{ name: "x", type: "int" }] },
+                ],
+            },
+        };
+        const result = generateSignatures(data, "lang");
+        expect(Object.keys(result)).toEqual(["beta", "zulu", "alpha", "zed"]);
     });
 });

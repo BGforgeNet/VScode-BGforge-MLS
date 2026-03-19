@@ -17,6 +17,7 @@ import YAML from "yaml";
 import { buildSignatureBlock, buildWeiduHoverContent, formatDeprecation } from "./shared/tooltip-format.js";
 import { buildFalloutArgsTable, buildWeiduTable, type VarRow, type VarSection } from "./shared/tooltip-table.js";
 import { WEIDU_JSDOC_TYPES } from "./shared/weidu-types.js";
+import { cmpStr } from "./yaml-helpers.js";
 
 // -- Types --
 
@@ -134,6 +135,28 @@ function validateDataFile(data: unknown, source: string): DataFile {
     return result;
 }
 
+function sortDataItems(items: readonly DataItem[]): readonly DataItem[] {
+    return [...items].sort((a, b) => {
+        const byName = cmpStr(a.name, b.name);
+        if (byName !== 0) {
+            return byName;
+        }
+        return cmpStr(a.detail ?? "", b.detail ?? "");
+    });
+}
+
+function sortDataFile(data: DataFile): DataFile {
+    const result: Record<string, DataStanza> = {};
+    for (const stanzaName of Object.keys(data).sort(cmpStr)) {
+        const stanza = data[stanzaName]!;
+        result[stanzaName] = {
+            ...stanza,
+            items: sortDataItems(stanza.items),
+        };
+    }
+    return result;
+}
+
 /**
  * Loads and merges multiple YAML data files.
  * Later files override earlier ones (last-writer-wins per stanza key).
@@ -145,7 +168,7 @@ export function loadData(yamlPaths: readonly string[]): DataFile {
         const ydata = validateDataFile(YAML.parse(content) as unknown, ypath);
         result = { ...result, ...ydata };
     }
-    return result;
+    return sortDataFile(result);
 }
 
 /**
@@ -254,16 +277,17 @@ function markdown(value: string): MarkupContent {
  * Generates completion items from data stanzas.
  */
 export function generateCompletion(data: DataFile, tooltipLangId: string): readonly CompletionResult[] {
+    const sortedData = sortDataFile(data);
     // Count label occurrences across all stanzas
     const labelCounts = new Map<string, number>();
-    for (const stanza of Object.values(data)) {
+    for (const stanza of Object.values(sortedData)) {
         for (const item of stanza.items) {
             labelCounts.set(item.name, (labelCounts.get(item.name) ?? 0) + 1);
         }
     }
 
     const result: CompletionResult[] = [];
-    for (const [stanzaName, stanza] of Object.entries(data)) {
+    for (const [stanzaName, stanza] of Object.entries(sortedData)) {
         const kind = stanza.type;
         for (const item of stanza.items) {
             const label = item.name;
@@ -316,8 +340,9 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
  * Generates hover data keyed by symbol name.
  */
 export function generateHover(data: DataFile, langId: string): Record<string, HoverResult> {
+    const sortedData = sortDataFile(data);
     const result: Record<string, HoverResult> = {};
-    for (const [stanzaName, stanza] of Object.entries(data)) {
+    for (const [stanzaName, stanza] of Object.entries(sortedData)) {
         for (const item of stanza.items) {
             // Skip items with no data besides the name
             if (item.detail === undefined && item.doc === undefined && item.args === undefined && item.rets === undefined) {
@@ -368,8 +393,9 @@ export function generateHover(data: DataFile, langId: string): Record<string, Ho
  * WeiDU items include INT_VAR/STR_VAR category prefix in parameter docs.
  */
 export function generateSignatures(data: DataFile, langId: string): Record<string, SignatureResult> {
+    const sortedData = sortDataFile(data);
     const result: Record<string, SignatureResult> = {};
-    for (const [, stanza] of Object.entries(data)) {
+    for (const [, stanza] of Object.entries(sortedData)) {
         for (const item of stanza.items) {
             if (item.args === undefined) {
                 continue;
