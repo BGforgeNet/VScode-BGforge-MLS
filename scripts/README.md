@@ -103,3 +103,7 @@ pnpm test:cli                              # Exit codes and diff output
   Sorts YAML source files by top-level stanza name and, within each stanza, sorts `items:` entries by `name`.
   It preserves comments and formatting by moving raw source slices instead of fully parsing and re-stringifying the file.
   Use this for manual data-file cleanup when you want deterministic ordering without YAML emitter churn.
+
+- `scripts/utils/src/update-tp2-highlight.ts`
+  Generates TextMate highlight patterns for TP2 action/patch stanzas from `server/data/weidu-tp2-base.yml`.
+  Called by `generate-data.sh`. Analogous to `update-fallout-base-functions-highlight.ts` for Fallout.

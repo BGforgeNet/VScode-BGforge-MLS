@@ -39,6 +39,10 @@ $generate_data \
     --hover $dest_dir/hover.weidu-tp2.json \
     --tooltip-lang weidu-tp2-tooltip
 
+pnpm exec tsx scripts/utils/src/update-tp2-highlight.ts \
+    --yaml $data_dir/weidu-tp2-base.yml \
+    --highlight syntaxes/weidu-tp2.tmLanguage.yml
+
 $generate_data \
     -i $data_dir/weidu-baf-base.yml -i $data_dir/weidu-baf-iesdp.yml -i $data_dir/weidu-baf-ids.yml \
     --completion $dest_dir/completion.weidu-baf.json \

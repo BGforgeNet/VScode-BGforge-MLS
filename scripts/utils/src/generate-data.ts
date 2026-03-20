@@ -47,7 +47,7 @@ interface DataStanza {
     readonly category?: string;
 }
 
-type DataFile = Record<string, DataStanza>;
+export type DataFile = Record<string, DataStanza>;
 
 interface MarkupContent {
     readonly kind: "markdown";

@@ -230,16 +230,6 @@
         }
     },
     {
-        "label": "ADD_GAM_NPC",
-        "kind": 3,
-        "source": "builtin",
-        "category": "action",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nADD_GAM_NPC npcCRE npcARE xCoord yCoord\n```\nSee the ADD_GAM_NPC tutorial for more information about this action, which is used when adding NPCs to Baldur's Gate 1. BG2 mods should not use this command."
-        }
-    },
-    {
         "label": "ADD_JOURNAL",
         "kind": 3,
         "source": "builtin",
@@ -2042,6 +2032,28 @@
         "detail": "STR_VAR"
     },
     {
+        "label": "AS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "DEFAULT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nPATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END\n```\nThe value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information."
+        }
+    },
+    {
+        "label": "USING",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
         "label": "LANGUAGE",
         "kind": 14,
         "source": "builtin",
@@ -2132,6 +2144,16 @@
         }
     },
     {
+        "label": "ADD_GAM_NPC",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nADD_GAM_NPC npcCRE npcARE xCoord yCoord\n```\nSee the ADD_GAM_NPC tutorial for more information about this action, which is used when adding NPCs to Baldur's Gate 1. BG2 mods should not use this command."
+        }
+    },
+    {
         "label": "ADD_KNOWN_SPELL",
         "kind": 3,
         "source": "builtin",
@@ -2182,16 +2204,6 @@
         }
     },
     {
-        "label": "ALTER_EFFECT",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nALTER_EFFECT\n```\nThis is a patch function for creature, item, or spell files that will match an existing effect and alter it based on the defined variables. Numerous variables are available for matching the specified effect and for specifying new values.\n The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header_type` to whether the function should only alter effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `multi_match` to the number of effects to alter in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of altered effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n - INT_VAR `silent` to whether the function should suppress warnings when no effects were altered. This option also suppresses the verbose option (default is 0).\n The next batch of variables sets the function boundaries on matching an effect to alter. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n - INT_VAR `match_opcode` to the opcode of effects to be matched (default is -1).\n - INT_VAR `match_target` to the target of effects to be matched (default is -1).\n - INT_VAR `match_power` to the power of effects to be matched (default is -1).\n - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default is -1).\n - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default is -1).\n - INT_VAR `match_timing` to the timing of effects to be matched (default is -1).\n - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default is -1).\n - INT_VAR `match_duration` to the duration of effects to be matched (default is -1).\n - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default is -1).\n - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default is -1).\n - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default is -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default is -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default is -1).\n - INT_VAR `match_savebonus` to the saving trow bonus effects to be matched (default is -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n - INT_VAR `match_special` to the special field of effects to be matched (default is -1). The special field is used by some EE effects.\n - STR_VAR `match_resource` to the resource of effects to be matched (default is \"SAME\").\n Once a matching effect is found, the next series of variables allows the function to change the fields to these new values in the matched effect. Any variables not set in this batch will keep their existing values.\n - INT_VAR `opcode` to the value the of the altered effect's opcode.\n - INT_VAR `target` to the altered effect's target.\n - INT_VAR `power` to the altered effect's power.\n - INT_VAR `parameter1` to the altered effect's parameter1.\n - INT_VAR `parameter2` to the altered effect's parameter2.\n - INT_VAR `timing` to the altered effect's timing mode.\n - INT_VAR `resist_dispel` to the altered effect's resist/dispel setting.\n - INT_VAR `duration` to the altered effect's duration.\n - INT_VAR `probability1` to the altered effect's probability1 (the upper bound).\n - INT_VAR `probability2` to the altered effect's probability2 (the lower bound).\n - INT_VAR `dicenumber` to the altered effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n - INT_VAR `dicesize` to the altered effect's size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n - INT_VAR `savingthrow` to the altered effect's saving-throw type.\n - INT_VAR `savebonus` to the altered effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n - STR_VAR `resource` to the altered effect's resource reference."
-        }
-    },
-    {
         "label": "APPEND_FILE",
         "kind": 3,
         "source": "builtin",
@@ -2239,16 +2251,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nCLEAR_ARRAY String\n```\n'Forgets' that the array string exists until its values are recalled. The actual variables' values are kept, the only effect is that *PHP_EACH will not consider old values."
-        }
-    },
-    {
-        "label": "CLONE_EFFECT",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nCLONE_EFFECT\n```\nThis is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.\nThe first batch of variables are meta-variables which will help determine the scope of the function:\n- INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n- INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n- INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n- INT_VAR `header_type` to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n- INT_VAR `multi_match` to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n- INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n- INT_VAR `silent` to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).\n- STR_VAR `insert` to the relative position the cloned effect should be inserted at. A value of `below` puts the new, cloned effect immediately below the matched effect. Values of `first` or `last` will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to `above`, where the effect is added immediately before the matched effect (default is `above`).\n\nThe next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n- INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n- INT_VAR `match_target` to the target of effects to be matched (default -1).\n- INT_VAR `match_power` to the power of effects to be matched (default -1).\n- INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n- INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n- INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n- INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n- INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n- INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n- INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n- INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n- INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n- INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n- INT_VAR `match_savebonus` to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n- INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n- STR_VAR `match_resource` to the resource of effects to be matched (default \\\"SAME\\\").\nOnce a matching effect is found, a new effect is created (STR_VAR `insert` determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\n- INT_VAR `opcode` to the value the of the new effect's opcode.\n- INT_VAR `target` to the new effect's target.\n- INT_VAR `power` to the new effect's power.\n- INT_VAR `parameter1` to the new effect's parameter1.\n- INT_VAR `parameter2` to the new effect's parameter2.\n- INT_VAR `timing` to the new effect's timing mode.\n- INT_VAR `resist_dispel` to the new effect's resist/dispel setting.\n- INT_VAR `duration` to the new effect's duration.\n- INT_VAR `probability1` to the new effect's probability1 (the upper bound).\n- INT_VAR `probability2` to the new effect's probability2 (the lower bound).\n- INT_VAR `dicenumber` to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n- INT_VAR `dicesize` to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n- INT_VAR `savingthrow` to the new effect's saving-throw type.\n- INT_VAR `savebonus` to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n- INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n- STR_VAR `resource` to the new effect's resource reference.\n"
         }
     },
     {
@@ -2404,16 +2406,6 @@
         }
     },
     {
-        "label": "DEFAULT",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nPATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END\n```\nThe value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information."
-        }
-    },
-    {
         "label": "DEFINE_ARRAY",
         "kind": 3,
         "source": "builtin",
@@ -2441,16 +2433,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nDELETE_BYTES offset value\n```\nThe first argument is the offset, the second argument is the count. The file will shrink as count bytes are deleted starting at the given offset."
-        }
-    },
-    {
-        "label": "DELETE_EFFECT",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nDELETE_EFFECT\n```\nThis is a patch function for creature, item, or spell files that will match an existing effect and then delete it. Numerous variables are available for matching the specified effect.\n The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header_type` to whether the function should only delete effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `multi_match` to the number of effects to delete in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of deleted effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were deleted (default is 0).\n The next batch of variables sets the function boundaries on matching an effect to delete. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n - INT_VAR `match_target` to the target of effects to be matched (default -1).\n - INT_VAR `match_power` to the power of effects to be matched (default -1).\n - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n - INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n - INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n - INT_VAR `match_savebonus` to the saving throw bonus effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").\n Once a matching effect is found it is deleted. The function will continue to delete effects from the stack until the number of effects deleted matches the `multi_match` variable."
         }
     },
     {
@@ -2975,46 +2957,6 @@
         }
     },
     {
-        "label": "READ_ASCII",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_ASCII offset variable [ ELSE string ] [ ( value ) [ NULL ] ]\n```\nA nul-terminated string is read from the file at the given offset and is stored in the given variable. The terminating nul is not stored. The default read size is 8 bytes. If an explicit size value is specified then that many bytes are read into the variable, even if some of them are nuls, except if NULL is present, in which case a nul-terminated string is read, without storing the terminating null. See READ_BYTE. If the offset is out-of-bounds and the ELSE clause is present, the string is evaluated as in WRITE_EVALUATED_ASCII and then assigned into variable."
-        }
-    },
-    {
-        "label": "READ_BYTE",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_BYTE offset variable [ ELSE value ]\n```\nAn 8-bit value is read from the file at the given offset and is stored in the given variable. If offset is out-of-bounds and the ELSE is present, the ELSE-value is assigned to variable. If offset is out-of-bounds and the ELSE is not present, the patch fails with a visible error."
-        }
-    },
-    {
-        "label": "READ_LONG",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_LONG offset variable [ ELSE value ]\n```\nA 32-bit value is read from the file at the given offset and is stored in the given variable. See READ_BYTE."
-        }
-    },
-    {
-        "label": "READ_SBYTE",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_SBYTE offset variable [ ELSE value ]\n```\nAs READ_BYTE, but the value is interpreted as signed."
-        }
-    },
-    {
         "label": "READ_SHORT",
         "kind": 3,
         "source": "builtin",
@@ -3025,16 +2967,6 @@
         }
     },
     {
-        "label": "READ_SLONG",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_SLONG offset variable [ ELSE value ]\n```\nAs READ_LONG, but the value is interpreted as signed."
-        }
-    },
-    {
         "label": "READ_SSHORT",
         "kind": 3,
         "source": "builtin",
@@ -3042,46 +2974,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nREAD_SSHORT offset variable [ ELSE value ]\n```\nAs READ_SHORT, but the value is interpreted as signed."
-        }
-    },
-    {
-        "label": "READ_STRREF",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_STRREF offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the (male) string (without any quotes) is stored in the variable. In some sense this is the opposite of SAY_EVALUATED."
-        }
-    },
-    {
-        "label": "READ_STRREF_F",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_STRREF_F offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the female string (without any quotes) is stored in the variable."
-        }
-    },
-    {
-        "label": "READ_STRREF_FS",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_STRREF_FS offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the sound reference associated with the female string is stored in the variable. If there is no DIALOGF.TLK, the sound reference associated with the string from DIALOG.TLK is used instead. If the string has no sound, the empty string is used instead."
-        }
-    },
-    {
-        "label": "READ_STRREF_S",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREAD_STRREF_S offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the sound reference associated with the (male) string is stored in the variable. If the string has no sound, the empty string is used instead."
         }
     },
     {
@@ -3485,86 +3377,6 @@
         }
     },
     {
-        "label": "WRITE_ASCII",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_ASCII offset ascString [ #requiredSize ]\n```\nThe ASCII ascString is written to the file starting at offset. If you specify a requiredSize then exactly that many bytes are written (if ascString is smaller, it is padded with NULs; if ascString is larger, it is truncated). If you do not specify a requiredSize, the terminating NUL is not written."
-        }
-    },
-    {
-        "label": "WRITE_ASCIIE",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_ASCIIE offset ascString [ #requiredSize ]\n```\nThe ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII."
-        }
-    },
-    {
-        "label": "WRITE_ASCIIL",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_ASCIIL offset ascString list\n```\nThe given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST."
-        }
-    },
-    {
-        "label": "WRITE_ASCIIT",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_ASCIIT offset ascString\n```\nThe ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE."
-        }
-    },
-    {
-        "label": "WRITE_ASCII_LIST",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_ASCII_LIST offset ascString list\n```\nThe given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST."
-        }
-    },
-    {
-        "label": "WRITE_ASCII_TERMINATE",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_ASCII_TERMINATE offset ascString\n```\nThe ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE."
-        }
-    },
-    {
-        "label": "WRITE_BYTE",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_BYTE offset value\n```\nThe first argument is the offset at which the second argument (an 8-bit byte value) is written. Performs READ_BYTE offset THIS and READ_SBYTE offset STHIS automatically (you can now write WRITE_BYTE 100 THIS 2)."
-        }
-    },
-    {
-        "label": "WRITE_EVALUATED_ASCII",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]\n```\nThe ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII."
-        }
-    },
-    {
         "label": "WRITE_FILE",
         "kind": 3,
         "source": "builtin",
@@ -3572,16 +3384,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nWRITE_FILE offset filename\n```\nThe entire contents of \"filename\" (which may contain variables) are loaded and copied over the current file starting at offset offset. \" filename\" must be a literal filename like mymod/data/file.bam. If there is not enough room between offset and the end of the file for the contents of \" filename\" the patch will fail with an error message."
-        }
-    },
-    {
-        "label": "WRITE_LONG",
-        "kind": 3,
-        "source": "builtin",
-        "category": "patch",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWRITE_LONG offset value\n```\nThe first argument is the offset at which the second argument (a 32-bit long word value) is written. Performs READ_LONG offset THIS and READ_SLONG offset STHIS automatically."
         }
     },
     {
@@ -3595,13 +3397,33 @@
         }
     },
     {
-        "label": "variable",
+        "label": "READ_BYTE",
         "kind": 3,
         "source": "builtin",
         "category": "patch",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvariable = value\n```\nUpdate variable so that it is equal to value."
+            "value": "```weidu-tp2-tooltip\nREAD_BYTE offset variable [ ELSE value ]\n```\nAn 8-bit value is read from the file at the given offset and is stored in the given variable. If offset is out-of-bounds and the ELSE is present, the ELSE-value is assigned to variable. If offset is out-of-bounds and the ELSE is not present, the patch fails with a visible error."
+        }
+    },
+    {
+        "label": "READ_SBYTE",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_SBYTE offset variable [ ELSE value ]\n```\nAs READ_BYTE, but the value is interpreted as signed."
+        }
+    },
+    {
+        "label": "WRITE_BYTE",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_BYTE offset value\n```\nThe first argument is the offset at which the second argument (an 8-bit byte value) is written. Performs READ_BYTE offset THIS and READ_SBYTE offset STHIS automatically (you can now write WRITE_BYTE 100 THIS 2)."
         }
     },
     {
@@ -3785,6 +3607,16 @@
         }
     },
     {
+        "label": "ALTER_EFFECT",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\npatch function ALTER_EFFECT\n```\nThis is a patch function for creature, item, or spell files that will match an existing effect and alter it based on the defined variables. Numerous variables are available for matching the specified effect and for specifying new values.\n The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header_type` to whether the function should only alter effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `multi_match` to the number of effects to alter in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of altered effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n - INT_VAR `silent` to whether the function should suppress warnings when no effects were altered. This option also suppresses the verbose option (default is 0).\n The next batch of variables sets the function boundaries on matching an effect to alter. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n - INT_VAR `match_opcode` to the opcode of effects to be matched (default is -1).\n - INT_VAR `match_target` to the target of effects to be matched (default is -1).\n - INT_VAR `match_power` to the power of effects to be matched (default is -1).\n - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default is -1).\n - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default is -1).\n - INT_VAR `match_timing` to the timing of effects to be matched (default is -1).\n - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default is -1).\n - INT_VAR `match_duration` to the duration of effects to be matched (default is -1).\n - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default is -1).\n - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default is -1).\n - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default is -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default is -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default is -1).\n - INT_VAR `match_savebonus` to the saving trow bonus effects to be matched (default is -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n - INT_VAR `match_special` to the special field of effects to be matched (default is -1). The special field is used by some EE effects.\n - STR_VAR `match_resource` to the resource of effects to be matched (default is \"SAME\").\n Once a matching effect is found, the next series of variables allows the function to change the fields to these new values in the matched effect. Any variables not set in this batch will keep their existing values.\n - INT_VAR `opcode` to the value the of the altered effect's opcode.\n - INT_VAR `target` to the altered effect's target.\n - INT_VAR `power` to the altered effect's power.\n - INT_VAR `parameter1` to the altered effect's parameter1.\n - INT_VAR `parameter2` to the altered effect's parameter2.\n - INT_VAR `timing` to the altered effect's timing mode.\n - INT_VAR `resist_dispel` to the altered effect's resist/dispel setting.\n - INT_VAR `duration` to the altered effect's duration.\n - INT_VAR `probability1` to the altered effect's probability1 (the upper bound).\n - INT_VAR `probability2` to the altered effect's probability2 (the lower bound).\n - INT_VAR `dicenumber` to the altered effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n - INT_VAR `dicesize` to the altered effect's size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n - INT_VAR `savingthrow` to the altered effect's saving-throw type.\n - INT_VAR `savebonus` to the altered effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n - STR_VAR `resource` to the altered effect's resource reference."
+        }
+    },
+    {
         "label": "ALTER_ITEM_EFFECT",
         "kind": 3,
         "source": "builtin",
@@ -3825,6 +3657,16 @@
         }
     },
     {
+        "label": "CLONE_EFFECT",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\npatch function CLONE_EFFECT\n```\nThis is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.\nThe first batch of variables are meta-variables which will help determine the scope of the function:\n- INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n- INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n- INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n- INT_VAR `header_type` to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n- INT_VAR `multi_match` to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n- INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n- INT_VAR `silent` to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).\n- STR_VAR `insert` to the relative position the cloned effect should be inserted at. A value of `below` puts the new, cloned effect immediately below the matched effect. Values of `first` or `last` will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to `above`, where the effect is added immediately before the matched effect (default is `above`).\n\nThe next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n- INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n- INT_VAR `match_target` to the target of effects to be matched (default -1).\n- INT_VAR `match_power` to the power of effects to be matched (default -1).\n- INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n- INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n- INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n- INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n- INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n- INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n- INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n- INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n- INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n- INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n- INT_VAR `match_savebonus` to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n- INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n- STR_VAR `match_resource` to the resource of effects to be matched (default \\\"SAME\\\").\nOnce a matching effect is found, a new effect is created (STR_VAR `insert` determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\n- INT_VAR `opcode` to the value the of the new effect's opcode.\n- INT_VAR `target` to the new effect's target.\n- INT_VAR `power` to the new effect's power.\n- INT_VAR `parameter1` to the new effect's parameter1.\n- INT_VAR `parameter2` to the new effect's parameter2.\n- INT_VAR `timing` to the new effect's timing mode.\n- INT_VAR `resist_dispel` to the new effect's resist/dispel setting.\n- INT_VAR `duration` to the new effect's duration.\n- INT_VAR `probability1` to the new effect's probability1 (the upper bound).\n- INT_VAR `probability2` to the new effect's probability2 (the lower bound).\n- INT_VAR `dicenumber` to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n- INT_VAR `dicesize` to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n- INT_VAR `savingthrow` to the new effect's saving-throw type.\n- INT_VAR `savebonus` to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n- INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n- STR_VAR `resource` to the new effect's resource reference.\n"
+        }
+    },
+    {
         "label": "DELETE_AREA_ITEM",
         "kind": 3,
         "source": "builtin",
@@ -3852,6 +3694,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\npatch function DELETE_CRE_ITEM\n```\nDeletes all matching items from a creature. Regexp allowed. This is a PATCH macro and function.\n - SPRINT `item_to_delete` to the item you want to delete."
+        }
+    },
+    {
+        "label": "DELETE_EFFECT",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch_functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\npatch function DELETE_EFFECT\n```\nThis is a patch function for creature, item, or spell files that will match an existing effect and then delete it. Numerous variables are available for matching the specified effect.\n The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `header_type` to whether the function should only delete effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n - INT_VAR `multi_match` to the number of effects to delete in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of deleted effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were deleted (default is 0).\n The next batch of variables sets the function boundaries on matching an effect to delete. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n - INT_VAR `match_target` to the target of effects to be matched (default -1).\n - INT_VAR `match_power` to the power of effects to be matched (default -1).\n - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n - INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n - INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n - INT_VAR `match_savebonus` to the saving throw bonus effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").\n Once a matching effect is found it is deleted. The function will continue to delete effects from the stack until the number of effects deleted matches the `multi_match` variable."
         }
     },
     {
@@ -4055,6 +3907,36 @@
         }
     },
     {
+        "label": "READ_LONG",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_LONG offset variable [ ELSE value ]\n```\nA 32-bit value is read from the file at the given offset and is stored in the given variable. See READ_BYTE."
+        }
+    },
+    {
+        "label": "READ_SLONG",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_SLONG offset variable [ ELSE value ]\n```\nAs READ_LONG, but the value is interpreted as signed."
+        }
+    },
+    {
+        "label": "WRITE_LONG",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_LONG offset value\n```\nThe first argument is the offset at which the second argument (a 32-bit long word value) is written. Performs READ_LONG offset THIS and READ_SLONG offset STHIS automatically."
+        }
+    },
+    {
         "label": "tb#factorial",
         "kind": 3,
         "source": "builtin",
@@ -4062,6 +3944,126 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\npatch macro tb#factorial\n```\nComputes the factorial of a number.\n This is a PATCH macro.\n - SET `tb#factorial_index` to the factorial you'd like to compute.\n - SET `tb#factorial_result` to 1;\n - The result is `tb#factorial_result`."
+        }
+    },
+    {
+        "label": "READ_ASCII",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_ASCII offset variable [ ELSE string ] [ ( value ) [ NULL ] ]\n```\nA nul-terminated string is read from the file at the given offset and is stored in the given variable. The terminating nul is not stored. The default read size is 8 bytes. If an explicit size value is specified then that many bytes are read into the variable, even if some of them are nuls, except if NULL is present, in which case a nul-terminated string is read, without storing the terminating null. See READ_BYTE. If the offset is out-of-bounds and the ELSE clause is present, the string is evaluated as in WRITE_EVALUATED_ASCII and then assigned into variable."
+        }
+    },
+    {
+        "label": "READ_STRREF",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_STRREF offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the (male) string (without any quotes) is stored in the variable. In some sense this is the opposite of SAY_EVALUATED."
+        }
+    },
+    {
+        "label": "READ_STRREF_F",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_STRREF_F offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the female string (without any quotes) is stored in the variable."
+        }
+    },
+    {
+        "label": "READ_STRREF_FS",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_STRREF_FS offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the sound reference associated with the female string is stored in the variable. If there is no DIALOGF.TLK, the sound reference associated with the string from DIALOG.TLK is used instead. If the string has no sound, the empty string is used instead."
+        }
+    },
+    {
+        "label": "READ_STRREF_S",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREAD_STRREF_S offset variable [ ELSE string ]\n```\nA 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the sound reference associated with the (male) string is stored in the variable. If the string has no sound, the empty string is used instead."
+        }
+    },
+    {
+        "label": "WRITE_ASCII",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_ASCII offset ascString [ #requiredSize ]\n```\nThe ASCII ascString is written to the file starting at offset. If you specify a requiredSize then exactly that many bytes are written (if ascString is smaller, it is padded with NULs; if ascString is larger, it is truncated). If you do not specify a requiredSize, the terminating NUL is not written."
+        }
+    },
+    {
+        "label": "WRITE_ASCIIE",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_ASCIIE offset ascString [ #requiredSize ]\n```\nThe ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII."
+        }
+    },
+    {
+        "label": "WRITE_ASCIIL",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_ASCIIL offset ascString list\n```\nThe given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST."
+        }
+    },
+    {
+        "label": "WRITE_ASCIIT",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_ASCIIT offset ascString\n```\nThe ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE."
+        }
+    },
+    {
+        "label": "WRITE_ASCII_LIST",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_ASCII_LIST offset ascString list\n```\nThe given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST."
+        }
+    },
+    {
+        "label": "WRITE_ASCII_TERMINATE",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_ASCII_TERMINATE offset ascString\n```\nThe ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE."
+        }
+    },
+    {
+        "label": "WRITE_EVALUATED_ASCII",
+        "kind": 3,
+        "source": "builtin",
+        "category": "patch",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]\n```\nThe ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII."
         }
     },
     {
@@ -6439,6 +6441,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nIF_SIZE_IS fileSize\n```\nTrue if the input file size is fileSize. You may use I_S_I as a synonym for IF_SIZE_IS."
+        }
+    },
+    {
+        "label": "I_S_I",
+        "kind": 14,
+        "source": "builtin",
+        "category": "when",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nI_S_I fileSize\n```\nSynonym for IF_SIZE_IS. True if the input file size is fileSize."
         }
     },
     {

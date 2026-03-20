@@ -30,11 +30,9 @@ patterns:
   - include: '#weidu-tp2-caching'
   - include: '#weidu-tp2-patch'
   - include: '#weidu-tp2-macro'
-  - include: '#weidu-tp2-patch-controls'
   - include: '#weidu-tp2-when'
   - include: '#weidu-tp2-values'
   - include: '#weidu-keywords'
-  - include: '#weidu-tp2-action-flow'
   - include: '#numbers'
   - include: '#infinity-constants'
   - include: '#upper-case-constants'
@@ -118,7 +116,6 @@ repository:
       - match: \b(LABEL)\b
       - match: \b(METADATA)\b
 
-
   # Color constant-like variable names after SET/SPRINT keywords.
   # Constant = first word fully uppercase (e.g., MAX_LEVEL, MOD_folder).
   # Same heuristic as tree-utils.ts:looksLikeConstant (used by symbol, hover, completion).
@@ -198,17 +195,23 @@ repository:
       - match: \b(ACTION_CLEAR_ARRAY)\b
       - match: \b(ACTION_DEFINE_ARRAY)\b
       - match: \b(ACTION_DEFINE_ASSOCIATIVE_ARRAY)\b
+      - match: \b(ACTION_FOR_EACH)\b
       - match: \b(ACTION_GET_STRREF)\b
       - match: \b(ACTION_GET_STRREF_F)\b
       - match: \b(ACTION_GET_STRREF_FS)\b
       - match: \b(ACTION_GET_STRREF_S)\b
+      - match: \b(ACTION_IF)\b
       - match: \b(ACTION_INCLUDE)\b
+      - match: \b(ACTION_MATCH)\b
+      - match: \b(ACTION_PHP_EACH)\b
       - match: \b(ACTION_READLN)\b
       - match: \b(ACTION_REINCLUDE)\b
+      - match: \b(ACTION_RERAISE)\b
       - match: \b(ACTION_SORT_ARRAY_INDICES)\b
       - match: \b(ACTION_TIME)\b
       - match: \b(ACTION_TO_LOWER)\b
       - match: \b(ACTION_TO_UPPER)\b
+      - match: \b(ACTION_TRY)\b
       - match: \b(ADD_AREA_TYPE)\b
       - match: \b(ADD_JOURNAL)\b
       - match: \b(ADD_KIT)\b
@@ -224,6 +227,14 @@ repository:
       - match: \b(APPEND_COL)\b
       - match: \b(APPEND_COL_OUTER)\b
       - match: \b(APPEND_OUTER)\b
+      - match: \b(AT_EXIT)\b
+      - match: \b(AT_INTERACTIVE_EXIT)\b
+      - match: \b(AT_INTERACTIVE_NOW)\b
+      - match: \b(AT_INTERACTIVE_UNINSTALL)\b
+      - match: \b(AT_INTERACTIVE_UNINSTALL_EXIT)\b
+      - match: \b(AT_NOW)\b
+      - match: \b(AT_UNINSTALL)\b
+      - match: \b(AT_UNINSTALL_EXIT)\b
       - match: \b(CLEAR_ARRAYS)\b
       - match: \b(CLEAR_CODES)\b
       - match: \b(CLEAR_EVERYTHING)\b
@@ -240,6 +251,11 @@ repository:
       - match: \b(COPY_RANDOM)\b
       - match: \b(CREATE)\b
       - match: \b(DECOMPRESS_BIFF)\b
+      - match: \b(DEFINE_ACTION_FUNCTION)\b
+      - match: \b(DEFINE_ACTION_MACRO)\b
+      - match: \b(DEFINE_DIMORPHIC_FUNCTION)\b
+      - match: \b(DEFINE_PATCH_FUNCTION)\b
+      - match: \b(DEFINE_PATCH_MACRO)\b
       - match: \b(DELETE)\b
       - match: \b(DISABLE_FROM_KEY)\b
       - match: \b(EXTEND_BOTTOM)\b
@@ -250,10 +266,16 @@ repository:
       - match: \b(FORBID_FILE)\b
       - match: \b(GET_DIRECTORY_ARRAY)\b
       - match: \b(GET_FILE_ARRAY)\b
-      # as of v251
       - match: \b(GET_RESOURCE_ARRAY)\b
       - match: \b(INCLUDE)\b
+      - match: \b(LAF)\b
+      - match: \b(LAM)\b
+      - match: \b(LAUNCH_ACTION_FUNCTION)\b
+      - match: \b(LAUNCH_ACTION_MACRO)\b
       - match: \b(LOAD_TRA)\b
+      - match: \b(LOCAL_SET)\b
+      - match: \b(LOCAL_SPRINT)\b
+      - match: \b(LOCAL_TEXT_SPRINT)\b
       - match: \b(LOG)\b
       - match: \b(MAKE_BIFF)\b
       - match: \b(MKDIR)\b
@@ -283,30 +305,6 @@ repository:
       - match: \b(WARN)\b
       - match: \b(WITH_SCOPE)\b
       - match: \b(WITH_TRA)\b
-
-  weidu-tp2-action-flow:
-    name: support.function.weidu-tp2.action
-    patterns:
-      - match: \b(ACTION_IF)\b
-      - match: \b(ACTION_MATCH)\b
-      - match: \b(ACTION_TRY)\b
-      - match: \b(ACTION_RERAISE)\b
-      - match: \b(AT_EXIT)\b
-      - match: \b(AT_INTERACTIVE_EXIT)\b
-      - match: \b(AT_UNINSTALL)\b
-      - match: \b(AT_INTERACTIVE_UNINSTALL)\b
-      - match: \b(AT_UNINSTALL_EXIT)\b
-      - match: \b(AT_INTERACTIVE_UNINSTALL_EXIT)\b
-      - match: \b(AT_NOW)\b
-      - match: \b(AT_INTERACTIVE_NOW)\b
-      - match: \b(ACTION_FOR_EACH)\b
-      - match: \b(ACTION_PHP_EACH)\b
-      - match: \b(USING)\b
-        name: keyword.control.weidu-tp2.action
-      - match: \b(AS)\b
-        name: keyword.control.weidu-tp2.action
-      - match: (=>)
-        name: keyword.control.weidu-tp2.action
 
   weidu-tp2-optglob:
     name: constant.language.flag.weidu-tp2
@@ -342,15 +340,13 @@ repository:
   weidu-tp2-patch:
     name: entity.name.function.weidu-tp2.patch
     patterns:
-      - match: \b((ADD|REMOVE)_STORE_CURE)\b
-      - match: \b((ADD|REMOVE)_STORE_DRINK)\b
-      - match: \b((ADD|REMOVE)_STORE_PURCHASE)\b
       - match: \b(ADD_CRE_ITEM)\b
       - match: \b(ADD_GAM_NPC)\b
       - match: \b(ADD_KNOWN_SPELL)\b
       - match: \b(ADD_MAP_NOTE)\b
       - match: \b(ADD_MEMORIZED_SPELL)\b
-      - match: \b(ADD_STORE_ITEM(_EX)?)\b
+      - match: \b(ADD_STORE_ITEM)\b
+      - match: \b(ADD_STORE_PURCHASE)\b
       - match: \b(APPEND_FILE)\b
       - match: \b(APPEND_FILE_EVALUATE)\b
       - match: \b(APPLY_BCS_PATCH)\b
@@ -380,35 +376,50 @@ repository:
       - match: \b(EDIT_SAV_FILE)\b
       - match: \b(EVALUATE_BUFFER)\b
       - match: \b(EVALUATE_BUFFER_SPECIAL)\b
+      - match: \b(FOR)\b
       - match: \b(GET_OFFSET_ARRAY)\b
       - match: \b(GET_OFFSET_ARRAY2)\b
       - match: \b(GET_STRREF)\b
       - match: \b(GET_STRREF_F)\b
       - match: \b(GET_STRREF_FS)\b
       - match: \b(GET_STRREF_S)\b
+      - match: \b(INNER_ACTION)\b
+      - match: \b(INNER_PATCH)\b
+      - match: \b(INNER_PATCH_FILE)\b
+      - match: \b(INNER_PATCH_SAVE)\b
       - match: \b(INSERT_2DA_ROW)\b
       - match: \b(INSERT_BYTES)\b
       - match: \b(INSERT_FILE)\b
-      - match: \b(LOCAL_SET)\b
-      - match: \b(LOCAL_SPRINT)\b
-      - match: \b(LOCAL_TEXT_SPRINT)\b
+      - match: \b(LAUNCH_PATCH_FUNCTION)\b
+      - match: \b(LAUNCH_PATCH_MACRO)\b
       - match: \b(LOOKUP_IDS_SYMBOL_OF_INT)\b
+      - match: \b(LPF)\b
+      - match: \b(LPM)\b
       - match: \b(ON_MISMATCH)\b
       - match: \b(PATCH_ABORT)\b
+      - match: \b(PATCH_BASH_FOR)\b
       - match: \b(PATCH_CLEAR_ARRAY)\b
       - match: \b(PATCH_DEFINE_ARRAY)\b
       - match: \b(PATCH_FAIL)\b
+      - match: \b(PATCH_FOR_EACH)\b
+      - match: \b(PATCH_IF)\b
       - match: \b(PATCH_INCLUDE)\b
       - match: \b(PATCH_LOG)\b
+      - match: \b(PATCH_MATCH)\b
+      - match: \b(PATCH_PHP_EACH)\b
       - match: \b(PATCH_PRINT)\b
       - match: \b(PATCH_RANDOM_SEED)\b
       - match: \b(PATCH_READLN)\b
       - match: \b(PATCH_REINCLUDE)\b
       - match: \b(PATCH_RERAISE)\b
       - match: \b(PATCH_SILENT)\b
+      - match: \b(PATCH_TIME)\b
+      - match: \b(PATCH_TRY)\b
+      - match: \b(PATCH_VERBOSE)\b
       - match: \b(PATCH_WARN)\b
       - match: \b(PATCH_WITH_SCOPE)\b
       - match: \b(PATCH_WITH_TRA)\b
+      - match: \b(PHP_EACH)\b
       - match: \b(PRETTY_PRINT_2DA)\b
       - match: \b(QUOTE)\b
       - match: \b(READ_2DA_ENTRIES_NOW)\b
@@ -427,7 +438,11 @@ repository:
       - match: \b(REMOVE_KNOWN_SPELLS)\b
       - match: \b(REMOVE_MEMORIZED_SPELL)\b
       - match: \b(REMOVE_MEMORIZED_SPELLS)\b
-      - match: \b(REMOVE_STORE_ITEM(_EX)?)\b
+      - match: \b(REMOVE_STORE_CURE)\b
+      - match: \b(REMOVE_STORE_DRINK)\b
+      - match: \b(REMOVE_STORE_ITEM)\b
+      - match: \b(REMOVE_STORE_ITEM_EX)\b
+      - match: \b(REMOVE_STORE_PURCHASE)\b
       - match: \b(REPLACE)\b
       - match: \b(REPLACE_BCS_BLOCK)\b
       - match: \b(REPLACE_CRE_ITEM)\b
@@ -436,6 +451,7 @@ repository:
       - match: \b(R_B_B)\b
       - match: \b(SAY)\b
       - match: \b(SAY_EVALUATED)\b
+      - match: \b(SET)\b
       - match: \b(SET_2DA_ENTRIES_NOW)\b
       - match: \b(SET_2DA_ENTRY)\b
       - match: \b(SET_2DA_ENTRY_LATER)\b
@@ -449,11 +465,13 @@ repository:
       - match: \b(TEXT_SPRINT)\b
       - match: \b(TO_LOWER)\b
       - match: \b(TO_UPPER)\b
+      - match: \b(WHILE)\b
+      - match: \b(WITH)\b
       - match: \b(WRITE_FILE)\b
       - match: \b(WRITE_SHORT)\b
-      - include: '#weidu-tp2-patch-byte'
-      - include: '#weidu-tp2-patch-long'
-      - include: '#weidu-tp2-patch-string'
+      - include: "#weidu-tp2-patch-byte"
+      - include: "#weidu-tp2-patch-long"
+      - include: "#weidu-tp2-patch-string"
 
   weidu-tp2-patch-byte:
     name: entity.name.function.weidu-tp2.patch-byte
@@ -551,30 +569,6 @@ repository:
       - match: \b(FL#FJ_CRE_VALIDITY)\b
       - match: \b(FL#FJ_CRE_REINDEX)\b
 
-  weidu-tp2-patch-controls:
-    name: entity.name.function.weidu-tp2.patch
-    patterns:
-      - match: \b(SET)\b
-      - match: \b(WHILE)\b
-      - match: \b(FOR)\b
-      - match: \b(PATCH_BASH_FOR)\b
-      - match: \b(PATCH_FOR_EACH)\b
-      - match: \b(PHP_EACH)\b
-      - match: \b(PATCH_PHP_EACH)\b
-      - match: \b(PATCH_IF)\b
-      - match: \b(ELSE)\b
-      - match: \b(PATCH_MATCH)\b
-      - match: \b(PATCH_TRY)\b
-      - match: \b(PATCH_SILENT)\b
-      - match: \b(PATCH_VERBOSE)\b
-      - match: \b(INNER_PATCH)\b
-      - match: \b(INNER_PATCH_SAVE)\b
-      - match: \b(INNER_PATCH_FILE)\b
-      - match: \b(INNER_ACTION)\b
-      - match: \b(PATCH_TIME)\b
-      - match: \b(DEFAULT)\b
-      - match: \b(WITH)\b
-
   weidu-tp2-when:
     name: keyword.control.when.weidu-tp2
     patterns:
@@ -654,7 +648,7 @@ repository:
   weidu-keywords:
     name: keyword.control.weidu-tp2
     patterns:
-      - match: \b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE|ALWAYS_ASK)\b
+      - match: \b(AS|BEGIN|DEFAULT|END|THEN|IN|ELSE|USING|WHEN|ANY|ERROR_MESSAGE|ALWAYS_ASK)\b
       - match: \b(AFTER|BEFORE|LAST|FIRST|AT|S?THIS)\b
       - match: \b(INT_VAR|STR_VAR|RET|RET_ARRAY)\b
 
@@ -918,7 +912,7 @@ repository:
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
-        name: keyword.control.weidu-tp2
+        name: support.function.weidu-tp2.action
       '2':
         patterns:
           - include: '#function-name-patch'
@@ -938,7 +932,7 @@ repository:
       - match: \b(DEFINE_PATCH_MACRO)\s+(\S+)
         captures:
           '1':
-            name: keyword.control.weidu-tp2
+            name: support.function.weidu-tp2.action
           '2':
             patterns:
               - include: '#function-name-patch'
@@ -948,7 +942,7 @@ repository:
       - match: \b(DEFINE_ACTION_MACRO)\s+(\S+)
         captures:
           '1':
-            name: keyword.control.weidu-tp2
+            name: support.function.weidu-tp2.action
           '2':
             patterns:
               - include: '#function-name-action'
