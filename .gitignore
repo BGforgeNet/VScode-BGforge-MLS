@@ -3,6 +3,7 @@
 *.vsix
 *.tmbundle
 *.zip
+syntaxes-to-json.sh.err
 bgforge-mls-notepadpp-udl*/
 bgforge-mls-kate-ksh*/
 .reports/
