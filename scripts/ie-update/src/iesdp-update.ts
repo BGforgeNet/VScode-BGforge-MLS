@@ -1,7 +1,6 @@
 /**
  * IESDP data update script.
  * Processes IESDP action data into BAF completion/highlight YAML files.
- * Structure offsets and opcodes are now sourced from IElib (see ielib-update.ts).
  */
 
 import fs from "node:fs";

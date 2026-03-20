@@ -406,8 +406,6 @@ YAML data files (~1.7 MB total):
 | `weidu-baf-iesdp.yml` | IESDP triggers and actions |
 | `weidu-d-base.yml` | D file functions |
 | `weidu-tp2-base.yml` | TP2 functions and macros |
-| `weidu-tp2-ielib.yml` | IE library functions |
-| `weidu-tp2-iesdp.yml` | IESDP WeiDU functions |
 | `fallout-worldmap-txt.yml` | Worldmap key-value pairs |
 
 ## Test Architecture

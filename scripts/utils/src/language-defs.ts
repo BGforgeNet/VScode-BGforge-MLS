@@ -73,7 +73,7 @@ export const LANGUAGES: readonly LanguageDef[] = [
         name: "weidu-tp2",
         displayName: "WeiDU TP2",
         ext: "tp2 tpa tph tpp",
-        yamlFiles: [`${DATA_DIR}/weidu-tp2-base.yml`, `${DATA_DIR}/weidu-tp2-iesdp.yml`],
+        yamlFiles: [`${DATA_DIR}/weidu-tp2-base.yml`],
         caseIgnored: true,
         stringDelimiters: [["~", "~"], ["\"", "\""], ["%", "%"]],
         foldingPairs: [["BEGIN", "END"]],
