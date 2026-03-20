@@ -16,7 +16,9 @@ vi.mock("../../src/lsp-connection", () => ({
 }));
 
 import { initParser } from "../../src/fallout-ssl/parser";
-import { getSymbolScope, findContainingProcedure, isLocalToProc } from "../../src/fallout-ssl/symbol-scope";
+import { ScopeKind } from "../../src/fallout-ssl/scope-kinds";
+import { findContainingProcedure, isLocalToProc } from "../../src/fallout-ssl/symbol-definitions";
+import { getSymbolScope } from "../../src/fallout-ssl/symbol-scope";
 import { parseWithCache } from "../../src/fallout-ssl/parser";
 
 beforeAll(async () => {
@@ -157,7 +159,7 @@ end
             const result = getSymbolScope(tree.rootNode, position);
 
             expect(result).not.toBeNull();
-            expect(result!.scope).toBe("procedure");
+            expect(result!.scope).toBe(ScopeKind.Procedure);
             expect(result!.name).toBe("counter");
             expect(result!.procedureNode).toBeDefined();
         });
@@ -174,7 +176,7 @@ end
             const result = getSymbolScope(tree.rootNode, position);
 
             expect(result).not.toBeNull();
-            expect(result!.scope).toBe("procedure");
+            expect(result!.scope).toBe(ScopeKind.Procedure);
             expect(result!.name).toBe("value");
         });
 
@@ -191,7 +193,7 @@ end
             const result = getSymbolScope(tree.rootNode, position);
 
             expect(result).not.toBeNull();
-            expect(result!.scope).toBe("file");
+            expect(result!.scope).toBe(ScopeKind.File);
             expect(result!.name).toBe("helper");
         });
 
@@ -208,7 +210,7 @@ end
             const result = getSymbolScope(tree.rootNode, position);
 
             expect(result).not.toBeNull();
-            expect(result!.scope).toBe("file");
+            expect(result!.scope).toBe(ScopeKind.File);
             expect(result!.name).toBe("helper");
         });
 

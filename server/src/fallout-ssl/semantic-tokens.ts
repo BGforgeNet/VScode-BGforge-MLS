@@ -2,7 +2,7 @@ import { SemanticTokenTypes } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { isInitialized, parseWithCache } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { isParameterDefinitionNode, resolveIdentifierDefinitionNode } from "./symbol-scope";
+import { isParameterDefinitionNode, resolveIdentifierDefinitionNode } from "./symbol-definitions";
 import type { SemanticTokenSpan } from "../shared/semantic-tokens";
 
 function pushIdentifierSpan(node: Node, out: SemanticTokenSpan[]): void {

@@ -6,6 +6,7 @@
 
 import type { Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { ScopeKind } from "./scope-kinds";
 import { SyntaxType } from "./tree-sitter.d";
 import {
     VARIABLE_DECL_TYPES,
@@ -14,9 +15,10 @@ import {
     LOOP_TYPES,
     matchesSymbol,
 } from "./variable-symbols";
+import { FUNCTION_CALL_TYPES } from "./callable-symbols";
 import { isSameNode, stripStringDelimiters } from "./tree-utils";
 import type { SymbolInfo, SyntheticPercentVarNode } from "./symbol-discovery";
-import { FUNCTION_CALL_TYPES, isShadowedByInnerLoop, isVariableRefInDeclarationContext } from "./symbol-discovery";
+import { isShadowedByInnerLoop, isVariableRefInDeclarationContext } from "./symbol-discovery";
 
 // ============================================
 // Types
@@ -66,9 +68,9 @@ function findVariableReferences(
 ): void {
     // Determine search scope: loop > function > file
     let searchScope: SyntaxNode = root;
-    if (symbolInfo.scope === "loop" && symbolInfo.loopNode) {
+    if (symbolInfo.scope === ScopeKind.Loop && symbolInfo.loopNode) {
         searchScope = symbolInfo.loopNode;
-    } else if (symbolInfo.scope === "function" && symbolInfo.functionNode) {
+    } else if (symbolInfo.scope === ScopeKind.Function && symbolInfo.functionNode) {
         searchScope = symbolInfo.functionNode;
     }
 

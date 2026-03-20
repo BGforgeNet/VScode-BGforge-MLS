@@ -7,7 +7,7 @@
 import { Location, Position } from "vscode-languageserver/node";
 import { parseWithCache, isInitialized } from "./parser";
 import { makeRange, findIdentifierNodeAtPosition } from "./utils";
-import { resolveIdentifierDefinitionNode } from "./symbol-scope";
+import { resolveIdentifierDefinitionNode } from "./symbol-definitions";
 
 /**
  * Get definition location for the symbol at the given position.

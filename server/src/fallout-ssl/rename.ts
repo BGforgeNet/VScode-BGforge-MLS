@@ -16,8 +16,10 @@ import { SourceType } from "../core/symbol";
 import type { Symbols } from "../core/symbol-index";
 import { parseWithCache, isInitialized } from "./parser";
 import { findIdentifierAtPosition, findIdentifierNodeAtPosition, isLocalDefinition, makeRange } from "./utils";
-import { getSymbolScope, isFileScopeDef } from "./symbol-scope";
+import { ScopeKind } from "./scope-kinds";
+import { getSymbolScope } from "./symbol-scope";
 import type { SslSymbolScope } from "./symbol-scope";
+import { isFileScopeDef } from "./symbol-definitions";
 import { findScopedReferences } from "./reference-finder";
 
 /** SSL identifiers: alphanumeric + underscore, must not be empty. */
@@ -56,7 +58,7 @@ export function prepareRenameSymbol(
 
     // Determine scope -- null means no identifier at cursor, "external" means not locally defined
     const scopeInfo = getSymbolScope(tree.rootNode, position);
-    if (!scopeInfo || scopeInfo.scope === "external") {
+    if (!scopeInfo || scopeInfo.scope === ScopeKind.External) {
         return null;
     }
 
@@ -86,7 +88,7 @@ export function renameSymbol(text: string, position: Position, newName: string, 
     }
 
     const scopeInfo = getSymbolScope(tree.rootNode, position);
-    if (!scopeInfo || scopeInfo.scope === "external") {
+    if (!scopeInfo || scopeInfo.scope === ScopeKind.External) {
         return null;
     }
 
@@ -313,7 +315,7 @@ export function renameSymbolWorkspace(
     // Uses documentChanges format (TextDocumentEdit[]) so VS Code treats the
     // entire rename as a single atomic undo operation across all files.
     const documentChanges: TextDocumentEdit[] = [];
-    const fileScopeInfo: SslSymbolScope = { name: symbolName, scope: "file" };
+    const fileScopeInfo: SslSymbolScope = { name: symbolName, scope: ScopeKind.File };
 
     for (const candidateUri of candidateUris) {
         const candidateText = candidateUri === normUri

@@ -10,6 +10,7 @@ import { Location, Position } from "vscode-languageserver/node";
 import { makeRange } from "../core/position-utils";
 import type { ReferencesIndex } from "../shared/references-index";
 import { parseWithCache } from "./parser";
+import { ScopeKind } from "./scope-kinds";
 import { getSymbolScope } from "./symbol-scope";
 import { findScopedReferences } from "./reference-finder";
 import { getLocalDefinition } from "./definition";
@@ -59,7 +60,7 @@ export function findReferences(
         return [];
     }
 
-    if (scopeInfo.scope === "external") {
+    if (scopeInfo.scope === ScopeKind.External) {
         // Symbol not defined in the current file — fall back to cross-file lookup.
         // This handles cases like GVAR_DEN_GANGWAR used in den.h but defined in global.h.
         if (!refsIndex) {
@@ -68,7 +69,7 @@ export function findReferences(
         // Get cross-file references from the index (includes current file)
         const crossFileRefs = refsIndex.lookup(scopeInfo.name);
         // Also search the current file for matching identifiers using file-scope traversal
-        const fileScopeInfo = { name: scopeInfo.name, scope: "file" as const };
+        const fileScopeInfo = { name: scopeInfo.name, scope: ScopeKind.File };
         const localNodes = findScopedReferences(tree.rootNode, fileScopeInfo);
         const localLocations = localNodes.map(node => ({ uri, range: makeRange(node) }));
         // Merge: local refs + cross-file refs (excluding current file to avoid duplicates)
@@ -89,7 +90,7 @@ export function findReferences(
 
     // For file-scoped symbols, add cross-file references from the index
     let allLocations = localLocations;
-    if (scopeInfo.scope === "file" && refsIndex) {
+    if (scopeInfo.scope === ScopeKind.File && refsIndex) {
         const crossFileRefs = refsIndex.lookup(scopeInfo.name)
             .filter(loc => loc.uri !== uri);
         allLocations = [...localLocations, ...crossFileRefs];

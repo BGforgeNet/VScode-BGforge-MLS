@@ -6,19 +6,19 @@
 
 import type { Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { ScopeKind, type ScopeKind as ScopeKindValue } from "./scope-kinds";
 import { SyntaxType } from "./tree-sitter.d";
+import { FUNCTION_CALL_TYPES, getCallableSymbolAtPosition } from "./callable-symbols";
 import {
     VARIABLE_DECL_TYPES,
     STRING_CONTENT_TYPES,
-    FUNCTION_DEF_TYPES,
     LOOP_TYPES,
     findContainingFunction,
     findContainingLoop,
-    determineVariableScope,
+    getVariableSymbolAtPosition,
     isLoopVariable,
-    findVariableInStringContent,
 } from "./variable-symbols";
-import { findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters } from "./tree-utils";
+import { findNodeAtPosition, findAncestorOfType, isSameNode } from "./tree-utils";
 
 // ============================================
 // Constants
@@ -40,14 +40,6 @@ const AUTOMATIC_VARIABLES: ReadonlySet<string> = new Set([
     "LANGUAGE",
 ]);
 
-/** Node types for function/macro calls. */
-export const FUNCTION_CALL_TYPES: ReadonlySet<SyntaxType> = new Set([
-    SyntaxType.ActionLaunchFunction,
-    SyntaxType.ActionLaunchMacro,
-    SyntaxType.PatchLaunchFunction,
-    SyntaxType.PatchLaunchMacro,
-]);
-
 // ============================================
 // Types
 // ============================================
@@ -55,7 +47,7 @@ export const FUNCTION_CALL_TYPES: ReadonlySet<SyntaxType> = new Set([
 export interface SymbolInfo {
     name: string;
     kind: "variable" | "function";
-    scope: "file" | "function" | "loop";
+    scope: ScopeKindValue;
     functionNode?: SyntaxNode; // For function-scoped variables
     loopNode?: SyntaxNode; // For loop-scoped variables (PHP_EACH, FOR_EACH)
     node: SyntaxNode; // The node where the symbol was found
@@ -100,165 +92,41 @@ export function getSymbolAtPosition(root: SyntaxNode, position: Position): Symbo
         }
     }
 
-    // Check if it's a percent_string or percent_content node inside %var% syntax
-    if (node.type === SyntaxType.PercentString) {
-        // Get the percent_content child
-        const contentNode = node.child(1); // percent_string = "%" + content + "%"
-        if (contentNode && contentNode.type === SyntaxType.PercentContent) {
-            const name = contentNode.text;
-            if (!name) {
-                return null;
-            }
-
-            // Determine the scope for this variable
-            const scopeInfo = determineVariableScope(name, node);
-
-            return {
-                name,
-                kind: "variable",
-                scope: scopeInfo.scope,
-                functionNode: scopeInfo.functionNode,
-                loopNode: scopeInfo.loopNode,
-                node,  // Return the percent_string node
-            };
-        }
-    }
-
-    if (node.type === SyntaxType.PercentContent) {
-        const name = node.text; // Already without the % delimiters
-        if (!name) {
-            return null;
-        }
-
-        // Determine the scope for this variable
-        const scopeInfo = determineVariableScope(name, node);
-
-        return {
-            name,
-            kind: "variable",
-            scope: scopeInfo.scope,
-            functionNode: scopeInfo.functionNode,
-            loopNode: scopeInfo.loopNode,
-            node: node.parent && node.parent.type === SyntaxType.PercentString ? node.parent : node,
-        };
-    }
-
     // String content nodes (tilde_content, double_content, etc.) can contain either:
     // 1. %var% variable references - handled here, returns early if found
     // 2. Function/macro names like ~my_macro~ - handled in the second STRING_CONTENT_TYPES check below
     if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
-        const varMatch = findVariableInStringContent(node, position);
-        if (varMatch) {
-            const scopeInfo = determineVariableScope(varMatch, node);
-            return {
-                name: varMatch,
-                kind: "variable",
-                scope: scopeInfo.scope,
-                functionNode: scopeInfo.functionNode,
-                loopNode: scopeInfo.loopNode,
-                node,
-            };
+        const variableSymbol = getVariableSymbolAtPosition(root, position);
+        if (variableSymbol) {
+            return variableSymbol;
         }
         // No %var% found at cursor - fall through to check for function/macro names below
     }
 
-    // Check if it's a variable_ref node (bare identifier in expression like `param + 1`)
-    if (node.type === SyntaxType.VariableRef) {
-        // variable_ref contains an identifier child
-        const identNode = node.child(0);
-        const name = identNode?.text;
-        if (!name) {
-            return null;
-        }
-
-        // Determine the scope for this variable
-        const scopeInfo = determineVariableScope(name, node);
-
-        return {
-            name,
-            kind: "variable",
-            scope: scopeInfo.scope,
-            functionNode: scopeInfo.functionNode,
-            loopNode: scopeInfo.loopNode,
-            node: identNode,
-        };
+    if (node.type === SyntaxType.PercentString ||
+        node.type === SyntaxType.PercentContent ||
+        node.type === SyntaxType.VariableRef) {
+        return getVariableSymbolAtPosition(root, position);
     }
 
     // String content that's a function/macro name (e.g., ~my_macro~ in DEFINE_PATCH_MACRO ~my_macro~)
     // Only reached if the earlier STRING_CONTENT_TYPES check found no %var% at cursor
     if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
-        const stringNode = node.parent;
-        // Parent can be any string type: string, tilde_string, double_string, etc.
-        if (stringNode && (
-            stringNode.type === SyntaxType.String ||
-            stringNode.type === SyntaxType.TildeString ||
-            stringNode.type === SyntaxType.DoubleString ||
-            stringNode.type === SyntaxType.FiveTildeString
-        )) {
-            // Check if this string is used as a function/macro name
-            const funcDef = findAncestorOfType(stringNode, FUNCTION_DEF_TYPES);
-            if (funcDef) {
-                const nameNode = funcDef.childForFieldName("name");
-                if (nameNode && isSameNode(nameNode, stringNode)) {
-                    const name = node.text; // Content without delimiters
-                    return {
-                        name,
-                        kind: "function",
-                        scope: "file",
-                        node: stringNode, // Return the string node, not the content
-                    };
-                }
-            }
-
-            const funcCall = findAncestorOfType(stringNode, FUNCTION_CALL_TYPES);
-            if (funcCall) {
-                const nameNode = funcCall.childForFieldName("name");
-                if (nameNode && isSameNode(nameNode, stringNode)) {
-                    const name = node.text; // Content without delimiters
-                    return {
-                        name,
-                        kind: "function",
-                        scope: "file",
-                        node: stringNode, // Return the string node, not the content
-                    };
-                }
-            }
+        const callableSymbol = getCallableSymbolAtPosition(root, position);
+        if (callableSymbol) {
+            return callableSymbol;
         }
     }
 
     // Check if it's an identifier or string (strings are used for macro names)
     if (node.type === SyntaxType.Identifier || node.type === SyntaxType.String) {
-        // Could be a variable name in declaration, function name, or parameter
-        const name = node.text;
-
         // Check if it's part of a function definition or call
-        const funcDef = findAncestorOfType(node, FUNCTION_DEF_TYPES);
-        if (funcDef) {
-            const nameNode = funcDef.childForFieldName("name");
-            // Compare by position and text, not object identity
-            if (nameNode && isSameNode(nameNode, node)) {
-                return {
-                    name: stripStringDelimiters(name),
-                    kind: "function",
-                    scope: "file",
-                    node,
-                };
-            }
+        const callableSymbol = getCallableSymbolAtPosition(root, position);
+        if (callableSymbol) {
+            return callableSymbol;
         }
 
-        const funcCall = findAncestorOfType(node, FUNCTION_CALL_TYPES);
-        if (funcCall) {
-            const nameNode = funcCall.childForFieldName("name");
-            // Compare by position and text, not object identity
-            if (nameNode && isSameNode(nameNode, node)) {
-                return {
-                    name: stripStringDelimiters(name),
-                    kind: "function",
-                    scope: "file",
-                    node,
-                };
-            }
-        }
+        const name = node.text;
 
         // Check if it's a variable in declaration
         const varDecl = findAncestorOfType(node, VARIABLE_DECL_TYPES);
@@ -286,7 +154,7 @@ export function getSymbolAtPosition(root: SyntaxNode, position: Position): Symbo
                     return {
                         name,
                         kind: "variable",
-                        scope: "loop",
+                        scope: ScopeKind.Loop,
                         loopNode: varDecl,
                         node,
                     };
@@ -295,7 +163,7 @@ export function getSymbolAtPosition(root: SyntaxNode, position: Position): Symbo
 
             // Find the containing function (if any)
             const functionNode = findContainingFunction(node);
-            const scope = functionNode ? "function" : "file";
+            const scope = functionNode ? ScopeKind.Function : ScopeKind.File;
 
             return {
                 name,
@@ -311,15 +179,7 @@ export function getSymbolAtPosition(root: SyntaxNode, position: Position): Symbo
         if (arrayAccess) {
             const nameNode = arrayAccess.childForFieldName("name");
             if (nameNode && isSameNode(nameNode, node)) {
-                const scopeInfo = determineVariableScope(name, node);
-                return {
-                    name,
-                    kind: "variable",
-                    scope: scopeInfo.scope,
-                    functionNode: scopeInfo.functionNode,
-                    loopNode: scopeInfo.loopNode,
-                    node,
-                };
+                return getVariableSymbolAtPosition(root, position);
             }
         }
 
@@ -353,15 +213,7 @@ export function getSymbolAtPosition(root: SyntaxNode, position: Position): Symbo
                 }
             }
 
-            const scopeInfo = determineVariableScope(name, node);
-            return {
-                name,
-                kind: "variable",
-                scope: scopeInfo.scope,
-                functionNode: scopeInfo.functionNode,
-                loopNode: scopeInfo.loopNode,
-                node,
-            };
+            return getVariableSymbolAtPosition(root, position);
         }
     }
 

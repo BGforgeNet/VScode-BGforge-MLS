@@ -8,8 +8,9 @@
  */
 
 import type { Node } from "web-tree-sitter";
+import { ScopeKind } from "./scope-kinds";
 import type { SslSymbolScope } from "./symbol-scope";
-import { isLocalToProc, resolveIdentifierDefinitionNode } from "./symbol-scope";
+import { isLocalToProc, resolveIdentifierDefinitionNode } from "./symbol-definitions";
 import { parseMacroParams } from "./macro-utils";
 import { SyntaxType } from "./tree-sitter.d";
 
@@ -37,17 +38,17 @@ function isMacroParam(defineNode: Node, symbolName: string): boolean {
  */
 export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope): Node[] {
     // Guard: external scope has no local definition to search for
-    if (symbolInfo.scope === "external") {
+    if (symbolInfo.scope === ScopeKind.External) {
         return [];
     }
 
     // Guard: procedure scope requires a procedureNode to restrict the search
-    if (symbolInfo.scope === "procedure" && !symbolInfo.procedureNode) {
+    if (symbolInfo.scope === ScopeKind.Procedure && !symbolInfo.procedureNode) {
         return [];
     }
 
     const refs: Node[] = [];
-    const searchRoot = symbolInfo.scope === "procedure" && symbolInfo.procedureNode
+    const searchRoot = symbolInfo.scope === ScopeKind.Procedure && symbolInfo.procedureNode
         ? symbolInfo.procedureNode
         : rootNode;
 
@@ -77,7 +78,7 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
         // Shadow exclusion: when searching file-scope, skip entire procedure
         // subtree if the procedure defines a local with the same name
         if (
-            symbolInfo.scope === "file" &&
+            symbolInfo.scope === ScopeKind.File &&
             node.type === SyntaxType.Procedure &&
             isLocalToProc(node, symbolInfo.name)
         ) {
@@ -88,7 +89,7 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
         // if the symbol name matches one of the macro's own parameters.
         // E.g., renaming file-scope `a` should not touch `a` in `#define ADD(a, b) ((a) + (b))`.
         if (
-            symbolInfo.scope === "file" &&
+            symbolInfo.scope === ScopeKind.File &&
             node.type === SyntaxType.MacroBody &&
             node.parent?.type === SyntaxType.Define &&
             isMacroParam(node.parent, symbolInfo.name)
@@ -98,7 +99,7 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
 
         // Skip macro_params entirely for file-scope searches — param names
         // are definitions, not references to file-scope symbols.
-        if (symbolInfo.scope === "file" && node.type === SyntaxType.MacroParams) {
+        if (symbolInfo.scope === ScopeKind.File && node.type === SyntaxType.MacroParams) {
             return;
         }
 

@@ -21,7 +21,7 @@ import * as jsdoc from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { isPhantomAssignment, looksLikeConstant, stripStringDelimiters } from "./tree-utils";
-import { FUNCTION_CALL_TYPES } from "./symbol-discovery";
+import { FUNCTION_CALL_TYPES } from "./callable-symbols";
 
 // ============================================
 // Types
@@ -696,4 +696,3 @@ function collectFunctionRefs(root: SyntaxNode, uri: string): ReadonlyMap<string,
     visit(root);
     return refs;
 }
-

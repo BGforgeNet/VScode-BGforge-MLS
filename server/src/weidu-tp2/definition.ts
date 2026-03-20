@@ -11,20 +11,13 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import * as path from "path";
 import * as fs from "fs";
 import { parseWithCache, isInitialized } from "./parser";
-import { parseHeader, FunctionInfo } from "./header-parser";
 import { pathToUri, uriToPath } from "../common";
 import { SyntaxType } from "./tree-sitter.d";
+import { FUNCTION_CALL_TYPES, getCallableSymbolAtPosition } from "./callable-symbols";
+import { findLocalCallableDefinition } from "./callable-definitions";
 import { findVariableDefinition } from "./variable-symbols";
 import { findNodeAtPosition, findAncestorOfType, stripStringDelimiters } from "./tree-utils";
 import type { Symbols } from "../core/symbol-index";
-
-/** Node types for function/macro calls. */
-const FUNCTION_CALL_TYPES = new Set([
-    SyntaxType.ActionLaunchFunction,
-    SyntaxType.ActionLaunchMacro,
-    SyntaxType.PatchLaunchFunction,
-    SyntaxType.PatchLaunchMacro,
-]);
 
 /** Node types for INCLUDE directives. */
 const INCLUDE_TYPES = new Set([
@@ -172,7 +165,7 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
     const funcName = nameNode.text;
 
     // Look for the function definition
-    const localDef = findLocalDefinition(text, uri, funcName);
+    const localDef = findLocalCallableDefinition(text, uri, funcName);
     if (localDef) {
         return localDef.location;
     }
@@ -190,41 +183,34 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
  * Try to find definition for a function/macro call.
  */
 function tryFunctionCallDefinition(node: SyntaxNode, text: string, uri: string, symbols?: Symbols): Location | null {
-    // Check if we're in a function call context
-    const callNode = findAncestorOfType(node, FUNCTION_CALL_TYPES);
-    if (!callNode) {
-        return null;
+    let root = node;
+    while (root.parent) {
+        root = root.parent;
     }
 
-    // Get the function name
-    const nameNode = callNode.childForFieldName("name");
-    if (!nameNode) {
+    const position: Position = {
+        line: node.startPosition.row,
+        character: node.startPosition.column,
+    };
+
+    const callableSymbol = getCallableSymbolAtPosition(root, position);
+    if (!callableSymbol) {
         return null;
     }
-
-    const funcName = nameNode.text;
 
     // First, look in the current file
-    const localDef = findLocalDefinition(text, uri, funcName);
+    const localDef = findLocalCallableDefinition(text, uri, callableSymbol.name);
     if (localDef) {
         return localDef.location;
     }
 
     // Then, look in the unified symbol storage
-    const location = symbols?.lookupDefinition(funcName);
+    const location = symbols?.lookupDefinition(callableSymbol.name);
     if (location) {
         return location;
     }
 
     return null;
-}
-
-/**
- * Find a function/macro definition in the current file.
- */
-function findLocalDefinition(text: string, uri: string, name: string): FunctionInfo | null {
-    const functions = parseHeader(text, uri);
-    return functions.find(f => f.name === name) ?? null;
 }
 
 // ============================================

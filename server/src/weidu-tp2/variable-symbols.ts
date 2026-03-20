@@ -7,6 +7,7 @@ import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
+import { ScopeKind, type ScopeKind as ScopeKindValue } from "./scope-kinds";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import type { Symbols } from "../core/symbol-index";
@@ -73,6 +74,18 @@ export const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.PatchForEach,
 ]);
 
+interface VariableScopeInfo {
+    scope: ScopeKindValue;
+    loopNode?: SyntaxNode;
+    functionNode?: SyntaxNode;
+}
+
+interface VariableSymbolInfo extends VariableScopeInfo {
+    name: string;
+    kind: "variable";
+    node: SyntaxNode;
+}
+
 // ============================================
 // Scope utilities
 // ============================================
@@ -95,27 +108,27 @@ export function findContainingLoop(node: SyntaxNode): SyntaxNode | null {
  * Determine the scope for a variable reference.
  * Checks if the variable is a loop variable, function-local variable, or file-scoped variable.
  */
-export function determineVariableScope(
+function determineVariableScope(
     varName: string,
     node: SyntaxNode
-): { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode } {
+): VariableScopeInfo {
     // Check if we're inside a loop and the variable is a loop variable
     const loopNode = findContainingLoop(node);
     if (loopNode) {
         // Check if this variable is declared by the loop
         const isLoopVar = isLoopVariable(loopNode, varName);
         if (isLoopVar) {
-            return { scope: "loop", loopNode };
+            return { scope: ScopeKind.Loop, loopNode };
         }
     }
 
     // Check if we're inside a function
     const functionNode = findContainingFunction(node);
     if (functionNode) {
-        return { scope: "function", functionNode };
+        return { scope: ScopeKind.Function, functionNode };
     }
 
-    return { scope: "file" };
+    return { scope: ScopeKind.File };
 }
 
 /**
@@ -142,7 +155,7 @@ export function isLoopVariable(loopNode: SyntaxNode, varName: string): boolean {
  * Find a variable reference (%var%) at the given position within string content.
  * Returns the variable name (without %) if found at the position.
  */
-export function findVariableInStringContent(node: SyntaxNode, position: Position): string | null {
+function findVariableInStringContent(node: SyntaxNode, position: Position): string | null {
     const text = node.text;
 
     // Convert cursor position to byte offset within the node's text
@@ -242,38 +255,20 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
         return null;
     }
 
-    // Find the node at cursor position
-    const targetNode = findNodeAtPosition(tree.rootNode, position);
-    if (!targetNode) {
+    const symbolInfo = getVariableSymbolAtPosition(tree.rootNode, position);
+    if (!symbolInfo) {
         return null;
     }
-
-    // Determine if this is a variable and get its name
-    const varInfo = getVariableAtPosition(targetNode, position);
-    if (!varInfo) {
-        return null;
-    }
-
-    const { varName, scopeInfo } = varInfo;
 
     // For file-scope variables, check unified symbol storage first (header definition is authoritative)
-    if (scopeInfo.scope === "file") {
-        const location = symbols?.lookupDefinition(varName);
+    if (symbolInfo.scope === ScopeKind.File) {
+        const location = symbols?.lookupDefinition(symbolInfo.name);
         if (location) {
             return location;
         }
     }
 
-    // Search for the definition based on scope
-    let searchScope: SyntaxNode = tree.rootNode;
-    if (scopeInfo.scope === "loop" && scopeInfo.loopNode) {
-        searchScope = scopeInfo.loopNode;
-    } else if (scopeInfo.scope === "function" && scopeInfo.functionNode) {
-        searchScope = scopeInfo.functionNode;
-    }
-
-    // Find the first declaration of this variable in the scope
-    const defNode = findFirstDeclaration(searchScope, varName, scopeInfo);
+    const defNode = findVariableDefinitionNode(tree.rootNode, symbolInfo);
     if (!defNode) {
         return null;
     }
@@ -285,12 +280,17 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
 }
 
 /**
- * Get variable name and scope info at the given position.
+ * Get variable symbol info at the given position.
  */
-function getVariableAtPosition(
-    node: SyntaxNode,
+export function getVariableSymbolAtPosition(
+    root: SyntaxNode,
     position: Position
-): { varName: string; scopeInfo: { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode } } | null {
+): VariableSymbolInfo | null {
+    let node = findNodeAtPosition(root, position);
+    if (!node) {
+        return null;
+    }
+
     // If we found a % token, check if it's part of a percent_string
     // This happens when cursor is right on the % delimiter
     // Note: "%" is a terminal token in the grammar, not a SyntaxType enum value
@@ -308,30 +308,42 @@ function getVariableAtPosition(
         // Note: grammar doesn't expose named fields, so index-based access is required
         const contentNode = node.child(1);
         if (contentNode && contentNode.type === SyntaxType.PercentContent) {
-            const varName = contentNode.text;
-            if (!varName) {
+            const name = contentNode.text;
+            if (!name) {
                 return null;
             }
-            const scopeInfo = determineVariableScope(varName, node);
-            return { varName, scopeInfo };
+            return {
+                name,
+                kind: "variable",
+                ...determineVariableScope(name, node),
+                node,
+            };
         }
     }
 
     if (node.type === SyntaxType.PercentContent) {
-        const varName = node.text;
-        if (!varName) {
+        const name = node.text;
+        if (!name) {
             return null;
         }
-        const scopeInfo = determineVariableScope(varName, node);
-        return { varName, scopeInfo };
+        return {
+            name,
+            kind: "variable",
+            ...determineVariableScope(name, node),
+            node: node.parent && node.parent.type === SyntaxType.PercentString ? node.parent : node,
+        };
     }
 
     // String content nodes can contain %var% variable references
     if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
-        const varMatch = findVariableInStringContent(node, position);
-        if (varMatch) {
-            const scopeInfo = determineVariableScope(varMatch, node);
-            return { varName: varMatch, scopeInfo };
+        const name = findVariableInStringContent(node, position);
+        if (name) {
+            return {
+                name,
+                kind: "variable",
+                ...determineVariableScope(name, node),
+                node,
+            };
         }
     }
 
@@ -340,20 +352,28 @@ function getVariableAtPosition(
         // Grammar: variable_ref = identifier, child(0) is the identifier
         // Note: grammar doesn't expose named fields, so index-based access is required
         const identNode = node.child(0);
-        const varName = identNode?.text;
-        if (!varName) {
+        const name = identNode?.text;
+        if (!name) {
             return null;
         }
-        const scopeInfo = determineVariableScope(varName, node);
-        return { varName, scopeInfo };
+        return {
+            name,
+            kind: "variable",
+            ...determineVariableScope(name, node),
+            node: identNode,
+        };
     }
 
     // Check if it's an identifier
     if (node.type === SyntaxType.Identifier) {
         // Could be a variable name in declaration or usage
-        const varName = node.text;
-        const scopeInfo = determineVariableScope(varName, node);
-        return { varName, scopeInfo };
+        const name = node.text;
+        return {
+            name,
+            kind: "variable",
+            ...determineVariableScope(name, node),
+            node,
+        };
     }
 
     return null;
@@ -362,10 +382,24 @@ function getVariableAtPosition(
 /**
  * Find the first declaration of a variable in the given scope.
  */
+export function findVariableDefinitionNode(
+    root: SyntaxNode,
+    symbolInfo: VariableSymbolInfo
+): SyntaxNode | null {
+    let searchScope: SyntaxNode = root;
+    if (symbolInfo.scope === ScopeKind.Loop && symbolInfo.loopNode) {
+        searchScope = symbolInfo.loopNode;
+    } else if (symbolInfo.scope === ScopeKind.Function && symbolInfo.functionNode) {
+        searchScope = symbolInfo.functionNode;
+    }
+
+    return findFirstDeclaration(searchScope, symbolInfo.name, symbolInfo);
+}
+
 function findFirstDeclaration(
     scopeNode: SyntaxNode,
     varName: string,
-    scopeInfo: { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode }
+    scopeInfo: VariableScopeInfo
 ): SyntaxNode | null {
     let firstDecl: SyntaxNode | null = null;
 
@@ -397,7 +431,7 @@ function findFirstDeclaration(
                 }
                 // Only skip loop body traversal if searching for loop-scoped variables.
                 // For file/function-scoped variables, we need to find declarations inside loops.
-                if (scopeInfo.scope === "loop") {
+                if (scopeInfo.scope === ScopeKind.Loop) {
                     return;
                 }
             }
