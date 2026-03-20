@@ -227,31 +227,35 @@ function sortSequenceItemsInSource(
     options: SortSequenceOptions = {},
 ): string {
     const seqTokens = getSequenceSrcToken(sequence.srcToken)?.items;
-    const slices: ItemSlice[] = sequence.items.map((item: unknown, index: number, items: readonly unknown[]) => {
-        const name = getScalarField(item, sortKey);
-        if (name === undefined) {
-            throw new Error(`Expected each YAML sequence entry to have a top-level string ${sortKey}`);
-        }
-        const start = index === 0 ? headEnd : getSequenceItemStart(seqTokens?.[index] ?? {});
-        const nextItem = items[index + 1];
-        const end = nextItem !== undefined ? getSequenceItemStart(seqTokens?.[index + 1] ?? {}) : seqEnd;
-        return {
-            name,
-            text: source.slice(start, end),
-        };
-    });
 
-    return [...slices]
-        .sort((a, b) => cmpStr(a.name, b.name))
-        .reduce((text, item, index) => {
-            const compactText = item.text.replace(/^\n+/, "").replace(/\n+$/, "\n");
-            const itemText = index === 0
+    // Separate items with the sort key from those without (e.g. include directives).
+    // Items without the key keep their original order and are appended at the end.
+    const sortable: ItemSlice[] = [];
+    const rest: ItemSlice[] = [];
+    for (let index = 0; index < sequence.items.length; index++) {
+        const item = sequence.items[index]!;
+        const name = getScalarField(item, sortKey);
+        const start = index === 0 ? headEnd : getSequenceItemStart(seqTokens?.[index] ?? {});
+        const nextItem = sequence.items[index + 1];
+        const end = nextItem !== undefined ? getSequenceItemStart(seqTokens?.[index + 1] ?? {}) : seqEnd;
+        const slice = { name: name ?? "", text: source.slice(start, end) };
+        if (name !== undefined) {
+            sortable.push(slice);
+        } else {
+            rest.push(slice);
+        }
+    }
+
+    const all = [...[...sortable].sort((a, b) => cmpStr(a.name, b.name)), ...rest];
+    return all.reduce((text, item, index) => {
+        const compactText = item.text.replace(/^\n+/, "").replace(/\n+$/, "\n");
+        const itemText = index === 0
+            ? compactText
+            : options.compactItems
                 ? compactText
-                : options.compactItems
-                    ? compactText
-                    : (item.text.startsWith("\n") ? item.text : `\n${item.text}`);
-            return `${text}${itemText}`;
-        }, "");
+                : (item.text.startsWith("\n") ? item.text : `\n${item.text}`);
+        return `${text}${itemText}`;
+    }, "");
 }
 
 export function sortYamlSequenceByPath(
