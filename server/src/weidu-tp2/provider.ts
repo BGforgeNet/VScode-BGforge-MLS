@@ -40,6 +40,8 @@ import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
+import { getSemanticTokenSpans } from "./semantic-tokens";
+import type { SemanticTokenSpan } from "../shared/semantic-tokens";
 
 /** TP2 block-level node types for code folding. */
 const TP2_FOLDABLE_TYPES = new Set([
@@ -397,6 +399,10 @@ class WeiduTp2Provider implements LanguageProvider {
 
     prepareRename(text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {
         return prepareRenameSymbol(text, position);
+    }
+
+    semanticTokens(text: string, _uri: string): SemanticTokenSpan[] {
+        return getSemanticTokenSpans(text);
     }
 }
 
