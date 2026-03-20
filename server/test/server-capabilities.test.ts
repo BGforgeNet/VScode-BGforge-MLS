@@ -8,7 +8,7 @@ describe("server-capabilities", () => {
 
         expect(capabilities.semanticTokensProvider).toEqual({
             legend: {
-                tokenTypes: ["parameter", "variable", "resref"],
+                tokenTypes: ["parameter", "variable", "resref", "byte", "char", "dword"],
                 tokenModifiers: [],
             },
             full: true,

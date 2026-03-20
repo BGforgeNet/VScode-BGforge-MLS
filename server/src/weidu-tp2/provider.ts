@@ -42,12 +42,24 @@ import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdo
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
 import { getSemanticTokenSpans } from "./semantic-tokens";
-import type { SemanticTokenSpan } from "../shared/semantic-tokens";
+import { JSDOC_TYPE_TO_TOKEN, type SemanticTokenSpan } from "../shared/semantic-tokens";
 
-function isResrefConstant(symbol: IndexedSymbol): boolean {
-    return isVariableSymbol(symbol)
-        && symbol.variable.type?.startsWith("resref") === true
-        && looksLikeConstant(symbol.name);
+/**
+ * Resolve a variable symbol's JSDoc type to a semantic token type, if applicable.
+ * Returns the token type string if the symbol is a constant with a recognized styled type
+ * (resref, byte, char, dword), or undefined otherwise.
+ */
+function getStyledTokenType(symbol: IndexedSymbol): string | undefined {
+    if (!isVariableSymbol(symbol) || !looksLikeConstant(symbol.name)) {
+        return undefined;
+    }
+    const type = symbol.variable.type;
+    if (!type) {
+        return undefined;
+    }
+    // Extract base type: "resref offset" → "resref", "byte array offset" → "byte"
+    const baseType = type.split(" ", 1)[0]!;
+    return JSDOC_TYPE_TO_TOKEN.get(baseType);
 }
 
 /** TP2 block-level node types for code folding. */
@@ -409,30 +421,33 @@ class WeiduTp2Provider implements LanguageProvider {
     }
 
     semanticTokens(text: string, uri: string): SemanticTokenSpan[] {
-        return getSemanticTokenSpans(text, this.getResrefNames(text, uri));
+        return getSemanticTokenSpans(text, this.getTypedNames(text, uri));
     }
 
     /**
-     * Collect names of variables with @type {resref}.
+     * Collect names of constants with styled @type annotations (resref, byte, char, dword).
+     * Returns a map from variable name to semantic token type.
      * Merges indexed symbols (other files) with local symbols (current document)
      * so that changes in the current file are reflected immediately.
      */
-    private getResrefNames(text: string, uri: string): ReadonlySet<string> {
-        const names = new Set<string>();
+    private getTypedNames(text: string, uri: string): ReadonlyMap<string, string> {
+        const names = new Map<string, string>();
 
         // From symbol index (headers and other workspace files)
         if (this.fileIndex) {
             for (const symbol of this.fileIndex.symbols.query({})) {
-                if (isResrefConstant(symbol)) {
-                    names.add(symbol.name);
+                const tokenType = getStyledTokenType(symbol);
+                if (tokenType) {
+                    names.set(symbol.name, tokenType);
                 }
             }
         }
 
         // From current document (reflects unsaved edits immediately)
         for (const symbol of extractLocalSymbols(text, uri)) {
-            if (isResrefConstant(symbol)) {
-                names.add(symbol.name);
+            const tokenType = getStyledTokenType(symbol);
+            if (tokenType) {
+                names.set(symbol.name, tokenType);
             }
         }
 

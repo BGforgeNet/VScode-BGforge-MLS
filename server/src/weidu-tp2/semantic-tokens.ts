@@ -11,9 +11,9 @@
  * symbol resolution chain — variable, callable, and parameter resolution are
  * separate subsystems. The set-based approach avoids coupling to any one of them.
  *
- * Resref names are provided by the provider from the symbol index — variables
- * annotated with @type {resref} in headers get the custom "resref" token type,
- * replacing the old hardcoded TextMate ielib-resref patterns with a data-driven approach.
+ * Typed constant names are provided by the provider from the symbol index — variables
+ * annotated with @type {resref|byte|char|dword} in headers get custom token types,
+ * replacing the old hardcoded TextMate ielib patterns with a data-driven approach.
  */
 
 import { SemanticTokenTypes } from "vscode-languageserver/node";
@@ -21,7 +21,7 @@ import type { Node } from "web-tree-sitter";
 import { isInitialized, parseWithCache } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { collectLoopVarNames, FUNCTION_DEF_TYPES, LOOP_TYPES, PARAM_DECL_TYPES, STRING_CONTENT_TYPES } from "./variable-symbols";
-import { RESREF_TOKEN_TYPE, type SemanticTokenSpan } from "../shared/semantic-tokens";
+import { type SemanticTokenSpan } from "../shared/semantic-tokens";
 
 /**
  * Collect parameter names declared in a function definition node.
@@ -73,13 +73,13 @@ function pushSpan(node: Node, tokenType: string, out: SemanticTokenSpan[]): void
 }
 
 /**
- * Scan string content (tilde_content, double_content, five_tilde_content) for %var% references
- * matching known names. These are raw text nodes — the grammar does not parse %var% inside strings.
+ * Scan string content (tilde_content, double_content, five_tilde_content) for %var% references.
+ * These are raw text nodes — the grammar does not parse %var% inside strings.
+ * The resolver callback maps a variable name to its token type, or returns undefined to skip it.
  */
-function scanStringContentForNames(
+function scanStringContentForMatches(
     node: Node,
-    names: ReadonlySet<string>,
-    tokenType: string,
+    resolveTokenType: (name: string) => string | undefined,
     out: SemanticTokenSpan[],
 ): void {
     const text = node.text;
@@ -88,7 +88,8 @@ function scanStringContentForNames(
 
     while ((match = varPattern.exec(text)) !== null) {
         const varName = match[1]!;
-        if (!names.has(varName)) {
+        const tokenType = resolveTokenType(varName);
+        if (!tokenType) {
             continue;
         }
 
@@ -148,7 +149,7 @@ function visitBodyForNames(
 
     // String content nodes contain raw text with %var% references that the grammar doesn't parse
     if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
-        scanStringContentForNames(node, names, tokenType, out);
+        scanStringContentForMatches(node, (name) => names.has(name) ? tokenType : undefined, out);
         return;
     }
 
@@ -157,30 +158,19 @@ function visitBodyForNames(
     }
 }
 
-function pushResrefSpan(node: Node, out: SemanticTokenSpan[]): void {
-    out.push({
-        line: node.startPosition.row,
-        startChar: node.startPosition.column,
-        length: node.endPosition.column - node.startPosition.column,
-        tokenType: RESREF_TOKEN_TYPE,
-        tokenModifiers: 0,
-    });
-}
-
 /**
  * Walk the tree collecting semantic token spans.
  * Handles function definitions (parameter refs), loop constructs (loop variable refs),
- * and resref-typed variables (from @type {resref} JSDoc annotations in headers).
+ * and typed constant references (from @type {resref|byte|char|dword} JSDoc annotations in headers).
  */
-function visit(node: Node, resrefNames: ReadonlySet<string>, out: SemanticTokenSpan[]): void {
+function visit(node: Node, typedNames: ReadonlyMap<string, string>, out: SemanticTokenSpan[]): void {
     if (FUNCTION_DEF_TYPES.has(node.type as SyntaxType)) {
         const paramNames = collectParamNames(node);
         if (paramNames.size > 0) {
             visitBodyForNames(node, paramNames, SemanticTokenTypes.parameter, out, true);
         }
-        // Still recurse into function body for loop variables and resrefs
         for (const child of node.children) {
-            visit(child, resrefNames, out);
+            visit(child, typedNames, out);
         }
         return;
     }
@@ -190,42 +180,47 @@ function visit(node: Node, resrefNames: ReadonlySet<string>, out: SemanticTokenS
         if (loopVarNames.size > 0) {
             visitBodyForNames(node, loopVarNames, SemanticTokenTypes.variable, out, false);
         }
-        // Recurse for nested loops and resrefs
         for (const child of node.children) {
-            visit(child, resrefNames, out);
+            visit(child, typedNames, out);
         }
         return;
     }
 
-    // Resref-typed variable references (global scope, not scoped to functions/loops).
-    if (resrefNames.size > 0) {
-        if (node.type === SyntaxType.Identifier && resrefNames.has(node.text)) {
-            pushResrefSpan(node, out);
-            return;
+    // Typed constant references (global scope, not scoped to functions/loops).
+    if (typedNames.size > 0) {
+        if (node.type === SyntaxType.Identifier) {
+            const tokenType = typedNames.get(node.text);
+            if (tokenType) {
+                pushSpan(node, tokenType, out);
+                return;
+            }
         }
 
         if (node.type === SyntaxType.PercentString) {
             const contentNode = node.child(1);
-            if (contentNode && contentNode.type === SyntaxType.PercentContent && resrefNames.has(contentNode.text)) {
-                pushResrefSpan(contentNode, out);
+            if (contentNode && contentNode.type === SyntaxType.PercentContent) {
+                const tokenType = typedNames.get(contentNode.text);
+                if (tokenType) {
+                    pushSpan(contentNode, tokenType, out);
+                }
             }
             return;
         }
 
         if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
-            scanStringContentForNames(node, resrefNames, RESREF_TOKEN_TYPE, out);
+            scanStringContentForMatches(node, (name) => typedNames.get(name), out);
             return;
         }
     }
 
     for (const child of node.children) {
-        visit(child, resrefNames, out);
+        visit(child, typedNames, out);
     }
 }
 
-const EMPTY_SET: ReadonlySet<string> = new Set();
+const EMPTY_MAP: ReadonlyMap<string, string> = new Map();
 
-export function getSemanticTokenSpans(text: string, resrefNames?: ReadonlySet<string>): SemanticTokenSpan[] {
+export function getSemanticTokenSpans(text: string, typedNames?: ReadonlyMap<string, string>): SemanticTokenSpan[] {
     if (!isInitialized()) {
         return [];
     }
@@ -236,6 +231,6 @@ export function getSemanticTokenSpans(text: string, resrefNames?: ReadonlySet<st
     }
 
     const spans: SemanticTokenSpan[] = [];
-    visit(tree.rootNode, resrefNames ?? EMPTY_SET, spans);
+    visit(tree.rootNode, typedNames ?? EMPTY_MAP, spans);
     return spans;
 }

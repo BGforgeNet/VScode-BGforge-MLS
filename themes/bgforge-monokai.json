@@ -552,6 +552,15 @@
 		},
 		"resref": {
 			"fontStyle": "underline"
+		},
+		"byte": {
+			"fontStyle": "italic"
+		},
+		"char": {
+			"fontStyle": "italic"
+		},
+		"dword": {
+			"fontStyle": "bold"
 		}
 	}
 }

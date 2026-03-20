@@ -16,7 +16,7 @@ vi.mock("../../src/lsp-connection", () => ({
 
 import { initParser } from "../../src/weidu-tp2/parser";
 import { getSemanticTokenSpans } from "../../src/weidu-tp2/semantic-tokens";
-import { RESREF_TOKEN_TYPE } from "../../src/shared/semantic-tokens";
+import { RESREF_TOKEN_TYPE, BYTE_TOKEN_TYPE, CHAR_TOKEN_TYPE, DWORD_TOKEN_TYPE } from "../../src/shared/semantic-tokens";
 
 beforeAll(async () => {
     await initParser();
@@ -358,14 +358,14 @@ END
         expect(getSemanticTokenSpans("")).toEqual([]);
     });
 
-    describe("resref semantic tokens", () => {
+    describe("typed constant semantic tokens", () => {
         it("highlights bare identifier matching a resref name", () => {
-            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const typedNames = new Map([["CLERIC_BLESS", RESREF_TOKEN_TYPE]]);
             const text = `
 OUTER_SPRINT var CLERIC_BLESS
 `;
 
-            const spans = getSemanticTokenSpans(text, resrefNames);
+            const spans = getSemanticTokenSpans(text, typedNames);
             const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
 
             expect(resrefSpans).toHaveLength(1);
@@ -374,12 +374,12 @@ OUTER_SPRINT var CLERIC_BLESS
         });
 
         it("highlights %resref% in string content", () => {
-            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const typedNames = new Map([["CLERIC_BLESS", RESREF_TOKEN_TYPE]]);
             const text = `
 COPY_EXISTING ~%CLERIC_BLESS%.spl~ override
 `;
 
-            const spans = getSemanticTokenSpans(text, resrefNames);
+            const spans = getSemanticTokenSpans(text, typedNames);
             const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
 
             expect(resrefSpans).toHaveLength(1);
@@ -388,12 +388,12 @@ COPY_EXISTING ~%CLERIC_BLESS%.spl~ override
         });
 
         it("highlights percent_string resref reference", () => {
-            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const typedNames = new Map([["CLERIC_BLESS", RESREF_TOKEN_TYPE]]);
             const text = `
 COPY_EXISTING %CLERIC_BLESS% override
 `;
 
-            const spans = getSemanticTokenSpans(text, resrefNames);
+            const spans = getSemanticTokenSpans(text, typedNames);
             const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
 
             expect(resrefSpans).toHaveLength(1);
@@ -401,20 +401,20 @@ COPY_EXISTING %CLERIC_BLESS% override
                 .toEqual(["CLERIC_BLESS"]);
         });
 
-        it("does not highlight identifiers not in the resref set", () => {
-            const resrefNames = new Set(["CLERIC_BLESS"]);
+        it("does not highlight identifiers not in the typed names map", () => {
+            const typedNames = new Map([["CLERIC_BLESS", RESREF_TOKEN_TYPE]]);
             const text = `
 OUTER_SET my_var = 5
 `;
 
-            const spans = getSemanticTokenSpans(text, resrefNames);
+            const spans = getSemanticTokenSpans(text, typedNames);
             const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
 
             expect(resrefSpans).toHaveLength(0);
         });
 
         it("works alongside function parameter tokens", () => {
-            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const typedNames = new Map([["CLERIC_BLESS", RESREF_TOKEN_TYPE]]);
             const text = `
 DEFINE_PATCH_FUNCTION MyFunc
     STR_VAR spell = ~~
@@ -423,7 +423,7 @@ BEGIN
 END
 `;
 
-            const spans = getSemanticTokenSpans(text, resrefNames);
+            const spans = getSemanticTokenSpans(text, typedNames);
             const paramSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.parameter);
             const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
 
@@ -433,7 +433,7 @@ END
                 .toEqual(["CLERIC_BLESS"]);
         });
 
-        it("returns no resref tokens when resrefNames is not provided", () => {
+        it("returns no typed tokens when typedNames is not provided", () => {
             const text = `
 OUTER_SPRINT var CLERIC_BLESS
 `;
@@ -442,6 +442,56 @@ OUTER_SPRINT var CLERIC_BLESS
             const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
 
             expect(resrefSpans).toHaveLength(0);
+        });
+
+        it("highlights byte-typed constant with byte token type", () => {
+            const typedNames = new Map([["ITEM_FLAGS", BYTE_TOKEN_TYPE]]);
+            const text = `
+WRITE_BYTE ITEM_FLAGS 0
+`;
+
+            const spans = getSemanticTokenSpans(text, typedNames);
+            const byteSpans = spans.filter((s) => s.tokenType === BYTE_TOKEN_TYPE);
+
+            expect(byteSpans).toHaveLength(1);
+            expect(byteSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["ITEM_FLAGS"]);
+        });
+
+        it("highlights dword-typed constant with dword token type", () => {
+            const typedNames = new Map([["SPL_FLAGS", DWORD_TOKEN_TYPE]]);
+            const text = `
+WRITE_LONG SPL_FLAGS 0
+`;
+
+            const spans = getSemanticTokenSpans(text, typedNames);
+            const dwordSpans = spans.filter((s) => s.tokenType === DWORD_TOKEN_TYPE);
+
+            expect(dwordSpans).toHaveLength(1);
+            expect(dwordSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["SPL_FLAGS"]);
+        });
+
+        it("assigns different token types to different typed constants", () => {
+            const typedNames = new Map([
+                ["CLERIC_BLESS", RESREF_TOKEN_TYPE],
+                ["ITEM_FLAGS", BYTE_TOKEN_TYPE],
+                ["SPL_TYPE", DWORD_TOKEN_TYPE],
+                ["CHAR_NAME", CHAR_TOKEN_TYPE],
+            ]);
+            const text = `
+SET x = ITEM_FLAGS
+SPRINT y CLERIC_BLESS
+WRITE_LONG SPL_TYPE 0
+WRITE_ASCII CHAR_NAME ~test~
+`;
+
+            const spans = getSemanticTokenSpans(text, typedNames);
+
+            expect(spans.filter((s) => s.tokenType === BYTE_TOKEN_TYPE)).toHaveLength(1);
+            expect(spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE)).toHaveLength(1);
+            expect(spans.filter((s) => s.tokenType === DWORD_TOKEN_TYPE)).toHaveLength(1);
+            expect(spans.filter((s) => s.tokenType === CHAR_TOKEN_TYPE)).toHaveLength(1);
         });
 
     });

@@ -46,12 +46,27 @@
             {
                 "id": "resref",
                 "description": "Resource reference variable (spell, item, creature filename)"
+            },
+            {
+                "id": "byte",
+                "description": "Byte-typed IESDP constant"
+            },
+            {
+                "id": "char",
+                "description": "Char-typed IESDP constant"
+            },
+            {
+                "id": "dword",
+                "description": "Dword-typed IESDP constant"
             }
         ],
         "semanticTokenScopes": [
             {
                 "scopes": {
-                    "resref": ["constant.language.weidu-tp2.resref"]
+                    "resref": ["constant.language.weidu-tp2.resref"],
+                    "byte": ["constant.language.iesdp.byte"],
+                    "char": ["constant.language.iesdp.char"],
+                    "dword": ["constant.language.iesdp.dword"]
                 }
             }
         ],
