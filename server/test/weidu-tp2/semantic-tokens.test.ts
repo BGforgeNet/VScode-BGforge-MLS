@@ -16,6 +16,7 @@ vi.mock("../../src/lsp-connection", () => ({
 
 import { initParser } from "../../src/weidu-tp2/parser";
 import { getSemanticTokenSpans } from "../../src/weidu-tp2/semantic-tokens";
+import { RESREF_TOKEN_TYPE } from "../../src/shared/semantic-tokens";
 
 beforeAll(async () => {
     await initParser();
@@ -355,5 +356,93 @@ END
 
     it("returns empty array for empty or unparseable text", () => {
         expect(getSemanticTokenSpans("")).toEqual([]);
+    });
+
+    describe("resref semantic tokens", () => {
+        it("highlights bare identifier matching a resref name", () => {
+            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const text = `
+OUTER_SPRINT var CLERIC_BLESS
+`;
+
+            const spans = getSemanticTokenSpans(text, resrefNames);
+            const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
+
+            expect(resrefSpans).toHaveLength(1);
+            expect(resrefSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["CLERIC_BLESS"]);
+        });
+
+        it("highlights %resref% in string content", () => {
+            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const text = `
+COPY_EXISTING ~%CLERIC_BLESS%.spl~ override
+`;
+
+            const spans = getSemanticTokenSpans(text, resrefNames);
+            const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
+
+            expect(resrefSpans).toHaveLength(1);
+            expect(resrefSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["CLERIC_BLESS"]);
+        });
+
+        it("highlights percent_string resref reference", () => {
+            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const text = `
+COPY_EXISTING %CLERIC_BLESS% override
+`;
+
+            const spans = getSemanticTokenSpans(text, resrefNames);
+            const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
+
+            expect(resrefSpans).toHaveLength(1);
+            expect(resrefSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["CLERIC_BLESS"]);
+        });
+
+        it("does not highlight identifiers not in the resref set", () => {
+            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const text = `
+OUTER_SET my_var = 5
+`;
+
+            const spans = getSemanticTokenSpans(text, resrefNames);
+            const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
+
+            expect(resrefSpans).toHaveLength(0);
+        });
+
+        it("works alongside function parameter tokens", () => {
+            const resrefNames = new Set(["CLERIC_BLESS"]);
+            const text = `
+DEFINE_PATCH_FUNCTION MyFunc
+    STR_VAR spell = ~~
+BEGIN
+    SPRINT spell CLERIC_BLESS
+END
+`;
+
+            const spans = getSemanticTokenSpans(text, resrefNames);
+            const paramSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.parameter);
+            const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
+
+            expect(paramSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["spell"]);
+            expect(resrefSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["CLERIC_BLESS"]);
+        });
+
+        it("returns no resref tokens when resrefNames is not provided", () => {
+            const text = `
+OUTER_SPRINT var CLERIC_BLESS
+`;
+
+            const spans = getSemanticTokenSpans(text);
+            const resrefSpans = spans.filter((s) => s.tokenType === RESREF_TOKEN_TYPE);
+
+            expect(resrefSpans).toHaveLength(0);
+        });
+
     });
 });

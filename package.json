@@ -42,6 +42,19 @@
     ],
     "main": "./client/out/extension.js",
     "contributes": {
+        "semanticTokenTypes": [
+            {
+                "id": "resref",
+                "description": "Resource reference variable (spell, item, creature filename)"
+            }
+        ],
+        "semanticTokenScopes": [
+            {
+                "scopes": {
+                    "resref": ["constant.language.weidu-tp2.resref"]
+                }
+            }
+        ],
         "languages": [
             {
                 "id": "typescript",

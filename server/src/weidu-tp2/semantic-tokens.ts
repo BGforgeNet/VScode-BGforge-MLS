@@ -1,7 +1,8 @@
 /**
  * Semantic token extraction for WeiDU TP2 files.
  * Highlights function parameter references (INT_VAR, STR_VAR, RET, RET_ARRAY) in function bodies,
- * and loop variable references (PHP_EACH key/value, FOR_EACH var) in loop bodies.
+ * loop variable references (PHP_EACH key/value, FOR_EACH var) in loop bodies,
+ * and resref-typed variable references (from @type {resref} JSDoc annotations in headers).
  *
  * Unlike SSL (which resolves each identifier via the go-to-definition chain),
  * TP2 uses collect-then-scan: parameter and loop variable names are gathered
@@ -9,6 +10,10 @@
  * and %var% references in string content. This is because TP2 lacks a unified
  * symbol resolution chain — variable, callable, and parameter resolution are
  * separate subsystems. The set-based approach avoids coupling to any one of them.
+ *
+ * Resref names are provided by the provider from the symbol index — variables
+ * annotated with @type {resref} in headers get the custom "resref" token type,
+ * replacing the old hardcoded TextMate ielib-resref patterns with a data-driven approach.
  */
 
 import { SemanticTokenTypes } from "vscode-languageserver/node";
@@ -16,7 +21,7 @@ import type { Node } from "web-tree-sitter";
 import { isInitialized, parseWithCache } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { collectLoopVarNames, FUNCTION_DEF_TYPES, LOOP_TYPES, PARAM_DECL_TYPES, STRING_CONTENT_TYPES } from "./variable-symbols";
-import type { SemanticTokenSpan } from "../shared/semantic-tokens";
+import { RESREF_TOKEN_TYPE, type SemanticTokenSpan } from "../shared/semantic-tokens";
 
 /**
  * Collect parameter names declared in a function definition node.
@@ -67,16 +72,6 @@ function pushSpan(node: Node, tokenType: string, out: SemanticTokenSpan[]): void
     });
 }
 
-function pushRawSpan(line: number, startChar: number, length: number, tokenType: string, out: SemanticTokenSpan[]): void {
-    out.push({
-        line,
-        startChar,
-        length,
-        tokenType,
-        tokenModifiers: 0,
-    });
-}
-
 /**
  * Scan string content (tilde_content, double_content, five_tilde_content) for %var% references
  * matching known names. These are raw text nodes — the grammar does not parse %var% inside strings.
@@ -114,7 +109,13 @@ function scanStringContentForNames(
             }
         }
 
-        pushRawSpan(row, col, varName.length, tokenType, out);
+        out.push({
+            line: row,
+            startChar: col,
+            length: varName.length,
+            tokenType,
+            tokenModifiers: 0,
+        });
     }
 }
 
@@ -156,19 +157,30 @@ function visitBodyForNames(
     }
 }
 
+function pushResrefSpan(node: Node, out: SemanticTokenSpan[]): void {
+    out.push({
+        line: node.startPosition.row,
+        startChar: node.startPosition.column,
+        length: node.endPosition.column - node.startPosition.column,
+        tokenType: RESREF_TOKEN_TYPE,
+        tokenModifiers: 0,
+    });
+}
+
 /**
  * Walk the tree collecting semantic token spans.
- * Handles function definitions (parameter refs) and loop constructs (loop variable refs).
+ * Handles function definitions (parameter refs), loop constructs (loop variable refs),
+ * and resref-typed variables (from @type {resref} JSDoc annotations in headers).
  */
-function visit(node: Node, out: SemanticTokenSpan[]): void {
+function visit(node: Node, resrefNames: ReadonlySet<string>, out: SemanticTokenSpan[]): void {
     if (FUNCTION_DEF_TYPES.has(node.type as SyntaxType)) {
         const paramNames = collectParamNames(node);
         if (paramNames.size > 0) {
             visitBodyForNames(node, paramNames, SemanticTokenTypes.parameter, out, true);
         }
-        // Still recurse into function body for loop variables
+        // Still recurse into function body for loop variables and resrefs
         for (const child of node.children) {
-            visit(child, out);
+            visit(child, resrefNames, out);
         }
         return;
     }
@@ -178,19 +190,42 @@ function visit(node: Node, out: SemanticTokenSpan[]): void {
         if (loopVarNames.size > 0) {
             visitBodyForNames(node, loopVarNames, SemanticTokenTypes.variable, out, false);
         }
-        // Recurse for nested loops
+        // Recurse for nested loops and resrefs
         for (const child of node.children) {
-            visit(child, out);
+            visit(child, resrefNames, out);
         }
         return;
     }
 
+    // Resref-typed variable references (global scope, not scoped to functions/loops).
+    if (resrefNames.size > 0) {
+        if (node.type === SyntaxType.Identifier && resrefNames.has(node.text)) {
+            pushResrefSpan(node, out);
+            return;
+        }
+
+        if (node.type === SyntaxType.PercentString) {
+            const contentNode = node.child(1);
+            if (contentNode && contentNode.type === SyntaxType.PercentContent && resrefNames.has(contentNode.text)) {
+                pushResrefSpan(contentNode, out);
+            }
+            return;
+        }
+
+        if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
+            scanStringContentForNames(node, resrefNames, RESREF_TOKEN_TYPE, out);
+            return;
+        }
+    }
+
     for (const child of node.children) {
-        visit(child, out);
+        visit(child, resrefNames, out);
     }
 }
 
-export function getSemanticTokenSpans(text: string): SemanticTokenSpan[] {
+const EMPTY_SET: ReadonlySet<string> = new Set();
+
+export function getSemanticTokenSpans(text: string, resrefNames?: ReadonlySet<string>): SemanticTokenSpan[] {
     if (!isInitialized()) {
         return [];
     }
@@ -201,6 +236,6 @@ export function getSemanticTokenSpans(text: string): SemanticTokenSpan[] {
     }
 
     const spans: SemanticTokenSpan[] = [];
-    visit(tree.rootNode, spans);
+    visit(tree.rootNode, resrefNames ?? EMPTY_SET, spans);
     return spans;
 }

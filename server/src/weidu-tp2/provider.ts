@@ -29,7 +29,8 @@ import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
 import { parseFile } from "./header-parser";
-import { CallableContext, isCallableSymbol, type IndexedSymbol, SourceType } from "../core/symbol";
+import { CallableContext, isCallableSymbol, isVariableSymbol, type IndexedSymbol, SourceType } from "../core/symbol";
+import { looksLikeConstant } from "./tree-utils";
 import { findReferences } from "./references";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { buildFunctionCallSnippet, getKeywordSnippet } from "./snippets";
@@ -42,6 +43,12 @@ import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
 import { getSemanticTokenSpans } from "./semantic-tokens";
 import type { SemanticTokenSpan } from "../shared/semantic-tokens";
+
+function isResrefConstant(symbol: IndexedSymbol): boolean {
+    return isVariableSymbol(symbol)
+        && symbol.variable.type?.startsWith("resref") === true
+        && looksLikeConstant(symbol.name);
+}
 
 /** TP2 block-level node types for code folding. */
 const TP2_FOLDABLE_TYPES = new Set([
@@ -401,8 +408,35 @@ class WeiduTp2Provider implements LanguageProvider {
         return prepareRenameSymbol(text, position);
     }
 
-    semanticTokens(text: string, _uri: string): SemanticTokenSpan[] {
-        return getSemanticTokenSpans(text);
+    semanticTokens(text: string, uri: string): SemanticTokenSpan[] {
+        return getSemanticTokenSpans(text, this.getResrefNames(text, uri));
+    }
+
+    /**
+     * Collect names of variables with @type {resref}.
+     * Merges indexed symbols (other files) with local symbols (current document)
+     * so that changes in the current file are reflected immediately.
+     */
+    private getResrefNames(text: string, uri: string): ReadonlySet<string> {
+        const names = new Set<string>();
+
+        // From symbol index (headers and other workspace files)
+        if (this.fileIndex) {
+            for (const symbol of this.fileIndex.symbols.query({})) {
+                if (isResrefConstant(symbol)) {
+                    names.add(symbol.name);
+                }
+            }
+        }
+
+        // From current document (reflects unsaved edits immediately)
+        for (const symbol of extractLocalSymbols(text, uri)) {
+            if (isResrefConstant(symbol)) {
+                names.add(symbol.name);
+            }
+        }
+
+        return names;
     }
 }
 

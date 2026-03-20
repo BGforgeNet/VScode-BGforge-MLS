@@ -221,7 +221,7 @@
     "typeTag": {
       "patterns": [
         {
-          "match": "(@type)(\\s+{?(\\w+)}?)?",
+          "match": "(@type)(\\s+\\{?(\\w+(?:\\s+(?:array\\s+)?offset)?)\\}?)?",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"

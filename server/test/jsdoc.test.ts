@@ -339,6 +339,32 @@ describe("jsdoc.parse", () => {
             expect(result.desc).toBeUndefined();
         });
 
+        it("parses @type with offset compound form", () => {
+            const result = jsdoc.parse(`/** @type {resref offset} */`);
+            expect(result.type).toBe("resref offset");
+        });
+
+        it("parses @type with offset compound form and description", () => {
+            const result = jsdoc.parse(`/**\n * @type {resref offset} - ground icon\n */`);
+            expect(result.type).toBe("resref offset");
+            expect(result.desc).toBe("ground icon");
+        });
+
+        it("parses @type with array offset compound form", () => {
+            const result = jsdoc.parse(`/** @type {byte array offset} */`);
+            expect(result.type).toBe("byte array offset");
+        });
+
+        it("parses @type {char array offset}", () => {
+            const result = jsdoc.parse(`/** @type {char array offset} */`);
+            expect(result.type).toBe("char array offset");
+        });
+
+        it("rejects invalid compound type", () => {
+            const result = jsdoc.parse(`/** @type {resref foo} */`);
+            expect(result.type).toBeUndefined();
+        });
+
         it("parses single-line JSDoc with @deprecated", () => {
             const result = jsdoc.parse(`/** @deprecated Use new_var instead */`);
             expect(result.deprecated).toBe("Use new_var instead");

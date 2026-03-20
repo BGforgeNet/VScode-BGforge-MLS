@@ -13,8 +13,11 @@ export interface SemanticTokenSpan {
     readonly tokenModifiers: number;
 }
 
+/** Custom semantic token type for resref-typed variables (resource references like spell/item filenames). */
+export const RESREF_TOKEN_TYPE = "resref";
+
 export const semanticTokensLegend: SemanticTokensLegend = {
-    tokenTypes: [SemanticTokenTypes.parameter, SemanticTokenTypes.variable],
+    tokenTypes: [SemanticTokenTypes.parameter, SemanticTokenTypes.variable, RESREF_TOKEN_TYPE],
     tokenModifiers: [],
 };
 

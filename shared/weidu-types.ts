@@ -22,18 +22,24 @@ export const WEIDU_JSDOC_TYPES: ReadonlyMap<string, WeiduType> = new Map([
     ["list", { detail: "List type", category: "int" }],
     ["map", { detail: "Map type", category: "int" }],
     ["resref", { detail: "Resource reference", category: "str" }],
+    ["byte array offset", { detail: "Byte array (offset field)", category: "int" }],
+    ["char array offset", { detail: "Char array (offset field)", category: "int" }],
+    ["resref offset", { detail: "Resource reference (offset field)", category: "str" }],
     ["string", { detail: "String type", category: "str" }],
 ]);
 
 /** Base URL for type documentation on ielib.bgforge.net. */
 const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
 
-/** Format a type name as a markdown link if it's a known WeiDU type, plain text otherwise. */
+/** Format a type name as a markdown link if it's a known WeiDU type, plain text otherwise.
+ * Compound types (e.g., "resref offset") link to the base type. */
 export function formatTypeLink(type: string): string {
     if (!type) {
         return "";
     }
-    return WEIDU_JSDOC_TYPES.has(type)
-        ? `[${type}](${IELIB_TYPES_URL}${type})`
-        : type;
+    if (!WEIDU_JSDOC_TYPES.has(type)) {
+        return type;
+    }
+    const baseType = type.split(" ", 1)[0]!;
+    return `[${type}](${IELIB_TYPES_URL}${baseType})`;
 }

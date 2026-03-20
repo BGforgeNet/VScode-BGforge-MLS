@@ -529,7 +529,6 @@
 			"name": "tp2 constant string/resref",
 			"scope": [
 				"constant.language.iesdp.resref",
-				"constant.language.ielib.resref",
 				"entity.name.function.weidu-tp2.patch-string"
 			],
 			"settings": {
@@ -550,6 +549,9 @@
 		"variable": {
 			"foreground": "#FD971F",
 			"fontStyle": ""
+		},
+		"resref": {
+			"fontStyle": "underline"
 		}
 	}
 }

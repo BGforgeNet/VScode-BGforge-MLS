@@ -21,6 +21,7 @@ import {
     TextDocumentEdit,
 } from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
+import { isHeaderFile } from "./core/location-utils";
 import { type NormalizedUri, normalizeUri } from "./core/normalized-uri";
 import { decodeFileUris, showInfo } from "./user-messages";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
@@ -427,6 +428,12 @@ documents.onDidSave(async (change) => {
     // Reload provider data
     registry.reloadFileData(langId, uri, text);
 
+    // Header changes can affect semantic tokens in other files
+    // (e.g., @type {resref} annotations define resref highlighting).
+    if (isHeaderFile(uri)) {
+        connection.languages.semanticTokens.refresh();
+    }
+
     // Reload translation data if it's a translation file
     translation?.reloadFile(uri, langId, text);
 
@@ -468,6 +475,9 @@ documents.onDidChangeContent(async (event) => {
             pendingReloads.delete(uri);
             registry.reloadFileData(langId, uri, text);
             translation?.reloadFile(uri, langId, text);
+            if (isHeaderFile(uri)) {
+                connection.languages.semanticTokens.refresh();
+            }
         }, RELOAD_DEBOUNCE_MS),
     );
 

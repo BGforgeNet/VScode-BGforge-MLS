@@ -11,6 +11,7 @@ repository:
   # Known JSDoc type alternation, used in brace-less patterns for disambiguation.
   # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
   # All types: array, any, bool, filename, float, ids, int, list, map, mixed, ObjectPtr, resref, string
+  # Compound types (e.g., "resref offset") are only valid in braced @type, not in braceless patterns.
 
   param:
     patterns:
@@ -137,7 +138,7 @@ repository:
 
   typeTag:
     patterns:
-      - match: '(@type)(\s+{?(\w+)}?)?'
+      - match: '(@type)(\s+\{?(\w+(?:\s+(?:array\s+)?offset)?)\}?)?'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring

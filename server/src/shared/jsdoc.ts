@@ -127,8 +127,11 @@ const NAMED_RETURN_TYPE_FIRST_BRACELESS_PATTERN = new RegExp(
 /** Pattern for @deprecated tag. Groups: 1=message (optional) */
 const DEPRECATED_PATTERN = /@deprecated(?:\s+(.*))?/;
 
-/** Pattern for @type tag. Groups: 1=type with braces, 2=type without braces, 3=trailing description */
-const TYPE_PATTERN = /@type\s+(?:\{(\w+)\}|(\w+))(?:\s+-\s+|\s+)?(.+)?/;
+/** Pattern for @type tag. Groups: 1=type with braces, 2=type without braces, 3=trailing description. */
+const TYPE_PATTERN = /@type\s+(?:\{([^}]+)\}|(\w+))(?:\s+-\s+|\s+)?(.+)?/;
+
+/** Valid compound type suffixes after the base type word (e.g., "resref offset", "byte array offset"). */
+const COMPOUND_TYPE_SUFFIXES: readonly string[] = ["offset", "array offset"];
 
 /** Pattern for JSDoc line prefix " * " or " *" */
 const LINE_PREFIX_PATTERN = /^\s*\*\s?/;
@@ -336,18 +339,30 @@ function parseNamedReturnTypeFirst(line: string): Ret | null {
     return ret;
 }
 
-/** Parse @type tag. Returns type and optional trailing description, or null if no match. */
+/** Parse @type tag. Returns type and optional trailing description, or null if no match.
+ * Braced types may be compound: {resref offset}, {byte array offset}, {char array offset}. */
 function parseType(line: string): { type: string; desc?: string } | null {
     const match = line.match(TYPE_PATTERN);
     if (!match) {
         return null;
     }
-    const type = match[1] || match[2];
-    if (!type) {
+    const raw = match[1] || match[2];
+    if (!raw) {
         return null;
     }
+
+    // Braced content may be compound (e.g., "resref offset"). Validate the suffix.
+    const trimmed = raw.trim();
+    const spaceIdx = trimmed.indexOf(" ");
+    if (spaceIdx !== -1) {
+        const suffix = trimmed.slice(spaceIdx + 1).trim();
+        if (!COMPOUND_TYPE_SUFFIXES.includes(suffix)) {
+            return null;
+        }
+    }
+
     const desc = match[3]?.trim();
-    return { type, desc: desc || undefined };
+    return { type: trimmed, desc: desc || undefined };
 }
 
 /** Parse @deprecated tag. Returns true if no message, string if message, null if no match. */

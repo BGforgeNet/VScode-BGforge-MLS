@@ -72,9 +72,21 @@ describe("JSDoc type sync", () => {
     });
 
     describe("weidu-types.ts keys match WEIDU_JSDOC_TYPE_NAMES", () => {
-        it("WEIDU_JSDOC_TYPES map keys equal WEIDU_JSDOC_TYPE_NAMES", () => {
-            const mapKeys = [...WEIDU_JSDOC_TYPES.keys()].sort();
-            expect(mapKeys).toEqual([...WEIDU_JSDOC_TYPE_NAMES].sort());
+        it("WEIDU_JSDOC_TYPE_NAMES are a subset of WEIDU_JSDOC_TYPES keys", () => {
+            for (const type of WEIDU_JSDOC_TYPE_NAMES) {
+                expect(WEIDU_JSDOC_TYPES.has(type)).toBe(true);
+            }
+        });
+
+        it("WEIDU_JSDOC_TYPES extra keys are compound types only", () => {
+            // Compound types (containing spaces, e.g. "resref offset") are valid in braced
+            // @type annotations but not in braceless @param/@ret patterns, so they appear
+            // in the completion map but not in the single-word type name list.
+            const nameSet = new Set(WEIDU_JSDOC_TYPE_NAMES);
+            const extraKeys = [...WEIDU_JSDOC_TYPES.keys()].filter(k => !nameSet.has(k));
+            for (const key of extraKeys) {
+                expect(key).toContain(" ");
+            }
         });
     });
 
