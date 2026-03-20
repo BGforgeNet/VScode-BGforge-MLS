@@ -14,7 +14,7 @@ export interface SemanticTokenSpan {
 }
 
 export const semanticTokensLegend: SemanticTokensLegend = {
-    tokenTypes: [SemanticTokenTypes.parameter],
+    tokenTypes: [SemanticTokenTypes.parameter, SemanticTokenTypes.variable],
     tokenModifiers: [],
 };
 

@@ -1,22 +1,22 @@
 /**
  * Semantic token extraction for WeiDU TP2 files.
- * Highlights function parameter references (INT_VAR, STR_VAR, RET, RET_ARRAY) in function bodies.
+ * Highlights function parameter references (INT_VAR, STR_VAR, RET, RET_ARRAY) in function bodies,
+ * and loop variable references (PHP_EACH key/value, FOR_EACH var) in loop bodies.
+ *
+ * Unlike SSL (which resolves each identifier via the go-to-definition chain),
+ * TP2 uses collect-then-scan: parameter and loop variable names are gathered
+ * into a set per scope, then the body is scanned for matching identifiers
+ * and %var% references in string content. This is because TP2 lacks a unified
+ * symbol resolution chain — variable, callable, and parameter resolution are
+ * separate subsystems. The set-based approach avoids coupling to any one of them.
  */
 
 import { SemanticTokenTypes } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { isInitialized, parseWithCache } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { FUNCTION_DEF_TYPES, STRING_CONTENT_TYPES } from "./variable-symbols";
+import { collectLoopVarNames, FUNCTION_DEF_TYPES, LOOP_TYPES, PARAM_DECL_TYPES, STRING_CONTENT_TYPES } from "./variable-symbols";
 import type { SemanticTokenSpan } from "../shared/semantic-tokens";
-
-/** Node types for function parameter declarations. */
-const PARAM_DECL_TYPES: ReadonlySet<SyntaxType> = new Set([
-    SyntaxType.IntVarDecl,
-    SyntaxType.StrVarDecl,
-    SyntaxType.RetDecl,
-    SyntaxType.RetArrayDecl,
-]);
 
 /**
  * Collect parameter names declared in a function definition node.
@@ -57,38 +57,43 @@ function isInsideParamDecl(node: Node): boolean {
     return false;
 }
 
-function pushSpan(node: Node, out: SemanticTokenSpan[]): void {
+function pushSpan(node: Node, tokenType: string, out: SemanticTokenSpan[]): void {
     out.push({
         line: node.startPosition.row,
         startChar: node.startPosition.column,
         length: node.endPosition.column - node.startPosition.column,
-        tokenType: SemanticTokenTypes.parameter,
+        tokenType,
         tokenModifiers: 0,
     });
 }
 
-function pushRawSpan(line: number, startChar: number, length: number, out: SemanticTokenSpan[]): void {
+function pushRawSpan(line: number, startChar: number, length: number, tokenType: string, out: SemanticTokenSpan[]): void {
     out.push({
         line,
         startChar,
         length,
-        tokenType: SemanticTokenTypes.parameter,
+        tokenType,
         tokenModifiers: 0,
     });
 }
 
 /**
  * Scan string content (tilde_content, double_content, five_tilde_content) for %var% references
- * matching parameter names. These are raw text nodes — the grammar does not parse %var% inside strings.
+ * matching known names. These are raw text nodes — the grammar does not parse %var% inside strings.
  */
-function scanStringContentForParams(node: Node, paramNames: ReadonlySet<string>, out: SemanticTokenSpan[]): void {
+function scanStringContentForNames(
+    node: Node,
+    names: ReadonlySet<string>,
+    tokenType: string,
+    out: SemanticTokenSpan[],
+): void {
     const text = node.text;
     const varPattern = /%([a-zA-Z_][a-zA-Z0-9_]*)%/g;
     let match: RegExpExecArray | null;
 
     while ((match = varPattern.exec(text)) !== null) {
         const varName = match[1]!;
-        if (!paramNames.has(varName)) {
+        if (!names.has(varName)) {
             continue;
         }
 
@@ -109,19 +114,24 @@ function scanStringContentForParams(node: Node, paramNames: ReadonlySet<string>,
             }
         }
 
-        pushRawSpan(row, col, varName.length, out);
+        pushRawSpan(row, col, varName.length, tokenType, out);
     }
 }
 
 /**
- * Scan a function body for references to parameter names.
- * Handles both bare identifiers (e.g. `count` in `SET x = count`)
- * and percent_string references (e.g. `%name%` in string content).
+ * Scan a subtree for references to named variables, emitting spans with the given token type.
+ * When skipParamDecls is true, skips identifiers inside parameter declarations (for function params).
  */
-function visitFunctionBody(node: Node, paramNames: ReadonlySet<string>, out: SemanticTokenSpan[]): void {
-    if (node.type === SyntaxType.Identifier && paramNames.has(node.text)) {
-        if (!isInsideParamDecl(node)) {
-            pushSpan(node, out);
+function visitBodyForNames(
+    node: Node,
+    names: ReadonlySet<string>,
+    tokenType: string,
+    out: SemanticTokenSpan[],
+    skipParamDecls: boolean,
+): void {
+    if (node.type === SyntaxType.Identifier && names.has(node.text)) {
+        if (!skipParamDecls || !isInsideParamDecl(node)) {
+            pushSpan(node, tokenType, out);
         }
         return;
     }
@@ -129,32 +139,48 @@ function visitFunctionBody(node: Node, paramNames: ReadonlySet<string>, out: Sem
     if (node.type === SyntaxType.PercentString) {
         // Grammar: percent_string = "%" percent_content "%", child(1) is the content
         const contentNode = node.child(1);
-        if (contentNode && contentNode.type === SyntaxType.PercentContent && paramNames.has(contentNode.text)) {
-            pushSpan(contentNode, out);
+        if (contentNode && contentNode.type === SyntaxType.PercentContent && names.has(contentNode.text)) {
+            pushSpan(contentNode, tokenType, out);
         }
         return;
     }
 
     // String content nodes contain raw text with %var% references that the grammar doesn't parse
     if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
-        scanStringContentForParams(node, paramNames, out);
+        scanStringContentForNames(node, names, tokenType, out);
         return;
     }
 
     for (const child of node.children) {
-        visitFunctionBody(child, paramNames, out);
+        visitBodyForNames(child, names, tokenType, out, skipParamDecls);
     }
 }
 
 /**
- * Walk the top-level tree looking for function definitions,
- * then collect parameter reference spans from each function body.
+ * Walk the tree collecting semantic token spans.
+ * Handles function definitions (parameter refs) and loop constructs (loop variable refs).
  */
 function visit(node: Node, out: SemanticTokenSpan[]): void {
     if (FUNCTION_DEF_TYPES.has(node.type as SyntaxType)) {
         const paramNames = collectParamNames(node);
         if (paramNames.size > 0) {
-            visitFunctionBody(node, paramNames, out);
+            visitBodyForNames(node, paramNames, SemanticTokenTypes.parameter, out, true);
+        }
+        // Still recurse into function body for loop variables
+        for (const child of node.children) {
+            visit(child, out);
+        }
+        return;
+    }
+
+    if (LOOP_TYPES.has(node.type as SyntaxType)) {
+        const loopVarNames = collectLoopVarNames(node);
+        if (loopVarNames.size > 0) {
+            visitBodyForNames(node, loopVarNames, SemanticTokenTypes.variable, out, false);
+        }
+        // Recurse for nested loops
+        for (const child of node.children) {
+            visit(child, out);
         }
         return;
     }

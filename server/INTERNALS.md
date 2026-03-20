@@ -417,13 +417,13 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 ## Feature Matrix
 
-| Provider    | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc |
-| ----------- | :--------: | :---: | :-------: | :--------: | :--------: | :----: | :-----: | :---------------: | :----: | :---: | :-----: | :---------: | :---: |
-| fallout-ssl |     Y      |   Y   |     Y     |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .msg  |    Y    |      Y      |   Y   |
-| weidu-baf   |     Y      |   Y   |           |    n/a     |    n/a     |   Y    |         |        n/a        |  n/a   | .tra  |    Y    |      Y      |  n/a  |
-| weidu-d     |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |
-| weidu-tp2   |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |
-| worldmap    |     Y      |   Y   |    n/a    |    n/a     |    n/a     |  n/a   |   n/a   |        n/a        |  n/a   |  n/a  |   n/a   |     n/a     |  n/a  |
+| Provider    | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc | Semantic Tokens |
+| ----------- | :--------: | :---: | :-------: | :--------: | :--------: | :----: | :-----: | :---------------: | :----: | :---: | :-----: | :---------: | :---: | :-------------: |
+| fallout-ssl |     Y      |   Y   |     Y     |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .msg  |    Y    |      Y      |   Y   |        Y        |
+| weidu-baf   |     Y      |   Y   |           |    n/a     |    n/a     |   Y    |         |        n/a        |  n/a   | .tra  |    Y    |      Y      |  n/a  |                 |
+| weidu-d     |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |                 |
+| weidu-tp2   |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |        Y        |
+| worldmap    |     Y      |   Y   |    n/a    |    n/a     |    n/a     |  n/a   |   n/a   |        n/a        |  n/a   |  n/a  |   n/a   |     n/a     |  n/a  |       n/a       |
 
 ## Request Routing
 
@@ -458,6 +458,7 @@ Reusable infrastructure that providers consume via configuration, not inheritanc
 | `format-options.ts`     | Config: `getFormatOptions()` from `.editorconfig`                                       | All 4               |
 | `tooltip-format.ts`     | Formatting: `buildSignatureBlock()`, `buildWeiduHoverContent()`, `formatDeprecation()`  | All providers       |
 | `tooltip-table.ts`      | Tables: `buildWeiduTable()` (4-col), `buildFalloutArgsTable()` (2-col)                  | SSL, BAF, D, TP2    |
+| `semantic-tokens.ts`    | Encoding: `SemanticTokenSpan`, `encodeSemanticTokens()`, legend                         | SSL, TP2            |
 | `hash.ts`               | Utility: `djb2HashHex()` for parse cache keys                                           | All parsers         |
 
 ### Design pattern

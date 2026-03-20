@@ -146,13 +146,6 @@ See `server/INTERNALS.md` for the full feature matrix and cross-language feature
 - **BAF JSDoc**: No user-defined constructs to document.
 - **Worldmap**: Simple key-value config file, no programming constructs.
 
-**TODO rationale:**
-
-- **BAF Signature**: Infrastructure exists in `shared/signature.ts`. Low priority (users write TBAF instead).
-- **D Signature**: Keyword-based syntax, not positional. Low priority (users write TD instead).
-- **TP2 Signature**: Uses `STR_VAR name = value` keyword params. Non-trivial to model in LSP signature help.
-- **Call Hierarchy / Semantic Tokens**: Need new infrastructure, skip for now.
-
 ## Documentation Index
 
 | Area               | Key Files                                                                                              |

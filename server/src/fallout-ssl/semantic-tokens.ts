@@ -1,3 +1,18 @@
+/**
+ * Semantic token extraction for Fallout SSL files.
+ * Highlights procedure and macro parameter references in their bodies.
+ *
+ * Unlike TP2 (which collects param names into a set and does fast lookups),
+ * SSL uses resolve-per-identifier: each identifier is resolved via
+ * resolveIdentifierDefinitionNode (the same path used by go-to-definition
+ * and rename), then checked with isParameterDefinitionNode. This reuses
+ * the unified symbol resolution chain rather than duplicating knowledge
+ * about which node types are parameter declarations.
+ *
+ * The visit() signature takes an extra rootNode arg because
+ * resolveIdentifierDefinitionNode needs the file root for scope walking.
+ */
+
 import { SemanticTokenTypes } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { isInitialized, parseWithCache } from "./parser";
@@ -5,10 +20,7 @@ import { SyntaxType } from "./tree-sitter.d";
 import { isParameterDefinitionNode, resolveIdentifierDefinitionNode } from "./symbol-definitions";
 import type { SemanticTokenSpan } from "../shared/semantic-tokens";
 
-function pushIdentifierSpan(node: Node, out: SemanticTokenSpan[]): void {
-    if (node.type !== SyntaxType.Identifier) {
-        return;
-    }
+function pushSpan(node: Node, out: SemanticTokenSpan[]): void {
     out.push({
         line: node.startPosition.row,
         startChar: node.startPosition.column,
@@ -18,16 +30,16 @@ function pushIdentifierSpan(node: Node, out: SemanticTokenSpan[]): void {
     });
 }
 
-function visitProcedureBody(rootNode: Node, node: Node, out: SemanticTokenSpan[]): void {
+function visitBodyForParamRefs(rootNode: Node, node: Node, out: SemanticTokenSpan[]): void {
     if (node.type === SyntaxType.Identifier) {
         const definitionNode = resolveIdentifierDefinitionNode(rootNode, node);
         if (definitionNode && definitionNode !== node && isParameterDefinitionNode(definitionNode)) {
-            pushIdentifierSpan(node, out);
+            pushSpan(node, out);
         }
     }
 
     for (const child of node.children) {
-        visitProcedureBody(rootNode, child, out);
+        visitBodyForParamRefs(rootNode, child, out);
     }
 }
 
@@ -45,7 +57,7 @@ function collectProcedureParameterReferences(rootNode: Node, procedureNode: Node
         if (nameNode && child.type === SyntaxType.Identifier && child.startIndex === nameNode.startIndex && child.endIndex === nameNode.endIndex) {
             continue;
         }
-        visitProcedureBody(rootNode, child, out);
+        visitBodyForParamRefs(rootNode, child, out);
     }
 }
 
@@ -57,7 +69,7 @@ function collectMacroParameterReferences(rootNode: Node, defineNode: Node, out: 
     }
 
     for (const child of bodyNode.children) {
-        visitProcedureBody(rootNode, child, out);
+        visitBodyForParamRefs(rootNode, child, out);
     }
 }
 

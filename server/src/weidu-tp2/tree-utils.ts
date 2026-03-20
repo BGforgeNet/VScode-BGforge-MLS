@@ -88,6 +88,23 @@ export function unwrapVariableRef(node: SyntaxNode): SyntaxNode {
     return node;
 }
 
+/**
+ * Find the first Identifier descendant of a node.
+ * Handles arbitrarily nested wrappers like value > simple_value > variable_ref > identifier.
+ */
+export function findIdentifier(node: SyntaxNode): SyntaxNode | null {
+    if (node.type === SyntaxType.Identifier) {
+        return node;
+    }
+    for (const child of node.children) {
+        const found = findIdentifier(child);
+        if (found) {
+            return found;
+        }
+    }
+    return null;
+}
+
 // ============================================
 // Assignment validation
 // ============================================

@@ -545,5 +545,11 @@
 			}
 		}
 	],
-	"semanticHighlighting": true
+	"semanticHighlighting": true,
+	"semanticTokenColors": {
+		"variable": {
+			"foreground": "#FD971F",
+			"fontStyle": ""
+		}
+	}
 }

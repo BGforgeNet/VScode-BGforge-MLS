@@ -238,6 +238,107 @@ END
         expect(tokenTexts(text)).toEqual(["name"]);
     });
 
+    it("highlights PHP_EACH loop variables with variable token type", () => {
+        const text = `
+DEFINE_PATCH_FUNCTION MyFunc
+    INT_VAR count = 0
+BEGIN
+    PHP_EACH my_array AS key => value BEGIN
+        SET x = key + value
+    END
+END
+`;
+
+        const spans = getSemanticTokenSpans(text);
+        const loopSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.variable);
+
+        expect(loopSpans).toHaveLength(4);
+        expect(loopSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+            .toEqual(["key", "value", "key", "value"]);
+    });
+
+    it("highlights ACTION_PHP_EACH loop variables", () => {
+        const text = `
+ACTION_PHP_EACH my_array AS k => v BEGIN
+    PRINT ~%k% %v%~
+END
+`;
+
+        const spans = getSemanticTokenSpans(text);
+        const loopSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.variable);
+
+        expect(loopSpans).toHaveLength(4);
+        expect(loopSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+            .toEqual(["k", "v", "k", "v"]);
+    });
+
+    it("highlights PATCH_FOR_EACH loop variable", () => {
+        const text = `
+DEFINE_PATCH_FUNCTION MyFunc
+BEGIN
+    PATCH_FOR_EACH item IN ~a~ ~b~ ~c~ BEGIN
+        SPRINT x ~%item%~
+    END
+END
+`;
+
+        const spans = getSemanticTokenSpans(text);
+        const loopSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.variable);
+
+        expect(loopSpans).toHaveLength(2);
+        expect(loopSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+            .toEqual(["item", "item"]);
+    });
+
+    it("highlights ACTION_FOR_EACH loop variable", () => {
+        const text = `
+ACTION_FOR_EACH item IN ~a~ ~b~ BEGIN
+    PRINT ~%item%~
+END
+`;
+
+        const spans = getSemanticTokenSpans(text);
+        const loopSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.variable);
+
+        expect(loopSpans).toHaveLength(2);
+        expect(loopSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+            .toEqual(["item", "item"]);
+    });
+
+    it("uses different token types for function params and loop vars", () => {
+        const text = `
+DEFINE_PATCH_FUNCTION MyFunc
+    INT_VAR count = 0
+BEGIN
+    PHP_EACH arr AS key => val BEGIN
+        SET x = count + key + val
+    END
+END
+`;
+
+        const spans = getSemanticTokenSpans(text);
+        const paramSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.parameter);
+        const loopSpans = spans.filter((s) => s.tokenType === SemanticTokenTypes.variable);
+
+        expect(paramSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+            .toEqual(["count"]);
+        expect(loopSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+            .toEqual(["key", "val", "key", "val"]);
+    });
+
+    it("highlights loop variable names in the declaration itself", () => {
+        const text = `
+ACTION_PHP_EACH my_array AS key => value BEGIN
+END
+`;
+
+        const spans = getSemanticTokenSpans(text);
+
+        expect(spans).toHaveLength(2);
+        expect(spans.every((s) => s.tokenType === SemanticTokenTypes.variable)).toBe(true);
+        expect(tokenTexts(text)).toEqual(["key", "value"]);
+    });
+
     it("produces no tokens for macro definitions", () => {
         const text = `
 DEFINE_ACTION_MACRO MyMacro BEGIN

@@ -9,7 +9,7 @@ import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { ScopeKind, type ScopeKind as ScopeKindValue } from "./scope-kinds";
 import { SyntaxType } from "./tree-sitter.d";
-import { findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
+import { findIdentifier, findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import type { Symbols } from "../core/symbol-index";
 
 // ============================================
@@ -49,6 +49,14 @@ export const VARIABLE_DECL_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.PatchPhpEach,
     SyntaxType.ActionForEach,
     SyntaxType.PatchForEach,
+]);
+
+/** Node types for function parameter declarations (INT_VAR, STR_VAR, RET, RET_ARRAY). */
+export const PARAM_DECL_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.IntVarDecl,
+    SyntaxType.StrVarDecl,
+    SyntaxType.RetDecl,
+    SyntaxType.RetArrayDecl,
 ]);
 
 /** Node types for string content that may contain %var% references. */
@@ -149,6 +157,28 @@ export function isLoopVariable(loopNode: SyntaxNode, varName: string): boolean {
     }
 
     return false;
+}
+
+/**
+ * Collect all loop variable names from a PHP_EACH or FOR_EACH node.
+ * PHP_EACH: key_var and value_var fields (direct identifiers).
+ * FOR_EACH: var field (value > simple_value > variable_ref > identifier chain).
+ */
+export function collectLoopVarNames(loopNode: SyntaxNode): ReadonlySet<string> {
+    const names = new Set<string>();
+
+    for (const fieldName of ["key_var", "value_var", "var"]) {
+        const fieldNode = loopNode.childForFieldName(fieldName);
+        if (!fieldNode) {
+            continue;
+        }
+        const identNode = findIdentifier(fieldNode);
+        if (identNode) {
+            names.add(identNode.text);
+        }
+    }
+
+    return names;
 }
 
 /**
