@@ -43,6 +43,8 @@ interface DataItem {
 interface DataStanza {
     readonly type: number;
     readonly items: readonly DataItem[];
+    /** Optional category override. When set, items use this instead of the stanza key for completion filtering. */
+    readonly category?: string;
 }
 
 type DataFile = Record<string, DataStanza>;
@@ -317,7 +319,7 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
                 label,
                 kind,
                 source: "builtin",
-                category: stanzaName,
+                category: stanza.category ?? stanzaName,
                 ...(documentation !== undefined ? { documentation } : {}),
                 ...(tags !== undefined ? { tags } : {}),
                 // Copy detail only for duplicate labels across stanzas.

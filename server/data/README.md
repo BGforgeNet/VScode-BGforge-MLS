@@ -15,11 +15,18 @@ Each file contains one or more **stanzas**. A stanza groups items of the same [C
 ```yaml
 stanza_name:
   type: 3          # CompletionItemKind (required, numeric)
+  category: patch  # Category override (optional, string)
   items:           # Array of items (required)
     - name: ...
 ```
 
-Stanza names also serve as category identifiers. The repository standard is `snake_case` for stanza names.
+By default, the stanza name is used as the completion category identifier.
+The optional `category` field overrides this, so items are filtered as if they
+belong to the named category. This allows splitting a large stanza into smaller
+groups (for distinct TextMate scoping) without proliferating completion filter
+categories.
+
+Stanza names also serve as category identifiers (unless `category` is set). The repository standard is `snake_case` for stanza names.
 
 Rationale:
 - Stanza names are consumed as string identifiers in TypeScript loaders, generators, tests, and derived JSON.

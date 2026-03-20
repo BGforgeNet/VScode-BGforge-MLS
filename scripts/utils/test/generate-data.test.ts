@@ -164,6 +164,14 @@ describe("generateCompletion", () => {
         expect(result[0]!.documentation!.value).toContain("|`a`|&nbsp;&nbsp;val|");
     });
 
+    it("uses category override instead of stanza name when set", () => {
+        const data = {
+            patch_byte: { type: 3, category: "patch", items: [{ name: "READ_BYTE" }] },
+        };
+        const result = generateCompletion(data, "lang");
+        expect(result[0]!.category).toBe("patch");
+    });
+
     it("emits completion entries sorted by stanza and item name", () => {
         const data = {
             zeta: { type: 3, items: [{ name: "zed" }, { name: "alpha" }] },
