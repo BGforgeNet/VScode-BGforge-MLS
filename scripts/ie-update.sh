@@ -4,8 +4,6 @@ set -xeu -o pipefail
 
 # launch from root repo dir
 
-ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
-
 highlight_baf="syntaxes/weidu-baf.tmLanguage.yml"
 highlight_weidu="syntaxes/weidu-tp2.tmLanguage.yml"
 
@@ -15,6 +13,7 @@ data_baf="$data_dir/weidu-baf-iesdp.yml"
 external="external/infinity-engine"
 mkdir -p "$external"
 iesdp_repo="https://github.com/BGforgeNet/iesdp.git"
+ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
 iesdp_dir="$external/iesdp"
 ielib_dir="$external/ielib"
 
@@ -28,7 +27,7 @@ git checkout ielib
 git pull
 popd
 
-# IElib (structure offsets, opcodes, constants, functions)
+# IElib (structure offsets for IESDP highlight patterns)
 pushd .
 if [ ! -d "$ielib_dir" ]; then
     git clone "$ielib_repo" "$ielib_dir"
