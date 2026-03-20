@@ -614,7 +614,6 @@ action:
       doc: |-
         Creates a new TRA scope copied from the surrounding scope, loads all traName files (variable substitution is done; the file can be inlined) and evaluates the TP2 Actions. When WITH_TRA exits, the new TRA scope is discarded, that is, all TRA changes made by WITH_TRA or any of its enclosed actions are forgotten.
 
-
 action_functions:
   type: 3 # function
   items:
@@ -929,7 +928,6 @@ constants:
 
     - name: WMP_WEST_LINKS
       doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
-
 
 dimorphic_functions:
   type: 3 # function
@@ -1865,60 +1863,15 @@ patch:
       doc: |-
         Retrieves values from an array constructed by READ_2DA_ENTRIES_NOW. The first parameter, string, is the name of the array. The following two values are the 2DA row and column from which to read the entry. The value of the 2DA entry is stored in the last parameter, variable. See the READ_2DA_ENTRY_FORMER tutorial.
 
-    - name: READ_ASCII
-      detail: READ_ASCII offset variable [ ELSE string ] [ ( value ) [ NULL ] ]
-      doc: |-
-        A nul-terminated string is read from the file at the given offset and is stored in the given variable. The terminating nul is not stored. The default read size is 8 bytes. If an explicit size value is specified then that many bytes are read into the variable, even if some of them are nuls, except if NULL is present, in which case a nul-terminated string is read, without storing the terminating null. See READ_BYTE. If the offset is out-of-bounds and the ELSE clause is present, the string is evaluated as in WRITE_EVALUATED_ASCII and then assigned into variable.
-
-    - name: READ_BYTE
-      detail: READ_BYTE offset variable [ ELSE value ]
-      doc: |-
-        An 8-bit value is read from the file at the given offset and is stored in the given variable. If offset is out-of-bounds and the ELSE is present, the ELSE-value is assigned to variable. If offset is out-of-bounds and the ELSE is not present, the patch fails with a visible error.
-
-    - name: READ_LONG
-      detail: READ_LONG offset variable [ ELSE value ]
-      doc: |-
-        A 32-bit value is read from the file at the given offset and is stored in the given variable. See READ_BYTE.
-
-    - name: READ_SBYTE
-      detail: READ_SBYTE offset variable [ ELSE value ]
-      doc: |-
-        As READ_BYTE, but the value is interpreted as signed.
-
     - name: READ_SHORT
       detail: READ_SHORT offset variable [ ELSE value ]
       doc: |-
         A 16-bit value is read from the file at the given offset and is stored in the given variable. See READ_BYTE.
 
-    - name: READ_SLONG
-      detail: READ_SLONG offset variable [ ELSE value ]
-      doc: |-
-        As READ_LONG, but the value is interpreted as signed.
-
     - name: READ_SSHORT
       detail: READ_SSHORT offset variable [ ELSE value ]
       doc: |-
         As READ_SHORT, but the value is interpreted as signed.
-
-    - name: READ_STRREF
-      detail: READ_STRREF offset variable [ ELSE string ]
-      doc: |-
-        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the (male) string (without any quotes) is stored in the variable. In some sense this is the opposite of SAY_EVALUATED.
-
-    - name: READ_STRREF_F
-      detail: READ_STRREF_F offset variable [ ELSE string ]
-      doc: |-
-        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the female string (without any quotes) is stored in the variable.
-
-    - name: READ_STRREF_FS
-      detail: READ_STRREF_FS offset variable [ ELSE string ]
-      doc: |-
-        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the sound reference associated with the female string is stored in the variable. If there is no DIALOGF.TLK, the sound reference associated with the string from DIALOG.TLK is used instead. If the string has no sound, the empty string is used instead.
-
-    - name: READ_STRREF_S
-      detail: READ_STRREF_S offset variable [ ELSE string ]
-      doc: |-
-        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the sound reference associated with the (male) string is stored in the variable. If the string has no sound, the empty string is used instead.
 
     - name: REFACTOR_BAF_TRIGGER
       detail: REFACTOR_BAF_TRIGGER optcase optexact String String
@@ -2140,55 +2093,10 @@ patch:
       doc: |-
         The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information.
 
-    - name: WRITE_ASCII
-      detail: "WRITE_ASCII offset ascString [ #requiredSize ]"
-      doc: |-
-        The ASCII ascString is written to the file starting at offset. If you specify a requiredSize then exactly that many bytes are written (if ascString is smaller, it is padded with NULs; if ascString is larger, it is truncated). If you do not specify a requiredSize, the terminating NUL is not written.
-
-    - name: WRITE_ASCIIE
-      detail: "WRITE_ASCIIE offset ascString [ #requiredSize ]"
-      doc: |-
-        The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
-
-    - name: WRITE_ASCIIL
-      detail: WRITE_ASCIIL offset ascString list
-      doc: |-
-        The given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST.
-
-    - name: WRITE_ASCIIT
-      detail: WRITE_ASCIIT offset ascString
-      doc: |-
-        The ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE.
-
-    - name: WRITE_ASCII_LIST
-      detail: WRITE_ASCII_LIST offset ascString list
-      doc: |-
-        The given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST.
-
-    - name: WRITE_ASCII_TERMINATE
-      detail: WRITE_ASCII_TERMINATE offset ascString
-      doc: |-
-        The ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE.
-
-    - name: WRITE_BYTE
-      detail: WRITE_BYTE offset value
-      doc: |-
-        The first argument is the offset at which the second argument (an 8-bit byte value) is written. Performs READ_BYTE offset THIS and READ_SBYTE offset STHIS automatically (you can now write WRITE_BYTE 100 THIS 2).
-
-    - name: WRITE_EVALUATED_ASCII
-      detail: "WRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]"
-      doc: |-
-        The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
-
     - name: WRITE_FILE
       detail: WRITE_FILE offset filename
       doc: |-
         The entire contents of "filename" (which may contain variables) are loaded and copied over the current file starting at offset offset. " filename" must be a literal filename like mymod/data/file.bam. If there is not enough room between offset and the end of the file for the contents of " filename" the patch will fail with an error message.
-
-    - name: WRITE_LONG
-      detail: WRITE_LONG offset value
-      doc: |-
-        The first argument is the offset at which the second argument (a 32-bit long word value) is written. Performs READ_LONG offset THIS and READ_SLONG offset STHIS automatically.
 
     - name: WRITE_SHORT
       detail: WRITE_SHORT offset value
@@ -2200,6 +2108,24 @@ patch:
       doc: |-
         Update variable so that it is equal to value.
 
+patch_byte:
+  type: 3 # function
+  category: patch
+  items:
+    - name: READ_BYTE
+      detail: READ_BYTE offset variable [ ELSE value ]
+      doc: |-
+        An 8-bit value is read from the file at the given offset and is stored in the given variable. If offset is out-of-bounds and the ELSE is present, the ELSE-value is assigned to variable. If offset is out-of-bounds and the ELSE is not present, the patch fails with a visible error.
+
+    - name: READ_SBYTE
+      detail: READ_SBYTE offset variable [ ELSE value ]
+      doc: |-
+        As READ_BYTE, but the value is interpreted as signed.
+
+    - name: WRITE_BYTE
+      detail: WRITE_BYTE offset value
+      doc: |-
+        The first argument is the offset at which the second argument (an 8-bit byte value) is written. Performs READ_BYTE offset THIS and READ_SBYTE offset STHIS automatically (you can now write WRITE_BYTE 100 THIS 2).
 
 patch_functions:
   type: 3 # function
@@ -3159,6 +3085,25 @@ patch_functions:
         - INT_VAR `fj_target` to the target ID;
         - STR_VAR `fj_embedded_eff0` to  path/to/v2.eff  or eff resref containing to projectile's effects^*^;
 
+patch_long:
+  type: 3 # function
+  category: patch
+  items:
+    - name: READ_LONG
+      detail: READ_LONG offset variable [ ELSE value ]
+      doc: |-
+        A 32-bit value is read from the file at the given offset and is stored in the given variable. See READ_BYTE.
+
+    - name: READ_SLONG
+      detail: READ_SLONG offset variable [ ELSE value ]
+      doc: |-
+        As READ_LONG, but the value is interpreted as signed.
+
+    - name: WRITE_LONG
+      detail: WRITE_LONG offset value
+      doc: |-
+        The first argument is the offset at which the second argument (a 32-bit long word value) is written. Performs READ_LONG offset THIS and READ_SLONG offset STHIS automatically.
+
 patch_macros:
   type: 3 # function
   items:
@@ -3169,6 +3114,71 @@ patch_macros:
          - SET `tb#factorial_index` to the factorial you'd like to compute.
          - SET `tb#factorial_result` to 1;
          - The result is `tb#factorial_result`.
+
+patch_string:
+  type: 3 # function
+  category: patch
+  items:
+    - name: READ_ASCII
+      detail: READ_ASCII offset variable [ ELSE string ] [ ( value ) [ NULL ] ]
+      doc: |-
+        A nul-terminated string is read from the file at the given offset and is stored in the given variable. The terminating nul is not stored. The default read size is 8 bytes. If an explicit size value is specified then that many bytes are read into the variable, even if some of them are nuls, except if NULL is present, in which case a nul-terminated string is read, without storing the terminating null. See READ_BYTE. If the offset is out-of-bounds and the ELSE clause is present, the string is evaluated as in WRITE_EVALUATED_ASCII and then assigned into variable.
+
+    - name: READ_STRREF
+      detail: READ_STRREF offset variable [ ELSE string ]
+      doc: |-
+        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the (male) string (without any quotes) is stored in the variable. In some sense this is the opposite of SAY_EVALUATED.
+
+    - name: READ_STRREF_F
+      detail: READ_STRREF_F offset variable [ ELSE string ]
+      doc: |-
+        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the female string (without any quotes) is stored in the variable.
+
+    - name: READ_STRREF_FS
+      detail: READ_STRREF_FS offset variable [ ELSE string ]
+      doc: |-
+        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOGF.TLK and the sound reference associated with the female string is stored in the variable. If there is no DIALOGF.TLK, the sound reference associated with the string from DIALOG.TLK is used instead. If the string has no sound, the empty string is used instead.
+
+    - name: READ_STRREF_S
+      detail: READ_STRREF_S offset variable [ ELSE string ]
+      doc: |-
+        A 32-bit Infinity Engine string reference is read from the file at the given offset. The string reference is looked up in DIALOG.TLK and the sound reference associated with the (male) string is stored in the variable. If the string has no sound, the empty string is used instead.
+
+    - name: WRITE_ASCII
+      detail: "WRITE_ASCII offset ascString [ #requiredSize ]"
+      doc: |-
+        The ASCII ascString is written to the file starting at offset. If you specify a requiredSize then exactly that many bytes are written (if ascString is smaller, it is padded with NULs; if ascString is larger, it is truncated). If you do not specify a requiredSize, the terminating NUL is not written.
+
+    - name: WRITE_ASCIIE
+      detail: "WRITE_ASCIIE offset ascString [ #requiredSize ]"
+      doc: |-
+        The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
+
+    - name: WRITE_ASCIIL
+      detail: WRITE_ASCIIL offset ascString list
+      doc: |-
+        The given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST.
+
+    - name: WRITE_ASCIIT
+      detail: WRITE_ASCIIT offset ascString
+      doc: |-
+        The ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE.
+
+    - name: WRITE_ASCII_LIST
+      detail: WRITE_ASCII_LIST offset ascString list
+      doc: |-
+        The given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST.
+
+    - name: WRITE_ASCII_TERMINATE
+      detail: WRITE_ASCII_TERMINATE offset ascString
+      doc: |-
+        The ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE.
+
+    - name: WRITE_EVALUATED_ASCII
+      detail: "WRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]"
+      doc: |-
+        The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
+  # function
 
 prologue:
   type: 14 # keyword
