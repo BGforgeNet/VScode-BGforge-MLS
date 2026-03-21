@@ -53,6 +53,10 @@ $generate_data \
     --hover $dest_dir/hover.weidu-baf.json \
     --tooltip-lang weidu-baf-tooltip
 
+pnpm exec tsx scripts/utils/src/update-baf-highlight.ts \
+    --yaml $data_dir/weidu-baf-iesdp.yml \
+    --highlight syntaxes/weidu-baf.tmLanguage.yml
+
 $generate_data \
     -i $data_dir/weidu-d-base.yml \
     --completion $dest_dir/completion.weidu-d.json \

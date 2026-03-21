@@ -1519,10 +1519,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(AddWayPoint)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(AddWorldmapAreaFlag)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -1599,10 +1595,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(BackStab)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(BanterBlockFlag)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -1619,19 +1611,11 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(Berserk)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(BitClear)\\b",
           "name": "support.function.weidu-baf"
         },
         {
           "match": "\\b(BitSet)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(BreakInstants)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -1704,22 +1688,6 @@
         },
         {
           "match": "\\b(ClearAllActions)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(ClickLButtonObject)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(ClickLButtonPoint)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(ClickRButtonObject)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(ClickRButtonPoint)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -1847,18 +1815,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(DeathMatchPositionArea)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DeathMatchPositionGlobal)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DeathMatchPositionLocal)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(DemoEnd)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -1907,18 +1863,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(Dialogue)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DialogueForceInterrupt)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DialogueInterrupt)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(DisableAI)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -1964,22 +1908,6 @@
         },
         {
           "match": "\\b(DisplayStringWait)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DoubleClickLButtonObject)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DoubleClickLButtonPoint)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DoubleClickRButtonObject)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(DoubleClickRButtonPoint)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2099,10 +2027,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(FollowPath)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(ForceRandomEncounter)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -2148,10 +2072,6 @@
         },
         {
           "match": "\\b(GameOver)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(GetItem)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2215,10 +2135,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(IncMoraleAI)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(IncrementChapter)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -2256,10 +2172,6 @@
         },
         {
           "match": "\\b(Kill)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(LayHands)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2339,10 +2251,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(MoveCursorPoint)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(MoveGlobal)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -2399,10 +2307,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(MoveToPointNoRecticle)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(MoveToSavedLocation)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -2420,54 +2324,6 @@
         },
         {
           "match": "\\b(MultiPlayerSync)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial1)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial10)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial11)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial12)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial2)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial3)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial4)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial5)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial6)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial7)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial8)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(NIDSpecial9)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2528,10 +2384,6 @@
         },
         {
           "match": "\\b(PlayerDialog)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(PlayerDialogue)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2779,10 +2631,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(SetDialogue)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(SetEncounterProbability)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -2827,15 +2675,7 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(SetLeavePartyDialogueFile)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(SetMasterArea)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(SetMoraleAI)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2844,10 +2684,6 @@
         },
         {
           "match": "\\b(SetName)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(SetNoWaitX)\\b",
           "name": "support.function.weidu-baf"
         },
         {
@@ -2999,26 +2835,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(StartDialogOverrideInterrupt)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(StartDialogue)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(StartDialogueInterrupt)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(StartDialogueNoSet)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(StartDialogueNoSetInterrupt)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(StartMovie)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -3135,10 +2951,6 @@
           "name": "support.function.weidu-baf"
         },
         {
-          "match": "\\b(TriggerWalkTo)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
           "match": "\\b(Turn)\\b",
           "name": "support.function.weidu-baf"
         },
@@ -3172,14 +2984,6 @@
         },
         {
           "match": "\\b(UseItemAbility)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(UseItemPoint)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(UseItemPointSlot)\\b",
           "name": "support.function.weidu-baf"
         },
         {

@@ -172,6 +172,7 @@ repository:
       - include: '#kit-ids'
 
   triggers:
+    # Auto-generated from weidu-baf-iesdp.yml — do not edit manually.
     name: entity.name.function.trigger.weidu-baf
     patterns:
       - match: \b(Acquired)\b
@@ -434,6 +435,7 @@ repository:
       - match: \b(XPLT)\b
 
   actions:
+    # Auto-generated from weidu-baf-iesdp.yml — do not edit manually.
     name: support.function.weidu-baf
     patterns:
       - match: \b(ActionOverride)\b
@@ -451,7 +453,6 @@ repository:
       - match: \b(AddSpecialAbility)\b
       - match: \b(AddStoreItem)\b
       - match: \b(AddSuperKit)\b
-      - match: \b(AddWayPoint)\b
       - match: \b(AddWorldmapAreaFlag)\b
       - match: \b(AddXP2DA)\b
       - match: \b(AddXPObject)\b
@@ -471,15 +472,12 @@ repository:
       - match: \b(AttackNoSound)\b
       - match: \b(AttackOneRound)\b
       - match: \b(AttackReevaluate)\b
-      - match: \b(BackStab)\b
       - match: \b(BanterBlockFlag)\b
       - match: \b(BanterBlockTime)\b
       - match: \b(BashDoor)\b
       - match: \b(BattleSong)\b
-      - match: \b(Berserk)\b
       - match: \b(BitClear)\b
       - match: \b(BitSet)\b
-      - match: \b(BreakInstants)\b
       - match: \b(CallLightning)\b
       - match: \b(Calm)\b
       - match: \b(ChangeAIScript)\b
@@ -498,10 +496,6 @@ repository:
       - match: \b(ChangeTileState)\b
       - match: \b(ClearActions)\b
       - match: \b(ClearAllActions)\b
-      - match: \b(ClickLButtonObject)\b
-      - match: \b(ClickLButtonPoint)\b
-      - match: \b(ClickRButtonObject)\b
-      - match: \b(ClickRButtonPoint)\b
       - match: \b(CloseDoor)\b
       - match: \b(ContainerEnable)\b
       - match: \b(Continue)\b
@@ -533,9 +527,6 @@ repository:
       - match: \b(CutSceneId)\b
       - match: \b(DayNight)\b
       - match: \b(Deactivate)\b
-      - match: \b(DeathMatchPositionArea)\b
-      - match: \b(DeathMatchPositionGlobal)\b
-      - match: \b(DeathMatchPositionLocal)\b
       - match: \b(DemoEnd)\b
       - match: \b(DestroyAllDestructableEquipment)\b
       - match: \b(DestroyAllEquipment)\b
@@ -548,9 +539,6 @@ repository:
       - match: \b(Dialog)\b
       - match: \b(DialogForceInterrupt)\b
       - match: \b(DialogInterrupt)\b
-      - match: \b(Dialogue)\b
-      - match: \b(DialogueForceInterrupt)\b
-      - match: \b(DialogueInterrupt)\b
       - match: \b(DisableAI)\b
       - match: \b(DisplayString)\b
       - match: \b(DisplayStringHead)\b
@@ -563,10 +551,6 @@ repository:
       - match: \b(DisplayStringPoint)\b
       - match: \b(DisplayStringPointLog)\b
       - match: \b(DisplayStringWait)\b
-      - match: \b(DoubleClickLButtonObject)\b
-      - match: \b(DoubleClickLButtonPoint)\b
-      - match: \b(DoubleClickRButtonObject)\b
-      - match: \b(DoubleClickRButtonPoint)\b
       - match: \b(DropInventory)\b
       - match: \b(DropItem)\b
       - match: \b(EndCredits)\b
@@ -596,7 +580,6 @@ repository:
       - match: \b(FlyToPoint)\b
       - match: \b(Follow)\b
       - match: \b(FollowObjectFormation)\b
-      - match: \b(FollowPath)\b
       - match: \b(ForceRandomEncounter)\b
       - match: \b(ForceRandomEncounterEntry)\b
       - match: \b(ForceSpell)\b
@@ -609,7 +592,6 @@ repository:
       - match: \b(ForceSpellRangeRES)\b
       - match: \b(Formation)\b
       - match: \b(GameOver)\b
-      - match: \b(GetItem)\b
       - match: \b(GiveGoldForce)\b
       - match: \b(GiveItem)\b
       - match: \b(GiveItemCreate)\b
@@ -625,7 +607,6 @@ repository:
       - match: \b(Hide)\b
       - match: \b(HideAreaOnMap)\b
       - match: \b(HideGUI)\b
-      - match: \b(IncMoraleAI)\b
       - match: \b(IncrementChapter)\b
       - match: \b(IncrementGlobal)\b
       - match: \b(IncrementGlobalOnce)\b
@@ -636,7 +617,6 @@ repository:
       - match: \b(JumpToObject)\b
       - match: \b(JumpToPoint)\b
       - match: \b(Kill)\b
-      - match: \b(LayHands)\b
       - match: \b(Leader)\b
       - match: \b(LeaveArea)\b
       - match: \b(LeaveAreaLUA)\b
@@ -656,7 +636,6 @@ repository:
       - match: \b(MoveBetweenAreas)\b
       - match: \b(MoveBetweenAreasEffect)\b
       - match: \b(MoveContainerContents)\b
-      - match: \b(MoveCursorPoint)\b
       - match: \b(MoveGlobal)\b
       - match: \b(MoveGlobalObject)\b
       - match: \b(MoveGlobalObjectOffScreen)\b
@@ -671,24 +650,11 @@ repository:
       - match: \b(MoveToOffset)\b
       - match: \b(MoveToPoint)\b
       - match: \b(MoveToPointNoInterrupt)\b
-      - match: \b(MoveToPointNoRecticle)\b
       - match: \b(MoveToSavedLocation)\b
       - match: \b(MoveToSavedLocationn)\b
       - match: \b(MoveViewObject)\b
       - match: \b(MoveViewPoint)\b
       - match: \b(MultiPlayerSync)\b
-      - match: \b(NIDSpecial1)\b
-      - match: \b(NIDSpecial10)\b
-      - match: \b(NIDSpecial11)\b
-      - match: \b(NIDSpecial12)\b
-      - match: \b(NIDSpecial2)\b
-      - match: \b(NIDSpecial3)\b
-      - match: \b(NIDSpecial4)\b
-      - match: \b(NIDSpecial5)\b
-      - match: \b(NIDSpecial6)\b
-      - match: \b(NIDSpecial7)\b
-      - match: \b(NIDSpecial8)\b
-      - match: \b(NIDSpecial9)\b
       - match: \b(NoAction)\b
       - match: \b(OpenDoor)\b
       - match: \b(Panic)\b
@@ -704,7 +670,6 @@ repository:
       - match: \b(PlaySoundNotRanged)\b
       - match: \b(PlaySoundThroughVoice)\b
       - match: \b(PlayerDialog)\b
-      - match: \b(PlayerDialogue)\b
       - match: \b(Polymorph)\b
       - match: \b(PolymorphCopy)\b
       - match: \b(PolymorphCopyBase)\b
@@ -766,7 +731,6 @@ repository:
       - match: \b(SetCutSceneBreakable)\b
       - match: \b(SetCutSceneLite)\b
       - match: \b(SetDialog)\b
-      - match: \b(SetDialogue)\b
       - match: \b(SetEncounterProbability)\b
       - match: \b(SetGabber)\b
       - match: \b(SetGlobal)\b
@@ -778,12 +742,9 @@ repository:
       - match: \b(SetInterrupt)\b
       - match: \b(SetItemFlags)\b
       - match: \b(SetLeavePartyDialogFile)\b
-      - match: \b(SetLeavePartyDialogueFile)\b
       - match: \b(SetMasterArea)\b
-      - match: \b(SetMoraleAI)\b
       - match: \b(SetMusic)\b
       - match: \b(SetName)\b
-      - match: \b(SetNoWaitX)\b
       - match: \b(SetNumTimesTalkedTo)\b
       - match: \b(SetPlayerSound)\b
       - match: \b(SetQuestDone)\b
@@ -821,11 +782,6 @@ repository:
       - match: \b(StartDialogNoSet)\b
       - match: \b(StartDialogNoSetInterrupt)\b
       - match: \b(StartDialogOverride)\b
-      - match: \b(StartDialogOverrideInterrupt)\b
-      - match: \b(StartDialogue)\b
-      - match: \b(StartDialogueInterrupt)\b
-      - match: \b(StartDialogueNoSet)\b
-      - match: \b(StartDialogueNoSetInterrupt)\b
       - match: \b(StartMovie)\b
       - match: \b(StartMusic)\b
       - match: \b(StartRainNow)\b
@@ -855,7 +811,6 @@ repository:
       - match: \b(TextScreen)\b
       - match: \b(TransformItem)\b
       - match: \b(TriggerActivation)\b
-      - match: \b(TriggerWalkTo)\b
       - match: \b(Turn)\b
       - match: \b(UndoExplore)\b
       - match: \b(UnhideGUI)\b
@@ -865,8 +820,6 @@ repository:
       - match: \b(UseDoor)\b
       - match: \b(UseItem)\b
       - match: \b(UseItemAbility)\b
-      - match: \b(UseItemPoint)\b
-      - match: \b(UseItemPointSlot)\b
       - match: \b(UseItemSlot)\b
       - match: \b(UseItemSlotAbility)\b
       - match: \b(VEquip)\b
