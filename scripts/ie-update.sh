@@ -4,8 +4,6 @@ set -xeu -o pipefail
 
 # launch from root repo dir
 
-highlight_baf="syntaxes/weidu-baf.tmLanguage.yml"
-
 data_dir="server/data"
 data_baf="$data_dir/weidu-baf-iesdp.yml"
 
@@ -25,8 +23,8 @@ git pull
 popd
 
 pnpm exec tsx scripts/ie-update/src/iesdp-update.ts -s "$iesdp_dir" \
-    --highlight-baf "$highlight_baf" \
     --data-baf "$data_baf"
 
-# convert yaml to json
+# regenerate highlight and convert yaml to json
+./scripts/generate-data.sh
 ./scripts/syntaxes-to-json.sh

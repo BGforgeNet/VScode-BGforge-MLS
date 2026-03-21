@@ -1,12 +1,13 @@
 /**
  * IESDP data update script.
- * Processes IESDP action data into BAF completion/highlight YAML files.
+ * Processes IESDP action/trigger data into BAF completion YAML files.
+ * Highlight stanzas are generated separately by update-baf-highlight.ts via generate-data.sh.
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import YAML, { type Document, isMap } from "yaml";
+import YAML, { isMap } from "yaml";
 import {
     actionDesc,
     actionDetail,
@@ -26,8 +27,6 @@ import type {
     CompletionItem,
     IESDPGame,
 } from "./ie/index.ts";
-import { updateHighlightStanza } from "../../utils/src/update-tp2-highlight.ts";
-import { YAML_DUMP_OPTIONS } from "../../utils/src/yaml-helpers.ts";
 
 /** IESDP base URL for documentation links */
 const IESDP_BASE_URL = "https://gibberlings3.github.io/iesdp/";
@@ -62,27 +61,6 @@ function loadActions(iesdpDir: string): readonly ActionItem[] {
         if (a.n !== b.n) return a.n - b.n;
         return (b.params?.length ?? 0) - (a.params?.length ?? 0);
     });
-}
-
-/**
- * Writes BAF highlight patterns from sorted action names.
- */
-function writeActionsHighlight(
-    actions: readonly ActionItem[],
-    highlightBaf: string,
-): void {
-    const actionsHighlight = [...new Set(
-        actions
-            .map((x) => x.name)
-            .filter((name) => !/^reserved\d*$/i.test(name))
-    )];
-    const actionsHighlightPatterns = actionsHighlight
-        .map((x) => ({ match: `\\b(${x})\\b` }))
-        .sort((a, b) => cmpStr(a.match, b.match));
-
-    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8")) as Document;
-    updateHighlightStanza(bafHighlightDoc, ACTIONS_STANZA, actionsHighlightPatterns);
-    fs.writeFileSync(highlightBaf, bafHighlightDoc.toString(YAML_DUMP_OPTIONS), "utf8");
 }
 
 /**
@@ -176,28 +154,11 @@ function writeTriggersCompletion(
 }
 
 /**
- * Writes BAF highlight patterns from sorted trigger names.
- */
-function writeTriggersHighlight(
-    triggers: readonly CompletionItem[],
-    highlightBaf: string,
-): void {
-    const triggerPatterns = [...new Set(triggers.map((x) => x.name))]
-        .map((x) => ({ match: `\\b(${x})\\b` }))
-        .sort((a, b) => cmpStr(a.match, b.match));
-
-    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8")) as Document;
-    updateHighlightStanza(bafHighlightDoc, TRIGGERS_STANZA, triggerPatterns);
-    fs.writeFileSync(highlightBaf, bafHighlightDoc.toString(YAML_DUMP_OPTIONS), "utf8");
-}
-
-/**
- * Loads action YAML files, deduplicates, and writes BAF completion/highlight data.
+ * Loads action YAML files, deduplicates, and writes BAF completion data.
  */
 function processActions(
     iesdpDir: string,
     dataBaf: string,
-    highlightBaf: string,
 ): void {
     const actions = loadActions(iesdpDir);
 
@@ -208,26 +169,22 @@ function processActions(
         iesdpGamesFile,
     );
 
-    writeActionsHighlight(actions, highlightBaf);
-
     const completionItems = buildActionsCompletion(actions, iesdpGames);
     writeActionsCompletion(dataBaf, completionItems);
 }
 
 /**
- * Loads trigger HTML, extracts completion items, and writes BAF completion/highlight data.
+ * Loads trigger HTML, extracts completion items, and writes BAF completion data.
  */
 function processTriggers(
     iesdpDir: string,
     dataBaf: string,
-    highlightBaf: string,
 ): void {
     const triggersFile = path.join(iesdpDir, BGEE_TRIGGERS_PATH);
     const html = fs.readFileSync(triggersFile, "utf8");
     const pageUrl = new URL(BGEE_TRIGGERS_PATH, IESDP_BASE_URL).toString();
     const triggers = extractTriggersFromHtml(html, pageUrl);
 
-    writeTriggersHighlight(triggers, highlightBaf);
     writeTriggersCompletion(dataBaf, triggers);
 }
 
@@ -236,23 +193,21 @@ function main(): void {
         options: {
             s: { type: "string" },
             "data-baf": { type: "string" },
-            "highlight-baf": { type: "string" },
         },
     });
 
     const iesdpDir = values.s;
     const dataBaf = values["data-baf"];
-    const highlightBaf = values["highlight-baf"];
 
-    if (!iesdpDir || !dataBaf || !highlightBaf) {
+    if (!iesdpDir || !dataBaf) {
         console.error(
-            "Usage: iesdp-update -s <iesdp_dir> --data-baf <path> --highlight-baf <path>"
+            "Usage: iesdp-update -s <iesdp_dir> --data-baf <path>"
         );
         process.exit(1);
     }
 
-    processActions(iesdpDir, dataBaf, highlightBaf);
-    processTriggers(iesdpDir, dataBaf, highlightBaf);
+    processActions(iesdpDir, dataBaf);
+    processTriggers(iesdpDir, dataBaf);
 }
 
 try {
