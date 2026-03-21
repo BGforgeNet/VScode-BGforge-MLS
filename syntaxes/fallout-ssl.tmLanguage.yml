@@ -1001,8 +1001,8 @@ repository:
       - match: \b(HOOK_EXPLOSIVETIMER)\b
       - match: \b(HOOK_FINDTARGET)\b
       - match: \b(HOOK_GAMEMODECHANGE)\b
-      - match: \b(HOOK_INVENWIELD)\b
       - match: \b(HOOK_INVENTORYMOVE)\b
+      - match: \b(HOOK_INVENWIELD)\b
       - match: \b(HOOK_ITEMDAMAGE)\b
       - match: \b(HOOK_KEYPRESS)\b
       - match: \b(HOOK_MOUSECLICK)\b

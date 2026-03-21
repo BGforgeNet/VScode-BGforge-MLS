@@ -3584,11 +3584,11 @@
           "name": "constant.language.fallout-ssl"
         },
         {
-          "match": "\\b(HOOK_INVENWIELD)\\b",
+          "match": "\\b(HOOK_INVENTORYMOVE)\\b",
           "name": "constant.language.fallout-ssl"
         },
         {
-          "match": "\\b(HOOK_INVENTORYMOVE)\\b",
+          "match": "\\b(HOOK_INVENWIELD)\\b",
           "name": "constant.language.fallout-ssl"
         },
         {
