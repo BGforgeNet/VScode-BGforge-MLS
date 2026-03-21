@@ -1,7 +1,6 @@
 /**
  * Main entry point for the Fallout SSL data update script.
- * Replaces the former fallout_update.py: parses header files for defines,
- * loads sfall functions/hooks YAML, and dumps completion + highlight YAML.
+ * Loads sfall functions/hooks YAML and dumps completion + highlight YAML.
  *
  * Usage:
  *   pnpm exec tsx scripts/fallout-update/src/fallout-update.ts \
@@ -10,7 +9,6 @@
 
 import { parseArgs } from "node:util";
 import {
-    collectDefines,
     dumpFalloutCompletion,
     dumpFalloutHighlight,
     loadSfallFunctions,
@@ -35,9 +33,6 @@ if (srcDir === undefined || sfallFile === undefined || highlightFile === undefin
     process.exit(1);
 }
 
-// Collect defines from header files
-const headerDefines = collectDefines(srcDir);
-
 // Load sfall functions and hooks
 const sfallFunctions = loadSfallFunctions(srcDir);
 const sfallHooks = loadSfallHooks(srcDir);
@@ -49,5 +44,4 @@ dumpFalloutCompletion(sfallFile, sfallFunctions.completionItems, sfallHooks.comp
 dumpFalloutHighlight(highlightFile, {
     sfallFunctionPatterns: sfallFunctions.highlightPatterns,
     hookPatterns: sfallHooks.highlightPatterns,
-    headerDefines,
 });

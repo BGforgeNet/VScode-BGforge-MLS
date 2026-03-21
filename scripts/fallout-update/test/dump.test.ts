@@ -11,7 +11,6 @@ import {
     HIGHLIGHT_STANZAS,
     SFALL_FUNCTIONS_STANZA,
     SFALL_HOOKS_STANZA,
-    type DefineKind,
     type FalloutCompletionItem,
     type HighlightPattern,
 } from "../src/fallout/types.ts";
@@ -111,21 +110,6 @@ repository:
   hooks:
     name: constant.language.fallout-ssl
     patterns: []
-  header-constants:
-    name: constant.language.fallout-ssl.macro-constant
-    patterns: []
-  header-variables:
-    name: constant.language.fallout-ssl.macro-var
-    patterns: []
-  header-procedures:
-    name: entity.name.function.fallout-ssl.header-functions
-    patterns: []
-  header-defines-with-vars:
-    name: entity.name.function.fallout-ssl.header-defines
-    patterns: []
-  header-aliases:
-    name: constant.language.fallout-ssl.macro-alias
-    patterns: []
   other-stanza:
     name: other
 `;
@@ -140,7 +124,7 @@ repository:
         const sfallPatterns: HighlightPattern[] = [
             { match: "\\b(?i)(my_func)\\b" },
         ];
-        dumpFalloutHighlight(filePath, { sfallFunctionPatterns: sfallPatterns, hookPatterns: [], headerDefines: new Map() });
+        dumpFalloutHighlight(filePath, { sfallFunctionPatterns: sfallPatterns, hookPatterns: [] });
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { patterns: Array<{ match: string }> }>;
@@ -153,7 +137,7 @@ repository:
             { match: "\\b(?i)(base_a)\\b" },
             { match: "\\b(?i)(base_b)\\b" },
         ];
-        dumpFalloutHighlight(filePath, { baseFunctionPatterns: basePatterns, sfallFunctionPatterns: [], hookPatterns: [], headerDefines: new Map() });
+        dumpFalloutHighlight(filePath, { baseFunctionPatterns: basePatterns, sfallFunctionPatterns: [], hookPatterns: [] });
 
         const content = fs.readFileSync(filePath, "utf8");
         expect(content).toContain("This stanza is generated from server/data/fallout-ssl-base.yml.");
@@ -170,7 +154,7 @@ repository:
         const hookPatterns: HighlightPattern[] = [
             { match: "\\b(HOOK_TEST)\\b" },
         ];
-        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns, headerDefines: new Map() });
+        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns });
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { patterns: Array<{ match: string }> }>;
@@ -178,37 +162,8 @@ repository:
         expect(repo[HIGHLIGHT_STANZAS.hooks]!.patterns[0]!.match).toBe("\\b(HOOK_TEST)\\b");
     });
 
-    it("partitions header defines into correct stanzas", () => {
-        const headerDefines = new Map<string, DefineKind>([
-            ["my_const", "constant"],
-            ["GVAR_QUEST", "variable"],
-            ["do_stuff", "procedure"],
-            ["my_macro", "define_with_vars"],
-            ["my_alias", "alias"],
-        ]);
-        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns: [], headerDefines });
-
-        const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
-        const repo = result["repository"] as Record<string, { patterns: Array<{ match: string }> }>;
-
-        expect(repo["header-constants"]!.patterns).toHaveLength(1);
-        expect(repo["header-constants"]!.patterns[0]!.match).toBe("\\b(my_const)\\b");
-
-        expect(repo["header-variables"]!.patterns).toHaveLength(1);
-        expect(repo["header-variables"]!.patterns[0]!.match).toBe("\\b(GVAR_QUEST)\\b");
-
-        expect(repo["header-procedures"]!.patterns).toHaveLength(1);
-        expect(repo["header-procedures"]!.patterns[0]!.match).toBe("\\b(do_stuff)\\b");
-
-        expect(repo["header-defines-with-vars"]!.patterns).toHaveLength(1);
-        expect(repo["header-defines-with-vars"]!.patterns[0]!.match).toBe("\\b(my_macro)\\b");
-
-        expect(repo["header-aliases"]!.patterns).toHaveLength(1);
-        expect(repo["header-aliases"]!.patterns[0]!.match).toBe("\\b(my_alias)\\b");
-    });
-
     it("preserves other repository stanzas", () => {
-        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns: [], headerDefines: new Map() });
+        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns: [] });
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { name: string }>;
@@ -216,7 +171,7 @@ repository:
     });
 
     it("preserves stanza names (scope names)", () => {
-        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns: [], headerDefines: new Map() });
+        dumpFalloutHighlight(filePath, { baseFunctionPatterns: [], sfallFunctionPatterns: [], hookPatterns: [] });
 
         const result = YAML.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
         const repo = result["repository"] as Record<string, { name: string }>;
@@ -239,10 +194,6 @@ repository:
     name: constant.language.fallout-ssl
     patterns:
       - match: \\b(HOOK_LEGACY)\\b
-  header-constants:
-    name: constant.language.fallout-ssl.macro-constant
-    patterns:
-      - match: \\b(LEGACY_CONST)\\b
 `;
         fs.writeFileSync(filePath, initial, "utf8");
 
@@ -253,6 +204,5 @@ repository:
         expect(repo["fallout-base-functions"]!.patterns[0]!.match).toBe("\\b(?i)(legacy_base)\\b");
         expect(repo["sfall_functions"]!.patterns[0]!.match).toBe("\\b(?i)(new_sfall)\\b");
         expect(repo["hooks"]!.patterns[0]!.match).toBe("\\b(HOOK_LEGACY)\\b");
-        expect(repo["header-constants"]!.patterns[0]!.match).toBe("\\b(LEGACY_CONST)\\b");
     });
 });

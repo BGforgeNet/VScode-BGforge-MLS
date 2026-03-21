@@ -34,9 +34,6 @@ export interface SfallHook {
     readonly filename?: string;
 }
 
-/** Classification of a #define extracted from header files */
-export type DefineKind = "constant" | "variable" | "procedure" | "define_with_vars" | "alias";
-
 /** Completion item for the sfall YAML output */
 export interface FalloutCompletionItem {
     readonly name: string;
@@ -61,7 +58,6 @@ export interface FalloutHighlightDumpInput {
     readonly baseFunctionPatterns?: readonly HighlightPattern[];
     readonly sfallFunctionPatterns?: readonly HighlightPattern[];
     readonly hookPatterns?: readonly HighlightPattern[];
-    readonly headerDefines?: ReadonlyMap<string, DefineKind>;
 }
 
 /** Completion type constants matching the LSP extension's type enum */
@@ -77,11 +73,6 @@ export const HIGHLIGHT_STANZAS = {
     falloutBaseFunctions: "fallout-base-functions",
     sfallFunctions: FALLOUT_SSL_STANZAS.sfall_functions,
     hooks: FALLOUT_SSL_STANZAS.hooks,
-    headerConstants: "header-constants",
-    headerVariables: "header-variables",
-    headerProcedures: "header-procedures",
-    headerDefinesWithVars: "header-defines-with-vars",
-    headerAliases: "header-aliases",
 } as const;
 
 export const GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT =

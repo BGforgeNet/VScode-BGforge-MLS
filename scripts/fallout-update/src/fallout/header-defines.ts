@@ -1,7 +1,7 @@
 /**
  * Parses .h header files to extract #define constants, variables, procedures,
- * defines-with-args, and aliases. Each define is classified by its DefineKind
- * for use in syntax highlighting.
+ * defines-with-args, and aliases. Each define is classified by its DefineKind.
+ * Used for dynamic header analysis (not part of the static update pipeline).
  *
  * Shared helpers (cmpStr, findFiles) are in utils/yaml-helpers.
  */
@@ -9,9 +9,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { cmpStr, findFiles } from "../../../utils/src/yaml-helpers.ts";
-import type { DefineKind } from "./types.ts";
 
-export { cmpStr, findFiles };
+/** Classification of a #define extracted from header files */
+export type DefineKind = "constant" | "variable" | "procedure" | "define_with_vars" | "alias";
+
 
 /** Matches: #define NAME (value) or #define NAME value — numeric constants */
 const REGEX_CONSTANT = /^#define\s+(\w+)\s+\(?([0-9]+)\)?/;
