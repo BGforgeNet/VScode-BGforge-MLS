@@ -66,38 +66,6 @@ describe("loadSfallFunctions", () => {
         expect(withDoc?.doc).toBe("Function docs\nCategory docs");
     });
 
-    it("generates case-insensitive highlight patterns for functions", () => {
-        const yaml = `
-- name: "Cat"
-  items:
-    - name: my_func
-      detail: "void my_func()"
-`;
-        fs.writeFileSync(path.join(tmpDir, "functions.yml"), yaml, "utf8");
-        const result = loadSfallFunctions(tmpDir);
-
-        expect(result.highlightPatterns).toHaveLength(1);
-        expect(result.highlightPatterns[0]!.match).toBe("\\b(?i)(my_func)\\b");
-    });
-
-    it("skips exponentiation operator from highlight", () => {
-        const yaml = `
-- name: "Math"
-  items:
-    - name: "^"
-      detail: "int exponentiation"
-    - name: sqrt
-      detail: "float sqrt(float)"
-`;
-        fs.writeFileSync(path.join(tmpDir, "functions.yml"), yaml, "utf8");
-        const result = loadSfallFunctions(tmpDir);
-
-        expect(result.highlightPatterns).toHaveLength(1);
-        expect(result.highlightPatterns[0]!.match).toContain("sqrt");
-        // But ^ should still be in completion items
-        expect(result.completionItems.find((i) => i.name === "^")).toBeDefined();
-    });
-
     it("preserves args and type when present", () => {
         const yaml = `
 - name: "Cat"
@@ -161,18 +129,6 @@ describe("loadSfallHooks", () => {
 
         expect(result.completionItems[0]!.name).toBe("HOOK_ALPHA");
         expect(result.completionItems[1]!.name).toBe("HOOK_ZEBRA");
-    });
-
-    it("generates highlight patterns without case-insensitive flag", () => {
-        const yaml = `
-- name: TestHook
-  doc: "A test hook."
-`;
-        fs.writeFileSync(path.join(tmpDir, "hooks.yml"), yaml, "utf8");
-        const result = loadSfallHooks(tmpDir);
-
-        expect(result.highlightPatterns).toHaveLength(1);
-        expect(result.highlightPatterns[0]!.match).toBe("\\b(HOOK_TESTHOOK)\\b");
     });
 
     it("throws when hooks.yml not found", () => {

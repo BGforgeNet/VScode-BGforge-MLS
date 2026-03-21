@@ -4,11 +4,10 @@
 
 export { cmpStr, findFiles, litscal } from "../../../utils/src/yaml-helpers.ts";
 export { loadSfallFunctions, loadSfallHooks } from "./sfall-data.ts";
-export { dumpFalloutCompletion, dumpFalloutHighlight } from "./dump.ts";
+export { dumpFalloutCompletion } from "./dump.ts";
 export type {
     FalloutArg,
     FalloutCompletionItem,
-    HighlightPattern,
     SfallCategory,
     SfallFunction,
     SfallHook,

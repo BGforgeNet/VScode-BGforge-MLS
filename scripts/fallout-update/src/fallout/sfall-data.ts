@@ -1,6 +1,6 @@
 /**
  * Loads sfall functions.yml and hooks.yml, producing completion items
- * and highlight patterns for the Fallout SSL language support.
+ * for the Fallout SSL language support.
  *
  * Shared helpers (litscal, cmpStr) are in utils/yaml-helpers.
  */
@@ -11,7 +11,6 @@ import { cmpStr, litscal } from "../../../utils/src/yaml-helpers.ts";
 import { findFile } from "./header-defines.ts";
 import type {
     FalloutCompletionItem,
-    HighlightPattern,
     SfallCategory,
 } from "./types.ts";
 import { validateArray, validateSfallCategory, validateSfallHook } from "./validate.ts";
@@ -24,13 +23,11 @@ const HOOKS_YAML = "hooks.yml";
 /** Result of loading sfall functions */
 export interface SfallFunctionsResult {
     readonly completionItems: readonly FalloutCompletionItem[];
-    readonly highlightPatterns: readonly HighlightPattern[];
 }
 
 /** Result of loading sfall hooks */
 export interface SfallHooksResult {
     readonly completionItems: readonly FalloutCompletionItem[];
-    readonly highlightPatterns: readonly HighlightPattern[];
 }
 
 /**
@@ -56,9 +53,8 @@ function buildCompletionItem(
 }
 
 /**
- * Loads sfall functions.yml, validates the data, and produces completion items
- * and highlight patterns. Categories and functions are sorted alphabetically
- * to minimize diff noise in the output files.
+ * Loads sfall functions.yml, validates the data, and produces completion items.
+ * Categories and functions are sorted alphabetically to minimize diff noise.
  */
 export function loadSfallFunctions(srcDir: string): SfallFunctionsResult {
     const functionsPath = findFile(srcDir, FUNCTIONS_YAML);
@@ -73,7 +69,6 @@ export function loadSfallFunctions(srcDir: string): SfallFunctionsResult {
     const sortedCategories = [...categories].sort((a, b) => cmpStr(a.name, b.name));
 
     const completionItems: FalloutCompletionItem[] = [];
-    const highlightPatterns: HighlightPattern[] = [];
 
     for (const category of sortedCategories) {
         const categoryDoc = category.doc ?? "";
@@ -82,22 +77,17 @@ export function loadSfallFunctions(srcDir: string): SfallFunctionsResult {
             const sortedFunctions = [...category.items].sort((a, b) => cmpStr(a.name, b.name));
 
             for (const func of sortedFunctions) {
-                // Skip exponentiation operator from highlight
-                if (func.name !== "^") {
-                    highlightPatterns.push({ match: `\\b(?i)(${func.name})\\b` });
-                }
                 completionItems.push(buildCompletionItem(func, categoryDoc));
             }
         }
     }
 
-    return { completionItems, highlightPatterns };
+    return { completionItems };
 }
 
 /**
- * Loads sfall hooks.yml, validates the data, and produces completion items
- * and highlight patterns. Hooks are sorted alphabetically and prefixed with
- * "HOOK_" in the output.
+ * Loads sfall hooks.yml, validates the data, and produces completion items.
+ * Hooks are sorted alphabetically and prefixed with "HOOK_" in the output.
  */
 export function loadSfallHooks(srcDir: string): SfallHooksResult {
     const hooksPath = findFile(srcDir, HOOKS_YAML);
@@ -112,7 +102,6 @@ export function loadSfallHooks(srcDir: string): SfallHooksResult {
     const sortedHooks = [...hooks].sort((a, b) => cmpStr(a.name, b.name));
 
     const completionItems: FalloutCompletionItem[] = [];
-    const highlightPatterns: HighlightPattern[] = [];
 
     for (const hook of sortedHooks) {
         const codename = `HOOK_${hook.name.toUpperCase()}`;
@@ -120,8 +109,7 @@ export function loadSfallHooks(srcDir: string): SfallHooksResult {
             name: codename,
             doc: litscal(hook.doc),
         });
-        highlightPatterns.push({ match: `\\b(${codename})\\b` });
     }
 
-    return { completionItems, highlightPatterns };
+    return { completionItems };
 }

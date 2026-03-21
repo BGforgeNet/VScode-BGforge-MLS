@@ -27,6 +27,10 @@ pnpm exec tsx scripts/utils/src/update-fallout-base-functions-highlight.ts \
     --yaml $data_dir/fallout-ssl-base.yml \
     --highlight syntaxes/fallout-ssl.tmLanguage.yml
 
+pnpm exec tsx scripts/utils/src/update-sfall-highlight.ts \
+    --yaml $data_dir/fallout-ssl-sfall.yml \
+    --highlight syntaxes/fallout-ssl.tmLanguage.yml
+
 $generate_data \
     -i $data_dir/fallout-worldmap-txt.yml \
     --completion $dest_dir/completion.fallout-worldmap-txt.json \

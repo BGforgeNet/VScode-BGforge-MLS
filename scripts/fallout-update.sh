@@ -8,7 +8,6 @@ external="external/fallout"
 sfall_repo="https://github.com/BGforgeNet/sfall.git"
 sfall_dir="sfall"
 sfall_file="server/data/fallout-ssl-sfall.yml"
-highlight_file="syntaxes/fallout-ssl.tmLanguage.yml"
 
 if [ ! -d "$external" ]; then
     mkdir "$external"
@@ -28,5 +27,4 @@ last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -V | tail -1)"
 git checkout "$last_v"
 popd
 
-pnpm exec tsx scripts/fallout-update/src/fallout-update.ts -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
-./scripts/syntaxes-to-json.sh
+pnpm exec tsx scripts/fallout-update/src/fallout-update.ts -s "$external" --sfall-file "$sfall_file"

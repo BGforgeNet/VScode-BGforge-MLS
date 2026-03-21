@@ -1,7 +1,7 @@
 /**
- * Dumps completion and highlight YAML files for Fallout SSL.
- * Both operations are round-trip: they read the existing file, update specific
- * stanzas, and write back — preserving all other content and comments.
+ * Dumps sfall completion data into server/data/fallout-ssl-sfall.yml.
+ * Round-trip: reads the existing file, updates sfall_functions and hooks stanzas,
+ * and writes back — preserving all other content and comments.
  *
  * Shared helpers (makeBlockScalar, YAML_DUMP_OPTIONS) are in utils/yaml-helpers.
  */
@@ -9,13 +9,10 @@
 import fs from "node:fs";
 import YAML, { Document, YAMLMap, YAMLSeq, isMap } from "yaml";
 import { makeBlockScalar, YAML_DUMP_OPTIONS } from "../../../utils/src/yaml-helpers.ts";
-import { updateHighlightStanza } from "../../../utils/src/update-tp2-highlight.ts";
-import type { FalloutCompletionItem, FalloutHighlightDumpInput, HighlightPattern } from "./types.ts";
+import type { FalloutCompletionItem } from "./types.ts";
 import {
     COMPLETION_TYPE_CONSTANT,
     COMPLETION_TYPE_FUNCTION,
-    GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT,
-    HIGHLIGHT_STANZAS,
     SFALL_FUNCTIONS_STANZA,
     SFALL_HOOKS_STANZA,
 } from "./types.ts";
@@ -87,44 +84,3 @@ export function dumpFalloutCompletion(
     fs.writeFileSync(fpath, output, "utf8");
 }
 
-/**
- * Dumps highlight patterns into the syntax highlight YAML file (round-trip).
- * Updates repository stanzas for sfall functions and hooks,
- * preserving all other repository content.
- */
-export function dumpFalloutHighlight(
-    fpath: string,
-    {
-        baseFunctionPatterns,
-        sfallFunctionPatterns,
-        hookPatterns,
-    }: FalloutHighlightDumpInput,
-): void {
-    const content = fs.readFileSync(fpath, "utf8");
-    // Cast to Document to avoid ParsedNode generic constraints on set()
-    const doc = YAML.parseDocument(content) as Document;
-
-    // Update each stanza's patterns
-    const stanzaData: Array<readonly [string, readonly HighlightPattern[]]> = [];
-    if (baseFunctionPatterns !== undefined) stanzaData.push([HIGHLIGHT_STANZAS.falloutBaseFunctions, baseFunctionPatterns]);
-    if (sfallFunctionPatterns !== undefined) stanzaData.push([HIGHLIGHT_STANZAS.sfallFunctions, sfallFunctionPatterns]);
-    if (hookPatterns !== undefined) stanzaData.push([HIGHLIGHT_STANZAS.hooks, hookPatterns]);
-
-    for (const [stanza, patterns] of stanzaData) {
-        updateHighlightStanza(doc, stanza, patterns);
-    }
-
-    // Set the generated comment on the base-functions stanza (only when it was updated)
-    if (baseFunctionPatterns !== undefined) {
-        const repo = doc.getIn(["repository"], true);
-        if (isMap(repo)) {
-            const baseNode = repo.get(HIGHLIGHT_STANZAS.falloutBaseFunctions, true);
-            if (isMap(baseNode)) {
-                baseNode.commentBefore = GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT;
-            }
-        }
-    }
-
-    const output = doc.toString(YAML_DUMP_OPTIONS);
-    fs.writeFileSync(fpath, output, "utf8");
-}

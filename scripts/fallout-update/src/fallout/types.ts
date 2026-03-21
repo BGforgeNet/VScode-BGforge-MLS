@@ -50,16 +50,6 @@ export interface FalloutArg {
     readonly doc: string;
 }
 
-import type { HighlightPattern } from "../../../utils/src/yaml-helpers.ts";
-export type { HighlightPattern };
-
-/** Named-argument payload for selective tmLanguage stanza updates. */
-export interface FalloutHighlightDumpInput {
-    readonly baseFunctionPatterns?: readonly HighlightPattern[];
-    readonly sfallFunctionPatterns?: readonly HighlightPattern[];
-    readonly hookPatterns?: readonly HighlightPattern[];
-}
-
 /** Completion type constants matching the LSP extension's type enum */
 export const COMPLETION_TYPE_FUNCTION = 3;
 export const COMPLETION_TYPE_CONSTANT = 21;
@@ -71,9 +61,7 @@ export const SFALL_HOOKS_STANZA = FALLOUT_SSL_STANZAS.hooks;
 /** Repository stanza names in the highlight YAML */
 export const HIGHLIGHT_STANZAS = {
     falloutBaseFunctions: "fallout-base-functions",
-    sfallFunctions: FALLOUT_SSL_STANZAS.sfall_functions,
+    sfallFunctions: "sfall-functions",
     hooks: FALLOUT_SSL_STANZAS.hooks,
 } as const;
 
-export const GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT =
-    " This stanza is generated from server/data/fallout-ssl-base.yml.\n Do not edit manually.";

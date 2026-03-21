@@ -2656,16 +2656,6 @@
         }
     },
     {
-        "label": "HOOK_DEPRECATED HOOKS",
-        "kind": 21,
-        "source": "builtin",
-        "category": "hooks",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nHOOK_DEPRECATED HOOKS\n```\n* `hs_hexmoveblocking.int`\n* `hs_hexaiblocking.int`\n* `hs_hexshootblocking.int`\n* `hs_hexsightblocking.int`\n\nRun when checking to see if a hex blocks movement or shooting. (or ai-ing, presumably...)\n\n__NOTE:__ These hook scripts can become very CPU-intensive and you should avoid using them.\nFor this reason, these hooks are not thoroughly supported in sfall, and may be removed in future versions.<br>\nIf you want to check if some tile or path is blocked, use functions: `obj_blocking_tile`, `obj_blocking_line`, `path_find_to`.<br>\nIf you want script to be called every time NPC moves by hex in combat, use `HOOK_MOVECOST` hook.\n\n```\nCritter arg0 - the critter doing the moving\nint     arg1 - the tile number being checked\nint     arg2 - the elevation being checked\nint     arg3 - 1 if the hex would normally be blocking\n\nObj     ret0 - 0 if the hex doesn't block, or any sort of object pointer if it does\n```\n"
-        }
-    },
-    {
         "label": "HOOK_DESCRIPTIONOBJ",
         "kind": 21,
         "source": "builtin",
@@ -3337,16 +3327,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid SayStartPos(int position)\n```\nInitiates a new dialog sequence starting at the specified position index."
-        }
-    },
-    {
-        "label": "^",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nx^y\n```\nExponentiation. Use as any other arithmetic operator, like `5^(1/3)`.\nIf exponent is an integer, you can use a negative base, otherwise you will get \"NaN\" with a negative base.\nIf both arguments are integers, the result will be an integer.\n"
         }
     },
     {
@@ -6950,26 +6930,6 @@
         }
     },
     {
-        "label": "sfall_func0(\"hide_window\")",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid sfall_func0(\"hide_window\")\n```\nHides currently active (selected) script window."
-        }
-    },
-    {
-        "label": "sfall_func0(\"show_window\")",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid sfall_func0(\"show_window\")\n```\nDisplays the script window previously hidden with the `sfall_func0(\"hide_window\")` function."
-        }
-    },
-    {
         "label": "sfall_func1",
         "kind": 3,
         "source": "builtin",
@@ -6977,36 +6937,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nany sfall_func1(char* funcName, arg1)\n```\nCalls script function with given name and 1 argument."
-        }
-    },
-    {
-        "label": "sfall_func1(\"hide_window\", string winName)",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid sfall_func0(\"hide_window\")\n```\nHides the specified script window.\n- winName: the window name, assigned to the window by the `CreateWin/create_win` function\n"
-        }
-    },
-    {
-        "label": "sfall_func1(\"remove_timer_event\", int fixedParam)",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid sfall_func1(\"remove_timer_event\", int fixedParam)\n```\nRemoves all timer events with the specified `fixedParam` value for the current global script."
-        }
-    },
-    {
-        "label": "sfall_func1(\"show_window\", string winName)",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid sfall_func1(\"show_window\", string winName)\n```\nDisplays the specified hidden script window.\n`winName`: the window name, assigned to the window by the `CreateWin/create_win` function\n"
         }
     },
     {
@@ -7020,16 +6950,6 @@
         }
     },
     {
-        "label": "sfall_func2(\"string_compare\", string str1, string str2)",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nbool sfall_func2(\"string_compare\", string str1, string str2)\n```\nCompares two strings case-insensitive, and returns `True` if the two strings are matched."
-        }
-    },
-    {
         "label": "sfall_func3",
         "kind": 3,
         "source": "builtin",
@@ -7037,16 +6957,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nany sfall_func3(char* funcName, arg1, arg2, arg3)\n```\nCalls script function with given name and 3 arguments."
-        }
-    },
-    {
-        "label": "sfall_func3(\"string_compare\", string str1, string str2, int codePage)",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nbool sfall_func3(\"string_compare\", string str1, string str2, int codePage)\n```\nCompares two strings case-insensitive, and returns `True` if the two strings are matched\n- `codePage`: code page number to properly compare national characters in the range 128-255 of the ASCII code table\navailable encodings: 1250-1252, 866\n"
         }
     },
     {
@@ -7437,16 +7347,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid sfall_func2(\"unwield_slot\", object critter, int slot)\n```\nunequips an item from the specified slot for a critter or the player\ncan take off player's equipped item when the inventory is opened, or the player is in the barter screen\nslot: 0 - armor slot, 1 - right slot, 2 - left slot (see `INVEN_TYPE_*` in **define.h**)\n"
-        }
-    },
-    {
-        "label": "void sfall_func0(\"remove_timer_event\")",
-        "kind": 3,
-        "source": "builtin",
-        "category": "sfall_functions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid sfall_func0(\"remove_timer_event\")\n```\nClears all set timer events for the current global script."
         }
     },
     {
