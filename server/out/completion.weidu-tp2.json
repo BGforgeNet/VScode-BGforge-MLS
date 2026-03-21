@@ -1270,6 +1270,17 @@
         }
     },
     {
+        "label": "BEGIN",
+        "kind": 14,
+        "source": "builtin",
+        "category": "component",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform."
+        },
+        "detail": "BEGIN componentName [ component flags... ] TP2 Action list"
+    },
+    {
         "label": "DEPRECATED",
         "kind": 14,
         "source": "builtin",
@@ -1910,17 +1921,6 @@
         }
     },
     {
-        "label": "BEGIN",
-        "kind": 14,
-        "source": "builtin",
-        "category": "flag",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform."
-        },
-        "detail": "BEGIN componentName [ component flags... ] TP2 Action list"
-    },
-    {
         "label": "MODDER",
         "kind": 14,
         "source": "builtin",
@@ -2036,6 +2036,17 @@
         "kind": 14,
         "source": "builtin",
         "category": "keywords"
+    },
+    {
+        "label": "BEGIN",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBEGIN ... END\n```"
+        },
+        "detail": "BEGIN ... END"
     },
     {
         "label": "DEFAULT",
@@ -4073,7 +4084,7 @@
         "category": "prologue",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nAUTHOR\n```\nThe AUTHOR directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the \"emailAddress\" value."
+            "value": "```weidu-tp2-tooltip\nAUTHOR\n```\nThe AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the \"emailAddress\" value."
         }
     },
     {
@@ -4084,6 +4095,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nBACKUP\n```\nThe BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing."
+        }
+    },
+    {
+        "label": "SUPPORT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "prologue",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSUPPORT\n```\nThe AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the \"emailAddress\" value."
         }
     },
     {
@@ -4295,13 +4316,6 @@
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nBATTLE_CRY5\n```\n0xD8"
         }
-    },
-    {
-        "label": "BEGIN",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "detail": "BEGIN"
     },
     {
         "label": "BIFF_IS_COMPRESSED",

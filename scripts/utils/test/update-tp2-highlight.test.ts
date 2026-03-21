@@ -25,7 +25,7 @@ describe("buildTp2HighlightPatterns", () => {
     });
 
     it("generates patterns for all mapped stanzas", () => {
-        for (const stanza of ["action", "patch", "patch_byte", "patch_long", "patch_string"]) {
+        for (const stanza of ["action", "array_sort_type", "caching", "component_flag", "flag", "language", "opt_case", "opt_exact", "opt_glob", "patch", "patch_byte", "patch_long", "patch_string", "prologue", "when"]) {
             const patterns = buildTp2HighlightPatterns(DATA, stanza);
             expect(patterns.length).toBeGreaterThan(0);
         }

@@ -28,7 +28,7 @@ import { WEIDU_TP2_STANZAS } from "./stanza-names";
  * and shared/stanza-names.ts together.
  *
  * Category groups:
- * - Structural: Prologue, Flag, ComponentFlag, Language - File/component structure directives
+ * - Structural: Prologue, Flag, Component, ComponentFlag, Language - File/component structure directives
  * - Commands: Action, Patch - Context-specific statements (value positions)
  * - Functions: ActionFunctions, PatchFunctions - User-defined functions
  * - Values: Constants, Vars, Value, When, OptGlob, OptCase, OptExact, Caching, ArraySortType
@@ -41,6 +41,7 @@ export const CompletionCategory = {
     // Structural directives
     Prologue: "prologue",
     Flag: "flag",
+    Component: WEIDU_TP2_STANZAS.component,
     ComponentFlag: WEIDU_TP2_STANZAS.component_flag,
     Language: "language",
     // Action context (value position)

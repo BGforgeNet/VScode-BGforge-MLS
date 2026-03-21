@@ -749,6 +749,14 @@ caching:
       doc: |-
         A cached result is cleared and the result is calculated anew.
 
+component:
+  type: 14 # keyword
+  items:
+    - name: BEGIN
+      detail: BEGIN componentName [ component flags... ] TP2 Action list
+      doc: |-
+        Starts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform.
+
 component_flag:
   type: 14 # keyword
   items:
@@ -1058,11 +1066,6 @@ flag:
         and `baz` is your subdirectory, your `AUTO_TRA` might look
         like `AUTO_TRA ~foo/bar~ ~baz~`.
 
-    - name: BEGIN
-      detail: BEGIN componentName [ component flags... ] TP2 Action list
-      doc: |-
-        Starts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform.
-
     - name: MODDER
       detail: MODDER String list
       doc: |-
@@ -1123,6 +1126,9 @@ keywords:
   type: 14 # keyword
   items:
     - name: AS
+
+    - name: BEGIN
+      detail: BEGIN ... END
 
     - name: DEFAULT
       detail: PATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END
@@ -3191,11 +3197,15 @@ prologue:
   items:
     - name: AUTHOR
       doc: |-
-        The AUTHOR directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
+        The AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
 
     - name: BACKUP
       doc: |-
         The BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing.
+
+    - name: SUPPORT
+      doc: |-
+        The AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
 
 value:
   type: 14 # keyword
@@ -3303,8 +3313,6 @@ value:
     - name: BATTLE_CRY5
       doc: |-
         0xD8
-
-    - name: BEGIN
 
     - name: BIFF_IS_COMPRESSED
       detail: BIFF_IS_COMPRESSED fileName

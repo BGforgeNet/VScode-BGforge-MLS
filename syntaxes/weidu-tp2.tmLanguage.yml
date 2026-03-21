@@ -72,49 +72,53 @@ repository:
       - match: \b(\w+)\b
         name: entity.name.class.weidu-tp2.patch-function-name
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-file:
     name: keyword.other.weidu-tp2
     patterns:
+      - match: \b(AUTHOR)\b
       - match: \b(BACKUP)\b
-      - match: \b(AUTHOR|SUPPORT)\b
+      - match: \b(SUPPORT)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-flag:
     name: keyword.other.weidu-tp2
     patterns:
-      - match: \b(AUTO_TRA)\b
       - match: \b(ALLOW_MISSING)\b
-      - match: \b(ASK_EVERY_COMPONENT)\b
       - match: \b(ALWAYS)\b
-        name: keyword.control.weidu-tp2
-      - match: \b(README)\b
-      - match: \b(UNINSTALL_ORDER)\b
+      - match: \b(ASK_EVERY_COMPONENT)\b
+      - match: \b(AUTO_EVAL_STRINGS)\b
+      - match: \b(AUTO_TRA)\b
       - match: \b(MODDER)\b
-      - match: \b(VERSION)\b
-      - match: \b(SCRIPT_STYLE)\b
       - match: \b(NO_IF_EVAL_BUG)\b
       - match: \b(QUICK_MENU)\b
-      - match: \b(AUTO_EVAL_STRINGS)\b
+      - match: \b(README)\b
+      - match: \b(SCRIPT_STYLE)\b
+      - match: \b(UNINSTALL_ORDER)\b
+      - match: \b(VERSION)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-language:
     name: keyword.other.weidu-tp2
     patterns:
       - match: \b(LANGUAGE)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-component-flag:
     name: keyword.other.weidu-tp2
     patterns:
       - match: \b(DEPRECATED)\b
-      - match: \b(REQUIRE_COMPONENT)\b
+      - match: \b(DESIGNATED)\b
       - match: \b(FORBID_COMPONENT)\b
-      - match: \b(REQUIRE_PREDICATE)\b
-      - match: \b(SUBCOMPONENT)\b
       - match: \b(FORCED_SUBCOMPONENT)\b
       - match: \b(GROUP)\b
       - match: \b(INSTALL_BY_DEFAULT)\b
-      - match: \b(DESIGNATED)\b
-      - match: \b(NO_LOG_RECORD)\b
       - match: \b(LABEL)\b
       - match: \b(METADATA)\b
+      - match: \b(NO_LOG_RECORD)\b
+      - match: \b(REQUIRE_COMPONENT)\b
+      - match: \b(REQUIRE_PREDICATE)\b
+      - match: \b(SUBCOMPONENT)\b
 
   # Color constant-like variable names after SET/SPRINT keywords.
   # Constant = first word fully uppercase (e.g., MAX_LEVEL, MOD_folder).
@@ -187,6 +191,7 @@ repository:
           '1':
             name: entity.name.function.weidu-tp2.patch
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-action:
     name: support.function.weidu-tp2.action
     patterns:
@@ -306,37 +311,43 @@ repository:
       - match: \b(WITH_SCOPE)\b
       - match: \b(WITH_TRA)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-optglob:
     name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(GLOB)\b
       - match: \b(NOGLOB)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-optcase:
     name: constant.language.flag.weidu-tp2
     patterns:
-      - match: \b(CASE_SENSITIVE)\b
       - match: \b(CASE_INSENSITIVE)\b
+      - match: \b(CASE_SENSITIVE)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-optexact:
     name: constant.language.flag.weidu-tp2
     patterns:
-      - match: \b(EXACT_MATCH)\b
       - match: \b(EVALUATE_REGEXP)\b
-      - match: \b(EXACT)\b # AT_EXIT
+      - match: \b(EXACT)\b
+      - match: \b(EXACT_MATCH)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-arrarindicessorttype:
     name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(LEXICOGRAPHICALLY)\b
       - match: \b(NUMERICALLY)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-caching:
     name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(CACHE)\b
       - match: \b(CLEAR)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-patch:
     name: entity.name.function.weidu-tp2.patch
     patterns:
@@ -473,6 +484,7 @@ repository:
       - include: "#weidu-tp2-patch-long"
       - include: "#weidu-tp2-patch-string"
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-patch-byte:
     name: entity.name.function.weidu-tp2.patch-byte
     patterns:
@@ -480,6 +492,7 @@ repository:
       - match: \b(READ_SBYTE)\b
       - match: \b(WRITE_BYTE)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-patch-long:
     name: entity.name.function.weidu-tp2.patch-long
     patterns:
@@ -487,6 +500,7 @@ repository:
       - match: \b(READ_SLONG)\b
       - match: \b(WRITE_LONG)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-patch-string:
     name: entity.name.function.weidu-tp2.patch-string
     patterns:
@@ -569,16 +583,17 @@ repository:
       - match: \b(FL#FJ_CRE_VALIDITY)\b
       - match: \b(FL#FJ_CRE_REINDEX)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-when:
     name: keyword.control.when.weidu-tp2
     patterns:
+      - match: \b(BUT_ONLY)\b
+      - match: \b(BUT_ONLY_IF_IT_CHANGES)\b
+      - match: \b(IF)\b
+      - match: \b(IF_EXISTS)\b
       - match: \b(IF_SIZE_IS)\b
       - match: \b(I_S_I)\b
-      - match: \b(IF)\b
       - match: \b(UNLESS)\b
-      - match: \b(BUT_ONLY_IF_IT_CHANGES)\b
-      - match: \b(BUT_ONLY)\b
-      - match: \b(IF_EXISTS)\b
 
   weidu-tp2-value-operators:
     name: keyword.control.value.weidu-tp2

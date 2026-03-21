@@ -37,6 +37,7 @@ export const WEIDU_TP2_STANZAS = {
     action_functions: "action_functions",
     action_macros: "action_macros",
     array_sort_type: "array_sort_type",
+    component: "component",
     component_flag: "component_flag",
     dimorphic_functions: "dimorphic_functions",
     func_var_keyword: "func_var_keyword",

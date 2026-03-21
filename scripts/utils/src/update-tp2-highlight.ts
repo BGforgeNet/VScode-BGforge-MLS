@@ -1,6 +1,6 @@
 /**
- * Updates weidu-tp2.tmLanguage.yml action and patch highlight stanzas
- * from server/data/weidu-tp2-base.yml.
+ * Updates weidu-tp2.tmLanguage.yml highlight stanzas (actions, patches,
+ * flags, options, etc.) from server/data/weidu-tp2-base.yml.
  *
  * Generates sorted \b(NAME)\b patterns from YAML data stanzas, replacing
  * the hand-maintained pattern lists. Non-match entries (include directives)
@@ -26,10 +26,20 @@ interface HighlightPattern {
 /** Stanza-to-TextMate mapping: YAML data stanza name -> TextMate repository key. */
 const STANZA_MAP: ReadonlyMap<string, string> = new Map([
     ["action", "weidu-tp2-action"],
+    ["array_sort_type", "weidu-tp2-arrarindicessorttype"],
+    ["caching", "weidu-tp2-caching"],
+    ["component_flag", "weidu-tp2-component-flag"],
+    ["flag", "weidu-tp2-flag"],
+    ["language", "weidu-tp2-language"],
+    ["opt_case", "weidu-tp2-optcase"],
+    ["opt_exact", "weidu-tp2-optexact"],
+    ["opt_glob", "weidu-tp2-optglob"],
     ["patch", "weidu-tp2-patch"],
     ["patch_byte", "weidu-tp2-patch-byte"],
     ["patch_long", "weidu-tp2-patch-long"],
     ["patch_string", "weidu-tp2-patch-string"],
+    ["prologue", "weidu-tp2-file"],
+    ["when", "weidu-tp2-when"],
 ]);
 
 export function buildTp2HighlightPatterns(

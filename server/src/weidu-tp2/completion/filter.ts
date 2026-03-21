@@ -56,6 +56,7 @@ const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[
     // Non-callable categories: excluded from all name contexts
     [CompletionCategory.Prologue]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName, CompletionContext.FuncParamValue],
     [CompletionCategory.Flag]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName, CompletionContext.FuncParamValue],
+    [CompletionCategory.Component]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName, CompletionContext.FuncParamValue],
     [CompletionCategory.ComponentFlag]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName, CompletionContext.FuncParamValue],
     [CompletionCategory.Language]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName, CompletionContext.FuncParamValue],
     [CompletionCategory.Action]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName, CompletionContext.FuncParamValue],

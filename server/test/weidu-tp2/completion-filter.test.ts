@@ -106,6 +106,37 @@ describe("completion-filter", () => {
     });
 
     // =========================================================================
+    // Structural categories (excluded from name + param contexts)
+    // =========================================================================
+    describe("structural category exclusions", () => {
+        const structuralCategories = [
+            CompletionCategory.Prologue,
+            CompletionCategory.Flag,
+            CompletionCategory.Component,
+            CompletionCategory.ComponentFlag,
+            CompletionCategory.Language,
+        ];
+
+        for (const category of structuralCategories) {
+            describe(`${category} exclusions`, () => {
+                const exclusions = CATEGORY_EXCLUSIONS[category]!;
+
+                it("should be excluded from all name contexts", () => {
+                    expect(exclusions).toContain(CompletionContext.LafName);
+                    expect(exclusions).toContain(CompletionContext.LpfName);
+                    expect(exclusions).toContain(CompletionContext.LamName);
+                    expect(exclusions).toContain(CompletionContext.LpmName);
+                });
+
+                it("should be excluded from both param contexts", () => {
+                    expect(exclusions).toContain(CompletionContext.FuncParamName);
+                    expect(exclusions).toContain(CompletionContext.FuncParamValue);
+                });
+            });
+        }
+    });
+
+    // =========================================================================
     // Value modifier categories
     // =========================================================================
     describe("value modifier exclusions", () => {

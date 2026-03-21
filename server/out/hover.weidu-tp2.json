@@ -761,6 +761,12 @@
             "value": "```weidu-tp2-tooltip\nCLEAR\n```\nA cached result is cleared and the result is calculated anew."
         }
     },
+    "BEGIN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform.\n\n---\n\n```weidu-tp2-tooltip\nBEGIN ... END\n```"
+        }
+    },
     "DEPRECATED": {
         "contents": {
             "kind": "markdown",
@@ -1143,12 +1149,6 @@
         "contents": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nAUTO_TRA path [ subdir ]\n```\nThe `AUTO_TRA` flag is used with the `COMPILE` and\n`EXTEND_TOP (TP2)` `TP2 Action`s. It automatically loads\n`TRA` files that match your `D` files. The\nexpression `%s`, occurring in path, is replaced with the\n`languageDirectory` of the `LANGUAGE` the user\nselected. The `TRA` file loaded by `AUTO_TRA` takes\nprecedence over all other `TRA` files. Variables are\nevaluated when the action is processed. If a subdirectory is\nprovided, any matching `TRA` file in this directory is loaded\nafter the corresponding `TRA` file in the normal directory on\n**EE-type** games. Only the name of the subdirectory itself should\nbe given. If `foo` is your mod folder, `bar` is your `TRA` folder\nand `baz` is your subdirectory, your `AUTO_TRA` might look\nlike `AUTO_TRA ~foo/bar~ ~baz~`."
-        }
-    },
-    "BEGIN": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform."
         }
     },
     "MODDER": {
@@ -2426,13 +2426,19 @@
     "AUTHOR": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nAUTHOR\n```\nThe AUTHOR directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the \"emailAddress\" value."
+            "value": "```weidu-tp2-tooltip\nAUTHOR\n```\nThe AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the \"emailAddress\" value."
         }
     },
     "BACKUP": {
         "contents": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nBACKUP\n```\nThe BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing."
+        }
+    },
+    "SUPPORT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSUPPORT\n```\nThe AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the \"emailAddress\" value."
         }
     },
     "ABS": {

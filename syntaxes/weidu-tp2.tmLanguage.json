@@ -168,11 +168,15 @@
       "name": "keyword.other.weidu-tp2",
       "patterns": [
         {
+          "match": "\\b(AUTHOR)\\b",
+          "name": "keyword.other.weidu-tp2"
+        },
+        {
           "match": "\\b(BACKUP)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(AUTHOR|SUPPORT)\\b",
+          "match": "\\b(SUPPORT)\\b",
           "name": "keyword.other.weidu-tp2"
         }
       ]
@@ -181,11 +185,11 @@
       "name": "keyword.other.weidu-tp2",
       "patterns": [
         {
-          "match": "\\b(AUTO_TRA)\\b",
+          "match": "\\b(ALLOW_MISSING)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(ALLOW_MISSING)\\b",
+          "match": "\\b(ALWAYS)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
@@ -193,27 +197,15 @@
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(ALWAYS)\\b",
-          "name": "keyword.control.weidu-tp2"
-        },
-        {
-          "match": "\\b(README)\\b",
+          "match": "\\b(AUTO_EVAL_STRINGS)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(UNINSTALL_ORDER)\\b",
+          "match": "\\b(AUTO_TRA)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
           "match": "\\b(MODDER)\\b",
-          "name": "keyword.other.weidu-tp2"
-        },
-        {
-          "match": "\\b(VERSION)\\b",
-          "name": "keyword.other.weidu-tp2"
-        },
-        {
-          "match": "\\b(SCRIPT_STYLE)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
@@ -225,7 +217,19 @@
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(AUTO_EVAL_STRINGS)\\b",
+          "match": "\\b(README)\\b",
+          "name": "keyword.other.weidu-tp2"
+        },
+        {
+          "match": "\\b(SCRIPT_STYLE)\\b",
+          "name": "keyword.other.weidu-tp2"
+        },
+        {
+          "match": "\\b(UNINSTALL_ORDER)\\b",
+          "name": "keyword.other.weidu-tp2"
+        },
+        {
+          "match": "\\b(VERSION)\\b",
           "name": "keyword.other.weidu-tp2"
         }
       ]
@@ -247,19 +251,11 @@
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(REQUIRE_COMPONENT)\\b",
+          "match": "\\b(DESIGNATED)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
           "match": "\\b(FORBID_COMPONENT)\\b",
-          "name": "keyword.other.weidu-tp2"
-        },
-        {
-          "match": "\\b(REQUIRE_PREDICATE)\\b",
-          "name": "keyword.other.weidu-tp2"
-        },
-        {
-          "match": "\\b(SUBCOMPONENT)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
@@ -275,7 +271,11 @@
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(DESIGNATED)\\b",
+          "match": "\\b(LABEL)\\b",
+          "name": "keyword.other.weidu-tp2"
+        },
+        {
+          "match": "\\b(METADATA)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
@@ -283,11 +283,15 @@
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(LABEL)\\b",
+          "match": "\\b(REQUIRE_COMPONENT)\\b",
           "name": "keyword.other.weidu-tp2"
         },
         {
-          "match": "\\b(METADATA)\\b",
+          "match": "\\b(REQUIRE_PREDICATE)\\b",
+          "name": "keyword.other.weidu-tp2"
+        },
+        {
+          "match": "\\b(SUBCOMPONENT)\\b",
           "name": "keyword.other.weidu-tp2"
         }
       ]
@@ -885,11 +889,11 @@
       "name": "constant.language.flag.weidu-tp2",
       "patterns": [
         {
-          "match": "\\b(CASE_SENSITIVE)\\b",
+          "match": "\\b(CASE_INSENSITIVE)\\b",
           "name": "constant.language.flag.weidu-tp2"
         },
         {
-          "match": "\\b(CASE_INSENSITIVE)\\b",
+          "match": "\\b(CASE_SENSITIVE)\\b",
           "name": "constant.language.flag.weidu-tp2"
         }
       ]
@@ -898,15 +902,15 @@
       "name": "constant.language.flag.weidu-tp2",
       "patterns": [
         {
-          "match": "\\b(EXACT_MATCH)\\b",
-          "name": "constant.language.flag.weidu-tp2"
-        },
-        {
           "match": "\\b(EVALUATE_REGEXP)\\b",
           "name": "constant.language.flag.weidu-tp2"
         },
         {
           "match": "\\b(EXACT)\\b",
+          "name": "constant.language.flag.weidu-tp2"
+        },
+        {
+          "match": "\\b(EXACT_MATCH)\\b",
           "name": "constant.language.flag.weidu-tp2"
         }
       ]
@@ -1794,6 +1798,22 @@
       "name": "keyword.control.when.weidu-tp2",
       "patterns": [
         {
+          "match": "\\b(BUT_ONLY)\\b",
+          "name": "keyword.control.when.weidu-tp2"
+        },
+        {
+          "match": "\\b(BUT_ONLY_IF_IT_CHANGES)\\b",
+          "name": "keyword.control.when.weidu-tp2"
+        },
+        {
+          "match": "\\b(IF)\\b",
+          "name": "keyword.control.when.weidu-tp2"
+        },
+        {
+          "match": "\\b(IF_EXISTS)\\b",
+          "name": "keyword.control.when.weidu-tp2"
+        },
+        {
           "match": "\\b(IF_SIZE_IS)\\b",
           "name": "keyword.control.when.weidu-tp2"
         },
@@ -1802,23 +1822,7 @@
           "name": "keyword.control.when.weidu-tp2"
         },
         {
-          "match": "\\b(IF)\\b",
-          "name": "keyword.control.when.weidu-tp2"
-        },
-        {
           "match": "\\b(UNLESS)\\b",
-          "name": "keyword.control.when.weidu-tp2"
-        },
-        {
-          "match": "\\b(BUT_ONLY_IF_IT_CHANGES)\\b",
-          "name": "keyword.control.when.weidu-tp2"
-        },
-        {
-          "match": "\\b(BUT_ONLY)\\b",
-          "name": "keyword.control.when.weidu-tp2"
-        },
-        {
-          "match": "\\b(IF_EXISTS)\\b",
           "name": "keyword.control.when.weidu-tp2"
         }
       ]
