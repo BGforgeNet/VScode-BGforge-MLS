@@ -344,7 +344,7 @@ if (See(Player1)) {
 // -> IF See(Player1) THEN Spell(Myself, WIZARD_SHIELD) END
 ```
 
-Enums from ielib `.d.ts` files have their prefix stripped: `ClassID.ANKHEG` becomes `ANKHEG`.
+Enums from iets `.d.ts` files have their prefix stripped: `ClassID.ANKHEG` becomes `ANKHEG`.
 
 ### `@tra` Tag
 
@@ -361,9 +361,9 @@ Must be in a JSDoc comment (`/** ... */`).
 Engine builtins (triggers, actions, objects, constants) come from [IETS](https://github.com/BGforgeNet/iets):
 
 ```typescript
-import { See, Attack, Global, SetGlobal } from "ielib/baf.d";
-import { Player1, Myself } from "ielib/objects.d";
-import { ClassID } from "ielib/class.ids";
+import { See, Attack, Global, SetGlobal } from "@bgforge/iets/baf.d";
+import { Player1, Myself } from "@bgforge/iets/objects.d";
+import { ClassID } from "@bgforge/iets/class.ids";
 ```
 
 Local `.ts` and `.tbaf` files can also be imported:

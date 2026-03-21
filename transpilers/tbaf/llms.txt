@@ -132,14 +132,14 @@ Only two-element numeric arrays are converted. [1, 2, 3] and [PC] are unchanged.
   enum Spell { Shield = "WIZARD_SHIELD", Armor = "WIZARD_ARMOR" }
   Spell.Shield -> WIZARD_SHIELD
 
-Enums from ielib .d.ts files have their prefix stripped: ClassID.ANKHEG -> ANKHEG
+Enums from iets .d.ts files have their prefix stripped: ClassID.ANKHEG -> ANKHEG
 
 === IMPORTS ===
 
-Engine builtins come from ielib:
-  import { See, Attack, Global } from "ielib/baf.d";
-  import { Player1, Myself } from "ielib/objects.d";
-  import { ClassID } from "ielib/class.ids";
+Engine builtins come from iets:
+  import { See, Attack, Global } from "@bgforge/iets/baf.d";
+  import { Player1, Myself } from "@bgforge/iets/objects.d";
+  import { ClassID } from "@bgforge/iets/class.ids";
 
 Local files can also be imported:
   import { myHelper } from "./helpers";
@@ -176,8 +176,8 @@ Object literals           Not meaningful in BAF
 === EXAMPLE ===
 
 /** @tra smarter_mages.tra */
-import { See, Attack, Global, SetGlobal, Spell } from "ielib/baf.d";
-import { Player1, Myself } from "ielib/objects.d";
+import { See, Attack, Global, SetGlobal, Spell } from "@bgforge/iets/baf.d";
+import { Player1, Myself } from "@bgforge/iets/objects.d";
 
 const enemies = ["Player1", "Player2", "Player3"];
 

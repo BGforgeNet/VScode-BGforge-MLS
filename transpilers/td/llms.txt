@@ -184,8 +184,8 @@ GLOBAL, LOCALS, MYAREA are auto-quoted. Don't double-quote them.
 
 === IMPORTS ===
 
-import { tra, tlk, obj } from "ielib";            // text/object helpers
-import { Global, SetGlobal } from "ielib/trig.d";  // engine triggers/actions
+import { tra, tlk, obj } from "@bgforge/iets";            // text/object helpers
+import { Global, SetGlobal } from "@bgforge/iets/trig.d";  // engine triggers/actions
 import { helper } from "./my-lib";                  // local files
 
 === ORPHAN DETECTION ===
@@ -207,8 +207,8 @@ you forgot to include. Unreferenced functions are also removed from the output.
 === EXAMPLE ===
 
 /** @tra my_mod.tra */
-import { tra, obj } from "ielib";
-import { Global, SetGlobal, See, InParty } from "ielib/triggers.d";
+import { tra, obj } from "@bgforge/iets";
+import { Global, SetGlobal, See, InParty } from "@bgforge/iets/triggers.d";
 
 function greeting() {
     say(tra(1));

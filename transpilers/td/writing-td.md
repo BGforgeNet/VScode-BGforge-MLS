@@ -677,9 +677,9 @@ Global("quest", GLOBAL, 1);
 Engine builtins come from [IETS](https://github.com/BGforgeNet/iets):
 
 ```typescript
-import { tra, tlk, obj } from "ielib";
-import { Global, SetGlobal, See } from "ielib/triggers.d";
-import { Player1, Myself } from "ielib/objects.d";
+import { tra, tlk, obj } from "@bgforge/iets";
+import { Global, SetGlobal, See } from "@bgforge/iets/triggers.d";
+import { Player1, Myself } from "@bgforge/iets/objects.d";
 ```
 
 Local files can also be imported:
