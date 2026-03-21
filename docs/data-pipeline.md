@@ -33,8 +33,8 @@ generate-data.sh   (runs at build time — produces all runtime outputs)
                           └──► signature.fallout-ssl.json
 
   fallout-ssl-base.yml ──► extract-engine-proc-docs.ts
-                                  ├──► engine-proc-docs.json
-                                  └──► engine-procedures.json
+                                  ├──► engine-proc-docs.json    (TSSL plugin: hover docs for engine procedures)
+                                  └──► engine-procedures.json   (server tree-shaking + TSSL plugin TS6133 suppression)
 
   fallout-ssl-base.yml  ──► update-fallout-base-functions-highlight.ts ──┐
   fallout-ssl-sfall.yml ──► update-sfall-highlight.ts                    ├──► fallout-ssl.tmLanguage.yml
