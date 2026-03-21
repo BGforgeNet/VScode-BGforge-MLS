@@ -2071,7 +2071,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nLANGUAGE languageName languageDirectory defaultLanguageTRA list\n```\nThe languageName is the name of the language as it is presented to the user. \"American English\" and \"Italiano\" are examples. The languageDirectory is the name of the subdirectory in which you have stored the TRA files for that language. Examples include \"american\" and \"spanish\". The variable named LANGUAGE is set to languageDirectory if the user selects this language.. Finally, all of the TRA files in the defaultLanguageTRA list are loaded as soon as the user selects a language."
-        }
+        },
+        "detail": "LANGUAGE languageName languageDirectory defaultLanguageTRA list"
     },
     {
         "label": "CASE_INSENSITIVE",
@@ -6232,73 +6233,73 @@
         }
     },
     {
-        "label": "%COMPONENT_NUMBER%",
+        "label": "BASH_FOR_DIRECTORY",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%COMPONENT_NUMBER%\n```\nThe special variable `COMPONENT_NUMBER` is set to the number of the component being installed."
+            "value": "```weidu-tp2-tooltip\nBASH_FOR_DIRECTORY\n```\nSet by `ACTION_BASH_FOR`. Directory of the matched file. For `somedir/yourfile.cre`, set to `somedir`."
         }
     },
     {
-        "label": "%INTERACTIVE%",
+        "label": "BASH_FOR_EXT",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%INTERACTIVE%\n```\nThe special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall)."
+            "value": "```weidu-tp2-tooltip\nBASH_FOR_EXT\n```\nSet by `ACTION_BASH_FOR`. Extension of the matched file. For `somedir/yourfile.cre`, set to `cre`."
         }
     },
     {
-        "label": "%MOD_FOLDER%",
+        "label": "BASH_FOR_FILE",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%MOD_FOLDER%\n```\nThe `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).\nAs of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**."
+            "value": "```weidu-tp2-tooltip\nBASH_FOR_FILE\n```\nSet by `ACTION_BASH_FOR`. Filename with extension of the matched file. For `somedir/yourfile.cre`, set to `yourfile.cre`."
         }
     },
     {
-        "label": "%WEIDU_ARCH%",
+        "label": "BASH_FOR_FILESPEC",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%WEIDU_ARCH%\n```\nThe special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary."
+            "value": "```weidu-tp2-tooltip\nBASH_FOR_FILESPEC\n```\nSet by `ACTION_BASH_FOR`. Full path of the matched file. For `somedir/yourfile.cre`, set to `somedir/yourfile.cre`."
         }
     },
     {
-        "label": "%WEIDU_EXECUTABLE%",
+        "label": "BASH_FOR_RES",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%WEIDU_EXECUTABLE%\n```\nThe special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance."
+            "value": "```weidu-tp2-tooltip\nBASH_FOR_RES\n```\nSet by `ACTION_BASH_FOR`. Filename without extension of the matched file. For `somedir/yourfile.cre`, set to `yourfile`."
         }
     },
     {
-        "label": "%WEIDU_OS%",
+        "label": "BASH_FOR_SIZE",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%WEIDU_OS%\n```\nThe special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled."
+            "value": "```weidu-tp2-tooltip\nBASH_FOR_SIZE\n```\nSet by `ACTION_BASH_FOR`. Size of the matched file in bytes."
         }
     },
     {
-        "label": "%WEIDU_VER%",
+        "label": "COMPONENT_NUMBER",
         "kind": 21,
         "source": "builtin",
         "category": "vars",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\n%WEIDU_VER%\n```\nThe special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`)."
+            "value": "```weidu-tp2-tooltip\nCOMPONENT_NUMBER\n```\nThe special variable `COMPONENT_NUMBER` is set to the number of the component being installed."
         }
     },
     {
@@ -6349,6 +6350,47 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nDEST_RES\n```\nSet by `COPY_*` family of functions. Like `SOURCE_RES`, but based on `toFile`."
+        }
+    },
+    {
+        "label": "INTERACTIVE",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINTERACTIVE\n```\nThe special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall)."
+        }
+    },
+    {
+        "label": "LANGUAGE",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nLANGUAGE\n```\nSet to the `languageDirectory` value when the user selects a language in the `LANGUAGE` declaration."
+        },
+        "detail": "LANGUAGE"
+    },
+    {
+        "label": "MOD_FOLDER",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nMOD_FOLDER\n```\nThe `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).\nAs of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**."
+        }
+    },
+    {
+        "label": "MOD_VERSION",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nMOD_VERSION\n```\nSet to the string specified by the `VERSION` flag, or to the empty string if `VERSION` is not present."
         }
     },
     {
@@ -6409,6 +6451,76 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nSOURCE_SIZE\n```\nSet by `COPY_*` family of functions. It is set to the size (in bytes) of the source file."
+        }
+    },
+    {
+        "label": "TP2_AUTHOR",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nTP2_AUTHOR\n```\nSet to the `emailAddress` value specified in the `AUTHOR` (or `SUPPORT`) directive."
+        }
+    },
+    {
+        "label": "TP2_BASE_NAME",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nTP2_BASE_NAME\n```\nSet to the name of the TP2 file, excluding any initial `setup-` and file extension. For `setup-mymod.tp2`, set to `mymod`."
+        }
+    },
+    {
+        "label": "TP2_FILE_NAME",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nTP2_FILE_NAME\n```\nSet to the name of the TP2 file. For `setup-mymod.tp2`, set to `setup-mymod.tp2`."
+        }
+    },
+    {
+        "label": "WEIDU_ARCH",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWEIDU_ARCH\n```\nThe special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary."
+        }
+    },
+    {
+        "label": "WEIDU_EXECUTABLE",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWEIDU_EXECUTABLE\n```\nThe special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance."
+        }
+    },
+    {
+        "label": "WEIDU_OS",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWEIDU_OS\n```\nThe special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled."
+        }
+    },
+    {
+        "label": "WEIDU_VER",
+        "kind": 21,
+        "source": "builtin",
+        "category": "vars",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWEIDU_VER\n```\nThe special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`)."
         }
     },
     {

@@ -4219,34 +4219,27 @@ value_operator:
 vars:
   type: 21 # constant
   items:
-    - name: "%COMPONENT_NUMBER%"
+    - name: BASH_FOR_DIRECTORY
+      doc: Set by `ACTION_BASH_FOR`. Directory of the matched file. For `somedir/yourfile.cre`, set to `somedir`.
+
+    - name: BASH_FOR_EXT
+      doc: Set by `ACTION_BASH_FOR`. Extension of the matched file. For `somedir/yourfile.cre`, set to `cre`.
+
+    - name: BASH_FOR_FILE
+      doc: Set by `ACTION_BASH_FOR`. Filename with extension of the matched file. For `somedir/yourfile.cre`, set to `yourfile.cre`.
+
+    - name: BASH_FOR_FILESPEC
+      doc: Set by `ACTION_BASH_FOR`. Full path of the matched file. For `somedir/yourfile.cre`, set to `somedir/yourfile.cre`.
+
+    - name: BASH_FOR_RES
+      doc: Set by `ACTION_BASH_FOR`. Filename without extension of the matched file. For `somedir/yourfile.cre`, set to `yourfile`.
+
+    - name: BASH_FOR_SIZE
+      doc: Set by `ACTION_BASH_FOR`. Size of the matched file in bytes.
+
+    - name: COMPONENT_NUMBER
       doc: |-
         The special variable `COMPONENT_NUMBER` is set to the number of the component being installed.
-
-    - name: "%INTERACTIVE%"
-      doc: |-
-        The special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall).
-
-    - name: "%MOD_FOLDER%"
-      doc: |-
-        The `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).
-        As of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**.
-
-    - name: "%WEIDU_ARCH%"
-      doc: |-
-        The special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
-
-    - name: "%WEIDU_EXECUTABLE%"
-      doc: |-
-        The special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance.
-
-    - name: "%WEIDU_OS%"
-      doc: |-
-        The special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
-
-    - name: "%WEIDU_VER%"
-      doc: |-
-        The special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`).
 
     - name: DEST_DIRECTORY
       doc: Set by `COPY_*` family of functions. Like `SOURCE_DIRECTORY`, but based on `toFile`.
@@ -4262,6 +4255,21 @@ vars:
 
     - name: DEST_RES
       doc: Set by `COPY_*` family of functions. Like `SOURCE_RES`, but based on `toFile`.
+
+    - name: INTERACTIVE
+      doc: |-
+        The special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall).
+
+    - name: LANGUAGE
+      doc: Set to the `languageDirectory` value when the user selects a language in the `LANGUAGE` declaration.
+
+    - name: MOD_FOLDER
+      doc: |-
+        The `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).
+        As of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**.
+
+    - name: MOD_VERSION
+      doc: Set to the string specified by the `VERSION` flag, or to the empty string if `VERSION` is not present.
 
     - name: SOURCE_DIRECTORY
       doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_DIRECTORY` is `mymod/cre`.
@@ -4280,6 +4288,31 @@ vars:
 
     - name: SOURCE_SIZE
       doc: Set by `COPY_*` family of functions. It is set to the size (in bytes) of the source file.
+
+    - name: TP2_AUTHOR
+      doc: Set to the `emailAddress` value specified in the `AUTHOR` (or `SUPPORT`) directive.
+
+    - name: TP2_BASE_NAME
+      doc: Set to the name of the TP2 file, excluding any initial `setup-` and file extension. For `setup-mymod.tp2`, set to `mymod`.
+
+    - name: TP2_FILE_NAME
+      doc: Set to the name of the TP2 file. For `setup-mymod.tp2`, set to `setup-mymod.tp2`.
+
+    - name: WEIDU_ARCH
+      doc: |-
+        The special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
+
+    - name: WEIDU_EXECUTABLE
+      doc: |-
+        The special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance.
+
+    - name: WEIDU_OS
+      doc: |-
+        The special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
+
+    - name: WEIDU_VER
+      doc: |-
+        The special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`).
 
 when:
   type: 14 # keyword
