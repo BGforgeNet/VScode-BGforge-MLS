@@ -9,6 +9,7 @@
 import fs from "node:fs";
 import YAML, { Document, YAMLMap, YAMLSeq, isMap } from "yaml";
 import { makeBlockScalar, YAML_DUMP_OPTIONS } from "../../../utils/src/yaml-helpers.ts";
+import { updateHighlightStanza } from "../../../utils/src/update-tp2-highlight.ts";
 import type { FalloutCompletionItem, FalloutHighlightDumpInput, HighlightPattern } from "./types.ts";
 import {
     COMPLETION_TYPE_CONSTANT,
@@ -104,11 +105,6 @@ export function dumpFalloutHighlight(
     // Cast to Document to avoid ParsedNode generic constraints on set()
     const doc = YAML.parseDocument(content) as Document;
 
-    const repository = doc.getIn(["repository"], true);
-    if (!isMap(repository)) {
-        throw new Error(`Expected 'repository' map in ${fpath}`);
-    }
-
     // Partition header defines by kind
     const headerConstants: HighlightPattern[] = [];
     const headerVariables: HighlightPattern[] = [];
@@ -153,12 +149,16 @@ export function dumpFalloutHighlight(
     }
 
     for (const [stanza, patterns] of stanzaData) {
-        const stanzaNode = repository.get(stanza, true);
-        if (isMap(stanzaNode)) {
-            const patternsSeq = doc.createNode(patterns);
-            stanzaNode.set("patterns", patternsSeq);
-            if (stanza === HIGHLIGHT_STANZAS.falloutBaseFunctions) {
-                stanzaNode.commentBefore = GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT;
+        updateHighlightStanza(doc, stanza, patterns);
+    }
+
+    // Set the generated comment on the base-functions stanza (only when it was updated)
+    if (baseFunctionPatterns !== undefined) {
+        const repo = doc.getIn(["repository"], true);
+        if (isMap(repo)) {
+            const baseNode = repo.get(HIGHLIGHT_STANZAS.falloutBaseFunctions, true);
+            if (isMap(baseNode)) {
+                baseNode.commentBefore = GENERATED_FALLOUT_BASE_FUNCTIONS_COMMENT;
             }
         }
     }

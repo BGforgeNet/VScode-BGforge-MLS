@@ -6,7 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import YAML, { isMap } from "yaml";
+import YAML, { type Document, isMap } from "yaml";
 import {
     actionDesc,
     actionDetail,
@@ -26,6 +26,8 @@ import type {
     CompletionItem,
     IESDPGame,
 } from "./ie/index.ts";
+import { updateHighlightStanza } from "../../utils/src/update-tp2-highlight.ts";
+import { YAML_DUMP_OPTIONS } from "../../utils/src/yaml-helpers.ts";
 
 /** IESDP base URL for documentation links */
 const IESDP_BASE_URL = "https://gibberlings3.github.io/iesdp/";
@@ -78,20 +80,9 @@ function writeActionsHighlight(
         .map((x) => ({ match: `\\b(${x})\\b` }))
         .sort((a, b) => cmpStr(a.match, b.match));
 
-    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8"));
-    const actionsStanzaNode = bafHighlightDoc.getIn(["repository", ACTIONS_STANZA], true);
-    if (!isMap(actionsStanzaNode)) {
-        throw new Error(`Expected 'repository.actions' map in ${highlightBaf}`);
-    }
-    actionsStanzaNode.set(
-        "patterns",
-        bafHighlightDoc.createNode(actionsHighlightPatterns)
-    );
-    fs.writeFileSync(
-        highlightBaf,
-        bafHighlightDoc.toString({ lineWidth: 4096, indent: 2, indentSeq: true }),
-        "utf8"
-    );
+    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8")) as Document;
+    updateHighlightStanza(bafHighlightDoc, ACTIONS_STANZA, actionsHighlightPatterns);
+    fs.writeFileSync(highlightBaf, bafHighlightDoc.toString(YAML_DUMP_OPTIONS), "utf8");
 }
 
 /**
@@ -195,20 +186,9 @@ function writeTriggersHighlight(
         .map((x) => ({ match: `\\b(${x})\\b` }))
         .sort((a, b) => cmpStr(a.match, b.match));
 
-    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8"));
-    const triggersStanzaNode = bafHighlightDoc.getIn(["repository", TRIGGERS_STANZA], true);
-    if (!isMap(triggersStanzaNode)) {
-        throw new Error(`Expected 'repository.${TRIGGERS_STANZA}' map in ${highlightBaf}`);
-    }
-    triggersStanzaNode.set(
-        "patterns",
-        bafHighlightDoc.createNode(triggerPatterns)
-    );
-    fs.writeFileSync(
-        highlightBaf,
-        bafHighlightDoc.toString({ lineWidth: 4096, indent: 2, indentSeq: true }),
-        "utf8"
-    );
+    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8")) as Document;
+    updateHighlightStanza(bafHighlightDoc, TRIGGERS_STANZA, triggerPatterns);
+    fs.writeFileSync(highlightBaf, bafHighlightDoc.toString(YAML_DUMP_OPTIONS), "utf8");
 }
 
 /**
