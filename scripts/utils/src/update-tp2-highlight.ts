@@ -1,6 +1,6 @@
 /**
  * Updates weidu-tp2.tmLanguage.yml highlight stanzas (actions, patches,
- * flags, options, etc.) from server/data/weidu-tp2-base.yml.
+ * flags, options, callables, etc.) from server/data/weidu-tp2-base.yml.
  *
  * Generates sorted \b(NAME)\b patterns from YAML data stanzas, replacing
  * the hand-maintained pattern lists. Non-match entries (include directives)
@@ -127,6 +127,49 @@ export function updateHighlightStanza(
     stanzaNode.set("patterns", newPatterns);
 }
 
+/**
+ * Callable stanza config: multiple YAML stanzas merged into one TM stanza,
+ * with per-type scope names for disambiguation.
+ */
+interface CallableStanzaEntry {
+    readonly yamlKey: string;
+    readonly scope: string;
+}
+
+const CALLABLE_STANZAS: readonly CallableStanzaEntry[] = [
+    { yamlKey: "action_functions", scope: "support.function.weidu-tp2.action-function" },
+    { yamlKey: "action_macros", scope: "support.function.weidu-tp2.action-macro" },
+    { yamlKey: "dimorphic_functions", scope: "support.function.weidu-tp2.dimorphic-function" },
+    { yamlKey: "patch_functions", scope: "support.function.weidu-tp2.patch-function" },
+    { yamlKey: "patch_macros", scope: "support.function.weidu-tp2.patch-macro" },
+];
+
+const CALLABLE_REPO_KEY = "weidu-tp2-callable";
+
+/**
+ * Builds highlight patterns from multiple callable YAML stanzas, deduplicating
+ * by name and assigning per-type scope names for disambiguation.
+ */
+export function buildCallablePatterns(data: DataFile): readonly HighlightPattern[] {
+    const seen = new Set<string>();
+    const patterns: HighlightPattern[] = [];
+
+    for (const { yamlKey, scope } of CALLABLE_STANZAS) {
+        const stanza = data[yamlKey];
+        if (stanza === undefined) continue;
+        for (const item of stanza.items) {
+            if (!/^\w/.test(item.name) || seen.has(item.name)) continue;
+            seen.add(item.name);
+            patterns.push({
+                match: `\\b(${item.name})\\b`,
+                name: item.deprecated !== undefined ? "invalid.deprecated.bgforge" : scope,
+            });
+        }
+    }
+
+    return patterns.sort((a, b) => cmpStr(a.match, b.match));
+}
+
 export function updateTp2Highlight(yamlPath: string, highlightPath: string): void {
     const data = loadData([yamlPath]);
     const content = fs.readFileSync(highlightPath, "utf8");
@@ -138,6 +181,9 @@ export function updateTp2Highlight(yamlPath: string, highlightPath: string): voi
         const patterns = buildHighlightPatterns(data, stanzaName, config.skipCatchall);
         updateHighlightStanza(doc, config.repoKey, patterns, sourceFile);
     }
+
+    const callablePatterns = buildCallablePatterns(data);
+    updateHighlightStanza(doc, CALLABLE_REPO_KEY, callablePatterns, sourceFile);
 
     fs.writeFileSync(highlightPath, doc.toString(YAML_DUMP_OPTIONS), "utf8");
 }

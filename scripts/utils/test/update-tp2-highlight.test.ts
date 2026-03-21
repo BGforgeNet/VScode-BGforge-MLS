@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildHighlightPatterns } from "../src/update-tp2-highlight.ts";
+import { buildCallablePatterns, buildHighlightPatterns } from "../src/update-tp2-highlight.ts";
 import { loadData } from "../src/generate-data.ts";
 import { cmpStr } from "../src/yaml-helpers.ts";
 
@@ -44,5 +44,26 @@ describe("buildHighlightPatterns", () => {
         expect(filtered.some((p) => p.match === "\\b(BIT0)\\b")).toBe(true);
         // Items with underscores like BATTLE_CRY1 should be excluded
         expect(filtered.some((p) => p.match === "\\b(BATTLE_CRY1)\\b")).toBe(false);
+    });
+});
+
+describe("buildCallablePatterns", () => {
+    it("deduplicates items across callable stanzas", () => {
+        const patterns = buildCallablePatterns(DATA);
+        const matches = patterns.map((p) => p.match);
+        expect(new Set(matches).size).toBe(matches.length);
+    });
+
+    it("assigns per-type scope names", () => {
+        const patterns = buildCallablePatterns(DATA);
+        const scopes = new Set(patterns.map((p) => p.name));
+        expect(scopes).toContain("support.function.weidu-tp2.patch-function");
+        expect(scopes).toContain("support.function.weidu-tp2.dimorphic-function");
+    });
+
+    it("sorts patterns by match string", () => {
+        const patterns = buildCallablePatterns(DATA);
+        const matches = patterns.map((p) => p.match);
+        expect(matches).toEqual([...matches].sort(cmpStr));
     });
 });

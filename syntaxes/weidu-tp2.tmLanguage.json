@@ -1550,247 +1550,271 @@
       "patterns": [
         {
           "match": "\\b(ADD_AREA_ITEM)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_AREA_REGION_TRIGGER)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_CRE_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_CRE_ITEM_FLAGS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_CRE_SCRIPT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_ITEM_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_ITEM_EQEFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_SPELL_CFEFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_SPELL_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
+        },
+        {
+          "match": "\\b(ADD_STORE_CURE)\\b",
+          "name": "support.function.weidu-tp2.patch-function"
+        },
+        {
+          "match": "\\b(ADD_STORE_DRINK)\\b",
+          "name": "support.function.weidu-tp2.patch-function"
+        },
+        {
+          "match": "\\b(ADD_STORE_ITEM_EX)\\b",
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ADD_WORLDMAP_LINKS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_AREA_ACTOR)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_AREA_CONTAINER)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_AREA_DOOR)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_AREA_ENTRANCE)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_AREA_REGION)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_ITEM_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_ITEM_HEADER)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_SPELL_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(ALTER_SPELL_HEADER)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(CLONE_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
+        },
+        {
+          "match": "\\b(DELETE_AREA_ITEM)\\b",
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_CRE_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
+        },
+        {
+          "match": "\\b(DELETE_CRE_ITEM)\\b",
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_ITEM_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_ITEM_EQEFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_ITEM_HEADER)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_SPELL_EFFECT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_SPELL_HEADER)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
+        },
+        {
+          "match": "\\b(DELETE_STORE_ITEM)\\b",
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DELETE_WORLDMAP_LINKS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(DIRECTORY_OF_FILESPEC)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(EXT_OF_FILESPEC)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(FILE_OF_FILESPEC)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(FIND_FREE_PVRZ_INDEX)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(FJ_CRE_EFF_V2)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(FJ_CRE_REINDEX)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(FJ_CRE_VALIDITY)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(FL#FJ_CRE_REINDEX)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(FL#FJ_CRE_VALIDITY)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(GET_UNIQUE_FILE_NAME)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(HANDLE_AUDIO)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-function"
         },
         {
           "match": "\\b(HANDLE_CHARSETS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-function"
         },
         {
           "match": "\\b(HANDLE_TILESETS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-function"
         },
         {
           "match": "\\b(INSTALL_PVRZ)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-function"
         },
         {
           "match": "\\b(ITEM_EFFECT_TO_SPELL)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(NAME_NUM_OF_SPELL_RES)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(READ_SOUNDSET)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-macro"
         },
         {
           "match": "\\b(REMOVE_CRE_ITEM_FLAGS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(REPLACE_AREA_ITEM)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(REPLACE_STORE_ITEM)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(RES_NAME_OF_SPELL_NUM)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(RES_NUM_OF_SPELL_NAME)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(RES_OF_FILESPEC)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(SET_CRE_ITEM_FLAGS)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(SUBSTRING)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.dimorphic-function"
         },
         {
           "match": "\\b(T-CRE_EFF_V1)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(UPDATE_PVRZ_INDICES)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(WRITE_SOUNDSET)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-macro"
         },
         {
           "match": "\\b(fj_are_structure)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-function"
         },
         {
           "match": "\\b(sc#addWmpAre)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-function"
         },
         {
           "match": "\\b(tb#factorial)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.patch-macro"
         },
         {
           "match": "\\b(tb#fix_file_size)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "support.function.weidu-tp2.action-macro"
         }
       ]
     },
