@@ -499,7 +499,7 @@
 		},
 		{
 			"name": "weidu tra start",
-			"scope": "keyword.weidu-tp2.trastart",
+			"scope": "keyword.weidu-tp2.trastart, keyword.weidu-d.trastart, keyword.weidu-baf.trastart",
 			"settings": {
 				"fontStyle": "italic"
 			}

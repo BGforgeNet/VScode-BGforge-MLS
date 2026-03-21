@@ -89,6 +89,10 @@
           "name": "meta.condition-body.weidu-baf"
         },
         {
+          "include": "#tra-ref",
+          "name": "meta.condition-body.weidu-baf"
+        },
+        {
           "include": "#operators",
           "name": "meta.condition-body.weidu-baf"
         },
@@ -147,6 +151,9 @@
           "include": "#response"
         },
         {
+          "include": "#tra-ref"
+        },
+        {
           "include": "#operators"
         },
         {
@@ -191,11 +198,26 @@
         }
       ]
     },
+    "tra-ref": {
+      "patterns": [
+        {
+          "match": "(@)([0-9]+)",
+          "captures": {
+            "1": {
+              "name": "keyword.weidu-baf.trastart"
+            },
+            "2": {
+              "name": "variable.parameter.tra.weidu-baf"
+            }
+          }
+        }
+      ]
+    },
     "operators": {
       "name": "keyword.control.weidu-baf",
       "patterns": [
         {
-          "match": "\\b(OR)\\b|(!)|(@)",
+          "match": "\\b(OR)\\b|(!)",
           "name": "keyword.control.weidu-baf"
         }
       ]

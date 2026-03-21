@@ -46,6 +46,7 @@ repository:
       - include: '#vartype'
       - include: '#strings'
       - include: '#numbers'
+      - include: '#tra-ref'
       - include: '#operators'
       - include: '#triggers'
       - include: '#vars'
@@ -73,6 +74,7 @@ repository:
       - include: '#strings'
       - include: '#numbers'
       - include: '#response'
+      - include: '#tra-ref'
       - include: '#operators'
       - include: '#actions'
       - include: '#actions-extras'
@@ -96,10 +98,19 @@ repository:
           '3':
             name: string.quoted.double.weidu-baf
 
+  tra-ref:
+    patterns:
+      - match: (@)([0-9]+)
+        captures:
+          '1':
+            name: keyword.weidu-baf.trastart
+          '2':
+            name: variable.parameter.tra.weidu-baf
+
   operators:
     name: keyword.control.weidu-baf
     patterns:
-      - match: \b(OR)\b|(!)|(@)
+      - match: \b(OR)\b|(!)
 
   strings:
     patterns:
