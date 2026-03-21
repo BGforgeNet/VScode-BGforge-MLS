@@ -5,7 +5,6 @@
  * Usage:
  *   pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts input.yml
  *   pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts input.yml --sequence-path a.b.c --sort-key name
- *   pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts input.yml --sequence-path a.b.c --sort-key name --compact-items
  */
 
 import fs from "node:fs";
@@ -58,9 +57,6 @@ interface SequenceSrcToken {
     readonly items?: readonly SequenceItemToken[];
 }
 
-interface SortSequenceOptions {
-    readonly compactItems?: boolean;
-}
 
 function isTokenWithSource(value: unknown): value is TokenWithSource {
     if (typeof value !== "object" || value === null) {
@@ -224,7 +220,6 @@ function sortSequenceItemsInSource(
     headEnd: number,
     seqEnd: number,
     sortKey: string,
-    options: SortSequenceOptions = {},
 ): string {
     const seqTokens = getSequenceSrcToken(sequence.srcToken)?.items;
 
@@ -247,14 +242,9 @@ function sortSequenceItemsInSource(
     }
 
     const all = [...[...sortable].sort((a, b) => cmpStr(a.name, b.name)), ...rest];
-    return all.reduce((text, item, index) => {
+    return all.reduce((text, item) => {
         const compactText = item.text.replace(/^\n+/, "").replace(/\n+$/, "\n");
-        const itemText = index === 0
-            ? compactText
-            : options.compactItems
-                ? compactText
-                : (item.text.startsWith("\n") ? item.text : `\n${item.text}`);
-        return `${text}${itemText}`;
+        return `${text}${compactText}`;
     }, "");
 }
 
@@ -262,7 +252,6 @@ export function sortYamlSequenceByPath(
     source: string,
     path: readonly string[],
     sortKey: string,
-    options: SortSequenceOptions = {},
 ): string {
     const doc = YAML.parseDocument(source, { keepSourceTokens: true });
     if (doc.errors.length > 0) {
@@ -299,7 +288,7 @@ export function sortYamlSequenceByPath(
         return source;
     }
 
-    const sortedItems = sortSequenceItemsInSource(source, pair.value, headEnd, seqEnd, sortKey, options);
+    const sortedItems = sortSequenceItemsInSource(source, pair.value, headEnd, seqEnd, sortKey);
     const head = source.slice(pairStart, headEnd);
     return `${source.slice(0, pairStart)}${head}${sortedItems}${source.slice(seqEnd)}`;
 }
@@ -356,7 +345,6 @@ function main(): void {
         options: {
             "sequence-path": { type: "string" },
             "sort-key": { type: "string" },
-            "compact-items": { type: "boolean" },
         },
         allowPositionals: true,
         strict: true,
@@ -364,7 +352,7 @@ function main(): void {
 
     const inputFile = positionals[0];
     if (inputFile === undefined) {
-        console.error("Usage: sort-yaml-stanzas-and-items <input.yml> [--sequence-path a.b.c --sort-key key [--compact-items]]");
+        console.error("Usage: sort-yaml-stanzas-and-items <input.yml> [--sequence-path a.b.c --sort-key key]");
         process.exit(1);
     }
 
@@ -377,7 +365,7 @@ function main(): void {
     }
 
     const sorted = sequencePath !== undefined && sortKey !== undefined
-        ? sortYamlSequenceByPath(source, sequencePath.split("."), sortKey, { compactItems: values["compact-items"] })
+        ? sortYamlSequenceByPath(source, sequencePath.split("."), sortKey)
         : sortYamlStanzasAndItems(source);
     fs.writeFileSync(inputFile, sorted, "utf8");
 }

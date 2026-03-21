@@ -102,11 +102,9 @@ other:
     name: support.function.fallout-ssl.base
     patterns:
       - match: \\b(?i)(alpha)\\b
-
       # keep this comment with deprecated entry
       - match: \\b(?i)(beta)\\b
         name: invalid.deprecated.bgforge
-
       - match: \\b(?i)(zeta)\\b
 
 other:
@@ -114,7 +112,7 @@ other:
 `);
     });
 
-    it("sorts a specific nested sequence in compact mode without blank lines between items", () => {
+    it("sorts a specific nested sequence without blank lines between items", () => {
         const input = `repository:
   fallout-base-functions:
     patterns:
@@ -127,7 +125,6 @@ other:
             input,
             ["repository", "fallout-base-functions", "patterns"],
             "match",
-            { compactItems: true },
         );
 
         expect(result).toBe(`repository:

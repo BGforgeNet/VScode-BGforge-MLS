@@ -52,12 +52,11 @@ b:
   fallout-base-functions:
     patterns:
       - match: a
-
       - match: z
 `);
     });
 
-    it("sorts a specific YAML sequence path in compact mode", () => {
+    it("sorts a specific YAML sequence path with blank lines removed", () => {
         const inputFile = path.join(tmpDir, "input.yml");
         fs.writeFileSync(inputFile, `repository:
   fallout-base-functions:
@@ -68,7 +67,7 @@ b:
 `, "utf8");
 
         execSync(
-            `pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts "${inputFile}" --sequence-path repository.fallout-base-functions.patterns --sort-key match --compact-items`,
+            `pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts "${inputFile}" --sequence-path repository.fallout-base-functions.patterns --sort-key match`,
             { cwd: process.cwd() },
         );
 
