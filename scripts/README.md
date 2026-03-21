@@ -95,20 +95,26 @@ pnpm test:cli                              # Exit codes and diff output
 | `lint-scripts.sh`        | Lint script utility source files.                                                                                                                                                               |
 | `lint-shell.sh`          | Lint shell scripts (shellcheck).                                                                                                                                                                |
 | `fallout-update.sh`      | Update Fallout engine data.                                                                                                                                                                     |
-| `ie-update.sh`           | Update Infinity Engine data.                                                                                                                                                                    |
+| `ie-update.sh`           | Update Infinity Engine data (BAF actions/triggers). Writes completion data to `server/data/weidu-baf-iesdp.yml`, then calls `generate-data.sh` to regenerate highlight stanzas.               |
 
 ## Script utilities
 
 - `scripts/utils/src/sort-yaml-stanzas-and-items.ts`
   Sorts YAML source files by top-level stanza name and, within each stanza, sorts `items:` entries by `name`.
+  Also supports `--map-path`/`--sequence-key`/`--sort-key` to sort a named sequence within every entry of a map
+  (e.g. sort `patterns` inside all `repository` stanzas of a TextMate grammar without reordering stanzas).
   It preserves comments and formatting by moving raw source slices instead of fully parsing and re-stringifying the file.
   Use this for manual data-file cleanup when you want deterministic ordering without YAML emitter churn.
 
 - `scripts/utils/src/update-tp2-highlight.ts`
   Generates TextMate highlight patterns for 19 TP2 stanzas (actions, patches, flags, options, values, constants, callables, vars, etc.) from `server/data/weidu-tp2-base.yml`.
   Supports `skipCatchall` to omit items already matched by the `upper-case-constants` catch-all rule.
-  Also exports shared helpers (`buildHighlightPatterns`, `updateHighlightStanza`) used by the D highlight script.
+  Also exports shared helpers (`buildHighlightPatterns`, `updateHighlightStanza`) used by the BAF, D, and Fallout highlight scripts.
   Called by `generate-data.sh`. Analogous to `update-fallout-base-functions-highlight.ts` for Fallout.
+
+- `scripts/utils/src/update-baf-highlight.ts`
+  Generates TextMate highlight patterns for the `actions` and `triggers` stanzas in `syntaxes/weidu-baf.tmLanguage.yml`
+  from `server/data/weidu-baf-iesdp.yml`. Called by `generate-data.sh`.
 
 - `scripts/utils/src/update-d-highlight.ts`
   Generates TextMate highlight patterns for 8 D stanzas (actions, chain epilogue, keywords/sugar, state, trans features, trans next, transition, when) from `server/data/weidu-d-base.yml`.
