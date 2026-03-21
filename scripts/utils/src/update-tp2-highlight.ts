@@ -1,6 +1,6 @@
 /**
  * Updates weidu-tp2.tmLanguage.yml highlight stanzas (actions, patches,
- * flags, options, callables, etc.) from server/data/weidu-tp2-base.yml.
+ * flags, options, callables, vars, etc.) from server/data/weidu-tp2-base.yml.
  *
  * Generates sorted \b(NAME)\b patterns from YAML data stanzas, replacing
  * the hand-maintained pattern lists. Non-match entries (include directives)
@@ -170,6 +170,33 @@ export function buildCallablePatterns(data: DataFile): readonly HighlightPattern
     return patterns.sort((a, b) => cmpStr(a.match, b.match));
 }
 
+const VARS_STANZAS: readonly string[] = ["vars", "constants"];
+const VARS_REPO_KEY = "weidu-vars";
+
+/**
+ * Builds highlight patterns for the weidu-vars TM stanza. Merges vars and
+ * constants YAML stanzas. Uses (%?NAME%?) pattern format (optional %
+ * delimiters) instead of the standard \b(NAME)\b word-boundary format.
+ */
+export function buildVarsPatterns(data: DataFile): readonly HighlightPattern[] {
+    const seen = new Set<string>();
+    const patterns: HighlightPattern[] = [];
+
+    for (const stanzaName of VARS_STANZAS) {
+        const stanza = data[stanzaName];
+        if (stanza === undefined) continue;
+        for (const item of stanza.items) {
+            if (seen.has(item.name)) continue;
+            seen.add(item.name);
+            patterns.push({
+                match: `(%?${item.name}%?)`,
+            });
+        }
+    }
+
+    return patterns.sort((a, b) => cmpStr(a.match, b.match));
+}
+
 export function updateTp2Highlight(yamlPath: string, highlightPath: string): void {
     const data = loadData([yamlPath]);
     const content = fs.readFileSync(highlightPath, "utf8");
@@ -184,6 +211,9 @@ export function updateTp2Highlight(yamlPath: string, highlightPath: string): voi
 
     const callablePatterns = buildCallablePatterns(data);
     updateHighlightStanza(doc, CALLABLE_REPO_KEY, callablePatterns, sourceFile);
+
+    const varsPatterns = buildVarsPatterns(data);
+    updateHighlightStanza(doc, VARS_REPO_KEY, varsPatterns, sourceFile);
 
     fs.writeFileSync(highlightPath, doc.toString(YAML_DUMP_OPTIONS), "utf8");
 }

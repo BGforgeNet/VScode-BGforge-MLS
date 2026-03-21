@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCallablePatterns, buildHighlightPatterns } from "../src/update-tp2-highlight.ts";
+import { buildCallablePatterns, buildHighlightPatterns, buildVarsPatterns } from "../src/update-tp2-highlight.ts";
 import { loadData } from "../src/generate-data.ts";
 import { cmpStr } from "../src/yaml-helpers.ts";
 
@@ -63,6 +63,27 @@ describe("buildCallablePatterns", () => {
 
     it("sorts patterns by match string", () => {
         const patterns = buildCallablePatterns(DATA);
+        const matches = patterns.map((p) => p.match);
+        expect(matches).toEqual([...matches].sort(cmpStr));
+    });
+});
+
+describe("buildVarsPatterns", () => {
+    it("merges vars and constants stanzas", () => {
+        const patterns = buildVarsPatterns(DATA);
+        // vars (29) + constants (37) = 66
+        expect(patterns.length).toBe(66);
+    });
+
+    it("uses (%?NAME%?) pattern format", () => {
+        const patterns = buildVarsPatterns(DATA);
+        for (const p of patterns) {
+            expect(p.match).toMatch(/^\(%\?\w+%\?\)$/);
+        }
+    });
+
+    it("sorts patterns by match string", () => {
+        const patterns = buildVarsPatterns(DATA);
         const matches = patterns.map((p) => p.match);
         expect(matches).toEqual([...matches].sort(cmpStr));
     });

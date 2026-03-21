@@ -2182,15 +2182,155 @@
       "name": "constant.language.weidu-tp2",
       "patterns": [
         {
-          "match": "(%?TP2_AUTHOR%?)",
+          "match": "(%?ARE_V10_ACTORS%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?TP2_FILE_NAME%?)",
+          "match": "(%?ARE_V10_AMBIENTS%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?TP2_BASE_NAME%?)",
+          "match": "(%?ARE_V10_ANIMATIONS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_CONTAINERS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_CONTAINER_VERTICES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_DOORS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_CLOSED_CELL_VERTICES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_OPEN_CELL_VERTICES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_OPEN_OUTLINE_VERTICES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_ENTRANCES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_ITEMS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_REGIONS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_REGION_VERTICES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V10_SPAWN_POINTS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ARE_V91_ACTORS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?BASH_FOR_DIRECTORY%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?BASH_FOR_EXT%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?BASH_FOR_FILE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?BASH_FOR_FILESPEC%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?BASH_FOR_RES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?BASH_FOR_SIZE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?COMPONENT_NUMBER%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?CRE_V10_EFFECTS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?CRE_V10_ITEMS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?CRE_V10_KNOWN_SPELLS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?CRE_V10_SPELL_MEM%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?CRE_V10_SPELL_MEM_INFO%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?DEST_DIRECTORY%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?DEST_EXT%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?DEST_FILE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?DEST_FILESPEC%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?DEST_RES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?INTERACTIVE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ITM_V10_GEN_EFFECTS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ITM_V10_HEADERS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?ITM_V10_HEAD_EFFECTS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?LANGUAGE%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
@@ -2202,23 +2342,7 @@
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%LANGUAGE%)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
           "match": "(%?SOURCE_DIRECTORY%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?SOURCE_FILESPEC%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?SOURCE_FILE%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?SOURCE_RES%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
@@ -2226,27 +2350,59 @@
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?DEST_DIRECTORY%?)",
+          "match": "(%?SOURCE_FILE%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?DEST_FILESPEC%?)",
+          "match": "(%?SOURCE_FILESPEC%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?DEST_FILE%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?DEST_RES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?DEST_EXT%?)",
+          "match": "(%?SOURCE_RES%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
           "match": "(%?SOURCE_SIZE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?SPL_V10_GEN_EFFECTS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?SPL_V10_HEADERS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?SPL_V10_HEAD_EFFECTS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?STO_V10_CURES%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?STO_V10_DRINKS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?STO_V10_ITEMS_PURCHASED%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?STO_V10_ITEMS_SOLD%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?TP2_AUTHOR%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?TP2_BASE_NAME%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?TP2_FILE_NAME%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
@@ -2266,123 +2422,11 @@
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?COMPONENT_NUMBER%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?INTERACTIVE%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?BASH_FOR_DIRECTORY%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?BASH_FOR_FILESPEC%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?BASH_FOR_FILE%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?BASH_FOR_RES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?BASH_FOR_EXT%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?BASH_FOR_SIZE%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_ACTORS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_REGIONS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_SPAWN_POINTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_ENTRANCES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_CONTAINERS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_AMBIENTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_DOORS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_ANIMATIONS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V91_ACTORS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?CRE_V10_KNOWN_SPELLS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?CRE_V10_SPELL_MEM_INFO%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?CRE_V10_EFFECTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?CRE_V10_ITEMS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ITM_V10_HEADERS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ITM_V10_GEN_EFFECTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?SPL_V10_HEADERS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?SPL_V10_GEN_EFFECTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?STO_V10_ITEMS_PURCHASED%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?STO_V10_ITEMS_SOLD%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?STO_V10_DRINKS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?STO_V10_CURES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
           "match": "(%?WMP_AREAS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?WMP_EAST_LINKS%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
@@ -2390,51 +2434,7 @@
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?ARE_V10_ITEMS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_REGION_VERTICES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_CONTAINER_VERTICES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_DOOR_OPEN_OUTLINE_VERTICES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_DOOR_OPEN_CELL_VERTICES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ARE_V10_DOOR_CLOSED_CELL_VERTICES%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?CRE_V10_SPELL_MEM%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?ITM_V10_HEAD_EFFECTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?SPL_V10_HEAD_EFFECTS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
           "match": "(%?WMP_NORTH_LINKS%?)",
-          "name": "constant.language.weidu-tp2"
-        },
-        {
-          "match": "(%?WMP_WEST_LINKS%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
@@ -2442,7 +2442,7 @@
           "name": "constant.language.weidu-tp2"
         },
         {
-          "match": "(%?WMP_EAST_LINKS%?)",
+          "match": "(%?WMP_WEST_LINKS%?)",
           "name": "constant.language.weidu-tp2"
         }
       ]
