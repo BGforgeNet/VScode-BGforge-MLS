@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { buildTp2HighlightPatterns } from "../src/update-tp2-highlight.ts";
+import { buildHighlightPatterns } from "../src/update-tp2-highlight.ts";
 import { loadData } from "../src/generate-data.ts";
 import { cmpStr } from "../src/yaml-helpers.ts";
 
 const DATA = loadData(["server/data/weidu-tp2-base.yml"]);
 
-describe("buildTp2HighlightPatterns", () => {
+describe("buildHighlightPatterns", () => {
     it("marks deprecated patch items with the deprecated highlight scope", () => {
-        const patterns = buildTp2HighlightPatterns(DATA, "patch");
+        const patterns = buildHighlightPatterns(DATA, "patch");
 
         const compileBaf = patterns.find((p) => p.match === "\\b(COMPILE_BAF_TO_BCS)\\b");
         expect(compileBaf).toBeDefined();
@@ -19,25 +19,25 @@ describe("buildTp2HighlightPatterns", () => {
     });
 
     it("sorts generated patterns by match string", () => {
-        const patterns = buildTp2HighlightPatterns(DATA, "action");
+        const patterns = buildHighlightPatterns(DATA, "action");
         const matches = patterns.map((p) => p.match);
         expect(matches).toEqual([...matches].sort(cmpStr));
     });
 
     it("generates patterns for all mapped stanzas", () => {
         for (const stanza of ["action", "array_sort_type", "caching", "component_flag", "flag", "language", "opt_case", "opt_exact", "opt_glob", "patch", "patch_byte", "patch_long", "patch_string", "prologue", "value_constant", "value_function", "when"]) {
-            const patterns = buildTp2HighlightPatterns(DATA, stanza);
+            const patterns = buildHighlightPatterns(DATA, stanza);
             expect(patterns.length).toBeGreaterThan(0);
         }
     });
 
     it("throws for unknown stanza", () => {
-        expect(() => buildTp2HighlightPatterns(DATA, "nonexistent")).toThrow("not found");
+        expect(() => buildHighlightPatterns(DATA, "nonexistent")).toThrow("not found");
     });
 
     it("skipCatchall excludes items matching upper-case-constants regex", () => {
-        const all = buildTp2HighlightPatterns(DATA, "value_constant");
-        const filtered = buildTp2HighlightPatterns(DATA, "value_constant", true);
+        const all = buildHighlightPatterns(DATA, "value_constant");
+        const filtered = buildHighlightPatterns(DATA, "value_constant", true);
         // Filtered should be smaller — UPPER_CASE items with underscore are excluded
         expect(filtered.length).toBeLessThan(all.length);
         // Single-word items like BIT0, DAMAGE should remain

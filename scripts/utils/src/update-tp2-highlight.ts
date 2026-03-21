@@ -13,12 +13,13 @@
  */
 
 import fs from "node:fs";
+import path from "node:path";
 import { parseArgs } from "node:util";
 import YAML, { type Document, isMap, isScalar, isSeq } from "yaml";
 import { type DataFile, loadData } from "./generate-data.ts";
 import { cmpStr, YAML_DUMP_OPTIONS } from "./yaml-helpers.ts";
 
-interface HighlightPattern {
+export interface HighlightPattern {
     readonly match: string;
     readonly name?: string;
 }
@@ -30,7 +31,7 @@ interface HighlightPattern {
  */
 const UPPER_CASE_CATCHALL = /^[A-Z][A-Z0-9]+_\w+$/;
 
-interface StanzaConfig {
+export interface StanzaConfig {
     readonly repoKey: string;
     /** When true, skip items whose names match the upper-case-constants catch-all. */
     readonly skipCatchall?: boolean;
@@ -58,7 +59,7 @@ const STANZA_MAP: ReadonlyMap<string, StanzaConfig> = new Map([
     ["when", { repoKey: "weidu-tp2-when" }],
 ]);
 
-export function buildTp2HighlightPatterns(
+export function buildHighlightPatterns(
     data: DataFile,
     stanzaName: string,
     skipCatchall = false,
@@ -80,16 +81,28 @@ export function buildTp2HighlightPatterns(
 /**
  * Replaces match patterns in a TextMate repository stanza, preserving
  * non-match entries (include directives) at the end.
+ * When sourceFile is provided, sets an auto-generated comment on the stanza.
  */
-function updateHighlightStanza(
+export function updateHighlightStanza(
     doc: Document,
     repositoryKey: string,
     patterns: readonly HighlightPattern[],
+    sourceFile?: string,
 ): void {
-    const stanzaNode = doc.getIn(["repository", repositoryKey], true);
-    if (!isMap(stanzaNode)) {
+    const repo = doc.getIn(["repository"], true);
+    if (!isMap(repo)) {
+        throw new Error("Expected 'repository' map");
+    }
+    const stanzaPair = repo.items.find(
+        (pair) => isScalar(pair.key) && pair.key.value === repositoryKey,
+    );
+    if (stanzaPair === undefined || !isMap(stanzaPair.value)) {
         throw new Error(`Expected 'repository.${repositoryKey}' map`);
     }
+    if (sourceFile !== undefined) {
+        stanzaPair.value.commentBefore = ` Auto-generated from ${sourceFile} — do not edit manually.`;
+    }
+    const stanzaNode = stanzaPair.value;
 
     const patternsNode = stanzaNode.get("patterns", true);
     if (!isSeq(patternsNode)) {
@@ -119,9 +132,10 @@ export function updateTp2Highlight(yamlPath: string, highlightPath: string): voi
     // Cast to Document to avoid ParsedNode generic constraints on set()
     const doc = YAML.parseDocument(content) as Document;
 
+    const sourceFile = path.basename(yamlPath);
     for (const [stanzaName, config] of STANZA_MAP) {
-        const patterns = buildTp2HighlightPatterns(data, stanzaName, config.skipCatchall);
-        updateHighlightStanza(doc, config.repoKey, patterns);
+        const patterns = buildHighlightPatterns(data, stanzaName, config.skipCatchall);
+        updateHighlightStanza(doc, config.repoKey, patterns, sourceFile);
     }
 
     fs.writeFileSync(highlightPath, doc.toString(YAML_DUMP_OPTIONS), "utf8");

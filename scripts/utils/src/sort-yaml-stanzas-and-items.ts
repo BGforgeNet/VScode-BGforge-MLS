@@ -328,7 +328,10 @@ export function sortYamlStanzasAndItems(source: string): string {
         return {
             key: pair.key.value,
             leading: source.slice(start, keyStart),
-            body: sortItemsInStanzaBody(source.slice(keyStart, end)),
+            // Strip trailing blank lines — they belong to the gap between
+            // stanzas in the original order and must not travel with the body
+            // when stanzas are reordered.
+            body: sortItemsInStanzaBody(source.slice(keyStart, end)).replace(/\n{2,}$/, "\n"),
         };
     });
 
@@ -337,7 +340,11 @@ export function sortYamlStanzasAndItems(source: string): string {
     const sorted = [...stanzas].sort((a, b) => cmpStr(a.key, b.key));
 
     return sorted.reduce((result, stanza, index) => {
-        const leading = index === 0 ? stanza.leading.replace(/^\n+/, "") : (stanza.leading.length > 0 ? stanza.leading : "\n");
+        const leading = index === 0
+            ? stanza.leading.replace(/^\n+/, "")
+            : stanza.leading.length > 0
+                ? stanza.leading
+                : "\n";
         return `${result}${leading}${stanza.body}`;
     }, prefix);
 }

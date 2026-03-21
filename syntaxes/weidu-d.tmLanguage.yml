@@ -3,118 +3,129 @@ name: WeiDU dialog
 scopeName: source.weidu-d
 
 patterns:
-- include: '#condition'
-- include: '#action'
-- include: '#comments'
-- include: '#condition-abbreviated'
-- include: '#d-action'
-- include: '#action-when'
-- include: '#chain-epilogue'
-- include: '#state'
-- include: '#transition'
-- include: '#transfeature'
-- include: '#transnext'
-- include: '#reference'
-- include: '#numbers'
-- include: '#strings'
-- include: '#vars' # D can be COMPILE EVAL
-- include: '#sugar'
-
+  - include: '#condition'
+  - include: '#action'
+  - include: '#comments'
+  - include: '#condition-abbreviated'
+  - include: '#d-action'
+  - include: '#action-when'
+  - include: '#chain-epilogue'
+  - include: '#state'
+  - include: '#transition'
+  - include: '#transfeature'
+  - include: '#transnext'
+  - include: '#reference'
+  - include: '#numbers'
+  - include: '#strings'
+  - include: '#vars' # D can be COMPILE EVAL
+  - include: '#sugar-operators'
+  - include: '#sugar'
 
 repository:
   comments:
     patterns:
-    - match: (//).*
-      name: comment.line.weidu-d
-    - begin: /\*
-      end: \*/
-      name: comment.block.weidu-d
+      - match: (//).*
+        name: comment.line.weidu-d
+      - begin: /\*
+        end: \*/
+        name: comment.block.weidu-d
 
   numbers:
     patterns:
-    - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
-      name: "constant.numeric.weidu-d"
+      - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
+        name: "constant.numeric.weidu-d"
 
   d-action:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: support.function.weidu-baf.action
     patterns:
-    - match: \b(BEGIN)\b
-    - match: \b(APPEND)\b
-    - match: \b(APPEND_EARLY)\b
-    - match: \b(CHAIN)\b
-    - match: \b(INTERJECT)\b
-    - match: \b(INTERJECT_COPY_TRANS)\b
-    - match: \b(INTERJECT_COPY_TRANS2)\b
-    - match: \b(INTERJECT_COPY_TRANS3)\b
-    - match: \b(INTERJECT_COPY_TRANS4)\b
-    - match: \b(EXTEND_TOP)\b
-    - match: \b(EXTEND_BOTTOM)\b
-    - match: \b(ADD_STATE_TRIGGER)\b
-    - match: \b(ADD_TRANS_TRIGGER)\b
-    - match: \b(ADD_TRANS_ACTION)\b
-    - match: \b(REPLACE_TRANS_ACTION)\b
-    - match: \b(REPLACE_TRANS_TRIGGER)\b
-    - match: \b(ALTER_TRANS)\b
-    - match: \b(REPLACE)\b
-    - match: \b(SET_WEIGHT)\b
-    - match: \b(REPLACE_SAY)\b
-    - match: \b(REPLACE_STATE_TRIGGER)\b
-    - match: \b(REPLACE_TRIGGER_TEXT)\b
-    - match: \b(REPLACE_TRIGGER_TEXT_REGEXP)\b
-    - match: \b(REPLACE_ACTION_TEXT)\b
-    - match: \b(REPLACE_ACTION_TEXT_REGEXP)\b
-    - match: \b(REPLACE_ACTION_TEXT_PROCESS)\b
-    - match: \b(R_A_T_P_R)\b
+      - match: \b(ADD_STATE_TRIGGER)\b
+      - match: \b(ADD_TRANS_ACTION)\b
+      - match: \b(ADD_TRANS_TRIGGER)\b
+      - match: \b(ALTER_TRANS)\b
+      - match: \b(APPEND)\b
+      - match: \b(APPEND_EARLY)\b
+      - match: \b(BEGIN)\b
+      - match: \b(CHAIN)\b
+      - match: \b(EXTEND_BOTTOM)\b
+      - match: \b(EXTEND_TOP)\b
+      - match: \b(INTERJECT)\b
+      - match: \b(INTERJECT_COPY_TRANS)\b
+      - match: \b(INTERJECT_COPY_TRANS2)\b
+      - match: \b(INTERJECT_COPY_TRANS3)\b
+      - match: \b(INTERJECT_COPY_TRANS4)\b
+      - match: \b(REPLACE)\b
+      - match: \b(REPLACE_ACTION_TEXT)\b
+      - match: \b(REPLACE_ACTION_TEXT_PROCESS)\b
+      - match: \b(REPLACE_ACTION_TEXT_PROCESS_REGEXP)\b
+      - match: \b(REPLACE_ACTION_TEXT_REGEXP)\b
+      - match: \b(REPLACE_SAY)\b
+      - match: \b(REPLACE_STATE_TRIGGER)\b
+      - match: \b(REPLACE_TRANS_ACTION)\b
+      - match: \b(REPLACE_TRANS_TRIGGER)\b
+      - match: \b(REPLACE_TRIGGER_TEXT)\b
+      - match: \b(REPLACE_TRIGGER_TEXT_REGEXP)\b
+      - match: \b(R_A_T_P_R)\b
+      - match: \b(SET_WEIGHT)\b
 
   action-when:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: keyword.other.weidu-d
     patterns:
-    - match: \b(IF)\b
-    - match: \b(UNLESS)\b
-  
+      - match: \b(IF)\b
+      - match: \b(UNLESS)\b
+
   chain-epilogue:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: keyword.other.weidu-d
     patterns:
-    - match: \b(END)\b
-    - match: \b(EXTERN)\b
-    - match: \b(SAFE)\b
-    - match: \b(EXIT)\b
+      - match: \b(COPY_TRANS)\b
+      - match: \b(COPY_TRANS_LATE)\b
 
   state:
     name: keyword.other.weidu-d
     patterns:
-    - match: \b(APPENDI)\b
-    - match: \b(CHAIN2)\b
-    - match: \b(SAY)\b
+      - match: \b(APPENDI)\b
+      - match: \b(CHAIN2)\b
+      - match: \b(SAY)\b
 
   transition:
     name: keyword.other.weidu-d
     patterns:
-    - match: \b(COPY_TRANS)\b
-    - match: \b(COPY_TRANS_LATE)\b
+      - match: \b(COPY_TRANS)\b
+      - match: \b(COPY_TRANS_LATE)\b
 
   transfeature:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: keyword.other.weidu-d
     patterns:
-    - match: \b(REPLY)\b
-    - match: \b(DO)\b
-    - match: \b(JOURNAL)\b
-    - match: \b(SOLVED_JOURNAL)\b
-    - match: \b(UNSOLVED_JOURNAL)\b
-    - match: \b(FLAGS)\b
+      - match: \b(DO)\b
+      - match: \b(FLAGS)\b
+      - match: \b(JOURNAL)\b
+      - match: \b(REPLY)\b
+      - match: \b(SOLVED_JOURNAL)\b
+      - match: \b(UNSOLVED_JOURNAL)\b
 
   transnext:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: keyword.other.weidu-d
     patterns:
-    - match: \b(EXTERN)\b
-    - match: \b(GOTO)\b
+      - match: \b(EXIT)\b
+      - match: \b(EXTERN)\b
+      - match: \b(GOTO)\b
 
   reference:
-    name: variable.parameter.weidu-tra
     patterns:
-    - match: \s(@)([0-9]+)\s
-    - match: \s(#)([0-9]+)\s
-    - match: \s(\( AT "(\w+)"\))\s
+      - match: \s(@)([0-9]+)\s
+        captures:
+          '1':
+            name: keyword.weidu-d.trastart
+          '2':
+            name: variable.parameter.tra.weidu-d
+      - match: \s(#)([0-9]+)\s
+        name: variable.parameter.weidu-tra
+      - match: \s(\( AT "(\w+)"\))\s
+        name: variable.parameter.weidu-tra
 
   condition:
     name: meta.weidu-d.condition
@@ -163,21 +174,37 @@ repository:
 
   strings:
     patterns:
-    - name: string.quoted.tilde.weidu-d
-      begin: '~'
-      end: '~'
-      patterns:
-      - include: '#vars'
+      - name: string.quoted.tilde.weidu-d
+        begin: '~'
+        end: '~'
+        patterns:
+          - include: '#vars'
 
   vars:
     name: variable.parameter.weidu-d
     patterns:
-    - match: '(%[^%]+%)'
+      - match: '(%[^%]+%)'
 
-  # various syntax sugar
-  sugar:
+  # Non-word operators that can't use \b word boundaries — kept separate
+  # from the auto-generated sugar stanza.
+  sugar-operators:
     patterns:
       - name: keyword.weidu-d
         match: \+
-      - name: keyword.weidu-d
-        match: \b(IF_FILE_EXISTS|WEIGHT|SAFE|THEN|nonPausing)\b
+
+  sugar:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
+    name: keyword.weidu-d
+    patterns:
+      - match: \b(BRANCH)\b
+      - match: \b(END)\b
+      - match: \b(GLOBAL)\b
+      - match: \b(IF_FILE_EXISTS)\b
+      - match: \b(LOCALS)\b
+      - match: \b(MYAREA)\b
+      - match: \b(OR)\b
+      - match: \b(RESPONSE)\b
+      - match: \b(SAFE)\b
+      - match: \b(THEN)\b
+      - match: \b(WEIGHT)\b
+      - match: \b(nonPausing)\b

@@ -78,6 +78,10 @@ actions:
       detail: REPLACE_ACTION_TEXT_PROCESS filename oldText newText [ moreFilenames ] dActionWhen list
       doc: "This instructs WeiDU to destructively replace every occurrence of oldText (which may be a regexp) in the stateActionStrings of filename.DLG (which must exist) with newText. However, newText is first compiled as a BAF action list. In particular, this means that replacing with commands like: ~DisplayString(Myself,@123)~ ... will do what you expect. This should only be used to patch or workaround existing dialogues. Never use this if you can help it."
 
+    - name: REPLACE_ACTION_TEXT_PROCESS_REGEXP
+      detail: REPLACE_ACTION_TEXT_PROCESS_REGEXP filenameRegexp oldText newText [ moreFilenameRegexps ] dActionWhen list
+      doc: Just like REPLACE_ACTION_TEXT_PROCESS, but the filenames are regexps. The .DLG is implied. R_A_T_P_R is shorthand for REPLACE_ACTION_TEXT_PROCESS_REGEXP.
+
     - name: REPLACE_ACTION_TEXT_REGEXP
       detail: REPLACE_ACTION_TEXT_REGEXP filenameRegexp oldText newText [ moreFilenameRegexps ] dActionWhen list
       doc: Just like REPLACE_ACTION_TEXT but the filenames are regexps. The .DLG is implied, do not include it in your regexps.
@@ -125,49 +129,53 @@ chain_epilogue:
       detail: COPY_TRANS_LATE [ SAFE ] filename stateNumber
       doc: Same as above, but only copy after all the other D Actions have been applied.
 
-    - name: EXIT
-      detail: EXIT
-      doc: At the end of the CHAIN text, exit the dialogue.
+    # END, EXIT, EXTERN are also chain epilogue keywords, but their docs are
+    # merged into keywords.END and trans_next.EXIT/EXTERN to avoid duplicate
+    # completion entries.
     # - name: END
     #   detail: END transition list
     #   doc: Execute the given transitions after the final state in the CHAIN.
-
-
-
-    # # even with merging, it still collides with APPEND... END and other items
-    # - name: END
-    #   detail: END filename stateNumber | END transition list
-    #   doc: |-
-    #     Chain epilogue.
-
-    #     `END filename stateNumber`
-
-    #     Transfer to the given state in the given dialogue file.
-
-    #     ---
-    #     `END transition list`
-
-    #     Execute the given transitions after the final state in the CHAIN.
-    - name: EXTERN
-      detail: EXTERN filename stateNumber
-      doc: Transfer to the given state in the given dialogue file.
+    # - name: EXIT
+    #   detail: EXIT
+    #   doc: At the end of the CHAIN text, exit the dialogue.
+    # - name: EXTERN
+    #   detail: EXTERN filename stateNumber
+    #   doc: Transfer to the given state in the given dialogue file.
 
 keywords:
   type: 14 #keyword
   items:
+    - name: BRANCH
+      detail: BRANCH transTriggerString BEGIN chain_speaker list END
+      doc: Like chain text, except that the first transTriggerString is appended to all existing dialogue units.
+
     - name: END
+      detail: END
+      doc: |-
+        Block terminator for APPEND, EXTEND_TOP, EXTEND_BOTTOM, state, ALTER_TRANS, and other constructs.
+
+        ---
+        Chain epilogue: `END transition list` — execute the given transitions after the final state in the CHAIN.
 
     - name: GLOBAL
+
+    - name: IF_FILE_EXISTS
 
     - name: LOCALS
 
     - name: MYAREA
 
+    - name: nonPausing
+
     - name: OR
 
     - name: RESPONSE
 
+    - name: SAFE
+
     - name: THEN
+
+    - name: WEIGHT
 
 # D format is quirky, it's hard to figure out the context.
 # Items with same label and different usages are temporarily placed here, their docs joined.
@@ -238,8 +246,6 @@ multi:
 #       detail: ( AT "var" )
 #       doc: The last definition of the translation string (with value defined by a variable) given in any TRA file should be used.
 
-
-
 say_text:
   type: 14 #keyword
   items:
@@ -258,27 +264,16 @@ state:
       detail: CHAIN2 entryFilename entryLabel chain2Text list exitFilename exitLabel
       doc: This is legacy syntax that behaves somewhat like the D Action CHAIN but is considered a state. In addition, chain2Text is slightly different from chainText. Avoid this construction.
 
+    - name: SAY
+      detail: "SAY sayText [ = sayText ... ]"
+      doc: The creature then says all of the associated sayText.
+
 string:
   type: 14 #keyword
   items:
     - name: ^
       detail: "String ^ String"
       doc: String literal concatenation. The second string is appended to the first string. No whitespace is added. Thus "hello" ^ "World" is the same as "helloWorld".
-
-tran_next:
-  type: 14 #keyword
-  items:
-    - name: EXIT
-      detail: EXIT
-      doc: The conversation ends.
-
-    - name: EXTERN
-      detail: EXTERN [ IF_FILE_EXISTS ] filename stateLabel
-      doc: The dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist.
-
-    - name: GOTO
-      detail: GOTO stateLabel
-      doc: The dialogue continues at the state with label stateLabel in the same DLG file as the current state.
 
 trans_feature:
   type: 14 #keyword
@@ -307,6 +302,29 @@ trans_feature:
       detail: UNSOLVED_JOURNAL text
       doc: If this transition is taken, the text is added to the "unsolved" section of the PC's journal.
 
+trans_next:
+  type: 14 #keyword
+  items:
+    - name: EXIT
+      detail: EXIT
+      doc: |-
+        The conversation ends.
+
+        ---
+        Chain epilogue: at the end of the CHAIN text, exit the dialogue.
+
+    - name: EXTERN
+      detail: EXTERN [ IF_FILE_EXISTS ] filename stateLabel
+      doc: |-
+        The dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist.
+
+        ---
+        Chain epilogue: `EXTERN filename stateNumber` — transfer to the given state in the given dialogue file.
+
+    - name: GOTO
+      detail: GOTO stateLabel
+      doc: The dialogue continues at the state with label stateLabel in the same DLG file as the current state.
+
 transition:
   type: 14 #keyword
   items:
@@ -325,6 +343,10 @@ transition:
 when:
   type: 14 #keyword
   items:
+    - name: IF
+      detail: IF String
+      doc: The action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.
+
     - name: UNLESS
       detail: UNLESS String
       doc: The action is not processed if the element being altered/replaced/added to contains a substring matching against the String regexp.

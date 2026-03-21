@@ -3188,11 +3188,6 @@ patch_string:
         The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
   # function
 
-
-
-
-
-
 prologue:
   type: 14 # keyword
   items:

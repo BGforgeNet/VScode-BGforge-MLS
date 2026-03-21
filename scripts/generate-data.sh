@@ -54,3 +54,7 @@ $generate_data \
     --completion $dest_dir/completion.weidu-d.json \
     --hover $dest_dir/hover.weidu-d.json \
     --tooltip-lang weidu-d-tooltip
+
+pnpm exec tsx scripts/utils/src/update-d-highlight.ts \
+    --yaml $data_dir/weidu-d-base.yml \
+    --highlight syntaxes/weidu-d.tmLanguage.yml

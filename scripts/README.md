@@ -107,4 +107,9 @@ pnpm test:cli                              # Exit codes and diff output
 - `scripts/utils/src/update-tp2-highlight.ts`
   Generates TextMate highlight patterns for 17 TP2 stanzas (actions, patches, flags, options, values, constants, etc.) from `server/data/weidu-tp2-base.yml`.
   Supports `skipCatchall` to omit items already matched by the `upper-case-constants` catch-all rule.
+  Also exports shared helpers (`buildHighlightPatterns`, `updateHighlightStanza`) used by the D highlight script.
   Called by `generate-data.sh`. Analogous to `update-fallout-base-functions-highlight.ts` for Fallout.
+
+- `scripts/utils/src/update-d-highlight.ts`
+  Generates TextMate highlight patterns for 6 D stanzas (actions, chain epilogue, keywords/sugar, trans features, trans next, when) from `server/data/weidu-d-base.yml`.
+  Called by `generate-data.sh`.

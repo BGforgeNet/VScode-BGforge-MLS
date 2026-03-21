@@ -49,6 +49,9 @@
       "include": "#vars"
     },
     {
+      "include": "#sugar-operators"
+    },
+    {
       "include": "#sugar"
     }
   ],
@@ -78,7 +81,19 @@
       "name": "support.function.weidu-baf.action",
       "patterns": [
         {
-          "match": "\\b(BEGIN)\\b",
+          "match": "\\b(ADD_STATE_TRIGGER)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(ADD_TRANS_ACTION)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(ADD_TRANS_TRIGGER)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(ALTER_TRANS)\\b",
           "name": "support.function.weidu-baf.action"
         },
         {
@@ -90,7 +105,19 @@
           "name": "support.function.weidu-baf.action"
         },
         {
+          "match": "\\b(BEGIN)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
           "match": "\\b(CHAIN)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(EXTEND_BOTTOM)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(EXTEND_TOP)\\b",
           "name": "support.function.weidu-baf.action"
         },
         {
@@ -114,43 +141,23 @@
           "name": "support.function.weidu-baf.action"
         },
         {
-          "match": "\\b(EXTEND_TOP)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(EXTEND_BOTTOM)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(ADD_STATE_TRIGGER)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(ADD_TRANS_TRIGGER)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(ADD_TRANS_ACTION)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(REPLACE_TRANS_ACTION)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(REPLACE_TRANS_TRIGGER)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(ALTER_TRANS)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
           "match": "\\b(REPLACE)\\b",
           "name": "support.function.weidu-baf.action"
         },
         {
-          "match": "\\b(SET_WEIGHT)\\b",
+          "match": "\\b(REPLACE_ACTION_TEXT)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(REPLACE_ACTION_TEXT_PROCESS)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(REPLACE_ACTION_TEXT_PROCESS_REGEXP)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(REPLACE_ACTION_TEXT_REGEXP)\\b",
           "name": "support.function.weidu-baf.action"
         },
         {
@@ -162,6 +169,14 @@
           "name": "support.function.weidu-baf.action"
         },
         {
+          "match": "\\b(REPLACE_TRANS_ACTION)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(REPLACE_TRANS_TRIGGER)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
           "match": "\\b(REPLACE_TRIGGER_TEXT)\\b",
           "name": "support.function.weidu-baf.action"
         },
@@ -170,19 +185,11 @@
           "name": "support.function.weidu-baf.action"
         },
         {
-          "match": "\\b(REPLACE_ACTION_TEXT)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(REPLACE_ACTION_TEXT_REGEXP)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
-          "match": "\\b(REPLACE_ACTION_TEXT_PROCESS)\\b",
-          "name": "support.function.weidu-baf.action"
-        },
-        {
           "match": "\\b(R_A_T_P_R)\\b",
+          "name": "support.function.weidu-baf.action"
+        },
+        {
+          "match": "\\b(SET_WEIGHT)\\b",
           "name": "support.function.weidu-baf.action"
         }
       ]
@@ -204,19 +211,11 @@
       "name": "keyword.other.weidu-d",
       "patterns": [
         {
-          "match": "\\b(END)\\b",
+          "match": "\\b(COPY_TRANS)\\b",
           "name": "keyword.other.weidu-d"
         },
         {
-          "match": "\\b(EXTERN)\\b",
-          "name": "keyword.other.weidu-d"
-        },
-        {
-          "match": "\\b(SAFE)\\b",
-          "name": "keyword.other.weidu-d"
-        },
-        {
-          "match": "\\b(EXIT)\\b",
+          "match": "\\b(COPY_TRANS_LATE)\\b",
           "name": "keyword.other.weidu-d"
         }
       ]
@@ -255,15 +254,19 @@
       "name": "keyword.other.weidu-d",
       "patterns": [
         {
-          "match": "\\b(REPLY)\\b",
-          "name": "keyword.other.weidu-d"
-        },
-        {
           "match": "\\b(DO)\\b",
           "name": "keyword.other.weidu-d"
         },
         {
+          "match": "\\b(FLAGS)\\b",
+          "name": "keyword.other.weidu-d"
+        },
+        {
           "match": "\\b(JOURNAL)\\b",
+          "name": "keyword.other.weidu-d"
+        },
+        {
+          "match": "\\b(REPLY)\\b",
           "name": "keyword.other.weidu-d"
         },
         {
@@ -273,16 +276,16 @@
         {
           "match": "\\b(UNSOLVED_JOURNAL)\\b",
           "name": "keyword.other.weidu-d"
-        },
-        {
-          "match": "\\b(FLAGS)\\b",
-          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "transnext": {
       "name": "keyword.other.weidu-d",
       "patterns": [
+        {
+          "match": "\\b(EXIT)\\b",
+          "name": "keyword.other.weidu-d"
+        },
         {
           "match": "\\b(EXTERN)\\b",
           "name": "keyword.other.weidu-d"
@@ -294,11 +297,17 @@
       ]
     },
     "reference": {
-      "name": "variable.parameter.weidu-tra",
       "patterns": [
         {
           "match": "\\s(@)([0-9]+)\\s",
-          "name": "variable.parameter.weidu-tra"
+          "captures": {
+            "1": {
+              "name": "keyword.weidu-d.trastart"
+            },
+            "2": {
+              "name": "variable.parameter.tra.weidu-d"
+            }
+          }
         },
         {
           "match": "\\s(#)([0-9]+)\\s",
@@ -403,15 +412,64 @@
         }
       ]
     },
-    "sugar": {
+    "sugar-operators": {
       "patterns": [
         {
           "name": "keyword.weidu-d",
           "match": "\\+"
+        }
+      ]
+    },
+    "sugar": {
+      "name": "keyword.weidu-d",
+      "patterns": [
+        {
+          "match": "\\b(BRANCH)\\b",
+          "name": "keyword.weidu-d"
         },
         {
-          "name": "keyword.weidu-d",
-          "match": "\\b(IF_FILE_EXISTS|WEIGHT|SAFE|THEN|nonPausing)\\b"
+          "match": "\\b(END)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(GLOBAL)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(IF_FILE_EXISTS)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(LOCALS)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(MYAREA)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(OR)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(RESPONSE)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(SAFE)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(THEN)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(WEIGHT)\\b",
+          "name": "keyword.weidu-d"
+        },
+        {
+          "match": "\\b(nonPausing)\\b",
+          "name": "keyword.weidu-d"
         }
       ]
     }
