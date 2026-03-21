@@ -17,12 +17,9 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import YAML, { type Document, isMap, isScalar, isSeq } from "yaml";
 import { type DataFile, loadData } from "./generate-data.ts";
-import { cmpStr, YAML_DUMP_OPTIONS } from "./yaml-helpers.ts";
+import { type HighlightPattern, cmpStr, YAML_DUMP_OPTIONS } from "./yaml-helpers.ts";
 
-export interface HighlightPattern {
-    readonly match: string;
-    readonly name?: string;
-}
+export type { HighlightPattern };
 
 /**
  * Matches identifiers already caught by the upper-case-constants catch-all rule

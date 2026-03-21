@@ -53,11 +53,8 @@ export interface FalloutArg {
     readonly doc: string;
 }
 
-/** A highlight pattern entry for tmLanguage YAML */
-export interface HighlightPattern {
-    readonly match: string;
-    readonly name?: string;
-}
+import type { HighlightPattern } from "../../../utils/src/yaml-helpers.ts";
+export type { HighlightPattern };
 
 /** Named-argument payload for selective tmLanguage stanza updates. */
 export interface FalloutHighlightDumpInput {

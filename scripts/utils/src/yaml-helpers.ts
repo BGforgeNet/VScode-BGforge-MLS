@@ -8,6 +8,12 @@ import path from "node:path";
 import type { Document, Scalar } from "yaml";
 import { isScalar, Scalar as ScalarClass } from "yaml";
 
+/** A highlight pattern entry for tmLanguage YAML. */
+export interface HighlightPattern {
+    readonly match: string;
+    readonly name?: string;
+}
+
 /**
  * Byte-level string comparison matching Python's default sort order.
  * Unlike localeCompare, this sorts by character code (e.g. '_' after 'Z').
