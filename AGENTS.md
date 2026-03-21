@@ -161,6 +161,7 @@ See `server/INTERNALS.md` for the full feature matrix and cross-language feature
 | Transpiler guides  | `transpilers/tssl/`, `transpilers/tbaf/`, `transpilers/td/` (each has README, writing guide, llms.txt) |
 | Server npm package | `server/README.md`                                                                                     |
 | Data files         | `server/data/README.md`                                                                                |
+| Data pipeline      | `docs/data-pipeline.md`                                                                                |
 | Grammars           | `grammars/README.md` + per-grammar READMEs                                                             |
 | Build scripts      | `scripts/README.md`                                                                                    |
 | Packaging          | `docs/ignore-files.md`                                                                                 |

@@ -374,22 +374,22 @@ converted to JSON at build time. Includes:
 
 ## Data Pipeline
 
-Game engine definitions flow from YAML sources to runtime:
+Game engine definitions flow from YAML sources to runtime. See [data-pipeline.md](data-pipeline.md) for the full diagram.
+
+Summary:
 
 ```
 External Sources (IESDP, sfall, game files)
   |
   v
-scripts/utils/src/generate-data.ts     Build-time extraction
-  |
-  v
 server/data/*.yml                       Version-controlled YAML
   |
   v
-scripts/utils/src/yaml2json.ts          Build-time conversion
+generate-data.sh                        Build-time conversion
   |
   v
 server/out/*.json                       Bundled JSON (completion, hover, signature)
+syntaxes/*.tmLanguage.yml               Updated highlight stanzas
   |
   v
 core/static-loader.ts                   Runtime loading into Symbols index

@@ -1,6 +1,6 @@
 This directory contains source data for completion, hover, and signature help.
 
-Base files are updated manually, others by scripts.
+Base files are updated manually, others by scripts. See [docs/data-pipeline.md](../../docs/data-pipeline.md) for the full data flow diagram.
 
 YAML format is chosen for its brevity compared to JSON, as well as possibility to use comments.
 
