@@ -605,60 +605,60 @@ repository:
   weidu-tp2-values:
     name: support.class.weidu-tp2.value
     patterns:
-      - match: \b(BYTE_AT)\b
-      - match: \b(SBYTE_AT)\b
-      - match: \b(SHORT_AT)\b
-      - match: \b(SSHORT_AT)\b
-      - match: \b(LONG_AT)\b
-      - match: \b(SLONG_AT)\b
-      - match: \b(STRING_COMPARE)\b
-      - match: \b(STRING_COMPARE_CASE)\b
-      - match: \b(STRING_EQUAL)\b
-      - match: \b(STRING_EQUAL_CASE)\b
-      - match: \b(STR_EQ)\b
-      - match: \b(STR_CMP)\b
-      - match: \b(STRING_MATCHES_REGEXP)\b
-      - match: \b(STRING_COMPARE_REGEXP)\b
-      - match: \b(STRING_CONTAINS_REGEXP)\b
-      - match: \b(GAME_IS)\b
-      - match: \b(ENGINE_IS)\b
-      - match: \b(GAME_INCLUDES)\b
-      - match: \b(IDS_OF_SYMBOL)\b
-      - match: \b(VARIABLE_IS_SET)\b
-      - match: \b(IS_AN_INT)\b
-      - match: \b(TRA_ENTRY_EXISTS)\b
-      - match: \b(IS_SILENT)\b
-      - match: \b(MOD_IS_INSTALLED)\b
-      - match: \b(INSTALL_ORDER)\b
-      - match: \b(ID_OF_LABEL)\b
-      - match: \b(STATE_WHICH_SAYS)\b
-      - match: \b(RESOLVE_STR_REF)\b
-      - match: \b(NEXT_STRREF)\b
-      - match: \b(RANDOM)\b
-      - match: \b(BUFFER_LENGTH)\b
-      - match: \b(INDEX)\b
-      - match: \b(RINDEX)\b
-      - match: \b(INDEX_BUFFER)\b
-      - match: \b(RINDEX_BUFFER)\b
-      - match: \b(STRING_LENGTH)\b
-      - match: \b(FILE_CONTAINS)\b
-      - match: \b(FILE_CONTAINS_EVALUATED)\b
-      - match: \b(RESOURCE_CONTAINS)\b
-      - match: \b(FILE_EXISTS)\b
-      - match: \b(DIRECTORY_EXISTS)\b
-      - match: \b(FILE_EXISTS_IN_GAME)\b
-      - match: \b(FILE_MD5)\b
-      - match: \b(FILE_IS_IN_COMPRESSED_BIFF)\b
       - match: \b(BIFF_IS_COMPRESSED)\b
-      - match: \b(FILE_SIZE)\b
-      - match: \b(SIZE_OF_FILE)\b
-      - match: \b(VALID_SCRIPT_ACTIONS)\b
-      - match: \b(VALID_SCRIPT_TRIGGERS)\b
-      - match: \b(EVALUATE_BUFFER)\b
-      # as of v251
-      - match: \b(VARIABLE_IS_IN_ARRAY)\b
+      - match: \b(BUFFER_LENGTH)\b
+      - match: \b(BYTE_AT)\b
       - match: \b(DEFINED_AS_FUNCTION)\b
       - match: \b(DEFINED_AS_INLINED)\b
+      - match: \b(DIRECTORY_EXISTS)\b
+      - match: \b(ENGINE_IS)\b
+      - match: \b(EVALUATE_BUFFER)\b
+      - match: \b(FILE_CONTAINS)\b
+      - match: \b(FILE_CONTAINS_EVALUATED)\b
+      - match: \b(FILE_EXISTS)\b
+      - match: \b(FILE_EXISTS_IN_GAME)\b
+      - match: \b(FILE_IS_IN_COMPRESSED_BIFF)\b
+      - match: \b(FILE_MD5)\b
+      - match: \b(FILE_SIZE)\b
+      - match: \b(GAME_INCLUDES)\b
+      - match: \b(GAME_IS)\b
+      - match: \b(IDS_OF_SYMBOL)\b
+      - match: \b(ID_OF_LABEL)\b
+      - match: \b(INDEX)\b
+      - match: \b(INDEX_BUFFER)\b
+      - match: \b(INSTALL_ORDER)\b
+      - match: \b(IS_AN_INT)\b
+      - match: \b(IS_SILENT)\b
+      - match: \b(LONG_AT)\b
+      - match: \b(MOD_IS_INSTALLED)\b
+      - match: \b(NEXT_STRREF)\b
+      - match: \b(RANDOM)\b
+      - match: \b(RESOLVE_STR_REF)\b
+      - match: \b(RESOURCE_CONTAINS)\b
+      - match: \b(RINDEX)\b
+      - match: \b(RINDEX_BUFFER)\b
+      - match: \b(SBYTE_AT)\b
+      - match: \b(SHORT_AT)\b
+      - match: \b(SIZE_OF_FILE)\b
+      - match: \b(SLONG_AT)\b
+      - match: \b(SSHORT_AT)\b
+      - match: \b(STATE_WHICH_SAYS)\b
+      - match: \b(STRING_COMPARE)\b
+      - match: \b(STRING_COMPARE_CASE)\b
+      - match: \b(STRING_COMPARE_REGEXP)\b
+      - match: \b(STRING_CONTAINS_REGEXP)\b
+      - match: \b(STRING_EQUAL)\b
+      - match: \b(STRING_EQUAL_CASE)\b
+      - match: \b(STRING_LENGTH)\b
+      - match: \b(STRING_MATCHES_REGEXP)\b
+      - match: \b(STR_CMP)\b
+      - match: \b(STR_EQ)\b
+      - match: \b(TRA_ENTRY_EXISTS)\b
+      - match: \b(VALID_SCRIPT_ACTIONS)\b
+      - match: \b(VALID_SCRIPT_TRIGGERS)\b
+      # as of v251
+      - match: \b(VARIABLE_IS_IN_ARRAY)\b
+      - match: \b(VARIABLE_IS_SET)\b
 
   weidu-keywords:
     name: keyword.control.weidu-tp2
@@ -998,124 +998,26 @@ repository:
   infinity-constants:
     name: constant.language.infinity.weidu-tp2
     patterns:
-      - match: \b(NAME1)\b
-      - match: \b(NAME2)\b
-      - match: \b(DESC)\b
-      - match: \b(UNIDENTIFIED_DESC)\b
-      - match: \b(IDENTIFIED_DESC)\b
-
       - match: \b(AREA_CITY)\b
       - match: \b(AREA_DAY)\b
       - match: \b(AREA_DUNGEON)\b
       - match: \b(AREA_FOREST)\b
       - match: \b(AREA_NIGHT)\b
+      - match: \b(AREA_SCRIPT)\b
+      - match: \b(ATTACK)\b
       - match: \b(ATTACK1)\b
       - match: \b(ATTACK2)\b
       - match: \b(ATTACK3)\b
       - match: \b(ATTACK4)\b
-      - match: \b(ATTACK)\b
+      - match: \b(BATTLE_CRY)\b
       - match: \b(BATTLE_CRY1)\b
       - match: \b(BATTLE_CRY2)\b
       - match: \b(BATTLE_CRY3)\b
       - match: \b(BATTLE_CRY4)\b
       - match: \b(BATTLE_CRY5)\b
-      - match: \b(BATTLE_CRY)\b
       - match: \b(BIO)\b
-      - match: \b(BORED)\b
-      - match: \b(COMPLIMENT1)\b
-      - match: \b(COMPLIMENT2)\b
-      - match: \b(COMPLIMENT3)\b
-      - match: \b(COMPLIMENT)\b
-      - match: \b(CRITICAL_HIT)\b
-      - match: \b(CRITICAL_MISS)\b
-      - match: \b(DAMAGE)\b
-      - match: \b(DIALOG_DEFAULT)\b
-      - match: \b(DIALOG_HOSTILE)\b
-      - match: \b(DYING)\b
-      - match: \b(EXISTANCE1)\b
-      - match: \b(EXISTANCE2)\b
-      - match: \b(EXISTANCE3)\b
-      - match: \b(EXISTANCE4)\b
-      - match: \b(EXISTANCE5)\b
-      - match: \b(HAPPY)\b
-      - match: \b(HIDDEN_IN_SHADOWS)\b
-      - match: \b(HURT)\b
-      - match: \b(INITIAL_MEETING)\b
-      - match: \b(INSULT1)\b
-      - match: \b(INSULT2)\b
-      - match: \b(INSULT3)\b
-      - match: \b(INSULT)\b
-      - match: \b(INTERACTION1)\b
-      - match: \b(INTERACTION2)\b
-      - match: \b(INTERACTION3)\b
-      - match: \b(INTERACTION4)\b
-      - match: \b(INTERACTION5)\b
-      - match: \b(INTERACTION)\b
-      - match: \b(INVENTORY_FULL)\b
-      - match: \b(LEADER)\b
-      - match: \b(MISCELLANEOUS)\b
-      - match: \b(MORALE)\b
-      - match: \b(PICKED_POCKET)\b
-      - match: \b(REACT_TO_DIE_GENERAL)\b
-      - match: \b(REACT_TO_DIE_SPECIFIC)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT1)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT2)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT3)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT)\b
-      - match: \b(RESPONSE_TO_INSULT1)\b
-      - match: \b(RESPONSE_TO_INSULT2)\b
-      - match: \b(RESPONSE_TO_INSULT3)\b
-      - match: \b(RESPONSE_TO_INSULT)\b
-      - match: \b(SELECT_ACTION1)\b
-      - match: \b(SELECT_ACTION2)\b
-      - match: \b(SELECT_ACTION3)\b
-      - match: \b(SELECT_ACTION4)\b
-      - match: \b(SELECT_ACTION5)\b
-      - match: \b(SELECT_ACTION6)\b
-      - match: \b(SELECT_ACTION7)\b
-      - match: \b(SELECT_ACTION)\b
-      - match: \b(SELECT_COMMON1)\b
-      - match: \b(SELECT_COMMON2)\b
-      - match: \b(SELECT_COMMON3)\b
-      - match: \b(SELECT_COMMON4)\b
-      - match: \b(SELECT_COMMON5)\b
-      - match: \b(SELECT_COMMON6)\b
-      - match: \b(SELECT_COMMON)\b
-      - match: \b(SELECT_RARE1)\b
-      - match: \b(SELECT_RARE2)\b
-      - match: \b(SELECT_RARE)\b
-      - match: \b(SET_A_TRAP)\b
-      - match: \b(SPECIAL1)\b
-      - match: \b(SPECIAL2)\b
-      - match: \b(SPECIAL3)\b
-      - match: \b(SPECIAL)\b
-      - match: \b(SPELL_DISRUPTED)\b
-      - match: \b(TARGET_IMMUNE)\b
-      - match: \b(TIRED)\b
-      - match: \b(UNHAPPY_ANNOYED)\b
-      - match: \b(UNHAPPY_BREAKING)\b
-      - match: \b(UNHAPPY_SERIOUS)\b
-      - match: \b(STORE_NAME)\b
-
-      - match: \b(SCRIPT_OVERRIDE)\b
-      - match: \b(SCRIPT_CLASS)\b
-      - match: \b(SCRIPT_RACE)\b
-      - match: \b(SCRIPT_GENERAL)\b
-      - match: \b(SCRIPT_DEFAULT)\b
-      - match: \b(DEATHVAR)\b
-      - match: \b(DIALOG)\b
-      - match: \b(AREA_SCRIPT)\b
-
       - match: \b(BIT0)\b
       - match: \b(BIT1)\b
-      - match: \b(BIT2)\b
-      - match: \b(BIT3)\b
-      - match: \b(BIT4)\b
-      - match: \b(BIT5)\b
-      - match: \b(BIT6)\b
-      - match: \b(BIT7)\b
-      - match: \b(BIT8)\b
-      - match: \b(BIT9)\b
       - match: \b(BIT10)\b
       - match: \b(BIT11)\b
       - match: \b(BIT12)\b
@@ -1126,6 +1028,7 @@ repository:
       - match: \b(BIT17)\b
       - match: \b(BIT18)\b
       - match: \b(BIT19)\b
+      - match: \b(BIT2)\b
       - match: \b(BIT20)\b
       - match: \b(BIT21)\b
       - match: \b(BIT22)\b
@@ -1136,24 +1039,115 @@ repository:
       - match: \b(BIT27)\b
       - match: \b(BIT28)\b
       - match: \b(BIT29)\b
+      - match: \b(BIT3)\b
       - match: \b(BIT30)\b
       - match: \b(BIT31)\b
-
-      - match: \b(WNL)\b
-      - match: \b(MNL)\b
+      - match: \b(BIT4)\b
+      - match: \b(BIT5)\b
+      - match: \b(BIT6)\b
+      - match: \b(BIT7)\b
+      - match: \b(BIT8)\b
+      - match: \b(BIT9)\b
+      - match: \b(BORED)\b
+      - match: \b(COMPLIMENT)\b
+      - match: \b(COMPLIMENT1)\b
+      - match: \b(COMPLIMENT2)\b
+      - match: \b(COMPLIMENT3)\b
+      - match: \b(CRITICAL_HIT)\b
+      - match: \b(CRITICAL_MISS)\b
+      - match: \b(DAMAGE)\b
+      - match: \b(DEATHVAR)\b
+      - match: \b(DESC)\b
+      - match: \b(DIALOG)\b
+      - match: \b(DIALOG_DEFAULT)\b
+      - match: \b(DIALOG_HOSTILE)\b
+      - match: \b(DYING)\b
+      - match: \b(EE_LANGUAGE)\b
+      - match: \b(EXISTANCE1)\b
+      - match: \b(EXISTANCE2)\b
+      - match: \b(EXISTANCE3)\b
+      - match: \b(EXISTANCE4)\b
+      - match: \b(EXISTANCE5)\b
+      - match: \b(HAPPY)\b
+      - match: \b(HIDDEN_IN_SHADOWS)\b
+      - match: \b(HURT)\b
+      - match: \b(IDENTIFIED_DESC)\b
+      - match: \b(INITIAL_MEETING)\b
+      - match: \b(INSULT)\b
+      - match: \b(INSULT1)\b
+      - match: \b(INSULT2)\b
+      - match: \b(INSULT3)\b
+      - match: \b(INTERACTION)\b
+      - match: \b(INTERACTION1)\b
+      - match: \b(INTERACTION2)\b
+      - match: \b(INTERACTION3)\b
+      - match: \b(INTERACTION4)\b
+      - match: \b(INTERACTION5)\b
+      - match: \b(INVENTORY_FULL)\b
+      - match: \b(LEADER)\b
       - match: \b(LNL)\b
-      - match: \b(TAB)\b
-
+      - match: \b(MISCELLANEOUS)\b
+      - match: \b(MNL)\b
+      - match: \b(MORALE)\b
+      - match: \b(MPSAVE_DIRECTORY)\b
+      - match: \b(NAME1)\b
+      - match: \b(NAME2)\b
+      - match: \b(PICKED_POCKET)\b
+      - match: \b(REACT_TO_DIE_GENERAL)\b
+      - match: \b(REACT_TO_DIE_SPECIFIC)\b
       - match: \b(REGISTRY_BG1_PATH)\b
       - match: \b(REGISTRY_BG2_PATH)\b
-      - match: \b(REGISTRY_PST_PATH)\b
       - match: \b(REGISTRY_IWD1_PATH)\b
       - match: \b(REGISTRY_IWD2_PATH)\b
-
-      - match: \b(USER_DIRECTORY)\b
+      - match: \b(REGISTRY_PST_PATH)\b
+      - match: \b(RESPONSE_TO_COMPLIMENT)\b
+      - match: \b(RESPONSE_TO_COMPLIMENT1)\b
+      - match: \b(RESPONSE_TO_COMPLIMENT2)\b
+      - match: \b(RESPONSE_TO_COMPLIMENT3)\b
+      - match: \b(RESPONSE_TO_INSULT)\b
+      - match: \b(RESPONSE_TO_INSULT1)\b
+      - match: \b(RESPONSE_TO_INSULT2)\b
+      - match: \b(RESPONSE_TO_INSULT3)\b
       - match: \b(SAVE_DIRECTORY)\b
-      - match: \b(MPSAVE_DIRECTORY)\b
-      - match: \b(EE_LANGUAGE)\b
+      - match: \b(SCRIPT_CLASS)\b
+      - match: \b(SCRIPT_DEFAULT)\b
+      - match: \b(SCRIPT_GENERAL)\b
+      - match: \b(SCRIPT_OVERRIDE)\b
+      - match: \b(SCRIPT_RACE)\b
+      - match: \b(SELECT_ACTION)\b
+      - match: \b(SELECT_ACTION1)\b
+      - match: \b(SELECT_ACTION2)\b
+      - match: \b(SELECT_ACTION3)\b
+      - match: \b(SELECT_ACTION4)\b
+      - match: \b(SELECT_ACTION5)\b
+      - match: \b(SELECT_ACTION6)\b
+      - match: \b(SELECT_ACTION7)\b
+      - match: \b(SELECT_COMMON)\b
+      - match: \b(SELECT_COMMON1)\b
+      - match: \b(SELECT_COMMON2)\b
+      - match: \b(SELECT_COMMON3)\b
+      - match: \b(SELECT_COMMON4)\b
+      - match: \b(SELECT_COMMON5)\b
+      - match: \b(SELECT_COMMON6)\b
+      - match: \b(SELECT_RARE)\b
+      - match: \b(SELECT_RARE1)\b
+      - match: \b(SELECT_RARE2)\b
+      - match: \b(SET_A_TRAP)\b
+      - match: \b(SPECIAL)\b
+      - match: \b(SPECIAL1)\b
+      - match: \b(SPECIAL2)\b
+      - match: \b(SPECIAL3)\b
+      - match: \b(SPELL_DISRUPTED)\b
+      - match: \b(STORE_NAME)\b
+      - match: \b(TAB)\b
+      - match: \b(TARGET_IMMUNE)\b
+      - match: \b(TIRED)\b
+      - match: \b(UNHAPPY_ANNOYED)\b
+      - match: \b(UNHAPPY_BREAKING)\b
+      - match: \b(UNHAPPY_SERIOUS)\b
+      - match: \b(UNIDENTIFIED_DESC)\b
+      - match: \b(USER_DIRECTORY)\b
+      - match: \b(WNL)\b
 
   # Catch-all for constant-like identifiers in value position.
   # Matches names where the first word (before _) is fully uppercase: OPCODE_foo, MAX_LEVEL, CLERIC_BLESS.
