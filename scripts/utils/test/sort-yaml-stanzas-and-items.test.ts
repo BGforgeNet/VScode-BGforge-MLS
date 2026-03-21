@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sortYamlSequenceByPath, sortYamlStanzasAndItems } from "../src/sort-yaml-stanzas-and-items.ts";
+import { sortSequenceInAllMapEntries, sortYamlSequenceByPath, sortYamlStanzasAndItems } from "../src/sort-yaml-stanzas-and-items.ts";
 
 describe("sortYamlStanzasAndItems", () => {
     it("sorts top-level stanzas alphabetically while preserving stanza formatting", () => {
@@ -145,6 +145,66 @@ other:
 
         const result = sortYamlSequenceByPath(input, ["repository", "missing", "patterns"], "match");
 
+        expect(result).toBe(input);
+    });
+});
+
+describe("sortSequenceInAllMapEntries", () => {
+    it("sorts patterns within every repository stanza without reordering stanzas", () => {
+        const input = `repository:
+  beta:
+    name: keyword.control
+    patterns:
+      - match: \\b(z)\\b
+      - match: \\b(a)\\b
+  alpha:
+    name: support.function
+    patterns:
+      - match: \\b(y)\\b
+      - match: \\b(b)\\b
+`;
+
+        const result = sortSequenceInAllMapEntries(input, ["repository"], "patterns", "match");
+
+        expect(result).toBe(`repository:
+  beta:
+    name: keyword.control
+    patterns:
+      - match: \\b(a)\\b
+      - match: \\b(z)\\b
+  alpha:
+    name: support.function
+    patterns:
+      - match: \\b(b)\\b
+      - match: \\b(y)\\b
+`);
+    });
+
+    it("skips stanzas that have no matching sequence key", () => {
+        const input = `repository:
+  no-patterns:
+    name: keyword.control
+  has-patterns:
+    patterns:
+      - match: \\b(z)\\b
+      - match: \\b(a)\\b
+`;
+
+        const result = sortSequenceInAllMapEntries(input, ["repository"], "patterns", "match");
+
+        expect(result).toBe(`repository:
+  no-patterns:
+    name: keyword.control
+  has-patterns:
+    patterns:
+      - match: \\b(a)\\b
+      - match: \\b(z)\\b
+`);
+    });
+
+    it("returns source unchanged when map path does not exist", () => {
+        const input = `other:\n  value: 1\n`;
+        const result = sortSequenceInAllMapEntries(input, ["missing"], "patterns", "match");
         expect(result).toBe(input);
     });
 });

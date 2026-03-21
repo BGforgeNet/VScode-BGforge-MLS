@@ -293,6 +293,45 @@ export function sortYamlSequenceByPath(
     return `${source.slice(0, pairStart)}${head}${sortedItems}${source.slice(seqEnd)}`;
 }
 
+/**
+ * Sorts a named sequence (e.g. `patterns`) within every entry of a map at the
+ * given path. Useful for sorting `patterns` inside all `repository` stanzas of
+ * a TextMate grammar without reordering the stanzas themselves.
+ */
+export function sortSequenceInAllMapEntries(
+    source: string,
+    mapPath: readonly string[],
+    sequenceKey: string,
+    sortKey: string,
+): string {
+    const doc = YAML.parseDocument(source, { keepSourceTokens: true });
+    if (doc.errors.length > 0) {
+        throw new Error(doc.errors[0]!.message);
+    }
+    if (!isMap(doc.contents)) {
+        throw new Error("Expected top-level YAML document to be a mapping");
+    }
+    const map = mapPath.length === 0 ? doc.contents : doc.getIn(mapPath, true);
+    if (!isMap(map)) {
+        return source;
+    }
+
+    const keys: string[] = [];
+    for (const pair of map.items) {
+        if (isScalar(pair.key) && typeof pair.key.value === "string") {
+            keys.push(pair.key.value);
+        }
+    }
+
+    // Process in reverse order so changes to later stanzas don't shift offsets
+    // of earlier ones on subsequent iterations.
+    let result = source;
+    for (const key of [...keys].reverse()) {
+        result = sortYamlSequenceByPath(result, [...mapPath, key, sequenceKey], sortKey);
+    }
+    return result;
+}
+
 export function sortYamlStanzasAndItems(source: string): string {
     const doc = YAML.parseDocument(source, { keepSourceTokens: true });
     if (doc.errors.length > 0) {
@@ -344,6 +383,8 @@ function main(): void {
         args: process.argv.slice(2),
         options: {
             "sequence-path": { type: "string" },
+            "map-path": { type: "string" },
+            "sequence-key": { type: "string" },
             "sort-key": { type: "string" },
         },
         allowPositionals: true,
@@ -352,21 +393,36 @@ function main(): void {
 
     const inputFile = positionals[0];
     if (inputFile === undefined) {
-        console.error("Usage: sort-yaml-stanzas-and-items <input.yml> [--sequence-path a.b.c --sort-key key]");
+        console.error(
+            "Usage: sort-yaml-stanzas-and-items <input.yml>\n" +
+            "       sort-yaml-stanzas-and-items <input.yml> --sequence-path a.b.c --sort-key key\n" +
+            "       sort-yaml-stanzas-and-items <input.yml> --map-path a.b --sequence-key patterns --sort-key match",
+        );
         process.exit(1);
     }
 
     const source = fs.readFileSync(inputFile, "utf8");
     const sequencePath = values["sequence-path"];
+    const mapPath = values["map-path"];
+    const sequenceKey = values["sequence-key"];
     const sortKey = values["sort-key"];
-    if ((sequencePath === undefined) !== (sortKey === undefined)) {
-        console.error("Both --sequence-path and --sort-key must be provided together");
-        process.exit(1);
-    }
 
-    const sorted = sequencePath !== undefined && sortKey !== undefined
-        ? sortYamlSequenceByPath(source, sequencePath.split("."), sortKey)
-        : sortYamlStanzasAndItems(source);
+    let sorted: string;
+    if (mapPath !== undefined || sequenceKey !== undefined) {
+        if (mapPath === undefined || sequenceKey === undefined || sortKey === undefined) {
+            console.error("--map-path, --sequence-key and --sort-key must all be provided together");
+            process.exit(1);
+        }
+        sorted = sortSequenceInAllMapEntries(source, mapPath.split("."), sequenceKey, sortKey);
+    } else if (sequencePath !== undefined || sortKey !== undefined) {
+        if (sequencePath === undefined || sortKey === undefined) {
+            console.error("Both --sequence-path and --sort-key must be provided together");
+            process.exit(1);
+        }
+        sorted = sortYamlSequenceByPath(source, sequencePath.split("."), sortKey);
+    } else {
+        sorted = sortYamlStanzasAndItems(source);
+    }
     fs.writeFileSync(inputFile, sorted, "utf8");
 }
 

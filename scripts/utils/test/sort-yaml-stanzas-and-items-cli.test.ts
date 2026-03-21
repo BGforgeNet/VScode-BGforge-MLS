@@ -56,6 +56,36 @@ b:
 `);
     });
 
+    it("sorts patterns in all map entries via --map-path and --sequence-key", () => {
+        const inputFile = path.join(tmpDir, "input.yml");
+        fs.writeFileSync(inputFile, `repository:
+  beta:
+    patterns:
+      - match: z
+      - match: a
+  alpha:
+    patterns:
+      - match: y
+      - match: b
+`, "utf8");
+
+        execSync(
+            `pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts "${inputFile}" --map-path repository --sequence-key patterns --sort-key match`,
+            { cwd: process.cwd() },
+        );
+
+        expect(fs.readFileSync(inputFile, "utf8")).toBe(`repository:
+  beta:
+    patterns:
+      - match: a
+      - match: z
+  alpha:
+    patterns:
+      - match: b
+      - match: y
+`);
+    });
+
     it("sorts a specific YAML sequence path with blank lines removed", () => {
         const inputFile = path.join(tmpDir, "input.yml");
         fs.writeFileSync(inputFile, `repository:
