@@ -111,5 +111,5 @@ pnpm test:cli                              # Exit codes and diff output
   Called by `generate-data.sh`. Analogous to `update-fallout-base-functions-highlight.ts` for Fallout.
 
 - `scripts/utils/src/update-d-highlight.ts`
-  Generates TextMate highlight patterns for 6 D stanzas (actions, chain epilogue, keywords/sugar, trans features, trans next, when) from `server/data/weidu-d-base.yml`.
+  Generates TextMate highlight patterns for 8 D stanzas (actions, chain epilogue, keywords/sugar, state, trans features, trans next, transition, when) from `server/data/weidu-d-base.yml`.
   Called by `generate-data.sh`.

@@ -1,6 +1,7 @@
 /**
  * Updates weidu-d.tmLanguage.yml highlight stanzas (actions, chain epilogue,
- * keywords/sugar, trans features, trans next, when) from server/data/weidu-d-base.yml.
+ * keywords/sugar, state, trans features, trans next, transition, when)
+ * from server/data/weidu-d-base.yml.
  *
  * Usage:
  *   pnpm exec tsx scripts/utils/src/update-d-highlight.ts \
@@ -21,8 +22,10 @@ const STANZA_MAP: ReadonlyMap<string, StanzaConfig> = new Map([
     ["actions", { repoKey: "d-action" }],
     ["chain_epilogue", { repoKey: "chain-epilogue" }],
     ["keywords", { repoKey: "sugar" }],
+    ["state", { repoKey: "state" }],
     ["trans_feature", { repoKey: "transfeature" }],
     ["trans_next", { repoKey: "transnext" }],
+    ["transition", { repoKey: "transition" }],
     ["when", { repoKey: "action-when" }],
 ]);
 

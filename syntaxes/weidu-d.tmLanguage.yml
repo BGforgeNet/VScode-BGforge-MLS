@@ -83,6 +83,7 @@ repository:
       - match: \b(COPY_TRANS_LATE)\b
 
   state:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: keyword.other.weidu-d
     patterns:
       - match: \b(APPENDI)\b
@@ -90,6 +91,7 @@ repository:
       - match: \b(SAY)\b
 
   transition:
+    # Auto-generated from weidu-d-base.yml — do not edit manually.
     name: keyword.other.weidu-d
     patterns:
       - match: \b(COPY_TRANS)\b
