@@ -105,5 +105,6 @@ pnpm test:cli                              # Exit codes and diff output
   Use this for manual data-file cleanup when you want deterministic ordering without YAML emitter churn.
 
 - `scripts/utils/src/update-tp2-highlight.ts`
-  Generates TextMate highlight patterns for TP2 action/patch stanzas from `server/data/weidu-tp2-base.yml`.
+  Generates TextMate highlight patterns for 17 TP2 stanzas (actions, patches, flags, options, values, constants, etc.) from `server/data/weidu-tp2-base.yml`.
+  Supports `skipCatchall` to omit items already matched by the `upper-case-constants` catch-all rule.
   Called by `generate-data.sh`. Analogous to `update-fallout-base-functions-highlight.ts` for Fallout.

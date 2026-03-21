@@ -325,6 +325,52 @@ describe("no context (general completion)", () => {
         expect(filtered).toHaveLength(0);
     });
 
+    it("FuncVarKeyword hidden in incomplete code without function context", () => {
+        // Broken code — tree-sitter can't detect function call, contexts are empty
+        const contexts = getContexts(`LAF\n|`);
+        const items = [
+            createItem("INT_VAR", CompletionCategory.FuncVarKeyword),
+            createItem("STR_VAR", CompletionCategory.FuncVarKeyword),
+        ];
+        const filtered = filterItemsByContext(items, contexts);
+        // FuncVarKeyword is context-required — hidden when no context detected
+        expect(filtered).toHaveLength(0);
+    });
+
+    it("FuncVarKeyword shown after function name in parseable call", () => {
+        // Incomplete but parseable — tree-sitter detects function call
+        const contexts = getContexts(`LAF func | END`);
+        const items = [
+            createItem("INT_VAR", CompletionCategory.FuncVarKeyword),
+            createItem("STR_VAR", CompletionCategory.FuncVarKeyword),
+        ];
+        const filtered = filterItemsByContext(items, contexts);
+        expect(filtered).toHaveLength(2);
+    });
+
+    it("FuncVarKeyword shown in incomplete LAF without END (text fallback)", () => {
+        // No END — tree-sitter can't parse function call, text fallback detects param position
+        const contexts = getContexts(`LAF func |`);
+        expect(contexts).toContain(CompletionContext.FuncParamName);
+        const items = [
+            createItem("INT_VAR", CompletionCategory.FuncVarKeyword),
+            createItem("STR_VAR", CompletionCategory.FuncVarKeyword),
+        ];
+        const filtered = filterItemsByContext(items, contexts);
+        expect(filtered).toHaveLength(2);
+    });
+
+    it("FuncVarKeyword shown in incomplete LPF without END (text fallback)", () => {
+        const contexts = getContexts(`LPF func |`);
+        expect(contexts).toContain(CompletionContext.FuncParamName);
+        const items = [
+            createItem("INT_VAR", CompletionCategory.FuncVarKeyword),
+            createItem("STR_VAR", CompletionCategory.FuncVarKeyword),
+        ];
+        const filtered = filterItemsByContext(items, contexts);
+        expect(filtered).toHaveLength(2);
+    });
+
     it("items without category shown in any context", () => {
         const item: Tp2CompletionItem = { label: "local_var", kind: CompletionItemKind.Variable };
         expect(filterItemsByContext([item], [])).toHaveLength(1);

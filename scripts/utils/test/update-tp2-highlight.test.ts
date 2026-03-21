@@ -25,7 +25,7 @@ describe("buildTp2HighlightPatterns", () => {
     });
 
     it("generates patterns for all mapped stanzas", () => {
-        for (const stanza of ["action", "array_sort_type", "caching", "component_flag", "flag", "language", "opt_case", "opt_exact", "opt_glob", "patch", "patch_byte", "patch_long", "patch_string", "prologue", "when"]) {
+        for (const stanza of ["action", "array_sort_type", "caching", "component_flag", "flag", "language", "opt_case", "opt_exact", "opt_glob", "patch", "patch_byte", "patch_long", "patch_string", "prologue", "value_constant", "value_function", "when"]) {
             const patterns = buildTp2HighlightPatterns(DATA, stanza);
             expect(patterns.length).toBeGreaterThan(0);
         }
@@ -33,5 +33,16 @@ describe("buildTp2HighlightPatterns", () => {
 
     it("throws for unknown stanza", () => {
         expect(() => buildTp2HighlightPatterns(DATA, "nonexistent")).toThrow("not found");
+    });
+
+    it("skipCatchall excludes items matching upper-case-constants regex", () => {
+        const all = buildTp2HighlightPatterns(DATA, "value_constant");
+        const filtered = buildTp2HighlightPatterns(DATA, "value_constant", true);
+        // Filtered should be smaller — UPPER_CASE items with underscore are excluded
+        expect(filtered.length).toBeLessThan(all.length);
+        // Single-word items like BIT0, DAMAGE should remain
+        expect(filtered.some((p) => p.match === "\\b(BIT0)\\b")).toBe(true);
+        // Items with underscores like BATTLE_CRY1 should be excluded
+        expect(filtered.some((p) => p.match === "\\b(BATTLE_CRY1)\\b")).toBe(false);
     });
 });

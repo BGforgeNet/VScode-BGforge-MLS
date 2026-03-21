@@ -26,9 +26,17 @@ export const CHAR_TOKEN_TYPE = "char";
 export const DWORD_TOKEN_TYPE = "dword";
 
 /**
+ * Semantic token type for int-typed constants (inferred from assignments like SET X = 42).
+ * Provides highlighting for single-word UPPER_CASE constants that don't match
+ * the TextMate catch-all regex (which requires an underscore).
+ */
+export const INT_TOKEN_TYPE = "int";
+
+/**
  * Maps JSDoc @type prefixes to custom semantic token types.
  * Used to look up which token type to assign to a constant based on its annotated type.
- * Only IESDP types with distinct theme styling are included (byte/char=italic, dword=bold, resref=underline).
+ * IESDP types have distinct theme styling (byte/char=italic, dword=bold, resref=underline).
+ * Int type provides constant highlighting for user-defined single-word UPPER constants.
  * Types without special styling (word, strref, other) rely on the generic upper-case-constants TextMate rule.
  */
 export const JSDOC_TYPE_TO_TOKEN: ReadonlyMap<string, string> = new Map([
@@ -36,6 +44,7 @@ export const JSDOC_TYPE_TO_TOKEN: ReadonlyMap<string, string> = new Map([
     ["byte", BYTE_TOKEN_TYPE],
     ["char", CHAR_TOKEN_TYPE],
     ["dword", DWORD_TOKEN_TYPE],
+    ["int", INT_TOKEN_TYPE],
 ]);
 
 export const semanticTokensLegend: SemanticTokensLegend = {
@@ -46,6 +55,7 @@ export const semanticTokensLegend: SemanticTokensLegend = {
         BYTE_TOKEN_TYPE,
         CHAR_TOKEN_TYPE,
         DWORD_TOKEN_TYPE,
+        INT_TOKEN_TYPE,
     ],
     tokenModifiers: [],
 };

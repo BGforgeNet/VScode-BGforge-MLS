@@ -23,28 +23,45 @@ interface HighlightPattern {
     readonly name?: string;
 }
 
-/** Stanza-to-TextMate mapping: YAML data stanza name -> TextMate repository key. */
-const STANZA_MAP: ReadonlyMap<string, string> = new Map([
-    ["action", "weidu-tp2-action"],
-    ["array_sort_type", "weidu-tp2-arrarindicessorttype"],
-    ["caching", "weidu-tp2-caching"],
-    ["component_flag", "weidu-tp2-component-flag"],
-    ["flag", "weidu-tp2-flag"],
-    ["language", "weidu-tp2-language"],
-    ["opt_case", "weidu-tp2-optcase"],
-    ["opt_exact", "weidu-tp2-optexact"],
-    ["opt_glob", "weidu-tp2-optglob"],
-    ["patch", "weidu-tp2-patch"],
-    ["patch_byte", "weidu-tp2-patch-byte"],
-    ["patch_long", "weidu-tp2-patch-long"],
-    ["patch_string", "weidu-tp2-patch-string"],
-    ["prologue", "weidu-tp2-file"],
-    ["when", "weidu-tp2-when"],
+/**
+ * Matches identifiers already caught by the upper-case-constants catch-all rule
+ * in the TextMate grammar. Items matching this pattern can be skipped from
+ * generated stanzas that share the same constant.language scope family.
+ */
+const UPPER_CASE_CATCHALL = /^[A-Z][A-Z0-9]+_\w+$/;
+
+interface StanzaConfig {
+    readonly repoKey: string;
+    /** When true, skip items whose names match the upper-case-constants catch-all. */
+    readonly skipCatchall?: boolean;
+}
+
+/** Stanza-to-TextMate mapping: YAML data stanza name -> TextMate config. */
+const STANZA_MAP: ReadonlyMap<string, StanzaConfig> = new Map([
+    ["action", { repoKey: "weidu-tp2-action" }],
+    ["array_sort_type", { repoKey: "weidu-tp2-arrarindicessorttype" }],
+    ["caching", { repoKey: "weidu-tp2-caching" }],
+    ["component_flag", { repoKey: "weidu-tp2-component-flag" }],
+    ["flag", { repoKey: "weidu-tp2-flag" }],
+    ["language", { repoKey: "weidu-tp2-language" }],
+    ["opt_case", { repoKey: "weidu-tp2-optcase" }],
+    ["opt_exact", { repoKey: "weidu-tp2-optexact" }],
+    ["opt_glob", { repoKey: "weidu-tp2-optglob" }],
+    ["patch", { repoKey: "weidu-tp2-patch" }],
+    ["patch_byte", { repoKey: "weidu-tp2-patch-byte" }],
+    ["patch_long", { repoKey: "weidu-tp2-patch-long" }],
+    ["patch_string", { repoKey: "weidu-tp2-patch-string" }],
+    ["prologue", { repoKey: "weidu-tp2-file" }],
+    ["value_constant", { repoKey: "infinity-constants", skipCatchall: true }],
+    ["value_function", { repoKey: "weidu-tp2-values" }],
+    // value_operator not generated — TextMate stanza has non-word-boundary operator regexes
+    ["when", { repoKey: "weidu-tp2-when" }],
 ]);
 
 export function buildTp2HighlightPatterns(
     data: DataFile,
     stanzaName: string,
+    skipCatchall = false,
 ): readonly HighlightPattern[] {
     const stanza = data[stanzaName];
     if (stanza === undefined) {
@@ -52,6 +69,7 @@ export function buildTp2HighlightPatterns(
     }
 
     return stanza.items
+        .filter((item) => !skipCatchall || !UPPER_CASE_CATCHALL.test(item.name))
         .map((item): HighlightPattern => ({
             match: `\\b(${item.name})\\b`,
             ...(item.deprecated !== undefined ? { name: "invalid.deprecated.bgforge" } : {}),
@@ -101,9 +119,9 @@ export function updateTp2Highlight(yamlPath: string, highlightPath: string): voi
     // Cast to Document to avoid ParsedNode generic constraints on set()
     const doc = YAML.parseDocument(content) as Document;
 
-    for (const [stanzaName, repoKey] of STANZA_MAP) {
-        const patterns = buildTp2HighlightPatterns(data, stanzaName);
-        updateHighlightStanza(doc, repoKey, patterns);
+    for (const [stanzaName, config] of STANZA_MAP) {
+        const patterns = buildTp2HighlightPatterns(data, stanzaName, config.skipCatchall);
+        updateHighlightStanza(doc, config.repoKey, patterns);
     }
 
     fs.writeFileSync(highlightPath, doc.toString(YAML_DUMP_OPTIONS), "utf8");

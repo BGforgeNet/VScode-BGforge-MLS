@@ -602,6 +602,7 @@ repository:
       - match: (&&?|\|(\|)?|\^\^|`)
       - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL|GLOBAL)\b
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   weidu-tp2-values:
     name: support.class.weidu-tp2.value
     patterns:
@@ -656,7 +657,6 @@ repository:
       - match: \b(TRA_ENTRY_EXISTS)\b
       - match: \b(VALID_SCRIPT_ACTIONS)\b
       - match: \b(VALID_SCRIPT_TRIGGERS)\b
-      # as of v251
       - match: \b(VARIABLE_IS_IN_ARRAY)\b
       - match: \b(VARIABLE_IS_SET)\b
 
@@ -995,26 +995,15 @@ repository:
           '2':
             name: keyword.control.weidu-tp2
 
+  # Auto-generated from weidu-tp2-base.yml — do not edit manually.
   infinity-constants:
     name: constant.language.infinity.weidu-tp2
     patterns:
-      - match: \b(AREA_CITY)\b
-      - match: \b(AREA_DAY)\b
-      - match: \b(AREA_DUNGEON)\b
-      - match: \b(AREA_FOREST)\b
-      - match: \b(AREA_NIGHT)\b
-      - match: \b(AREA_SCRIPT)\b
       - match: \b(ATTACK)\b
       - match: \b(ATTACK1)\b
       - match: \b(ATTACK2)\b
       - match: \b(ATTACK3)\b
       - match: \b(ATTACK4)\b
-      - match: \b(BATTLE_CRY)\b
-      - match: \b(BATTLE_CRY1)\b
-      - match: \b(BATTLE_CRY2)\b
-      - match: \b(BATTLE_CRY3)\b
-      - match: \b(BATTLE_CRY4)\b
-      - match: \b(BATTLE_CRY5)\b
       - match: \b(BIO)\b
       - match: \b(BIT0)\b
       - match: \b(BIT1)\b
@@ -1053,26 +1042,18 @@ repository:
       - match: \b(COMPLIMENT1)\b
       - match: \b(COMPLIMENT2)\b
       - match: \b(COMPLIMENT3)\b
-      - match: \b(CRITICAL_HIT)\b
-      - match: \b(CRITICAL_MISS)\b
       - match: \b(DAMAGE)\b
       - match: \b(DEATHVAR)\b
       - match: \b(DESC)\b
       - match: \b(DIALOG)\b
-      - match: \b(DIALOG_DEFAULT)\b
-      - match: \b(DIALOG_HOSTILE)\b
       - match: \b(DYING)\b
-      - match: \b(EE_LANGUAGE)\b
       - match: \b(EXISTANCE1)\b
       - match: \b(EXISTANCE2)\b
       - match: \b(EXISTANCE3)\b
       - match: \b(EXISTANCE4)\b
       - match: \b(EXISTANCE5)\b
       - match: \b(HAPPY)\b
-      - match: \b(HIDDEN_IN_SHADOWS)\b
       - match: \b(HURT)\b
-      - match: \b(IDENTIFIED_DESC)\b
-      - match: \b(INITIAL_MEETING)\b
       - match: \b(INSULT)\b
       - match: \b(INSULT1)\b
       - match: \b(INSULT2)\b
@@ -1083,70 +1064,19 @@ repository:
       - match: \b(INTERACTION3)\b
       - match: \b(INTERACTION4)\b
       - match: \b(INTERACTION5)\b
-      - match: \b(INVENTORY_FULL)\b
       - match: \b(LEADER)\b
       - match: \b(LNL)\b
       - match: \b(MISCELLANEOUS)\b
       - match: \b(MNL)\b
       - match: \b(MORALE)\b
-      - match: \b(MPSAVE_DIRECTORY)\b
       - match: \b(NAME1)\b
       - match: \b(NAME2)\b
-      - match: \b(PICKED_POCKET)\b
-      - match: \b(REACT_TO_DIE_GENERAL)\b
-      - match: \b(REACT_TO_DIE_SPECIFIC)\b
-      - match: \b(REGISTRY_BG1_PATH)\b
-      - match: \b(REGISTRY_BG2_PATH)\b
-      - match: \b(REGISTRY_IWD1_PATH)\b
-      - match: \b(REGISTRY_IWD2_PATH)\b
-      - match: \b(REGISTRY_PST_PATH)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT1)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT2)\b
-      - match: \b(RESPONSE_TO_COMPLIMENT3)\b
-      - match: \b(RESPONSE_TO_INSULT)\b
-      - match: \b(RESPONSE_TO_INSULT1)\b
-      - match: \b(RESPONSE_TO_INSULT2)\b
-      - match: \b(RESPONSE_TO_INSULT3)\b
-      - match: \b(SAVE_DIRECTORY)\b
-      - match: \b(SCRIPT_CLASS)\b
-      - match: \b(SCRIPT_DEFAULT)\b
-      - match: \b(SCRIPT_GENERAL)\b
-      - match: \b(SCRIPT_OVERRIDE)\b
-      - match: \b(SCRIPT_RACE)\b
-      - match: \b(SELECT_ACTION)\b
-      - match: \b(SELECT_ACTION1)\b
-      - match: \b(SELECT_ACTION2)\b
-      - match: \b(SELECT_ACTION3)\b
-      - match: \b(SELECT_ACTION4)\b
-      - match: \b(SELECT_ACTION5)\b
-      - match: \b(SELECT_ACTION6)\b
-      - match: \b(SELECT_ACTION7)\b
-      - match: \b(SELECT_COMMON)\b
-      - match: \b(SELECT_COMMON1)\b
-      - match: \b(SELECT_COMMON2)\b
-      - match: \b(SELECT_COMMON3)\b
-      - match: \b(SELECT_COMMON4)\b
-      - match: \b(SELECT_COMMON5)\b
-      - match: \b(SELECT_COMMON6)\b
-      - match: \b(SELECT_RARE)\b
-      - match: \b(SELECT_RARE1)\b
-      - match: \b(SELECT_RARE2)\b
-      - match: \b(SET_A_TRAP)\b
       - match: \b(SPECIAL)\b
       - match: \b(SPECIAL1)\b
       - match: \b(SPECIAL2)\b
       - match: \b(SPECIAL3)\b
-      - match: \b(SPELL_DISRUPTED)\b
-      - match: \b(STORE_NAME)\b
       - match: \b(TAB)\b
-      - match: \b(TARGET_IMMUNE)\b
       - match: \b(TIRED)\b
-      - match: \b(UNHAPPY_ANNOYED)\b
-      - match: \b(UNHAPPY_BREAKING)\b
-      - match: \b(UNHAPPY_SERIOUS)\b
-      - match: \b(UNIDENTIFIED_DESC)\b
-      - match: \b(USER_DIRECTORY)\b
       - match: \b(WNL)\b
 
   # Catch-all for constant-like identifiers in value position.

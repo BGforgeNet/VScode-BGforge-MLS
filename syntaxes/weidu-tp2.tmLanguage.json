@@ -2803,30 +2803,6 @@
       "name": "constant.language.infinity.weidu-tp2",
       "patterns": [
         {
-          "match": "\\b(AREA_CITY)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(AREA_DAY)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(AREA_DUNGEON)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(AREA_FOREST)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(AREA_NIGHT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(AREA_SCRIPT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(ATTACK)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
@@ -2844,30 +2820,6 @@
         },
         {
           "match": "\\b(ATTACK4)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(BATTLE_CRY)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(BATTLE_CRY1)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(BATTLE_CRY2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(BATTLE_CRY3)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(BATTLE_CRY4)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(BATTLE_CRY5)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
@@ -3023,14 +2975,6 @@
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(CRITICAL_HIT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(CRITICAL_MISS)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(DAMAGE)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
@@ -3047,19 +2991,7 @@
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(DIALOG_DEFAULT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(DIALOG_HOSTILE)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(DYING)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(EE_LANGUAGE)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
@@ -3087,19 +3019,7 @@
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(HIDDEN_IN_SHADOWS)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(HURT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(IDENTIFIED_DESC)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(INITIAL_MEETING)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
@@ -3143,10 +3063,6 @@
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(INVENTORY_FULL)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(LEADER)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
@@ -3167,179 +3083,11 @@
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(MPSAVE_DIRECTORY)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(NAME1)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
           "match": "\\b(NAME2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(PICKED_POCKET)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REACT_TO_DIE_GENERAL)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REACT_TO_DIE_SPECIFIC)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REGISTRY_BG1_PATH)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REGISTRY_BG2_PATH)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REGISTRY_IWD1_PATH)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REGISTRY_IWD2_PATH)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(REGISTRY_PST_PATH)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_COMPLIMENT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_COMPLIMENT1)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_COMPLIMENT2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_COMPLIMENT3)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_INSULT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_INSULT1)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_INSULT2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(RESPONSE_TO_INSULT3)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SAVE_DIRECTORY)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SCRIPT_CLASS)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SCRIPT_DEFAULT)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SCRIPT_GENERAL)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SCRIPT_OVERRIDE)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SCRIPT_RACE)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION1)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION3)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION4)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION5)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION6)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_ACTION7)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON1)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON3)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON4)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON5)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_COMMON6)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_RARE)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_RARE1)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SELECT_RARE2)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(SET_A_TRAP)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
@@ -3359,43 +3107,11 @@
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(SPELL_DISRUPTED)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(STORE_NAME)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(TAB)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {
-          "match": "\\b(TARGET_IMMUNE)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
           "match": "\\b(TIRED)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(UNHAPPY_ANNOYED)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(UNHAPPY_BREAKING)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(UNHAPPY_SERIOUS)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(UNIDENTIFIED_DESC)\\b",
-          "name": "constant.language.infinity.weidu-tp2"
-        },
-        {
-          "match": "\\b(USER_DIRECTORY)\\b",
           "name": "constant.language.infinity.weidu-tp2"
         },
         {

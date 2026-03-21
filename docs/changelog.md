@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.2
+
+**WeiDU TP2:**
+- Added semantic token highlighting for integer constants.
+- Improved completion for `INT_VAR`/`STR_VAR` in incomplete function calls.
+
 ## 3.2.1
 
 ### Formatter Improvements

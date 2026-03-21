@@ -7,6 +7,14 @@
 export const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAM|LPM|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION|LAUNCH_ACTION_MACRO|LAUNCH_PATCH_MACRO)\s+\S*$/i;
 
 /**
+ * LAF/LPF keywords followed by a function name and whitespace — cursor is past the name,
+ * in parameter position (INT_VAR/STR_VAR/RET). Used as text fallback when tree-sitter
+ * can't parse incomplete function calls (e.g., no END yet).
+ * Does not match LAM/LPM — macros have no parameters.
+ */
+export const FUNC_PARAM_KEYWORDS = /^\s*(?:LAF|LPF|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION)\s+\S+\s+/i;
+
+/**
  * Declaration site patterns: detect when the cursor is on a new symbol name being declared.
  * Split into two categories to enable different completion behavior:
  * - "assignment": variable SET/SPRINT - show local variable completions (for reassignment)

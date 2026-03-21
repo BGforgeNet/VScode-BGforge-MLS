@@ -3192,6 +3192,7 @@ patch_string:
 
 
 
+
 prologue:
   type: 14 # keyword
   items:
@@ -3207,43 +3208,23 @@ prologue:
       doc: |-
         The AUTHOR/SUPPORT directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
 
+# Residual value-position items not covered by other stanzas.
+# Keywords (ALWAYS_ASK, ANY, ELSE, END, etc.) removed — already in weidu-keywords.
+# Operators (AND, OR, BAND, etc.) split to value_operator.
+# Functions (FILE_EXISTS, BYTE_AT, etc.) split to value_function.
+# Constants (BIT0, DAMAGE, etc.) split to value_constant.
 value:
   type: 14 # keyword
   items:
-    - name: ABS
-      detail: ABS Value
-      doc: |-
-        Absolute value. If the value is >= 0, the result is x. Otherwise the result is -x.
+    - name: $array(index
+      detail: $array(index list)
+      doc: The so-called array construct. See the tutorial.
 
-    - name: ALWAYS_ASK
-      doc: |-
-        For use with `QUICK_MENU`.
 
-    - name: AND
-      detail: value AND value
-      doc: |-
-        Conjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`.
-
-    - name: ANY
-      doc: |-
-        When using `ACTION_MATCH` and `PATCH_MATCH`, it is also possible to have a condition without a guard, in which case the syntax is:
-
-        ```
-        ACTION_MATCH ~%something%~
-        WITH
-          ANY GAME_IS ~BG1 TotSC~
-          BEGIN
-            // the game is BG1
-          END
-          ANY GAME_IS ~SoA ToB~
-          BEGIN
-            // the game is BG2
-          END
-          DEFAULT
-            // not BG1 or BG2
-        END
-        ```
-
+value_constant:
+  type: 14 # keyword
+  category: value
+  items:
     - name: AREA_CITY
       doc: |-
         0xFC
@@ -3268,6 +3249,8 @@ value:
       doc: |-
         0x94
 
+    - name: ATTACK
+
     - name: ATTACK1
       doc: |-
         0xDC
@@ -3284,15 +3267,7 @@ value:
       doc: |-
         0xE8
 
-    - name: BAND
-      detail: value BAND value
-      doc: |-
-        Bitwise And. 0b101 BAND 0b110 = 0b100. Synonym: &.
-
-    - name: BASR
-      detail: value BASR value
-      doc: |-
-        Bitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1.
+    - name: BATTLE_CRY
 
     - name: BATTLE_CRY1
       doc: |-
@@ -3313,11 +3288,6 @@ value:
     - name: BATTLE_CRY5
       doc: |-
         0xD8
-
-    - name: BIFF_IS_COMPRESSED
-      detail: BIFF_IS_COMPRESSED fileName
-      doc: |-
-        Evaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command.
 
     - name: BIO
       doc: |-
@@ -3451,43 +3421,11 @@ value:
       doc: |-
         0b00000000000000000000001000000000
 
-    - name: BLSL
-      detail: value BLSL value
-      doc: |-
-        Bitwise Logical Shift Left. 0b101 BLSL 2 = 0b10100. Synonym: <<.
-
-    - name: BLSR
-      detail: value BLSR value
-      doc: |-
-        Bitwise Logical Shift Right. 0b101 BLSR 2 = 0b1. Synonym: >>.
-
-    - name: BNOT
-      detail: BNOT value
-      doc: |-
-        Bitwise Not. BNOT 0b111 = 0b1111111111111111111111111111000. Synonym: `.
-
-    - name: BOR
-      detail: value BOR value
-      doc: |-
-        Bitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |.
-
     - name: BORED
       doc: |-
         0xC4
 
-    - name: BUFFER_LENGTH
-      doc: |-
-        Returns the length of the string currently being patched, or 0 if outside of a patch expression.
-
-    - name: BXOR
-      detail: value BXOR value
-      doc: |-
-        Bitwise Exclusive Or. 0b101 BXOR 0b110 = 0b011. Synonym: ^^.
-
-    - name: BYTE_AT
-      detail: BYTE_AT offset
-      doc: |-
-        The 8-bit value from the file at the given offset.
+    - name: COMPLIMENT
 
     - name: COMPLIMENT1
       doc: |-
@@ -3517,6 +3455,364 @@ value:
       doc: |-
         0x280
 
+    - name: DESC
+      doc: |-
+        0x54
+
+    - name: DIALOG
+      doc: |-
+        0x2CC
+
+    - name: DIALOG_DEFAULT
+      doc: |-
+        0x19C
+
+    - name: DIALOG_HOSTILE
+      doc: |-
+        0x198
+
+    - name: DYING
+      doc: |-
+        0xF0
+
+    - name: EE_LANGUAGE
+      doc: |-
+        Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
+
+    - name: EXISTANCE1
+
+    - name: EXISTANCE2
+
+    - name: EXISTANCE3
+
+    - name: EXISTANCE4
+      doc: |-
+        0x1C8
+
+    - name: EXISTANCE5
+
+    - name: HAPPY
+      doc: |-
+        0xAC
+
+    - name: HIDDEN_IN_SHADOWS
+      doc: |-
+        0x1BC
+
+    - name: HURT
+      doc: |-
+        0xF4
+
+    - name: IDENTIFIED_DESC
+      doc: |-
+        The offset within an infinity engine resource where the identified description is stored.
+
+    - name: INITIAL_MEETING
+      doc: |-
+        0xA4
+
+    - name: INSULT
+
+    - name: INSULT1
+
+    - name: INSULT2
+
+    - name: INSULT3
+
+    - name: INTERACTION
+
+    - name: INTERACTION1
+      doc: |-
+        0x140
+
+    - name: INTERACTION2
+      doc: |-
+        0x144
+
+    - name: INTERACTION3
+      doc: |-
+        0x148
+
+    - name: INTERACTION4
+      doc: |-
+        0x14C
+
+    - name: INTERACTION5
+      doc: |-
+        0x150
+
+    - name: INVENTORY_FULL
+      doc: |-
+        0x1B4
+
+    - name: LEADER
+      doc: |-
+        0xBC
+
+    - name: LNL
+      doc: |-
+        Linux/Unix/OSX new line (`\n`).
+
+    - name: MISCELLANEOUS
+
+    - name: MNL
+      doc: |-
+        (Pre-OSX) Macintosh new line (`\r`).
+
+    - name: MORALE
+      doc: |-
+        0xA8
+
+    - name: MPSAVE_DIRECTORY
+      doc: |-
+        Evaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead.
+
+    - name: NAME1
+      doc: |-
+        The offset within an infinity engine resource where the unidentified general name (e.g., "Battle Axe") is stored.
+
+    - name: NAME2
+      doc: |-
+        The offset within an infinity engine resource where the identified general name (e.g., "K'logarath +4") is stored.
+
+    - name: PICKED_POCKET
+      doc: |-
+        0x1B8
+
+    - name: PORTRAIT_LARGE
+      doc: |-
+        0x3C
+
+    - name: PORTRAIT_SMALL
+      doc: |-
+        0x34
+
+    - name: REACT_TO_DIE_GENERAL
+      doc: |-
+        0x178
+
+    - name: REACT_TO_DIE_SPECIFIC
+      doc: |-
+        0x17C
+
+    - name: REGISTRY_BG1_PATH
+      doc: |-
+        The path of BG1 (as read from the registry), or empty if not available.
+
+    - name: REGISTRY_BG2_PATH
+      doc: |-
+        The path of BG2 (as read from the registry), or empty if not available.
+
+    - name: REGISTRY_IWD1_PATH
+      doc: |-
+        The path of IWD1 (as read from the registry), or empty if not available.
+
+    - name: REGISTRY_IWD2_PATH
+      doc: |-
+        The path of IWD2 (as read from the registry), or empty if not available.
+
+    - name: REGISTRY_PST_PATH
+      doc: |-
+        The path of PST (as read from the registry), or empty if not available.
+
+    - name: RESPONSE_TO_COMPLIMENT
+
+    - name: RESPONSE_TO_COMPLIMENT1
+      doc: |-
+        0x180
+
+    - name: RESPONSE_TO_COMPLIMENT2
+      doc: |-
+        0x184
+
+    - name: RESPONSE_TO_COMPLIMENT3
+      doc: |-
+        0x188
+
+    - name: RESPONSE_TO_INSULT
+
+    - name: RESPONSE_TO_INSULT1
+      doc: |-
+        0x18C
+
+    - name: RESPONSE_TO_INSULT2
+      doc: |-
+        0x190
+
+    - name: RESPONSE_TO_INSULT3
+      doc: |-
+        0x194
+
+    - name: SAVE_DIRECTORY
+      doc: |-
+        Evaluates to the directory in which the current game type stores its saved games. This is "%USER_DIRECTORY%/save".
+
+    - name: SCRIPT_CLASS
+      doc: |-
+        0x250
+
+    - name: SCRIPT_DEFAULT
+      doc: |-
+        0x268
+
+    - name: SCRIPT_GENERAL
+      doc: |-
+        0x260
+
+    - name: SCRIPT_OVERRIDE
+      doc: |-
+        0x248
+
+    - name: SCRIPT_RACE
+      doc: |-
+        0x258
+
+    - name: SELECT_ACTION
+
+    - name: SELECT_ACTION1
+      doc: |-
+        0x124
+
+    - name: SELECT_ACTION2
+      doc: |-
+        0x128
+
+    - name: SELECT_ACTION3
+      doc: |-
+        0x12C
+
+    - name: SELECT_ACTION4
+      doc: |-
+        0x130
+
+    - name: SELECT_ACTION5
+      doc: |-
+        0x134
+
+    - name: SELECT_ACTION6
+      doc: |-
+        0x138
+
+    - name: SELECT_ACTION7
+      doc: |-
+        0x13C
+
+    - name: SELECT_COMMON
+
+    - name: SELECT_COMMON1
+      doc: |-
+        0x10C
+
+    - name: SELECT_COMMON2
+      doc: |-
+        0x110
+
+    - name: SELECT_COMMON3
+      doc: |-
+        0x114
+
+    - name: SELECT_COMMON4
+      doc: |-
+        0x118
+
+    - name: SELECT_COMMON5
+      doc: |-
+        0x11C
+
+    - name: SELECT_COMMON6
+      doc: |-
+        0x120
+
+    - name: SELECT_RARE
+
+    - name: SELECT_RARE1
+      doc: |-
+        0x1A0
+
+    - name: SELECT_RARE2
+      doc: |-
+        0x1A4
+
+    - name: SET_A_TRAP
+      doc: |-
+        0x1C4
+
+    - name: SPECIAL
+
+    - name: SPECIAL1
+      doc: |-
+        0x16C
+
+    - name: SPECIAL2
+      doc: |-
+        0x170
+
+    - name: SPECIAL3
+      doc: |-
+        0x174
+
+    - name: SPELL_DISRUPTED
+      doc: |-
+        0x1C0
+
+    - name: STORE_NAME
+      doc: |-
+        0xC
+
+    - name: TAB
+      doc: |-
+        Tabulation character (`\t`).
+
+    - name: TARGET_IMMUNE
+      doc: |-
+        0x1B0
+
+    - name: TIRED
+      doc: |-
+        0xC0
+
+    - name: UNHAPPY_ANNOYED
+      doc: |-
+        0xB0
+
+    - name: UNHAPPY_BREAKING
+      doc: |-
+        0xB8
+
+    - name: UNHAPPY_SERIOUS
+      doc: |-
+        0xB4
+
+    - name: UNIDENTIFIED_DESC
+      doc: |-
+        The offset within an infinity engine resource where the unidentified description is stored.
+
+    - name: USER_DIRECTORY
+      doc: |-
+        Evaluates to the directory in which user files are kept. This is the game path on non-EE-type games. On EE-type games, the USER_DIRECTORY variable is constructed from two parts, the user directory and a game-specific directory. If the file engine.lua exists, WeiDU will attempt to read the game-specific directory from it. If the engine.lua does not exist or does not contain the necessary information, WeiDU will use default paths. On Windows, the user directory is the user's personal directory, as read from the Windows registry. On macOS, the user directory is "$HOME/Documents". On Linux, the user directory is "$HOME/.local/share". In both cases, $HOME is the user's home directory, as read from the pwd database. The default game-specific path for BG: EE is "Baldur's Gate - Enhanced Edition"; for BGII: EE it is "Baldur's Gate II - Enhanced Edition"; for IWD: EE it is "Icewind Dale - Enhanced Edition"; and for PST: EE it is "Planescape Torment - Enhanced Edition".
+
+    - name: WNL
+      doc: |-
+        Windows new line (`\r\n`).
+
+value_function:
+  type: 14 # keyword
+  category: value
+  items:
+    - name: BIFF_IS_COMPRESSED
+      detail: BIFF_IS_COMPRESSED fileName
+      doc: |-
+        Evaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command.
+
+    - name: BUFFER_LENGTH
+      doc: |-
+        Returns the length of the string currently being patched, or 0 if outside of a patch expression.
+
+    - name: BYTE_AT
+      detail: BYTE_AT offset
+      doc: |-
+        The 8-bit value from the file at the given offset.
+
     - name: DEFINED_AS_FUNCTION
       detail: DEFINED_AS_FUNCTION variable
       doc: |-
@@ -3534,83 +3830,16 @@ value:
         construct that evaluates to a string. Returns `1` if the string is the
         path of a defined inlined file, otherwise `0`.
 
-    - name: DESC
-      doc: |-
-        0x54
-
-    - name: DIALOG
-      doc: |-
-        0x2CC
-
-    - name: DIALOG_DEFAULT
-      doc: |-
-        0x19C
-
-    - name: DIALOG_HOSTILE
-      doc: |-
-        0x198
-
     - name: DIRECTORY_EXISTS
       detail: DIRECTORY_EXISTS dirName
       doc: |-
         Evaluates to 1 if dirName is a directory and exists in the filesystem and evaluates to 0 otherwise.
-
-    - name: DYING
-      doc: |-
-        0xF0
-
-    - name: EE_LANGUAGE
-      doc: |-
-        Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
-
-    - name: ELSE
-
-    - name: END
 
     - name: ENGINE_IS
       detail: ENGINE_IS Caching String
       doc: |-
         Functions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.
         If caching (disabled by default), `ENGINE_IS` will return the same result for the same string, and do so much faster.
-
-    - name: ERROR_MESSAGE
-      doc: |-
-        For use with `ACTION_TRY` and `PATCH_TRY`.
-
-        ```
-        ACTION_TRY
-          COPY ~override/sw1h01.itm~ ~override~
-          DO_SOMETHING_ELSE
-        WITH
-          ~Unix.Unix_error(20, "stat", "override/sw1h01.itm")~
-          BEGIN
-            PRINT ~I caught sw1h01.itm not found!~
-          END
-          ~Unix.Unix_error(20, "stat", "override/.*.itm")~
-          BEGIN
-            PRINT ~I caught another missing item!~
-          END
-          DEFAULT
-            PRINT ~I caught another error!~
-        END
-        ```
-
-        The actions in `ACTION_TRY` are executed. If none of those fails, the `WITH` part is skipped; otherwise, the error message is printed as usual (use `SILENT`), the exception text (from the `ERROR: blah blah` line) is saved to the `%ERROR_MESSAGE%` variable, and a `MATCH` is executed on that.
-
-        After running the correct error handling code, execution continues after the end of the `ACTION_TRY` block. If you still want to block the installation, use `ACTION_RERAISE` (in theory, you could use `FAIL ~%ERROR_MESSAGE%~`, but this changes the exception and its text, which would cause you headaches when nesting multiple `TRY`s).
-
-    - name: EVAL
-      detail: EVAL variable
-      doc: |-
-        User variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
-        ```
-        SPRINT x ~y~
-        SET y = 5
-        SPRINT z EVAL ~tricky %%x%%~
-        SET EVAL "%x%" += 77
-        PATCH_PRINT "y is %y% ; z is %z%"
-        ```
-        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
 
     - name: EVALUATE_BUFFER
       detail: EVALUATE_BUFFER variable
@@ -3624,21 +3853,6 @@ value:
         PATCH_PRINT "y is %y% ; z is %z%"
         ```
         This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
-
-    #    - name: $array(index
-    #      detail: $array(index list)
-    #      doc: The so-called array construct. See the tutorial.
-    - name: EXISTANCE1
-
-    - name: EXISTANCE2
-
-    - name: EXISTANCE3
-
-    - name: EXISTANCE4
-      doc: |-
-        0x1C8
-
-    - name: EXISTANCE5
 
     - name: FILE_CONTAINS
       detail: FILE_CONTAINS fileName regexp
@@ -3730,22 +3944,6 @@ value:
         `REQUIRE_PREDICATE GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~`.
         If caching (disabled by default), `GAME_IS` will return the same result for the same string, and do so much faster.
 
-    - name: HAPPY
-      doc: |-
-        0xAC
-
-    - name: HIDDEN_IN_SHADOWS
-      doc: |-
-        0x1BC
-
-    - name: HURT
-      doc: |-
-        0xF4
-
-    - name: IDENTIFIED_DESC
-      doc: |-
-        The offset within an infinity engine resource where the identified description is stored.
-
     - name: IDS_OF_SYMBOL
       detail: IDS_OF_SYMBOL ( File String )
       doc: |-
@@ -3766,40 +3964,10 @@ value:
       doc: |-
         Returns the index of the first regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of 0).
 
-    - name: INITIAL_MEETING
-      doc: |-
-        0xA4
-
     - name: INSTALL_ORDER
       detail: INSTALL_ORDER modTp2Name1 modComponent1 BEFORE modTp2Name2 modComponent2
       doc: |-
         Returns true if the modComponent1 of modTp2Name1 is installed before the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT.
-
-    - name: INSULT
-
-    - name: INTERACTION1
-      doc: |-
-        0x140
-
-    - name: INTERACTION2
-      doc: |-
-        0x144
-
-    - name: INTERACTION3
-      doc: |-
-        0x148
-
-    - name: INTERACTION4
-      doc: |-
-        0x14C
-
-    - name: INTERACTION5
-      doc: |-
-        0x150
-
-    - name: INVENTORY_FULL
-      doc: |-
-        0x1B4
 
     - name: IS_AN_INT
       detail: IS_AN_INT String
@@ -3810,114 +3978,24 @@ value:
       doc: |-
         Returns true if the output is currently silenced, false otherwise.
 
-    - name: LEADER
-      doc: |-
-        0xBC
-
-    - name: LNL
-      doc: |-
-        Linux/Unix/OSX new line (`\n`).
-
     - name: LONG_AT
       detail: LONG_AT offset
       doc: |-
         The 32-bit value from the file at the given offset.
-
-    - name: MISCELLANEOUS
-
-    - name: MNL
-      doc: |-
-        (Pre-OSX) Macintosh new line (`\r`).
-
-    - name: MODULO
-      detail: value MODULO value
-      doc: |-
-        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym.
 
     - name: MOD_IS_INSTALLED
       detail: MOD_IS_INSTALLED modTp2Name modComponent
       doc: |-
         Returns true if the modComponent of modTp2Name is installed. The syntax is the same as with REQUIRE_COMPONENT.
 
-    - name: MORALE
-      doc: |-
-        0xA8
-
-    - name: MPSAVE_DIRECTORY
-      doc: |-
-        Evaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead.
-
-    - name: NAME1
-      doc: |-
-        The offset within an infinity engine resource where the unidentified general name (e.g., "Battle Axe") is stored.
-
-    - name: NAME2
-      doc: |-
-        The offset within an infinity engine resource where the identified general name (e.g., "K'logarath +4") is stored.
-
     - name: NEXT_STRREF
       doc: |-
         Returns the next available string reference in the TLK file.
-
-    - name: NOT
-      detail: NOT value
-      doc: |-
-        Negation. If the value is 0, the result is 1. Otherwise the result is 0.
-
-    - name: OR
-      detail: value OR value
-      doc: |-
-        Disjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`.
-
-    - name: PICKED_POCKET
-      doc: |-
-        0x1B8
-
-    - name: PORTRAIT_LARGE
-      doc: |-
-        0x3C
-
-    - name: PORTRAIT_SMALL
-      doc: |-
-        0x34
 
     - name: RANDOM
       detail: RANDOM ( value value )
       doc: |-
         A random-number generator. The first value is the lower bound, the second value is the upper bound. A random integer between the lower bound and the upper bound (inclusive) is returned. Thus RANDOM(3 5) can return 3, 4 or 5. If the lower bound is greater than the upper bound, zero is returned. See also RANDOM_SEED.
-
-    - name: REACT_TO_DIE_GENERAL
-      doc: |-
-        0x178
-
-    - name: REACT_TO_DIE_SPECIFIC
-      doc: |-
-        0x17C
-
-    - name: REGISTRY_BG1_PATH
-      doc: |-
-        The path of BG1 (as read from the registry), or empty if not available.
-
-    - name: REGISTRY_BG2_PATH
-      doc: |-
-        The path of BG2 (as read from the registry), or empty if not available.
-
-    - name: REGISTRY_IWD1_PATH
-      doc: |-
-        The path of IWD1 (as read from the registry), or empty if not available.
-
-    - name: REGISTRY_IWD2_PATH
-      doc: |-
-        The path of IWD2 (as read from the registry), or empty if not available.
-
-    - name: REGISTRY_PST_PATH
-      doc: |-
-        The path of PST (as read from the registry), or empty if not available.
-
-    - name: REM
-      detail: value REM value
-      doc: |-
-        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym.
 
     - name: RESOLVE_STR_REF
       detail: RESOLVE_STR_REF ( text )
@@ -3929,30 +4007,6 @@ value:
       doc: |-
         `fileName` and `varsRegexp` are evaluated for variables. `fileName` is loaded as a game resource (searching only the `biffs` and the `override` directories) and a regexp search is performed on the file contents. The result is 1 if the regexp `varsRegexp` occurs within `fileName`, or otherwise 0. The comparison ignores case. If `fileName` does not exist or has a file size 0, the result is 0.
 
-    - name: RESPONSE_TO_COMPLIMENT1
-      doc: |-
-        0x180
-
-    - name: RESPONSE_TO_COMPLIMENT2
-      doc: |-
-        0x184
-
-    - name: RESPONSE_TO_COMPLIMENT3
-      doc: |-
-        0x188
-
-    - name: RESPONSE_TO_INSULT1
-      doc: |-
-        0x18C
-
-    - name: RESPONSE_TO_INSULT2
-      doc: |-
-        0x190
-
-    - name: RESPONSE_TO_INSULT3
-      doc: |-
-        0x194
-
     - name: RINDEX
       detail: RINDEX ( optcase optexact string1 string2 [ value ] )
       doc: |-
@@ -3963,98 +4017,10 @@ value:
       doc: |-
         Returns the index of the last regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of BUFFER_LENGTH).
 
-    - name: SAVE_DIRECTORY
-      doc: |-
-        Evaluates to the directory in which the current game type stores its saved games. This is "%USER_DIRECTORY%/save".
-
     - name: SBYTE_AT
       detail: SBYTE_AT offset
       doc: |-
         The 8-bit signed value from the file at the given offset.
-
-    - name: SCRIPT_CLASS
-      doc: |-
-        0x250
-
-    - name: SCRIPT_DEFAULT
-      doc: |-
-        0x268
-
-    - name: SCRIPT_GENERAL
-      doc: |-
-        0x260
-
-    - name: SCRIPT_OVERRIDE
-      doc: |-
-        0x248
-
-    - name: SCRIPT_RACE
-      doc: |-
-        0x258
-
-    - name: SELECT_ACTION1
-      doc: |-
-        0x124
-
-    - name: SELECT_ACTION2
-      doc: |-
-        0x128
-
-    - name: SELECT_ACTION3
-      doc: |-
-        0x12C
-
-    - name: SELECT_ACTION4
-      doc: |-
-        0x130
-
-    - name: SELECT_ACTION5
-      doc: |-
-        0x134
-
-    - name: SELECT_ACTION6
-      doc: |-
-        0x138
-
-    - name: SELECT_ACTION7
-      doc: |-
-        0x13C
-
-    - name: SELECT_COMMON1
-      doc: |-
-        0x10C
-
-    - name: SELECT_COMMON2
-      doc: |-
-        0x110
-
-    - name: SELECT_COMMON3
-      doc: |-
-        0x114
-
-    - name: SELECT_COMMON4
-      doc: |-
-        0x118
-
-    - name: SELECT_COMMON5
-      doc: |-
-        0x11C
-
-    - name: SELECT_COMMON6
-      doc: |-
-        0x120
-
-    - name: SELECT_RARE1
-      doc: |-
-        0x1A0
-
-    - name: SELECT_RARE2
-      doc: |-
-        0x1A4
-
-    - name: SET_A_TRAP
-      doc: |-
-        0x1C4
 
     - name: SHORT_AT
       detail: SHORT_AT offset
@@ -4070,22 +4036,6 @@ value:
       detail: SLONG_AT offset
       doc: |-
         The 32-bit signed value from the file at the given offset.
-
-    - name: SPECIAL1
-      doc: |-
-        0x16C
-
-    - name: SPECIAL2
-      doc: |-
-        0x170
-
-    - name: SPECIAL3
-      doc: |-
-        0x174
-
-    - name: SPELL_DISRUPTED
-      doc: |-
-        0x1C0
 
     - name: SSHORT_AT
       detail: SSHORT_AT offset
@@ -4110,15 +4060,6 @@ value:
         - `solarom/polski/epilogue.tra`
         - `solarom/portuguese/epilogue.tra`
         - `solarom/russian/epilogue.tra`
-
-    - name: STHIS
-      doc: |-
-        Current (signed) value.
-        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
-
-    - name: STORE_NAME
-      doc: |-
-        0xC
 
     - name: STRING_COMPARE
       detail: String STRING_COMPARE String
@@ -4170,51 +4111,10 @@ value:
       doc: |-
         As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
 
-    - name: STR_VAR
-      doc: |-
-        String variable
-
-    - name: TAB
-      doc: |-
-        Tabulation character (`\t`).
-
-    - name: TARGET_IMMUNE
-      doc: |-
-        0x1B0
-
-    - name: THIS
-      doc: |-
-        Current (unsigned) value.
-        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
-
-    - name: TIRED
-      doc: |-
-        0xC0
-
     - name: TRA_ENTRY_EXISTS
       detail: TRA_ENTRY_EXISTS ( String String list )
       doc: |-
         returns true if the variable String maps to a valid TRA entry. 	If the String list is empty the tra entry is looked for into the loaded TRAs, 	otherwise it's looked for into the listed TRA files.
-
-    - name: UNHAPPY_ANNOYED
-      doc: |-
-        0xB0
-
-    - name: UNHAPPY_BREAKING
-      doc: |-
-        0xB8
-
-    - name: UNHAPPY_SERIOUS
-      doc: |-
-        0xB4
-
-    - name: UNIDENTIFIED_DESC
-      doc: |-
-        The offset within an infinity engine resource where the unidentified description is stored.
-
-    - name: USER_DIRECTORY
-      doc: |-
-        Evaluates to the directory in which user files are kept. This is the game path on non-EE-type games. On EE-type games, the USER_DIRECTORY variable is constructed from two parts, the user directory and a game-specific directory. If the file engine.lua exists, WeiDU will attempt to read the game-specific directory from it. If the engine.lua does not exist or does not contain the necessary information, WeiDU will use default paths. On Windows, the user directory is the user's personal directory, as read from the Windows registry. On macOS, the user directory is "$HOME/Documents". On Linux, the user directory is "$HOME/.local/share". In both cases, $HOME is the user's home directory, as read from the pwd database. The default game-specific path for BG: EE is "Baldur's Gate - Enhanced Edition"; for BGII: EE it is "Baldur's Gate II - Enhanced Edition"; for IWD: EE it is "Icewind Dale - Enhanced Edition"; and for PST: EE it is "Planescape Torment - Enhanced Edition".
 
     - name: VALID_SCRIPT_ACTIONS
       detail: VALID_SCRIPT_ACTIONS variable
@@ -4239,13 +4139,87 @@ value:
       doc: |-
         Returns true if the variable String is set (there's a variable called either String or %String%, regardless of whether it is a string or an integer).
 
-    - name: WHEN
+value_operator:
+  type: 14 # keyword
+  category: value
+  items:
+    - name: ABS
+      detail: ABS Value
       doc: |-
-        For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
+        Absolute value. If the value is >= 0, the result is x. Otherwise the result is -x.
 
-    - name: WNL
+    - name: AND
+      detail: value AND value
       doc: |-
-        Windows new line (`\r\n`).
+        Conjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`.
+
+    - name: BAND
+      detail: value BAND value
+      doc: |-
+        Bitwise And. 0b101 BAND 0b110 = 0b100. Synonym: &.
+
+    - name: BASR
+      detail: value BASR value
+      doc: |-
+        Bitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1.
+
+    - name: BLSL
+      detail: value BLSL value
+      doc: |-
+        Bitwise Logical Shift Left. 0b101 BLSL 2 = 0b10100. Synonym: <<.
+
+    - name: BLSR
+      detail: value BLSR value
+      doc: |-
+        Bitwise Logical Shift Right. 0b101 BLSR 2 = 0b1. Synonym: >>.
+
+    - name: BNOT
+      detail: BNOT value
+      doc: |-
+        Bitwise Not. BNOT 0b111 = 0b1111111111111111111111111111000. Synonym: `.
+
+    - name: BOR
+      detail: value BOR value
+      doc: |-
+        Bitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |.
+
+    - name: BXOR
+      detail: value BXOR value
+      doc: |-
+        Bitwise Exclusive Or. 0b101 BXOR 0b110 = 0b011. Synonym: ^^.
+
+    - name: EVAL
+      detail: EVAL variable
+      doc: |-
+        User variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
+        ```
+        SPRINT x ~y~
+        SET y = 5
+        SPRINT z EVAL ~tricky %%x%%~
+        SET EVAL "%x%" += 77
+        PATCH_PRINT "y is %y% ; z is %z%"
+        ```
+        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
+
+    - name: MODULO
+      detail: value MODULO value
+      doc: |-
+        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym.
+
+    - name: NOT
+      detail: NOT value
+      doc: |-
+        Negation. If the value is 0, the result is 1. Otherwise the result is 0.
+
+    - name: OR
+      detail: value OR value
+      doc: |-
+        Disjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`.
+
+    - name: REM
+      detail: value REM value
+      doc: |-
+        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym.
 
 vars:
   type: 21 # constant

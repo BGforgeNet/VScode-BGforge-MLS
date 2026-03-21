@@ -16,7 +16,7 @@ vi.mock("../../src/lsp-connection", () => ({
 
 import { initParser } from "../../src/weidu-tp2/parser";
 import { getSemanticTokenSpans } from "../../src/weidu-tp2/semantic-tokens";
-import { RESREF_TOKEN_TYPE, BYTE_TOKEN_TYPE, CHAR_TOKEN_TYPE, DWORD_TOKEN_TYPE } from "../../src/shared/semantic-tokens";
+import { RESREF_TOKEN_TYPE, BYTE_TOKEN_TYPE, CHAR_TOKEN_TYPE, DWORD_TOKEN_TYPE, INT_TOKEN_TYPE } from "../../src/shared/semantic-tokens";
 
 beforeAll(async () => {
     await initParser();
@@ -470,6 +470,20 @@ WRITE_LONG SPL_FLAGS 0
             expect(dwordSpans).toHaveLength(1);
             expect(dwordSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
                 .toEqual(["SPL_FLAGS"]);
+        });
+
+        it("highlights int-typed constant with int token type", () => {
+            const typedNames = new Map([["MYCONST", INT_TOKEN_TYPE]]);
+            const text = `
+SET x = MYCONST
+`;
+
+            const spans = getSemanticTokenSpans(text, typedNames);
+            const intSpans = spans.filter((s) => s.tokenType === INT_TOKEN_TYPE);
+
+            expect(intSpans).toHaveLength(1);
+            expect(intSpans.map((s) => getLine(text, s.line).slice(s.startChar, s.startChar + s.length)))
+                .toEqual(["MYCONST"]);
         });
 
         it("assigns different token types to different typed constants", () => {

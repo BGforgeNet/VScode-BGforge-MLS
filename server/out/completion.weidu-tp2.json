@@ -2028,8 +2028,7 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
-        },
-        "detail": "STR_VAR"
+        }
     },
     {
         "label": "AS",
@@ -4108,43 +4107,13 @@
         }
     },
     {
-        "label": "ABS",
+        "label": "$array(index",
         "kind": 14,
         "source": "builtin",
         "category": "value",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nABS Value\n```\nAbsolute value. If the value is >= 0, the result is x. Otherwise the result is -x."
-        }
-    },
-    {
-        "label": "ALWAYS_ASK",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nALWAYS_ASK\n```\nFor use with `QUICK_MENU`."
-        }
-    },
-    {
-        "label": "AND",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue AND value\n```\nConjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`."
-        }
-    },
-    {
-        "label": "ANY",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nANY\n```\nWhen using `ACTION_MATCH` and `PATCH_MATCH`, it is also possible to have a condition without a guard, in which case the syntax is:\n\n```\nACTION_MATCH ~%something%~\nWITH\n  ANY GAME_IS ~BG1 TotSC~\n  BEGIN\n    // the game is BG1\n  END\n  ANY GAME_IS ~SoA ToB~\n  BEGIN\n    // the game is BG2\n  END\n  DEFAULT\n    // not BG1 or BG2\nEND\n```"
+            "value": "```weidu-tp2-tooltip\n$array(index list)\n```\nThe so-called array construct. See the tutorial."
         }
     },
     {
@@ -4208,6 +4177,12 @@
         }
     },
     {
+        "label": "ATTACK",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
         "label": "ATTACK1",
         "kind": 14,
         "source": "builtin",
@@ -4248,24 +4223,10 @@
         }
     },
     {
-        "label": "BAND",
+        "label": "BATTLE_CRY",
         "kind": 14,
         "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue BAND value\n```\nBitwise And. 0b101 BAND 0b110 = 0b100. Synonym: &."
-        }
-    },
-    {
-        "label": "BASR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue BASR value\n```\nBitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1."
-        }
+        "category": "value"
     },
     {
         "label": "BATTLE_CRY1",
@@ -4315,16 +4276,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nBATTLE_CRY5\n```\n0xD8"
-        }
-    },
-    {
-        "label": "BIFF_IS_COMPRESSED",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nBIFF_IS_COMPRESSED fileName\n```\nEvaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command."
         }
     },
     {
@@ -4658,46 +4609,6 @@
         }
     },
     {
-        "label": "BLSL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue BLSL value\n```\nBitwise Logical Shift Left. 0b101 BLSL 2 = 0b10100. Synonym: <<."
-        }
-    },
-    {
-        "label": "BLSR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue BLSR value\n```\nBitwise Logical Shift Right. 0b101 BLSR 2 = 0b1. Synonym: >>."
-        }
-    },
-    {
-        "label": "BNOT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nBNOT value\n```\nBitwise Not. BNOT 0b111 = 0b1111111111111111111111111111000. Synonym: `."
-        }
-    },
-    {
-        "label": "BOR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue BOR value\n```\nBitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |."
-        }
-    },
-    {
         "label": "BORED",
         "kind": 14,
         "source": "builtin",
@@ -4708,34 +4619,10 @@
         }
     },
     {
-        "label": "BUFFER_LENGTH",
+        "label": "COMPLIMENT",
         "kind": 14,
         "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nBUFFER_LENGTH\n```\nReturns the length of the string currently being patched, or 0 if outside of a patch expression."
-        }
-    },
-    {
-        "label": "BXOR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue BXOR value\n```\nBitwise Exclusive Or. 0b101 BXOR 0b110 = 0b011. Synonym: ^^."
-        }
-    },
-    {
-        "label": "BYTE_AT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nBYTE_AT offset\n```\nThe 8-bit value from the file at the given offset."
-        }
+        "category": "value"
     },
     {
         "label": "COMPLIMENT1",
@@ -4808,26 +4695,6 @@
         }
     },
     {
-        "label": "DEFINED_AS_FUNCTION",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nDEFINED_AS_FUNCTION variable\n```\nVariable can be a string (variables are evaluated) or an array\nconstruct that evaluates to a string. Returns `1` if the string is the\nname of an action function, `2` if the string is the name of a patch\nfunction, `3` if the string is the name of both an action function and a\npatch function, and `0` if string is not the name of any defined\nfunction. Note that `1`, `2` and `3` are all `true` in a boolean context."
-        }
-    },
-    {
-        "label": "DEFINED_AS_INLINED",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nDEFINED_AS_INLINED variable\n```\nVariable can be a string (variables are evaluated) or an array\nconstruct that evaluates to a string. Returns `1` if the string is the\npath of a defined inlined file, otherwise `0`."
-        }
-    },
-    {
         "label": "DESC",
         "kind": 14,
         "source": "builtin",
@@ -4868,16 +4735,6 @@
         }
     },
     {
-        "label": "DIRECTORY_EXISTS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nDIRECTORY_EXISTS dirName\n```\nEvaluates to 1 if dirName is a directory and exists in the filesystem and evaluates to 0 otherwise."
-        }
-    },
-    {
         "label": "DYING",
         "kind": 14,
         "source": "builtin",
@@ -4896,59 +4753,6 @@
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nEE_LANGUAGE\n```\nEvaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games."
         }
-    },
-    {
-        "label": "ELSE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value"
-    },
-    {
-        "label": "END",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value"
-    },
-    {
-        "label": "ENGINE_IS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nENGINE_IS Caching String\n```\nFunctions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.\nIf caching (disabled by default), `ENGINE_IS` will return the same result for the same string, and do so much faster."
-        }
-    },
-    {
-        "label": "ERROR_MESSAGE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nERROR_MESSAGE\n```\nFor use with `ACTION_TRY` and `PATCH_TRY`.\n\n```\nACTION_TRY\n  COPY ~override/sw1h01.itm~ ~override~\n  DO_SOMETHING_ELSE\nWITH\n  ~Unix.Unix_error(20, \"stat\", \"override/sw1h01.itm\")~\n  BEGIN\n    PRINT ~I caught sw1h01.itm not found!~\n  END\n  ~Unix.Unix_error(20, \"stat\", \"override/.*.itm\")~\n  BEGIN\n    PRINT ~I caught another missing item!~\n  END\n  DEFAULT\n    PRINT ~I caught another error!~\nEND\n```\n\nThe actions in `ACTION_TRY` are executed. If none of those fails, the `WITH` part is skipped; otherwise, the error message is printed as usual (use `SILENT`), the exception text (from the `ERROR: blah blah` line) is saved to the `%ERROR_MESSAGE%` variable, and a `MATCH` is executed on that.\n\nAfter running the correct error handling code, execution continues after the end of the `ACTION_TRY` block. If you still want to block the installation, use `ACTION_RERAISE` (in theory, you could use `FAIL ~%ERROR_MESSAGE%~`, but this changes the exception and its text, which would cause you headaches when nesting multiple `TRY`s)."
-        }
-    },
-    {
-        "label": "EVAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nEVAL variable\n```\nUser variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:\n```\nSPRINT x ~y~\nSET y = 5\nSPRINT z EVAL ~tricky %%x%%~\nSET EVAL \"%x%\" += 77\nPATCH_PRINT \"y is %y% ; z is %z%\"\n```\nThis prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE \"myfile\" \"%%indirection%%\"`. Be very careful with this feature."
-        }
-    },
-    {
-        "label": "EVALUATE_BUFFER",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nEVALUATE_BUFFER variable\n```\nUser variables inside the given string are evaluated one additional time. You may prepend `EVALUATE_BUFFER` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:\n```\nSPRINT x ~y~\nSET y = 5\nSPRINT z EVALUATE_BUFFER ~tricky %%x%%~\nSET EVALUATE_BUFFER \"%x%\" += 77\nPATCH_PRINT \"y is %y% ; z is %z%\"\n```\nThis prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE \"myfile\" \"%%indirection%%\"`. Be very careful with this feature."
-        },
-        "detail": "EVALUATE_BUFFER variable"
     },
     {
         "label": "EXISTANCE1",
@@ -4983,6 +4787,859 @@
         "kind": 14,
         "source": "builtin",
         "category": "value"
+    },
+    {
+        "label": "HAPPY",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nHAPPY\n```\n0xAC"
+        }
+    },
+    {
+        "label": "HIDDEN_IN_SHADOWS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nHIDDEN_IN_SHADOWS\n```\n0x1BC"
+        }
+    },
+    {
+        "label": "HURT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nHURT\n```\n0xF4"
+        }
+    },
+    {
+        "label": "IDENTIFIED_DESC",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nIDENTIFIED_DESC\n```\nThe offset within an infinity engine resource where the identified description is stored."
+        }
+    },
+    {
+        "label": "INITIAL_MEETING",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINITIAL_MEETING\n```\n0xA4"
+        }
+    },
+    {
+        "label": "INSULT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "INSULT1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "INSULT2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "INSULT3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "INTERACTION",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "INTERACTION1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINTERACTION1\n```\n0x140"
+        }
+    },
+    {
+        "label": "INTERACTION2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINTERACTION2\n```\n0x144"
+        }
+    },
+    {
+        "label": "INTERACTION3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINTERACTION3\n```\n0x148"
+        }
+    },
+    {
+        "label": "INTERACTION4",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINTERACTION4\n```\n0x14C"
+        }
+    },
+    {
+        "label": "INTERACTION5",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINTERACTION5\n```\n0x150"
+        }
+    },
+    {
+        "label": "INVENTORY_FULL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINVENTORY_FULL\n```\n0x1B4"
+        }
+    },
+    {
+        "label": "LEADER",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nLEADER\n```\n0xBC"
+        }
+    },
+    {
+        "label": "LNL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nLNL\n```\nLinux/Unix/OSX new line (`\\n`)."
+        }
+    },
+    {
+        "label": "MISCELLANEOUS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "MNL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nMNL\n```\n(Pre-OSX) Macintosh new line (`\\r`)."
+        }
+    },
+    {
+        "label": "MORALE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nMORALE\n```\n0xA8"
+        }
+    },
+    {
+        "label": "MPSAVE_DIRECTORY",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nMPSAVE_DIRECTORY\n```\nEvaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead."
+        }
+    },
+    {
+        "label": "NAME1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nNAME1\n```\nThe offset within an infinity engine resource where the unidentified general name (e.g., \"Battle Axe\") is stored."
+        }
+    },
+    {
+        "label": "NAME2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nNAME2\n```\nThe offset within an infinity engine resource where the identified general name (e.g., \"K'logarath +4\") is stored."
+        }
+    },
+    {
+        "label": "PICKED_POCKET",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nPICKED_POCKET\n```\n0x1B8"
+        }
+    },
+    {
+        "label": "PORTRAIT_LARGE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nPORTRAIT_LARGE\n```\n0x3C"
+        }
+    },
+    {
+        "label": "PORTRAIT_SMALL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nPORTRAIT_SMALL\n```\n0x34"
+        }
+    },
+    {
+        "label": "REACT_TO_DIE_GENERAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREACT_TO_DIE_GENERAL\n```\n0x178"
+        }
+    },
+    {
+        "label": "REACT_TO_DIE_SPECIFIC",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREACT_TO_DIE_SPECIFIC\n```\n0x17C"
+        }
+    },
+    {
+        "label": "REGISTRY_BG1_PATH",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREGISTRY_BG1_PATH\n```\nThe path of BG1 (as read from the registry), or empty if not available."
+        }
+    },
+    {
+        "label": "REGISTRY_BG2_PATH",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREGISTRY_BG2_PATH\n```\nThe path of BG2 (as read from the registry), or empty if not available."
+        }
+    },
+    {
+        "label": "REGISTRY_IWD1_PATH",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREGISTRY_IWD1_PATH\n```\nThe path of IWD1 (as read from the registry), or empty if not available."
+        }
+    },
+    {
+        "label": "REGISTRY_IWD2_PATH",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREGISTRY_IWD2_PATH\n```\nThe path of IWD2 (as read from the registry), or empty if not available."
+        }
+    },
+    {
+        "label": "REGISTRY_PST_PATH",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nREGISTRY_PST_PATH\n```\nThe path of PST (as read from the registry), or empty if not available."
+        }
+    },
+    {
+        "label": "RESPONSE_TO_COMPLIMENT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "RESPONSE_TO_COMPLIMENT1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_COMPLIMENT1\n```\n0x180"
+        }
+    },
+    {
+        "label": "RESPONSE_TO_COMPLIMENT2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_COMPLIMENT2\n```\n0x184"
+        }
+    },
+    {
+        "label": "RESPONSE_TO_COMPLIMENT3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_COMPLIMENT3\n```\n0x188"
+        }
+    },
+    {
+        "label": "RESPONSE_TO_INSULT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "RESPONSE_TO_INSULT1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT1\n```\n0x18C"
+        }
+    },
+    {
+        "label": "RESPONSE_TO_INSULT2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT2\n```\n0x190"
+        }
+    },
+    {
+        "label": "RESPONSE_TO_INSULT3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT3\n```\n0x194"
+        }
+    },
+    {
+        "label": "SAVE_DIRECTORY",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSAVE_DIRECTORY\n```\nEvaluates to the directory in which the current game type stores its saved games. This is \"%USER_DIRECTORY%/save\"."
+        }
+    },
+    {
+        "label": "SCRIPT_CLASS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSCRIPT_CLASS\n```\n0x250"
+        }
+    },
+    {
+        "label": "SCRIPT_DEFAULT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSCRIPT_DEFAULT\n```\n0x268"
+        }
+    },
+    {
+        "label": "SCRIPT_GENERAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSCRIPT_GENERAL\n```\n0x260"
+        }
+    },
+    {
+        "label": "SCRIPT_OVERRIDE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSCRIPT_OVERRIDE\n```\n0x248"
+        }
+    },
+    {
+        "label": "SCRIPT_RACE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSCRIPT_RACE\n```\n0x258"
+        }
+    },
+    {
+        "label": "SELECT_ACTION",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "SELECT_ACTION1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION1\n```\n0x124"
+        }
+    },
+    {
+        "label": "SELECT_ACTION2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION2\n```\n0x128"
+        }
+    },
+    {
+        "label": "SELECT_ACTION3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION3\n```\n0x12C"
+        }
+    },
+    {
+        "label": "SELECT_ACTION4",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION4\n```\n0x130"
+        }
+    },
+    {
+        "label": "SELECT_ACTION5",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION5\n```\n0x134"
+        }
+    },
+    {
+        "label": "SELECT_ACTION6",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION6\n```\n0x138"
+        }
+    },
+    {
+        "label": "SELECT_ACTION7",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_ACTION7\n```\n0x13C"
+        }
+    },
+    {
+        "label": "SELECT_COMMON",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "SELECT_COMMON1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_COMMON1\n```\n0x10C"
+        }
+    },
+    {
+        "label": "SELECT_COMMON2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_COMMON2\n```\n0x110"
+        }
+    },
+    {
+        "label": "SELECT_COMMON3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_COMMON3\n```\n0x114"
+        }
+    },
+    {
+        "label": "SELECT_COMMON4",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_COMMON4\n```\n0x118"
+        }
+    },
+    {
+        "label": "SELECT_COMMON5",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_COMMON5\n```\n0x11C"
+        }
+    },
+    {
+        "label": "SELECT_COMMON6",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_COMMON6\n```\n0x120"
+        }
+    },
+    {
+        "label": "SELECT_RARE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "SELECT_RARE1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_RARE1\n```\n0x1A0"
+        }
+    },
+    {
+        "label": "SELECT_RARE2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSELECT_RARE2\n```\n0x1A4"
+        }
+    },
+    {
+        "label": "SET_A_TRAP",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSET_A_TRAP\n```\n0x1C4"
+        }
+    },
+    {
+        "label": "SPECIAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value"
+    },
+    {
+        "label": "SPECIAL1",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSPECIAL1\n```\n0x16C"
+        }
+    },
+    {
+        "label": "SPECIAL2",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSPECIAL2\n```\n0x170"
+        }
+    },
+    {
+        "label": "SPECIAL3",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSPECIAL3\n```\n0x174"
+        }
+    },
+    {
+        "label": "SPELL_DISRUPTED",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSPELL_DISRUPTED\n```\n0x1C0"
+        }
+    },
+    {
+        "label": "STORE_NAME",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSTORE_NAME\n```\n0xC"
+        }
+    },
+    {
+        "label": "TAB",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nTAB\n```\nTabulation character (`\\t`)."
+        }
+    },
+    {
+        "label": "TARGET_IMMUNE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nTARGET_IMMUNE\n```\n0x1B0"
+        }
+    },
+    {
+        "label": "TIRED",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nTIRED\n```\n0xC0"
+        }
+    },
+    {
+        "label": "UNHAPPY_ANNOYED",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nUNHAPPY_ANNOYED\n```\n0xB0"
+        }
+    },
+    {
+        "label": "UNHAPPY_BREAKING",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nUNHAPPY_BREAKING\n```\n0xB8"
+        }
+    },
+    {
+        "label": "UNHAPPY_SERIOUS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nUNHAPPY_SERIOUS\n```\n0xB4"
+        }
+    },
+    {
+        "label": "UNIDENTIFIED_DESC",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nUNIDENTIFIED_DESC\n```\nThe offset within an infinity engine resource where the unidentified description is stored."
+        }
+    },
+    {
+        "label": "USER_DIRECTORY",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nUSER_DIRECTORY\n```\nEvaluates to the directory in which user files are kept. This is the game path on non-EE-type games. On EE-type games, the USER_DIRECTORY variable is constructed from two parts, the user directory and a game-specific directory. If the file engine.lua exists, WeiDU will attempt to read the game-specific directory from it. If the engine.lua does not exist or does not contain the necessary information, WeiDU will use default paths. On Windows, the user directory is the user's personal directory, as read from the Windows registry. On macOS, the user directory is \"$HOME/Documents\". On Linux, the user directory is \"$HOME/.local/share\". In both cases, $HOME is the user's home directory, as read from the pwd database. The default game-specific path for BG: EE is \"Baldur's Gate - Enhanced Edition\"; for BGII: EE it is \"Baldur's Gate II - Enhanced Edition\"; for IWD: EE it is \"Icewind Dale - Enhanced Edition\"; and for PST: EE it is \"Planescape Torment - Enhanced Edition\"."
+        }
+    },
+    {
+        "label": "WNL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nWNL\n```\nWindows new line (`\\r\\n`)."
+        }
+    },
+    {
+        "label": "BIFF_IS_COMPRESSED",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBIFF_IS_COMPRESSED fileName\n```\nEvaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command."
+        }
+    },
+    {
+        "label": "BUFFER_LENGTH",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBUFFER_LENGTH\n```\nReturns the length of the string currently being patched, or 0 if outside of a patch expression."
+        }
+    },
+    {
+        "label": "BYTE_AT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBYTE_AT offset\n```\nThe 8-bit value from the file at the given offset."
+        }
+    },
+    {
+        "label": "DEFINED_AS_FUNCTION",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nDEFINED_AS_FUNCTION variable\n```\nVariable can be a string (variables are evaluated) or an array\nconstruct that evaluates to a string. Returns `1` if the string is the\nname of an action function, `2` if the string is the name of a patch\nfunction, `3` if the string is the name of both an action function and a\npatch function, and `0` if string is not the name of any defined\nfunction. Note that `1`, `2` and `3` are all `true` in a boolean context."
+        }
+    },
+    {
+        "label": "DEFINED_AS_INLINED",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nDEFINED_AS_INLINED variable\n```\nVariable can be a string (variables are evaluated) or an array\nconstruct that evaluates to a string. Returns `1` if the string is the\npath of a defined inlined file, otherwise `0`."
+        }
+    },
+    {
+        "label": "DIRECTORY_EXISTS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nDIRECTORY_EXISTS dirName\n```\nEvaluates to 1 if dirName is a directory and exists in the filesystem and evaluates to 0 otherwise."
+        }
+    },
+    {
+        "label": "ENGINE_IS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nENGINE_IS Caching String\n```\nFunctions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.\nIf caching (disabled by default), `ENGINE_IS` will return the same result for the same string, and do so much faster."
+        }
+    },
+    {
+        "label": "EVALUATE_BUFFER",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nEVALUATE_BUFFER variable\n```\nUser variables inside the given string are evaluated one additional time. You may prepend `EVALUATE_BUFFER` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:\n```\nSPRINT x ~y~\nSET y = 5\nSPRINT z EVALUATE_BUFFER ~tricky %%x%%~\nSET EVALUATE_BUFFER \"%x%\" += 77\nPATCH_PRINT \"y is %y% ; z is %z%\"\n```\nThis prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE \"myfile\" \"%%indirection%%\"`. Be very careful with this feature."
+        },
+        "detail": "EVALUATE_BUFFER variable"
     },
     {
         "label": "FILE_CONTAINS",
@@ -5075,46 +5732,6 @@
         }
     },
     {
-        "label": "HAPPY",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nHAPPY\n```\n0xAC"
-        }
-    },
-    {
-        "label": "HIDDEN_IN_SHADOWS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nHIDDEN_IN_SHADOWS\n```\n0x1BC"
-        }
-    },
-    {
-        "label": "HURT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nHURT\n```\n0xF4"
-        }
-    },
-    {
-        "label": "IDENTIFIED_DESC",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nIDENTIFIED_DESC\n```\nThe offset within an infinity engine resource where the identified description is stored."
-        }
-    },
-    {
         "label": "IDS_OF_SYMBOL",
         "kind": 14,
         "source": "builtin",
@@ -5155,16 +5772,6 @@
         }
     },
     {
-        "label": "INITIAL_MEETING",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINITIAL_MEETING\n```\n0xA4"
-        }
-    },
-    {
         "label": "INSTALL_ORDER",
         "kind": 14,
         "source": "builtin",
@@ -5172,72 +5779,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nINSTALL_ORDER modTp2Name1 modComponent1 BEFORE modTp2Name2 modComponent2\n```\nReturns true if the modComponent1 of modTp2Name1 is installed before the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT."
-        }
-    },
-    {
-        "label": "INSULT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value"
-    },
-    {
-        "label": "INTERACTION1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINTERACTION1\n```\n0x140"
-        }
-    },
-    {
-        "label": "INTERACTION2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINTERACTION2\n```\n0x144"
-        }
-    },
-    {
-        "label": "INTERACTION3",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINTERACTION3\n```\n0x148"
-        }
-    },
-    {
-        "label": "INTERACTION4",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINTERACTION4\n```\n0x14C"
-        }
-    },
-    {
-        "label": "INTERACTION5",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINTERACTION5\n```\n0x150"
-        }
-    },
-    {
-        "label": "INVENTORY_FULL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINVENTORY_FULL\n```\n0x1B4"
         }
     },
     {
@@ -5261,26 +5802,6 @@
         }
     },
     {
-        "label": "LEADER",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLEADER\n```\n0xBC"
-        }
-    },
-    {
-        "label": "LNL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLNL\n```\nLinux/Unix/OSX new line (`\\n`)."
-        }
-    },
-    {
         "label": "LONG_AT",
         "kind": 14,
         "source": "builtin",
@@ -5288,32 +5809,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nLONG_AT offset\n```\nThe 32-bit value from the file at the given offset."
-        }
-    },
-    {
-        "label": "MISCELLANEOUS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value"
-    },
-    {
-        "label": "MNL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nMNL\n```\n(Pre-OSX) Macintosh new line (`\\r`)."
-        }
-    },
-    {
-        "label": "MODULO",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue MODULO value\n```\nAn operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym."
         }
     },
     {
@@ -5327,46 +5822,6 @@
         }
     },
     {
-        "label": "MORALE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nMORALE\n```\n0xA8"
-        }
-    },
-    {
-        "label": "MPSAVE_DIRECTORY",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nMPSAVE_DIRECTORY\n```\nEvaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead."
-        }
-    },
-    {
-        "label": "NAME1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nNAME1\n```\nThe offset within an infinity engine resource where the unidentified general name (e.g., \"Battle Axe\") is stored."
-        }
-    },
-    {
-        "label": "NAME2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nNAME2\n```\nThe offset within an infinity engine resource where the identified general name (e.g., \"K'logarath +4\") is stored."
-        }
-    },
-    {
         "label": "NEXT_STRREF",
         "kind": 14,
         "source": "builtin",
@@ -5377,56 +5832,6 @@
         }
     },
     {
-        "label": "NOT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nNOT value\n```\nNegation. If the value is 0, the result is 1. Otherwise the result is 0."
-        }
-    },
-    {
-        "label": "OR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue OR value\n```\nDisjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`."
-        }
-    },
-    {
-        "label": "PICKED_POCKET",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nPICKED_POCKET\n```\n0x1B8"
-        }
-    },
-    {
-        "label": "PORTRAIT_LARGE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nPORTRAIT_LARGE\n```\n0x3C"
-        }
-    },
-    {
-        "label": "PORTRAIT_SMALL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nPORTRAIT_SMALL\n```\n0x34"
-        }
-    },
-    {
         "label": "RANDOM",
         "kind": 14,
         "source": "builtin",
@@ -5434,86 +5839,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nRANDOM ( value value )\n```\nA random-number generator. The first value is the lower bound, the second value is the upper bound. A random integer between the lower bound and the upper bound (inclusive) is returned. Thus RANDOM(3 5) can return 3, 4 or 5. If the lower bound is greater than the upper bound, zero is returned. See also RANDOM_SEED."
-        }
-    },
-    {
-        "label": "REACT_TO_DIE_GENERAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREACT_TO_DIE_GENERAL\n```\n0x178"
-        }
-    },
-    {
-        "label": "REACT_TO_DIE_SPECIFIC",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREACT_TO_DIE_SPECIFIC\n```\n0x17C"
-        }
-    },
-    {
-        "label": "REGISTRY_BG1_PATH",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREGISTRY_BG1_PATH\n```\nThe path of BG1 (as read from the registry), or empty if not available."
-        }
-    },
-    {
-        "label": "REGISTRY_BG2_PATH",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREGISTRY_BG2_PATH\n```\nThe path of BG2 (as read from the registry), or empty if not available."
-        }
-    },
-    {
-        "label": "REGISTRY_IWD1_PATH",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREGISTRY_IWD1_PATH\n```\nThe path of IWD1 (as read from the registry), or empty if not available."
-        }
-    },
-    {
-        "label": "REGISTRY_IWD2_PATH",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREGISTRY_IWD2_PATH\n```\nThe path of IWD2 (as read from the registry), or empty if not available."
-        }
-    },
-    {
-        "label": "REGISTRY_PST_PATH",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nREGISTRY_PST_PATH\n```\nThe path of PST (as read from the registry), or empty if not available."
-        }
-    },
-    {
-        "label": "REM",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nvalue REM value\n```\nAn operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym."
         }
     },
     {
@@ -5537,66 +5862,6 @@
         }
     },
     {
-        "label": "RESPONSE_TO_COMPLIMENT1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_COMPLIMENT1\n```\n0x180"
-        }
-    },
-    {
-        "label": "RESPONSE_TO_COMPLIMENT2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_COMPLIMENT2\n```\n0x184"
-        }
-    },
-    {
-        "label": "RESPONSE_TO_COMPLIMENT3",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_COMPLIMENT3\n```\n0x188"
-        }
-    },
-    {
-        "label": "RESPONSE_TO_INSULT1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT1\n```\n0x18C"
-        }
-    },
-    {
-        "label": "RESPONSE_TO_INSULT2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT2\n```\n0x190"
-        }
-    },
-    {
-        "label": "RESPONSE_TO_INSULT3",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT3\n```\n0x194"
-        }
-    },
-    {
         "label": "RINDEX",
         "kind": 14,
         "source": "builtin",
@@ -5617,16 +5882,6 @@
         }
     },
     {
-        "label": "SAVE_DIRECTORY",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSAVE_DIRECTORY\n```\nEvaluates to the directory in which the current game type stores its saved games. This is \"%USER_DIRECTORY%/save\"."
-        }
-    },
-    {
         "label": "SBYTE_AT",
         "kind": 14,
         "source": "builtin",
@@ -5634,216 +5889,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nSBYTE_AT offset\n```\nThe 8-bit signed value from the file at the given offset."
-        }
-    },
-    {
-        "label": "SCRIPT_CLASS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSCRIPT_CLASS\n```\n0x250"
-        }
-    },
-    {
-        "label": "SCRIPT_DEFAULT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSCRIPT_DEFAULT\n```\n0x268"
-        }
-    },
-    {
-        "label": "SCRIPT_GENERAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSCRIPT_GENERAL\n```\n0x260"
-        }
-    },
-    {
-        "label": "SCRIPT_OVERRIDE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSCRIPT_OVERRIDE\n```\n0x248"
-        }
-    },
-    {
-        "label": "SCRIPT_RACE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSCRIPT_RACE\n```\n0x258"
-        }
-    },
-    {
-        "label": "SELECT_ACTION1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION1\n```\n0x124"
-        }
-    },
-    {
-        "label": "SELECT_ACTION2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION2\n```\n0x128"
-        }
-    },
-    {
-        "label": "SELECT_ACTION3",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION3\n```\n0x12C"
-        }
-    },
-    {
-        "label": "SELECT_ACTION4",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION4\n```\n0x130"
-        }
-    },
-    {
-        "label": "SELECT_ACTION5",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION5\n```\n0x134"
-        }
-    },
-    {
-        "label": "SELECT_ACTION6",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION6\n```\n0x138"
-        }
-    },
-    {
-        "label": "SELECT_ACTION7",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_ACTION7\n```\n0x13C"
-        }
-    },
-    {
-        "label": "SELECT_COMMON1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_COMMON1\n```\n0x10C"
-        }
-    },
-    {
-        "label": "SELECT_COMMON2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_COMMON2\n```\n0x110"
-        }
-    },
-    {
-        "label": "SELECT_COMMON3",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_COMMON3\n```\n0x114"
-        }
-    },
-    {
-        "label": "SELECT_COMMON4",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_COMMON4\n```\n0x118"
-        }
-    },
-    {
-        "label": "SELECT_COMMON5",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_COMMON5\n```\n0x11C"
-        }
-    },
-    {
-        "label": "SELECT_COMMON6",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_COMMON6\n```\n0x120"
-        }
-    },
-    {
-        "label": "SELECT_RARE1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_RARE1\n```\n0x1A0"
-        }
-    },
-    {
-        "label": "SELECT_RARE2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSELECT_RARE2\n```\n0x1A4"
-        }
-    },
-    {
-        "label": "SET_A_TRAP",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSET_A_TRAP\n```\n0x1C4"
         }
     },
     {
@@ -5877,46 +5922,6 @@
         }
     },
     {
-        "label": "SPECIAL1",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSPECIAL1\n```\n0x16C"
-        }
-    },
-    {
-        "label": "SPECIAL2",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSPECIAL2\n```\n0x170"
-        }
-    },
-    {
-        "label": "SPECIAL3",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSPECIAL3\n```\n0x174"
-        }
-    },
-    {
-        "label": "SPELL_DISRUPTED",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSPELL_DISRUPTED\n```\n0x1C0"
-        }
-    },
-    {
         "label": "SSHORT_AT",
         "kind": 14,
         "source": "builtin",
@@ -5934,26 +5939,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nSTATE_WHICH_SAYS text FROM String\n```\nString must be an in-game or in-override `.dlg` file. Returns:\n- Fails the installation if it can't evaluate the text (an `@x` reference out of bounds)\n- `-3` if the text is not currently in the tlk or in the list of strings to add\n- `-2` if the text is spoken (`= SAY ~Foo~`) at least twice in the file `String`\n- `-1` if the text is never spoken in the file String Otherwise it returns the number of the state in which text is spoken in the file `String`. `@x` references are taken from the loaded TRA files (the ones defined in the Language part).\n\n**Alternative form**: `STATE_WHICH_SAYS value IN String1 FROM String2`\nAs above, except that `@x` references are taken from the `String1` tra file. In particular, one `%s` in `String1` is expanded to the list of directories; for example (as of Sola `v102`), `solarom/%s/epilogue.tra` would match\n- `solarom/american/epilogue.tra`\n- `solarom/french/epilogue.tra`\n- `solarom/german/epilogue.tra`\n- `solarom/italian/epilogue.tra`\n- `solarom/polski/epilogue.tra`\n- `solarom/portuguese/epilogue.tra`\n- `solarom/russian/epilogue.tra`"
-        }
-    },
-    {
-        "label": "STHIS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSTHIS\n```\nCurrent (signed) value.\nFor use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`."
-        }
-    },
-    {
-        "label": "STORE_NAME",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSTORE_NAME\n```\n0xC"
         }
     },
     {
@@ -6057,57 +6042,6 @@
         }
     },
     {
-        "label": "STR_VAR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
-        },
-        "detail": "STR_VAR"
-    },
-    {
-        "label": "TAB",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nTAB\n```\nTabulation character (`\\t`)."
-        }
-    },
-    {
-        "label": "TARGET_IMMUNE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nTARGET_IMMUNE\n```\n0x1B0"
-        }
-    },
-    {
-        "label": "THIS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nTHIS\n```\nCurrent (unsigned) value.\nFor use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`."
-        }
-    },
-    {
-        "label": "TIRED",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nTIRED\n```\n0xC0"
-        }
-    },
-    {
         "label": "TRA_ENTRY_EXISTS",
         "kind": 14,
         "source": "builtin",
@@ -6115,56 +6049,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nTRA_ENTRY_EXISTS ( String String list )\n```\nreturns true if the variable String maps to a valid TRA entry. \tIf the String list is empty the tra entry is looked for into the loaded TRAs, \totherwise it's looked for into the listed TRA files."
-        }
-    },
-    {
-        "label": "UNHAPPY_ANNOYED",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nUNHAPPY_ANNOYED\n```\n0xB0"
-        }
-    },
-    {
-        "label": "UNHAPPY_BREAKING",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nUNHAPPY_BREAKING\n```\n0xB8"
-        }
-    },
-    {
-        "label": "UNHAPPY_SERIOUS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nUNHAPPY_SERIOUS\n```\n0xB4"
-        }
-    },
-    {
-        "label": "UNIDENTIFIED_DESC",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nUNIDENTIFIED_DESC\n```\nThe offset within an infinity engine resource where the unidentified description is stored."
-        }
-    },
-    {
-        "label": "USER_DIRECTORY",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nUSER_DIRECTORY\n```\nEvaluates to the directory in which user files are kept. This is the game path on non-EE-type games. On EE-type games, the USER_DIRECTORY variable is constructed from two parts, the user directory and a game-specific directory. If the file engine.lua exists, WeiDU will attempt to read the game-specific directory from it. If the engine.lua does not exist or does not contain the necessary information, WeiDU will use default paths. On Windows, the user directory is the user's personal directory, as read from the Windows registry. On macOS, the user directory is \"$HOME/Documents\". On Linux, the user directory is \"$HOME/.local/share\". In both cases, $HOME is the user's home directory, as read from the pwd database. The default game-specific path for BG: EE is \"Baldur's Gate - Enhanced Edition\"; for BGII: EE it is \"Baldur's Gate II - Enhanced Edition\"; for IWD: EE it is \"Icewind Dale - Enhanced Edition\"; and for PST: EE it is \"Planescape Torment - Enhanced Edition\"."
         }
     },
     {
@@ -6208,23 +6092,143 @@
         }
     },
     {
-        "label": "WHEN",
+        "label": "ABS",
         "kind": 14,
         "source": "builtin",
         "category": "value",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWHEN\n```\nFor use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`."
+            "value": "```weidu-tp2-tooltip\nABS Value\n```\nAbsolute value. If the value is >= 0, the result is x. Otherwise the result is -x."
         }
     },
     {
-        "label": "WNL",
+        "label": "AND",
         "kind": 14,
         "source": "builtin",
         "category": "value",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nWNL\n```\nWindows new line (`\\r\\n`)."
+            "value": "```weidu-tp2-tooltip\nvalue AND value\n```\nConjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`."
+        }
+    },
+    {
+        "label": "BAND",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue BAND value\n```\nBitwise And. 0b101 BAND 0b110 = 0b100. Synonym: &."
+        }
+    },
+    {
+        "label": "BASR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue BASR value\n```\nBitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1."
+        }
+    },
+    {
+        "label": "BLSL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue BLSL value\n```\nBitwise Logical Shift Left. 0b101 BLSL 2 = 0b10100. Synonym: <<."
+        }
+    },
+    {
+        "label": "BLSR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue BLSR value\n```\nBitwise Logical Shift Right. 0b101 BLSR 2 = 0b1. Synonym: >>."
+        }
+    },
+    {
+        "label": "BNOT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBNOT value\n```\nBitwise Not. BNOT 0b111 = 0b1111111111111111111111111111000. Synonym: `."
+        }
+    },
+    {
+        "label": "BOR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue BOR value\n```\nBitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |."
+        }
+    },
+    {
+        "label": "BXOR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue BXOR value\n```\nBitwise Exclusive Or. 0b101 BXOR 0b110 = 0b011. Synonym: ^^."
+        }
+    },
+    {
+        "label": "EVAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nEVAL variable\n```\nUser variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:\n```\nSPRINT x ~y~\nSET y = 5\nSPRINT z EVAL ~tricky %%x%%~\nSET EVAL \"%x%\" += 77\nPATCH_PRINT \"y is %y% ; z is %z%\"\n```\nThis prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE \"myfile\" \"%%indirection%%\"`. Be very careful with this feature."
+        }
+    },
+    {
+        "label": "MODULO",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue MODULO value\n```\nAn operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym."
+        }
+    },
+    {
+        "label": "NOT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nNOT value\n```\nNegation. If the value is 0, the result is 1. Otherwise the result is 0."
+        }
+    },
+    {
+        "label": "OR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue OR value\n```\nDisjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`."
+        }
+    },
+    {
+        "label": "REM",
+        "kind": 14,
+        "source": "builtin",
+        "category": "value",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nvalue REM value\n```\nAn operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym."
         }
     },
     {

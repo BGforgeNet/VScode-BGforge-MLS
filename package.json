@@ -58,6 +58,10 @@
             {
                 "id": "dword",
                 "description": "Dword-typed IESDP constant"
+            },
+            {
+                "id": "int",
+                "description": "Integer constant (user-defined or inferred)"
             }
         ],
         "semanticTokenScopes": [
@@ -66,7 +70,8 @@
                     "resref": ["constant.language.weidu-tp2.resref"],
                     "byte": ["constant.language.iesdp.byte"],
                     "char": ["constant.language.iesdp.char"],
-                    "dword": ["constant.language.iesdp.dword"]
+                    "dword": ["constant.language.iesdp.dword"],
+                    "int": ["constant.language.weidu-tp2"]
                 }
             }
         ],

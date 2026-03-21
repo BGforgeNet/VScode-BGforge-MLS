@@ -13,7 +13,7 @@ import { getUtf8ByteOffset } from "../../../shared/completion-context";
 import { getLinePrefix } from "../../../common";
 import { getParser, isInitialized } from "../../parser";
 import { CompletionContext } from "../types";
-import { ASSIGNMENT_SITE_PATTERN, DEFINITION_SITE_PATTERN, FUNC_CALL_KEYWORDS } from "./constants";
+import { ASSIGNMENT_SITE_PATTERN, DEFINITION_SITE_PATTERN, FUNC_CALL_KEYWORDS, FUNC_PARAM_KEYWORDS } from "./constants";
 import { detectContextFromNode } from "./detectors";
 
 export { getFuncParamsContext } from "./function-call";
@@ -42,17 +42,23 @@ export function isAtDeclarationSite(text: string, position: Position): Declarati
     return false;
 }
 
+/** Extract the line prefix up to the cursor, or null if position is out of bounds. */
+function getLinePrefixAt(text: string, line: number, character: number): string | null {
+    const lines = text.split("\n");
+    if (line >= lines.length) return null;
+    const currentLine = lines[line];
+    if (currentLine === undefined) return null;
+    return currentLine.substring(0, character);
+}
+
 /**
  * Text-based fallback for detecting lafName/lpfName/lamName/lpmName context.
  * Used when tree-sitter can't parse incomplete function/macro calls.
  * Returns the context or null if not at a function/macro name position.
  */
 function detectFuncNameFromLineText(text: string, line: number, character: number): CompletionContext | null {
-    const lines = text.split("\n");
-    if (line >= lines.length) return null;
-    const currentLine = lines[line];
-    if (!currentLine) return null;
-    const lineText = currentLine.substring(0, character);
+    const lineText = getLinePrefixAt(text, line, character);
+    if (lineText === null) return null;
 
     const match = lineText.match(FUNC_CALL_KEYWORDS);
     if (!match || !match[1]) return null;
@@ -74,6 +80,21 @@ function detectFuncNameFromLineText(text: string, line: number, character: numbe
         default:
             return null;
     }
+}
+
+/**
+ * Text-based fallback for detecting funcParamName context.
+ * Used when tree-sitter can't parse incomplete function calls (e.g., no END yet).
+ * Matches "LAF/LPF funcname " — cursor is past the function name, in parameter position.
+ */
+function detectFuncParamFromLineText(text: string, line: number, character: number): CompletionContext | null {
+    const lineText = getLinePrefixAt(text, line, character);
+    if (lineText === null) return null;
+
+    if (FUNC_PARAM_KEYWORDS.test(lineText)) {
+        return CompletionContext.FuncParamName;
+    }
+    return null;
 }
 
 /**
@@ -125,12 +146,17 @@ export function getContextAtPosition(
     // Walk up the tree to find function call/definition context
     const contexts = detectContextFromNode(node, cursorOffset);
 
-    // Text-based fallback: detect lafName/lpfName for incomplete function calls.
+    // Text-based fallback: detect function call contexts for incomplete code.
     // Only apply when tree-sitter found no context (empty array).
     if (contexts.length === 0) {
         const funcNameContext = detectFuncNameFromLineText(text, line, character);
         if (funcNameContext !== null) {
             return [funcNameContext];
+        }
+        // Detect parameter position: "LAF/LPF funcname " (past the name, typing params)
+        const funcParamContext = detectFuncParamFromLineText(text, line, character);
+        if (funcParamContext !== null) {
+            return [funcParamContext];
         }
     }
 
