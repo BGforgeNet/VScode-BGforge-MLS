@@ -77,7 +77,7 @@ function extractSymbols(
         const docComment = findPrecedingDocComment(root, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
         const astParams = extractParams(node);
-        result.push(buildProcedureSymbol(name, uri, node, astParams, parsed, displayPath));
+        result.push(buildProcedureSymbol(name, uri, node, astParams, parsed, { displayPath }));
     }
 
     // Extract macros via tree-sitter AST

@@ -25,7 +25,7 @@ These JSON files are generated from `server/data/*.yml` by `generate-data.sh` bu
 | `!server/out/completion.*.json`     | Autocomplete item lists (one per language)           |
 | `!server/out/hover.*.json`          | Hover documentation (one per language)               |
 | `!server/out/signature.*.json`      | Signature help parameter hints                       |
-| `!server/out/engine-proc-docs.json` | Engine procedure docs for the TSSL TypeScript plugin |
+| `!server/out/fallout-ssl-engine-proc-docs.json` | Engine procedure docs for the TSSL TypeScript plugin |
 
 ### Generated source
 

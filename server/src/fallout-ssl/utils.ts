@@ -119,18 +119,30 @@ function buildProcedureSignature(
 }
 
 /**
- * Build base tooltip content: signature block + optional file path + optional JSDoc.
+ * Build base tooltip content: signature block + optional file path + optional JSDoc
+ * + optional engine doc (for engine procedures).
  * Shared by procedures and macros.
  * Used by: hover (contents.value), completion (documentation.value), header symbols.
  */
 export function buildTooltipBase(
     signature: string,
     jsdoc: jsdoc.JSdoc | null,
-    filePath?: string
+    filePath?: string,
+    engineDoc?: string,
 ): string {
     let markdown = buildSignatureBlock(signature, LANG_FALLOUT_SSL_TOOLTIP, filePath);
     if (jsdoc) {
         markdown += jsdocToMarkdown(jsdoc);
+    }
+    if (engineDoc) {
+        if (jsdoc) {
+            // Separate engine doc from user JSDoc with a horizontal rule.
+            markdown += "\n\n---\n\n";
+        } else {
+            // No user JSDoc — still need a blank line after the closing code fence.
+            markdown += "\n\n";
+        }
+        markdown += engineDoc;
     }
     return markdown;
 }
@@ -506,6 +518,14 @@ export function findMacroDefinition(root: Node, symbol: string): Node | null {
     return result;
 }
 
+/** Options for buildProcedureSymbol. */
+interface BuildProcedureSymbolOptions {
+    /** Workspace-relative path shown in hover/completion (used by header-parser.ts). */
+    readonly displayPath?: string;
+    /** Built-in engine doc appended after user JSDoc (used for engine procedures). */
+    readonly engineDoc?: string;
+}
+
 /**
  * Build a CallableSymbol for a procedure definition.
  *
@@ -519,11 +539,12 @@ export function buildProcedureSymbol(
     node: Node,
     astParams: ParamInfo[],
     parsed: jsdoc.JSdoc | null,
-    displayPath?: string,
+    options: BuildProcedureSymbolOptions = {},
 ): CallableSymbol {
+    const { displayPath, engineDoc } = options;
     const range = makeRange(node);
     const sig = buildProcedureSignature(name, astParams, parsed);
-    const hoverValue = buildTooltipBase(sig, parsed, displayPath);
+    const hoverValue = buildTooltipBase(sig, parsed, displayPath, engineDoc);
 
     const hoverContents = {
         kind: MarkupKind.Markdown,

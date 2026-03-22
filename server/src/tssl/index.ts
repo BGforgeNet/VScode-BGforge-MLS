@@ -31,7 +31,7 @@ import { extractInlineFunctionsFromFiles, extractJsDocs, type InlineFunctionCach
 import { exportSSL } from './emit';
 // Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
 // Inlined by esbuild at bundle time.
-import engineProcedureNames from '../../out/engine-procedures.json';
+import engineProcedureNames from '../../out/fallout-ssl-engine-procedures.json';
 import { transformEnums } from "../enum-transform";
 import { extractTraTag } from "../transpiler-utils";
 

@@ -18,8 +18,8 @@ server/out/*
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
-!server/out/engine-proc-docs.json
-!server/out/engine-procedures.json
+!server/out/fallout-ssl-engine-proc-docs.json
+!server/out/fallout-ssl-engine-procedures.json
 
 cli/*/out
 

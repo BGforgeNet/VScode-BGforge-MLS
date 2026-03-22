@@ -201,8 +201,8 @@ Extension Activated
     |   3. Data Hover (unified symbol resolution)                    |
     |   +------------------+                                         |
     |   | resolveSymbol()  |  Local-first, then headers/static       |
-    |   | .hover           |                                         |
-    |   +------------------+                                         |
+    |   | .hover           |  SSL: engine proc doc appended to       |
+    |   +------------------+  local procedure hover at build time    |
     |                                                                |
     +---------------------------------------------------------------+
                                     |
@@ -709,6 +709,8 @@ Debug logs intentionally keep raw URIs to preserve diagnostic ability.
 ```
 
 All formatting is pre-computed at build time by `generate-data.ts`. WeiDU/TP2 items use `buildWeiduHoverContent()` — the same composition function used by runtime JSDoc hover formatters — ensuring identical output. Fallout items use the lower-level building blocks (`buildSignatureBlock`, `buildFalloutArgsTable`, `formatDeprecation`) directly. The static loader is a pure pass-through — no runtime transforms. See `server/data/README.md` for the YAML schema and formatting pipeline.
+
+**Engine procedure hover enrichment (Fallout SSL only):** `extract-engine-proc-docs.ts` reads the `engine_procedures` stanza from `fallout-ssl-base.yml` and writes `fallout-ssl-engine-proc-docs.json` — a name→doc map. `local-symbols.ts` imports this at bundle time and passes the doc to `buildProcedureSymbol` for any engine procedure name. The engine doc is appended after user JSDoc (separated by `---`), or shown alone if the user wrote no JSDoc. This enriches the local hover without touching the static symbol pipeline.
 
 ## Testing
 

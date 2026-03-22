@@ -14,6 +14,11 @@ import { parseWithCache, isInitialized } from "./parser";
 import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams, buildProcedureSymbol, buildMacroSymbol, buildVariableSymbol } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { SyntaxType } from "./tree-sitter.d";
+// Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
+// Inlined by esbuild at bundle time.
+import engineProcDocs from "../../out/fallout-ssl-engine-proc-docs.json";
+
+const ENGINE_PROC_DOCS = engineProcDocs as Record<string, string>;
 
 /** Cached local symbols data: symbols array + name lookup map */
 interface LocalSymbolsData {
@@ -47,7 +52,8 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
         const docComment = findPrecedingDocComment(root, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
         const astParams = extractParams(node);
-        symbols.push(buildProcedureSymbol(name, uri, node, astParams, parsed));
+        const engineDoc = ENGINE_PROC_DOCS[name];
+        symbols.push(buildProcedureSymbol(name, uri, node, astParams, parsed, { engineDoc }));
     }
 
     // Extract macros

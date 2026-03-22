@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fallout SSL: hovering over engine procedure definitions (e.g. `map_enter_p_proc`, `start`) now shows the built-in engine description. If the procedure has user JSDoc, the engine description is appended after a separator.
+
 ## 3.3.1
 
 Fix standalone LSP package publish after repository rename.
