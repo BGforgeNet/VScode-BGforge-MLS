@@ -44,7 +44,7 @@ done
 # Step 3: Package without re-running prepublish.
 mkdir -p dist
 name=$(node -p "require('./package.json').name")
-version=$(node -p "require('./package.json').version")
+version=${ARTIFACT_VERSION:-$(node -p "require('./package.json').version")}
 SKIP_PREPUBLISH=1 pnpm vsce package --no-dependencies --out "dist/${name}-${version}.vsix" "$@"
 
 # Step 4: Inject TS plugins into VSIX.

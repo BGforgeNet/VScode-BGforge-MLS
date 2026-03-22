@@ -52,6 +52,9 @@ jobs:
       - name: Package
         run: |
           pnpm i --global @vscode/vsce
+          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+            export ARTIFACT_VERSION="${GITHUB_SHA::7}"
+          fi
           pnpm package
           echo "VSIX_PATH=$(ls dist/*.vsix)" >> "$GITHUB_ENV"
 
