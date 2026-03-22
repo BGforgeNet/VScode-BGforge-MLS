@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.1
+
+Fix standalone LSP package publish after repository rename.
+
 ## 3.3.0
 
 - New: semantic highlighting
