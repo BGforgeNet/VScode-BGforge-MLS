@@ -5,7 +5,7 @@
 
 set -eu -o pipefail
 
-version=$(node -p "require('./package.json').version")
+version=${ARTIFACT_VERSION:-$(node -p "require('./package.json').version")}
 mkdir -p dist
 
 # -- TextMate bundle (Sublime Text / JetBrains) --
