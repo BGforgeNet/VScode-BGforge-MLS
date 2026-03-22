@@ -7,10 +7,10 @@
     "author": "BGforge",
     "repository": {
         "type": "git",
-        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+        "url": "https://github.com/BGforgeNet/BGforge-MLS"
     },
     "bugs": {
-        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/issues"
+        "url": "https://github.com/BGforgeNet/BGforge-MLS/issues"
     },
     "publisher": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",

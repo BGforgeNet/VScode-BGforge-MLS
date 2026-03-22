@@ -18,7 +18,7 @@ Requires Kate 25.08+ for settings support. Older versions (21.12+) provide basic
 
 ## Syntax highlighting
 
-Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases) and extract the `.xml` files to:
+Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/BGforge-MLS/releases) and extract the `.xml` files to:
 
 - **Linux**: `~/.local/share/org.kde.syntax-highlighting/syntax/`
 - **Windows**: `%USERPROFILE%\AppData\Local\org.kde.syntax-highlighting\syntax\`

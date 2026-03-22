@@ -95,7 +95,7 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "TSUpdate",
   callback = function()
     local parsers = require("nvim-treesitter.parsers")
-    local url = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+    local url = "https://github.com/BGforgeNet/BGforge-MLS"
 
     parsers.ssl = {
       install_info = {
@@ -165,7 +165,7 @@ Install the parsers:
 If highlights aren't installed automatically, copy them manually:
 
 ```bash
-REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
+REPO="https://raw.githubusercontent.com/BGforgeNet/BGforge-MLS/master"
 NVIM_QUERIES="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/queries"
 
 for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2" "fallout-msg:fallout_msg" "weidu-tra:weidu_tra"; do

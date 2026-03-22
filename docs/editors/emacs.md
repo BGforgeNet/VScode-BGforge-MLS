@@ -83,12 +83,12 @@ Note: `.h` files default to C in Emacs. The config above overrides this globally
 
 ```elisp
 (setq treesit-language-source-alist
-      '((ssl "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/fallout-ssl/src")
-        (baf "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-baf/src")
-        (weidu_d "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-d/src")
-        (weidu_tp2 "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-tp2/src")
-        (fallout_msg "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/fallout-msg/src")
-        (weidu_tra "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-tra/src")))
+      '((ssl "https://github.com/BGforgeNet/BGforge-MLS" "master" "grammars/fallout-ssl/src")
+        (baf "https://github.com/BGforgeNet/BGforge-MLS" "master" "grammars/weidu-baf/src")
+        (weidu_d "https://github.com/BGforgeNet/BGforge-MLS" "master" "grammars/weidu-d/src")
+        (weidu_tp2 "https://github.com/BGforgeNet/BGforge-MLS" "master" "grammars/weidu-tp2/src")
+        (fallout_msg "https://github.com/BGforgeNet/BGforge-MLS" "master" "grammars/fallout-msg/src")
+        (weidu_tra "https://github.com/BGforgeNet/BGforge-MLS" "master" "grammars/weidu-tra/src")))
 ```
 
 Compile each grammar (one-time):

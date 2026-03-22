@@ -189,36 +189,36 @@ Fallout Worldmap has no `path_suffixes` to avoid matching all `.txt` files. Use 
 
 ### Tree-sitter grammars
 
-Add grammar entries to `extension.toml`. Update the `commit` SHA to the latest from the [repository](https://github.com/BGforgeNet/VScode-BGforge-MLS):
+Add grammar entries to `extension.toml`. Update the `commit` SHA to the latest from the [repository](https://github.com/BGforgeNet/BGforge-MLS):
 
 ```toml
 [grammars.ssl]
-repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+repository = "https://github.com/BGforgeNet/BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/fallout-ssl"
 
 [grammars.baf]
-repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+repository = "https://github.com/BGforgeNet/BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/weidu-baf"
 
 [grammars.weidu_d]
-repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+repository = "https://github.com/BGforgeNet/BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/weidu-d"
 
 [grammars.weidu_tp2]
-repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+repository = "https://github.com/BGforgeNet/BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/weidu-tp2"
 
 [grammars.fallout_msg]
-repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+repository = "https://github.com/BGforgeNet/BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/fallout-msg"
 
 [grammars.weidu_tra]
-repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+repository = "https://github.com/BGforgeNet/BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/weidu-tra"
 ```
@@ -228,7 +228,7 @@ path = "grammars/weidu-tra"
 Copy the highlight queries into each language directory (`languages/<lang>/highlights.scm`):
 
 ```bash
-REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
+REPO="https://raw.githubusercontent.com/BGforgeNet/BGforge-MLS/master"
 EXT_DIR="$HOME/zed-extensions/bgforge-mls"
 
 for lang in fallout-ssl weidu-baf weidu-d weidu-tp2 fallout-msg weidu-tra; do

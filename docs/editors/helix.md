@@ -98,27 +98,27 @@ Add grammar entries to `~/.config/helix/languages.toml` and add `grammar` to eac
 ```toml
 [[grammar]]
 name = "ssl"
-source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/fallout-ssl" }
+source = { git = "https://github.com/BGforgeNet/BGforge-MLS", rev = "master", subpath = "grammars/fallout-ssl" }
 
 [[grammar]]
 name = "baf"
-source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-baf" }
+source = { git = "https://github.com/BGforgeNet/BGforge-MLS", rev = "master", subpath = "grammars/weidu-baf" }
 
 [[grammar]]
 name = "weidu_d"
-source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-d" }
+source = { git = "https://github.com/BGforgeNet/BGforge-MLS", rev = "master", subpath = "grammars/weidu-d" }
 
 [[grammar]]
 name = "weidu_tp2"
-source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-tp2" }
+source = { git = "https://github.com/BGforgeNet/BGforge-MLS", rev = "master", subpath = "grammars/weidu-tp2" }
 
 [[grammar]]
 name = "fallout_msg"
-source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/fallout-msg" }
+source = { git = "https://github.com/BGforgeNet/BGforge-MLS", rev = "master", subpath = "grammars/fallout-msg" }
 
 [[grammar]]
 name = "weidu_tra"
-source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-tra" }
+source = { git = "https://github.com/BGforgeNet/BGforge-MLS", rev = "master", subpath = "grammars/weidu-tra" }
 ```
 
 Fetch and build:
@@ -131,7 +131,7 @@ hx --grammar build
 Copy highlight queries to `~/.config/helix/runtime/queries/<grammar>/`:
 
 ```bash
-REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
+REPO="https://raw.githubusercontent.com/BGforgeNet/BGforge-MLS/master"
 HELIX_QUERIES="${XDG_CONFIG_HOME:-$HOME/.config}/helix/runtime/queries"
 
 for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2" "fallout-msg:fallout_msg" "weidu-tra:weidu_tra"; do

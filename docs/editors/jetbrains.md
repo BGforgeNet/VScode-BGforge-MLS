@@ -26,7 +26,7 @@ Go to `Settings > Languages & Frameworks > Language Servers` and add a new serve
 
 ## Syntax highlighting
 
-Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases), extract it, then:
+Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://github.com/BGforgeNet/BGforge-MLS/releases), extract it, then:
 
 1. Go to `Settings > Editor > TextMate Bundles`
 2. Click `+` and point to the extracted `bgforge-mls.tmbundle` directory

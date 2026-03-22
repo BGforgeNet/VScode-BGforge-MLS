@@ -277,7 +277,7 @@ Fixed compile/parse issue introduced in 2.1.6.
 
 ## 2.1.3
 
-[Fixed](https://github.com/BGforgeNet/VScode-BGforge-MLS/issues/61) diagnostics being attributed to the wrong file when there are errors in included files.
+[Fixed](https://github.com/BGforgeNet/BGforge-MLS/issues/61) diagnostics being attributed to the wrong file when there are errors in included files.
 
 ## 2.1.2
 
@@ -384,7 +384,7 @@ Fixed crash on mod directory open on Windows.
   - Clarified `set_obj_visibility` description.
 - IE
   - Updated [IESDP](https://gibberlings3.github.io/iesdp/) and [IElib](https://ielib.bgforge.net/) defines.
-  - Added custom [icon theme](https://github.com/BGforgeNet/VScode-BGforge-MLS/blob/master/docs/icon-theme.md).
+  - Added custom [icon theme](https://github.com/BGforgeNet/BGforge-MLS/blob/master/docs/icon-theme.md).
   - Added rudimentary gcc [preprocessing](https://forums.bgforge.net/viewtopic.php?f=35&t=334) support.
 
 ## 1.15.3

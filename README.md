@@ -73,7 +73,7 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 ## Installation
 
 1. Install BGforge MLS from the VS Code Marketplace.
-   Alternatively, download the package from [GitHub Releases](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases) and install it manually.
+   Alternatively, download the package from [GitHub Releases](https://github.com/BGforgeNet/BGforge-MLS/releases) and install it manually.
 1. Check [general settings](docs/settings.md).
 1. Check [file associations](docs/file_associations.md).
 1. Check [hotkeys](#hotkeys).

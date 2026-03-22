@@ -18,7 +18,7 @@ Requires Geany 2.1+ with the [LSP Client plugin](https://plugins.geany.org/lsp.h
 
 ## File types and syntax highlighting
 
-Download `bgforge-mls-geany-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases) and extract the `.conf` files to:
+Download `bgforge-mls-geany-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/BGforge-MLS/releases) and extract the `.conf` files to:
 
 - **Linux/macOS**: `~/.config/geany/filedefs/`
 - **Windows**: `%APPDATA%\geany\filedefs\`

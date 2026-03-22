@@ -18,7 +18,7 @@ Install the [LSP](https://packagecontrol.io/packages/LSP) package via Package Co
 
 ## File types and syntax highlighting
 
-Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases), extract it, and copy the `.tmLanguage.json` files from `bgforge-mls.tmbundle/Syntaxes/` into `Packages/User/` (accessible via `Preferences > Browse Packages...`). Restart Sublime Text.
+Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://github.com/BGforgeNet/BGforge-MLS/releases), extract it, and copy the `.tmLanguage.json` files from `bgforge-mls.tmbundle/Syntaxes/` into `Packages/User/` (accessible via `Preferences > Browse Packages...`). Restart Sublime Text.
 
 This provides both file type detection and syntax highlighting. If you only need LSP features without highlighting, create minimal `.sublime-syntax` stubs instead:
 

@@ -33,11 +33,11 @@ bgforge-mls-server --stdio
 [Settings Reference](../docs/settings.md) - All server settings with defaults.
 [LSP API](../docs/lsp-api.md) - Public commands, custom requests, notifications, and third-party client integration notes.
 
-See [Editor Setup](https://github.com/BGforgeNet/VScode-BGforge-MLS/blob/master/docs/editors/README.md) for editor-specific guides.
+See [Editor Setup](https://github.com/BGforgeNet/BGforge-MLS/blob/master/docs/editors/README.md) for editor-specific guides.
 
 ## Links
 
 - [VSCode extension](https://marketplace.visualstudio.com/items?itemName=BGforge.bgforge-mls) (full-featured client)
-- [Source code](https://github.com/BGforgeNet/VScode-BGforge-MLS)
-- [Issue tracker](https://github.com/BGforgeNet/VScode-BGforge-MLS/issues)
+- [Source code](https://github.com/BGforgeNet/BGforge-MLS)
+- [Issue tracker](https://github.com/BGforgeNet/BGforge-MLS/issues)
 - [Server Internals](INTERNALS.md) (provider registry, symbol system, data flow)
