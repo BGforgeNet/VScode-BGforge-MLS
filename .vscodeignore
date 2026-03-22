@@ -24,6 +24,7 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 
 # Build artifacts and logs
+dist/
 *.vsix
 *.tgz
 *.log

@@ -42,15 +42,16 @@ for dir in server/node_modules/@*/; do
 done
 
 # Step 3: Package without re-running prepublish.
-SKIP_PREPUBLISH=1 pnpm vsce package --no-dependencies "$@"
+mkdir -p dist
+name=$(node -p "require('./package.json').name")
+version=$(node -p "require('./package.json').version")
+SKIP_PREPUBLISH=1 pnpm vsce package --no-dependencies --out "dist/${name}-${version}.vsix" "$@"
 
 # Step 4: Inject TS plugins into VSIX.
 # vsce excludes node_modules/ entirely with --no-dependencies; re-include
 # patterns (!node_modules/pkg/) don't work. Inject the built plugin bundles
 # into the VSIX post-packaging. tsserver requires plugins in node_modules/.
-name=$(node -p "require('./package.json').name")
-version=$(node -p "require('./package.json').version")
-vsix_file="./${name}-${version}.vsix"
+vsix_file="dist/${name}-${version}.vsix"
 
 if [ ! -f "$vsix_file" ]; then
     echo "ERROR: expected $vsix_file not found after vsce package"

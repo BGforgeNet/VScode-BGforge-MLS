@@ -45,6 +45,7 @@ These JSON files are generated from `server/data/*.yml` by `generate-data.sh` bu
 | `tmp`                                        | Scratch directory                                        |
 | `/test`                                      | Root-level test directory                                |
 | `.reports/`                                  | Analysis reports                                         |
+| `dist/`                                      | Build artifact directory (VSIX, editor bundles)          |
 | `*.log`, `*.vsix`                            | Log files and built extension packages                   |
 
 The `external/` directory has four allowlisted text files (`!external/fallout.txt`, etc.) that list which repos to clone and what to exclude.
@@ -65,6 +66,7 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 | `CLAUDE.md`, `CONTRIBUTING.md`                          | Dev documentation                               |
 | `knip.ts`, `tsconfig.json`                              | Linting and build config                        |
 | `pnpm-lock.yaml`, `pnpm-workspace.yaml`                 | Package manager files                           |
+| `dist/`                                                 | Build artifact directory (VSIX, editor bundles) |
 | `*.vsix`, `*.tgz`, `*.log`, `**/*.map`                  | Built packages, logs, source maps               |
 | `*.tmbundle`, `*.zip`                                   | Generated bundles (tmbundle, UDL, KSH archives) |
 | `bgforge-mls-notepadpp-udl*/`, `bgforge-mls-kate-ksh*/` | Generated editor asset directories              |

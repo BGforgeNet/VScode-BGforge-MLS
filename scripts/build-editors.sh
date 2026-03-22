@@ -6,12 +6,13 @@
 set -eu -o pipefail
 
 version=$(node -p "require('./package.json').version")
+mkdir -p dist
 
 # -- TextMate bundle (Sublime Text / JetBrains) --
 
 tmbundle_name="bgforge-mls"
 tmbundle_dir="${tmbundle_name}.tmbundle"
-tmbundle_zip="${tmbundle_name}-${version}.tmbundle.zip"
+tmbundle_zip="dist/${tmbundle_name}-${version}.tmbundle.zip"
 
 rm -rf "$tmbundle_dir" "$tmbundle_zip"
 mkdir -p "$tmbundle_dir/Syntaxes"
@@ -50,7 +51,7 @@ echo "Created $tmbundle_zip"
 
 ksh_name="bgforge-mls-kate-ksh"
 ksh_dir="${ksh_name}"
-ksh_zip="${ksh_name}-${version}.zip"
+ksh_zip="dist/${ksh_name}-${version}.zip"
 
 rm -rf "$ksh_dir" "$ksh_zip"
 pnpm exec tsx scripts/utils/src/generate-ksh.ts --out-dir "$ksh_dir"
@@ -64,7 +65,7 @@ echo "Created $ksh_zip"
 
 udl_name="bgforge-mls-notepadpp-udl"
 udl_dir="${udl_name}"
-udl_zip="${udl_name}-${version}.zip"
+udl_zip="dist/${udl_name}-${version}.zip"
 
 rm -rf "$udl_dir" "$udl_zip"
 pnpm exec tsx scripts/utils/src/generate-udl.ts --out-dir "$udl_dir"
@@ -78,7 +79,7 @@ echo "Created $udl_zip"
 
 geany_name="bgforge-mls-geany"
 geany_dir="${geany_name}"
-geany_zip="${geany_name}-${version}.zip"
+geany_zip="dist/${geany_name}-${version}.zip"
 
 rm -rf "$geany_dir" "$geany_zip"
 pnpm exec tsx scripts/utils/src/generate-geany.ts --out-dir "$geany_dir"
