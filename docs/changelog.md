@@ -1,10 +1,14 @@
 # Changelog
 
-## 3.2.2
+## 3.3.0
 
-**WeiDU TP2:**
-- Added semantic token highlighting for integer constants.
-- Improved completion for `INT_VAR`/`STR_VAR` in incomplete function calls.
+- New: semantic highlighting
+  - Fallout SSL: function, macro parameters.
+  - WeiDU TP2: function parameters, loop vars, JSdoc types.
+- WeiDU: translation references (`@NNN`) styling unified across BAF, D, and TP2.
+- Textmate highlighting: Fallout SSL, WeiDU TP2, BAF, D are updated to match intellisense data more closely.
+- Fallout SSL: header macros definitions are no longer shipped with LSP.
+- WeiDU TP2: ielib symbols data is no longer shipped with LSP.
 
 ## 3.2.1
 

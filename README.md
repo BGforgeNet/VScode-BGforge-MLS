@@ -32,6 +32,7 @@ It also works with non-VS Code editors. Setup guides are available for [Sublime]
 | Formatting | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Document symbols | ✓ |  |  | ✓ | ✓ |
 | Workspace symbols | ✓ |  |  |  | ✓ |
+| Semantic tokens | ✓ |  |  |  | ✓ |
 | Rename | ✓ |  |  | ✓ | Same file |
 | Inlay hints | `.msg` | `.tra` | `.tra` | `.tra` | `.tra` |
 | Diagnostics | ✓ | ✓ | ✓ | ✓ | ✓ |
