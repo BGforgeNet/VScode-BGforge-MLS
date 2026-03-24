@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Fallout SSL: hovering over engine procedure definitions (e.g. `map_enter_p_proc`, `start`) now shows the built-in engine description. If the procedure has user JSDoc, the engine description is appended after a separator.
+- Fallout SSL: fixed hover not working for procedures defined in header files that contain macros using the `##` token-paste operator (e.g. `animate_##type##_to_tile`). The grammar now parses `##` correctly as a context-sensitive operator inside `#define` bodies, preventing a parse error that previously swallowed the rest of the file.
+- Fallout SSL: `##` token-paste operator is now syntax-highlighted as a preprocessor keyword; surrounding identifier segments get function coloring.
 
 ## 3.3.1
 

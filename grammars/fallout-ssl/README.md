@@ -67,6 +67,29 @@ Function-like macros require the opening `(` immediately after the macro name.
 `#define MACRO(x)` is parameterized; `#define MACRO (x)` is an object-like macro whose
 replacement text starts with parentheses.
 
+#### Token Pasting (`##`)
+
+The C preprocessor `##` operator is supported inside macro bodies:
+
+```ssl
+#define anim_to(x, type, dist)  animate_##type##_to_tile(dist)
+#define PASTE(a, b)  a##b
+```
+
+The `##` operator is context-sensitive: it is only recognized inside `#define` bodies
+(where `_line_end` is a valid token). Outside macro bodies it remains a syntax error.
+This is enforced by the external scanner (`src/scanner.c`).
+
+Token-pasted call expressions are parsed as `token_paste_identifier` nodes:
+```
+(call_expr
+  func: (token_paste_identifier
+    (identifier)   ; animate_
+    (identifier)   ; type
+    (identifier))  ; _to_tile
+  args: ...)
+```
+
 ### Procedures
 
 Forward declaration:
@@ -328,6 +351,11 @@ All logical and bitwise operators are case-insensitive.
 function_name(arg1, arg2, ...)
 ```
 
+Inside macro bodies, the function name may use `##` token pasting:
+```ssl
+animate_##type##_to_tile(dist)   // parsed as token_paste_identifier
+```
+
 #### Subscript Access (sfall)
 ```ssl
 array[index]
@@ -440,11 +468,23 @@ switch case default return break continue call import export
 and or not bwand bwor bwxor bwnot
 ```
 
-### Technical Note
+### Technical Notes
 
 Tree-sitter's regex-based lexer cannot exclude keywords from the identifier pattern
 (negative lookahead is not supported). Keywords take precedence over identifiers only
 when the grammar explicitly expects them.
+
+#### External Scanner
+
+`src/scanner.c` handles three tokens:
+
+- **`_newline`** — newlines outside `#define` bodies (treated as whitespace via `extras`)
+- **`_line_end`** — newline inside a `#define` body (terminates the macro)
+- **`_token_paste`** — the `##` operator; only emitted when `_line_end` is also valid
+  (i.e. inside a `#define` body), making `##` context-sensitive
+
+The scanner runs in both native and WASM builds. `TREE_SITTER_WASM` is not defined
+by the build system, so there is no WASM-specific code path.
 
 For example, in `end begin` (missing `else`), the parser doesn't expect a keyword after
 `end`, so `begin` is parsed as an identifier. This is syntactically invalid but not
