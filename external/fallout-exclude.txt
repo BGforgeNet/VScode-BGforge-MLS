@@ -93,8 +93,5 @@ Fallout2_Restoration_Project/scripts_src/newreno/ncnikki.ssl
 Fallout2_Restoration_Project/scripts_src/brokhill/hcdoc.ssl
 
 # sfall language extensions not yet supported by the grammar (grammar limitation).
-# These files use sfall-specific syntax beyond what the base SSL grammar handles:
-# - gl_itemapcost.ssl: array subscript `args[0]`, `bwand` bitwise operator
 # - gl_healing_skill_mod.ssl: `case VALUE: begin ... end` switch statement syntax
-sfall/artifacts/example_mods/APcosts/gl_itemapcost.ssl
 sfall/artifacts/example_mods/FirstAidDoctorRepairMod/gl_healing_skill_mod.ssl
