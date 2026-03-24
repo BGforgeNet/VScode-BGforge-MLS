@@ -311,6 +311,7 @@ export const enum SyntaxType {
   SubscriptExpr = "subscript_expr",
   SwitchStmt = "switch_stmt",
   TernaryExpr = "ternary_expr",
+  TokenPasteIdentifier = "token_paste_identifier",
   UnaryExpr = "unary_expr",
   Undef = "undef",
   VarInit = "var_init",
@@ -445,6 +446,7 @@ export type SyntaxNode =
   | SubscriptExprNode
   | SwitchStmtNode
   | TernaryExprNode
+  | TokenPasteIdentifierNode
   | UnaryExprNode
   | UndefNode
   | VarInitNode
@@ -536,14 +538,14 @@ export interface ArrayExprNode extends NamedNodeBase {
 export interface AssignmentNode extends NamedNodeBase {
   type: SyntaxType.Assignment;
   leftNode: IdentifierNode | MemberExprNode | SubscriptExprNode;
-  rightNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  rightNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface BinaryExprNode extends NamedNodeBase {
   type: SyntaxType.BinaryExpr;
-  leftNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  leftNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   opNode: UnnamedNode<"!="> | UnnamedNode<"%"> | UnnamedNode<"*"> | UnnamedNode<"+"> | UnnamedNode<"-"> | UnnamedNode<"/"> | UnnamedNode<"<"> | UnnamedNode<"<="> | UnnamedNode<"=="> | UnnamedNode<">"> | UnnamedNode<">="> | UnnamedNode<"^"> | UnnamedNode<"and"> | UnnamedNode<"andalso"> | UnnamedNode<"bwand"> | UnnamedNode<"bwor"> | UnnamedNode<"bwxor"> | UnnamedNode<"in"> | UnnamedNode<"or"> | UnnamedNode<"orelse">;
-  rightNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  rightNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface BlockNode extends NamedNodeBase {
@@ -560,19 +562,19 @@ export interface BreakStmtNode extends NamedNodeBase {
 
 export interface CallExprNode extends NamedNodeBase {
   type: SyntaxType.CallExpr;
-  argsNodes: (UnnamedNode<","> | ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode)[];
-  funcNode: IdentifierNode;
+  argsNodes: (UnnamedNode<","> | ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode)[];
+  funcNode: IdentifierNode | TokenPasteIdentifierNode;
 }
 
 export interface CallStmtNode extends NamedNodeBase {
   type: SyntaxType.CallStmt;
-  delayNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  delayNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   targetNode: CallExprNode | IdentifierNode;
 }
 
 export interface CaseClauseNode extends NamedNodeBase {
   type: SyntaxType.CaseClause;
-  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface ContinueStmtNode extends NamedNodeBase {
@@ -597,7 +599,7 @@ export interface EndifNode extends NamedNodeBase {
 export interface ExportDeclNode extends NamedNodeBase {
   type: SyntaxType.ExportDecl;
   nameNode: IdentifierNode;
-  valueNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  valueNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface ExpressionStmtNode extends NamedNodeBase {
@@ -607,36 +609,36 @@ export interface ExpressionStmtNode extends NamedNodeBase {
 export interface ForInitAssignNode extends NamedNodeBase {
   type: SyntaxType.ForInitAssign;
   nameNode: IdentifierNode;
-  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface ForStmtNode extends NamedNodeBase {
   type: SyntaxType.ForStmt;
   bodyNode: AssignmentNode | BlockNode | BreakStmtNode | CallStmtNode | ContinueStmtNode | ExpressionStmtNode | ForStmtNode | ForeachStmtNode | IfStmtNode | PreprocessorNode | ReturnStmtNode | SwitchStmtNode | VariableDeclNode | WhileStmtNode;
-  condNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
-  initNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | ForInitAssignNode | ForVarDeclNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
-  updateNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  condNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+  initNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | ForInitAssignNode | ForVarDeclNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+  updateNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface ForVarDeclNode extends NamedNodeBase {
   type: SyntaxType.ForVarDecl;
   nameNode: IdentifierNode;
-  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface ForeachStmtNode extends NamedNodeBase {
   type: SyntaxType.ForeachStmt;
   bodyNode: AssignmentNode | BlockNode | BreakStmtNode | CallStmtNode | ContinueStmtNode | ExpressionStmtNode | ForStmtNode | ForeachStmtNode | IfStmtNode | PreprocessorNode | ReturnStmtNode | SwitchStmtNode | VariableDeclNode | WhileStmtNode;
-  iterNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  iterNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   keyNode?: IdentifierNode;
   valueNode?: IdentifierNode;
   varNode?: IdentifierNode;
-  while_condNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  while_condNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface IfStmtNode extends NamedNodeBase {
   type: SyntaxType.IfStmt;
-  condNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  condNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   elseNode?: AssignmentNode | BlockNode | BreakStmtNode | CallStmtNode | ContinueStmtNode | ExpressionStmtNode | ForStmtNode | ForeachStmtNode | IfStmtNode | PreprocessorNode | ReturnStmtNode | SwitchStmtNode | VariableDeclNode | WhileStmtNode;
   thenNode: AssignmentNode | BlockNode | BreakStmtNode | CallStmtNode | ContinueStmtNode | ExpressionStmtNode | ForStmtNode | ForeachStmtNode | IfStmtNode | PreprocessorNode | ReturnStmtNode | SwitchStmtNode | VariableDeclNode | WhileStmtNode;
 }
@@ -672,7 +674,7 @@ export interface MacroParamsNode extends NamedNodeBase {
 export interface MapEntryNode extends NamedNodeBase {
   type: SyntaxType.MapEntry;
   keyNode: IdentifierNode | NumberNode | StringNode;
-  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface MapExprNode extends NamedNodeBase {
@@ -748,25 +750,29 @@ export interface SourceFileNode extends NamedNodeBase {
 
 export interface SubscriptExprNode extends NamedNodeBase {
   type: SyntaxType.SubscriptExpr;
-  indexNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  indexNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   objectNode: IdentifierNode | MemberExprNode | SubscriptExprNode;
 }
 
 export interface SwitchStmtNode extends NamedNodeBase {
   type: SyntaxType.SwitchStmt;
-  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface TernaryExprNode extends NamedNodeBase {
   type: SyntaxType.TernaryExpr;
-  condNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
-  false_valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
-  true_valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  condNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+  false_valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+  true_valueNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+}
+
+export interface TokenPasteIdentifierNode extends NamedNodeBase {
+  type: SyntaxType.TokenPasteIdentifier;
 }
 
 export interface UnaryExprNode extends NamedNodeBase {
   type: SyntaxType.UnaryExpr;
-  exprNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  exprNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   opNode: UnnamedNode<"++"> | UnnamedNode<"-"> | UnnamedNode<"--"> | UnnamedNode<"bnot"> | UnnamedNode<"not">;
 }
 
@@ -778,8 +784,8 @@ export interface UndefNode extends NamedNodeBase {
 export interface VarInitNode extends NamedNodeBase {
   type: SyntaxType.VarInit;
   nameNode: IdentifierNode;
-  sizeNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
-  valueNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  sizeNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+  valueNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface VariableDeclNode extends NamedNodeBase {
@@ -789,7 +795,7 @@ export interface VariableDeclNode extends NamedNodeBase {
 export interface WhileStmtNode extends NamedNodeBase {
   type: SyntaxType.WhileStmt;
   bodyNode: AssignmentNode | BlockNode | BreakStmtNode | CallStmtNode | ContinueStmtNode | ExpressionStmtNode | ForStmtNode | ForeachStmtNode | IfStmtNode | PreprocessorNode | ReturnStmtNode | SwitchStmtNode | VariableDeclNode | WhileStmtNode;
-  condNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | UnaryExprNode;
+  condNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface CommentNode extends NamedNodeBase {

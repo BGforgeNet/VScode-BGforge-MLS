@@ -109,10 +109,22 @@ class FalloutSslProvider implements LanguageProvider {
 
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
         const local = lookupLocalSymbol(name, text, uri);
+        if (this.storedContext?.settings.debug) {
+            if (!local) {
+                const allLocal = getLocalSymbols(text, uri);
+                conlog(`[resolveSymbol] name="${name}" uri="${uri}" local=not found; local symbols: [${allLocal.map(s => s.name).join(", ")}]`);
+            } else {
+                conlog(`[resolveSymbol] name="${name}" uri="${uri}" local=found`);
+            }
+        }
         if (local) {
             return local;
         }
-        return this.lookupFallbackSymbol(name, uri);
+        const fallback = this.lookupFallbackSymbol(name, uri);
+        if (this.storedContext?.settings.debug) {
+            conlog(`[resolveSymbol] fallback=${fallback ? "found" : "not found"}`);
+        }
+        return fallback;
     }
 
     format(text: string, uri: string): FormatResult {

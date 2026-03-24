@@ -11,8 +11,9 @@ export default grammar({
   name: "ssl",
 
   externals: ($) => [
-    $._newline,   // Newline as whitespace (outside #define)
-    $._line_end,  // Newline as macro terminator (inside #define)
+    $._newline,      // Newline as whitespace (outside #define)
+    $._line_end,     // Newline as macro terminator (inside #define)
+    $._token_paste,  // ## operator, only emitted inside #define bodies (see scanner.c)
   ],
 
   extras: ($) => [
@@ -337,6 +338,7 @@ export default grammar({
         $.array_expr,
         $.map_expr,
         $.proc_ref,
+        $.token_paste_identifier,  // ## token-pasting (macro bodies only)
         $.identifier,
         $.number,
         $.boolean,
@@ -412,8 +414,16 @@ export default grammar({
         prec(11, seq(field("expr", $.identifier), field("op", choice("++", "--"))))
       ),
 
+    // ## token-pasting: animate_##type##_to_tile (valid inside #define bodies only;
+    // the external scanner only emits _token_paste when LINE_END is also valid).
+    // Intentionally not added to assignment.left, subscript_expr.object,
+    // member_expr.object, or macro_call_stmt: ## in those positions does not
+    // occur in real SSL macro bodies, so the scope is kept minimal.
+    token_paste_identifier: ($) =>
+      seq($.identifier, repeat1(seq($._token_paste, $.identifier))),
+
     call_expr: ($) =>
-      prec(12, seq(field("func", $.identifier), "(", field("args", optional(commaSep($._expression))), ")")),
+      prec(12, seq(field("func", choice($.identifier, $.token_paste_identifier)), "(", field("args", optional(commaSep($._expression))), ")")),
 
     paren_expr: ($) => seq("(", $._expression, ")"),
 

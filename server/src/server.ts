@@ -292,31 +292,39 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
     const symbol = symbolAtPosition(text, textDocumentPosition.position);
+    const debug = globalSettings.debug;
 
     if (!symbol) {
+        if (debug) conlog(`[hover] no symbol at position in ${uri}`);
         return;
     }
 
+    if (debug) conlog(`[hover] symbol="${symbol}" langId="${langId}" uri="${uri}"`);
+
     // Suppress all features in comment zones
     if (!registry.shouldProvideFeatures(langId, text, textDocumentPosition.position)) {
+        if (debug) conlog(`[hover] suppressed (shouldProvideFeatures=false)`);
         return;
     }
 
     // Check translation hover first (for @123 or NOption(123) references)
     const translationHover = translation?.getHover(uri, langId, symbol, text);
     if (translationHover) {
+        if (debug) conlog(`[hover] translation hover returned`);
         return translationHover;
     }
 
     // Try local hover (AST-based, for symbols defined in current file)
     const localHover = registry.localHover(langId, text, symbol, uri, textDocumentPosition.position);
     if (localHover.handled) {
+        if (debug) conlog(`[hover] localHover handled, result=${localHover.hover ? "found" : "null"}`);
         return localHover.hover;
     }
 
     // Fall back to data-driven hover (from headers/static data)
     // Pass text to enable unified symbol resolution (Approach C)
     const dataHover = registry.hover(langId, uri, symbol, text);
+    if (debug) conlog(`[hover] dataHover result=${dataHover ? "found" : "null"}`);
     return dataHover;
 });
 

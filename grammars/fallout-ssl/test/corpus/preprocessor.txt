@@ -305,3 +305,29 @@ Multiline macro
             right: (identifier)))
         (return_stmt
           (identifier))))))
+
+==================
+Token concatenation ## in macro body
+==================
+
+#define anim_to(x, type, dist)  animate_##type##_to_tile(dist)
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params
+        (identifier)
+        (identifier)
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (token_paste_identifier
+              (identifier)
+              (identifier)
+              (identifier))
+            args: (identifier)))))))
+

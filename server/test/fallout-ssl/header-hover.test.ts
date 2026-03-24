@@ -289,6 +289,129 @@ end
         });
     });
 
+    describe("hover within the .h file itself", () => {
+        it("resolveSymbol should find procedure defined in the current .h file", () => {
+            const headerText = `procedure roll_vs_stat(variable who, variable stat, variable mod) begin
+   variable rnd = random(1, 100);
+   return rnd;
+end`;
+            // No reloadFileData — test purely local lookup (text-based)
+            const resolved = falloutSslProvider.resolveSymbol!("roll_vs_stat", headerText, testUri);
+
+            expect(resolved).toBeDefined();
+            expect(resolved?.hover).toBeDefined();
+            expect(resolved?.name).toBe("roll_vs_stat");
+        });
+
+        it("resolveSymbol should find macro defined in the current .h file", () => {
+            const headerText = `#define stat_success(x,y,z) (is_success(do_check(x,y,z)))`;
+            const resolved = falloutSslProvider.resolveSymbol!("stat_success", headerText, testUri);
+
+            expect(resolved).toBeDefined();
+            expect(resolved?.hover).toBeDefined();
+            expect(resolved?.name).toBe("stat_success");
+        });
+
+        it("resolveSymbol should find both macro and procedure in same .h file", () => {
+            const headerText = `#define stat_success(x,y,z) (is_success(do_check(x,y,z)))
+
+procedure roll_vs_stat(variable who, variable stat, variable mod) begin
+   variable rnd = random(1, 100);
+   return rnd;
+end`;
+            const macro = falloutSslProvider.resolveSymbol!("stat_success", headerText, testUri);
+            const proc = falloutSslProvider.resolveSymbol!("roll_vs_stat", headerText, testUri);
+
+            expect(macro).toBeDefined();
+            expect(macro?.hover).toBeDefined();
+            expect(proc).toBeDefined();
+            expect(proc?.hover).toBeDefined();
+        });
+
+        it("resolveSymbol should find procedure with real-world .h content (stat_success + roll_vs_stat)", () => {
+            // Reproduces exact user-reported case: macro works, procedure doesn't
+            const headerText = `#define stat_success(x,y,z)                 (is_success(do_check(x,y,z)))
+
+/**
+ * Like \`roll_vs_skill\`, but for stat roll checks.
+ * @arg {ObjectPtr} who Critter
+ * @arg {int} stat STAT_*
+ * @arg {int} mod Difficulty mod
+ * @ret {int}
+ */
+procedure roll_vs_stat(variable who, variable stat, variable mod) begin
+   variable rnd = random(1, 100);
+   variable success = is_success(do_check(who, stat, mod));
+   if success then begin
+       if (rnd + (get_critter_stat(who, STAT_lu) - 5)) > 95 then return ROLL_CRITICAL_SUCCESS;
+       else return ROLL_SUCCESS;
+   end else begin
+     if rnd > 95 then return ROLL_CRITICAL_FAILURE;
+   end
+   return ROLL_FAILURE;
+end`;
+            const macro = falloutSslProvider.resolveSymbol!("stat_success", headerText, testUri);
+            const proc = falloutSslProvider.resolveSymbol!("roll_vs_stat", headerText, testUri);
+
+            expect(macro).toBeDefined();
+            expect(macro?.hover).toBeDefined();
+            expect(proc).toBeDefined();
+            expect(proc?.hover).toBeDefined();
+        });
+    });
+
+    describe("## token-pasting in macro bodies", () => {
+        it("resolveSymbol finds macro defined with ## token-pasting", () => {
+            const headerText = `#define anim_to(x, type, dist)  animate_##type##_to_tile(dist)`;
+            const resolved = falloutSslProvider.resolveSymbol!("anim_to", headerText, testUri);
+
+            expect(resolved).toBeDefined();
+            expect(resolved?.name).toBe("anim_to");
+        });
+
+        it("resolveSymbol finds procedures after a multiline macro with ## token-pasting", () => {
+            // Regression: ## in a multiline macro body (with \\ continuation and begin/end)
+            // used to create a giant ERROR node that swallowed all subsequent procedure
+            // definitions, because error recovery consumed the 'end' keyword and the
+            // define never properly terminated.
+            const headerText = [
+                "#define away_from_tile_type(x, type, dist)  if (anim_busy(self_obj) == false) then begin \\",
+                "   global_temp := rotation_to_tile(x, self_tile); \\",
+                "   animate_##type##_to_tile(tile_num_in_direction(self_tile, global_temp, dist)); \\",
+                "end",
+                "",
+                "procedure roll_vs_stat(variable who, variable stat, variable mod) begin",
+                "   return random(1, 100);",
+                "end",
+            ].join("\n");
+
+            const resolved = falloutSslProvider.resolveSymbol!("roll_vs_stat", headerText, testUri);
+
+            expect(resolved).toBeDefined();
+            expect(resolved?.name).toBe("roll_vs_stat");
+        });
+
+        it("resolveSymbol finds both macro and procedure when multiline ## macro is present", () => {
+            const headerText = [
+                "#define away_from_tile_type(x, type, dist)  if (anim_busy(self_obj) == false) then begin \\",
+                "   animate_##type##_to_tile(x); \\",
+                "end",
+                "",
+                "#define stat_success(x,y,z)  (is_success(do_check(x,y,z)))",
+                "",
+                "procedure roll_vs_stat(variable who, variable stat, variable mod) begin",
+                "   return random(1, 100);",
+                "end",
+            ].join("\n");
+
+            const macro = falloutSslProvider.resolveSymbol!("stat_success", headerText, testUri);
+            const proc = falloutSslProvider.resolveSymbol!("roll_vs_stat", headerText, testUri);
+
+            expect(macro).toBeDefined();
+            expect(proc).toBeDefined();
+        });
+    });
+
     it("getCompletions should return duplicates from multiple headers", async () => {
         const mockContext: ProviderContext = {
             workspaceRoot: "/mymod",
