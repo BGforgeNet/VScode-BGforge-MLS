@@ -8,6 +8,7 @@
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { SyntaxType } from "../tree-sitter.d";
+import { throwOnParseError } from "../../shared/format-utils";
 
 // Formatting options.
 // Note: BAF doesn't need lineLimit - its format is inherently line-based
@@ -229,6 +230,7 @@ function formatBlock(node: SyntaxNode, result: string[], ctx: FormatContext): vo
 
 // Main formatting function
 export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions>): FormatResult {
+    throwOnParseError(root);
     const opts = { ...DEFAULT_OPTIONS, ...options };
     const ctx: FormatContext = {
         indent: " ".repeat(opts.indentSize),

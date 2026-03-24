@@ -7,7 +7,7 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { normalizeWhitespaceWeidu, tokenizeWeidu, WeiduTokenType } from "../../shared/format-utils";
+import { normalizeWhitespaceWeidu, throwOnParseError, tokenizeWeidu, WeiduTokenType } from "../../shared/format-utils";
 
 interface FormatOptions {
     indentSize: number;
@@ -543,6 +543,7 @@ function formatExtendAction(node: SyntaxNode, ctx: FormatContext): string {
 
 // Main formatting function
 export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions>): FormatResult {
+    throwOnParseError(root);
     const opts = { ...DEFAULT_OPTIONS, ...options };
     const indent = " ".repeat(opts.indentSize);
     const ctx: FormatContext = {

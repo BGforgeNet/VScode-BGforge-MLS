@@ -143,13 +143,13 @@ describe("weidu-d/format/core", () => {
 
         describe("block comments", () => {
             it("preserves whitespace inside block comments", () => {
-                const input = `IF ~~ THEN EXIT /* comment  with   spaces */\n`;
+                const input = `EXTEND_BOTTOM dlg 0\n  IF ~~ THEN EXIT /* comment  with   spaces */\nEND\n`;
                 const output = format(input);
                 expect(output).toContain("/* comment  with   spaces */");
             });
 
             it("preserves block comments with double spaces", () => {
-                const input = `IF ~~ THEN REPLY @1 /* ~Oh, please.  I saw you.~ */\n`;
+                const input = `EXTEND_BOTTOM dlg 0\n  IF ~~ THEN REPLY @1 GOTO state /* ~Oh, please.  I saw you.~ */\nEND\n`;
                 const output = format(input);
                 expect(output).toContain("/* ~Oh, please.  I saw you.~ */");
             });
@@ -163,7 +163,7 @@ describe("weidu-d/format/core", () => {
             });
 
             it("keeps trailing line comment on same line as code", () => {
-                const input = `IF ~~ THEN EXIT // done\n`;
+                const input = `EXTEND_BOTTOM dlg 0\n  IF ~~ THEN EXIT // done\nEND\n`;
                 const output = format(input);
                 expect(output).toMatch(/EXIT\s+\/\/ done/);
             });
@@ -218,10 +218,10 @@ describe("weidu-d/format/core", () => {
         });
 
         it("preserves blank lines between top-level items", () => {
-            // Test that blank lines between EXTEND actions are preserved
-            const input = `EXTEND dlg 1\n  IF ~~ THEN EXIT\nEND\n\nEXTEND dlg 2\n  IF ~~ THEN EXIT\nEND\n`;
+            // Test that blank lines between EXTEND_BOTTOM actions are preserved
+            const input = `EXTEND_BOTTOM dlg 1\n  IF ~~ THEN EXIT\nEND\n\nEXTEND_BOTTOM dlg 2\n  IF ~~ THEN EXIT\nEND\n`;
             const output = format(input);
-            expect(output).toContain("\n\nEXTEND dlg 2");
+            expect(output).toContain("\n\nEXTEND_BOTTOM dlg 2");
         });
     });
 });

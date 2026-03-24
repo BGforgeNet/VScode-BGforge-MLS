@@ -118,8 +118,9 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
         let result: FormatResult;
         try {
             result = parseAndFormat(text, fileType, opts);
-        } catch {
-            console.error(`Error: Failed to parse ${filePath}`);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.error(`Error: ${filePath}: ${msg}`);
             return "error";
         }
 

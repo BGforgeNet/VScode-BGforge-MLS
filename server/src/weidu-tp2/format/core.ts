@@ -58,6 +58,7 @@ import {
     formatReplaceBcsBlock,
 } from "./blocks";
 import { SyntaxType } from "../tree-sitter.d";
+import { throwOnParseError } from "../../shared/format-utils";
 
 // ============================================
 // Simple node formatters
@@ -467,33 +468,9 @@ function isCommentAttachedToComponent(
     return false;
 }
 
-/**
- * Find first ERROR or MISSING node in tree.
- * Returns the node if found, null otherwise.
- */
-function findParseError(node: SyntaxNode): SyntaxNode | null {
-    if (node.type === "ERROR" || node.isMissing) {
-        return node;
-    }
-    for (const child of node.children) {
-        const error = findParseError(child);
-        if (error) return error;
-    }
-    return null;
-}
-
 /** Format a TP2 document. */
 export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions>): FormatResult {
-    // Fail early on parse errors - don't attempt to format malformed input
-    const parseError = findParseError(root);
-    if (parseError) {
-        const errorType = parseError.isMissing ? "MISSING" : "ERROR";
-        throwFormatError(
-            `Parse ${errorType}: cannot format file with syntax errors`,
-            parseError.startPosition.row + 1,
-            parseError.startPosition.column + 1,
-        );
-    }
+    throwOnParseError(root);
 
     const opts = { ...DEFAULT_OPTIONS, ...options };
     const ctx: FormatContext = {

@@ -2,10 +2,36 @@
  * Shared formatting utilities.
  */
 
+import type { Node as SyntaxNode } from "web-tree-sitter";
 import { TextEdit } from "vscode-languageserver/node";
 
 /** Function that strips comments from text while respecting string literals. */
 export type CommentStripper = (text: string) => string;
+
+/** Find first ERROR or MISSING node in tree. */
+function findParseError(node: SyntaxNode): SyntaxNode | null {
+    if (node.type === "ERROR" || node.isMissing) {
+        return node;
+    }
+    for (const child of node.children) {
+        const error = findParseError(child);
+        if (error) return error;
+    }
+    return null;
+}
+
+/**
+ * Throw if the tree contains any ERROR or MISSING nodes.
+ * Call at the top of every formatDocument() to prevent formatting malformed input.
+ */
+export function throwOnParseError(root: SyntaxNode): void {
+    const node = findParseError(root);
+    if (node) {
+        const { row, column } = node.startPosition;
+        const kind = node.isMissing ? "MISSING" : "ERROR";
+        throw new Error(`${row + 1}:${column + 1}: Parse ${kind}`);
+    }
+}
 
 /**
  * Creates a TextEdit that replaces the entire document.

@@ -26,6 +26,7 @@ import {
 } from "./expressions";
 import { SyntaxType } from "../tree-sitter.d";
 import type { FormatOptions } from "../../shared/format-options";
+import { throwOnParseError } from "../../shared/format-utils";
 
 const DEFAULT_OPTIONS: FormatOptions = {
     indentSize: 4,
@@ -151,28 +152,11 @@ interface FormatResult {
     text: string;
 }
 
-/** Find first ERROR or MISSING node in tree. */
-function findParseError(node: SyntaxNode): SyntaxNode | null {
-    if (node.type === "ERROR" || node.isMissing) {
-        return node;
-    }
-    for (const child of node.children) {
-        const error = findParseError(child);
-        if (error) return error;
-    }
-    return null;
-}
-
 export function formatDocument(
     node: SyntaxNode,
     options: FormatOptions = DEFAULT_OPTIONS,
 ): FormatResult {
-    // Skip formatting files with parse errors — ERROR nodes produce non-idempotent output.
-    // Return original text unchanged so the file passes through untouched.
-    const parseError = findParseError(node);
-    if (parseError) {
-        return { text: node.text };
-    }
+    throwOnParseError(node);
 
     ctx = {
         indent: " ".repeat(options.indentSize),
