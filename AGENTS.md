@@ -19,6 +19,7 @@ This file provides guidance to AI agents (Claude, Gemini, etc.) when working wit
 - **Rebuild TextMate grammars after editing YAML sources.** After modifying any `syntaxes/*.tmLanguage.yml` file, run `scripts/syntaxes-to-json.sh` to regenerate the compiled JSON before testing or committing. **Never hand-edit `syntaxes/*.tmLanguage.json` files** — they are fully generated from the YAML sources and any manual edits will be overwritten.
 - **Do not hand-edit auto-generated TextMate stanzas.** Several stanzas across `syntaxes/*.tmLanguage.yml` are generated from `server/data/*.yml` via `generate-data.sh` — see `docs/data-pipeline.md` for the full list. Edit the YAML data source, then regenerate. Auto-generated stanzas are marked with a `# Auto-generated` comment.
 - **Sort YAML data files with the existing script.** To sort `server/data/*.yml` files, use `pnpm exec tsx scripts/utils/src/sort-yaml-stanzas-and-items.ts <file>`. Do not write custom sorting code. See `scripts/README.md` for all available script utilities.
+- **Changelog entries must be user-facing only.** Document new features, bug fixes, and behavior changes. Never include implementation details such as refactoring, test additions, code quality improvements, or internal constants. Users care about what changed, not how it was implemented.
 
 ## Project Overview
 
