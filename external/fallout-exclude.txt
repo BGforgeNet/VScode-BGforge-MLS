@@ -60,12 +60,6 @@ Fallout2_Restoration_Project/scripts_src/sanfran/fitguntb.ssl
 Fallout2_Restoration_Project/scripts_src/sanfran/fitmertb.ssl
 Fallout2_Restoration_Project/scripts_src/sierra/wtlndmin.ssl
 
-# Semicolon after block-ending `end` in macro body (grammar limitation).
-# The grammar's `block` rule ends with `end` (no semicolon). A bare `;` immediately
-# following `end` within a macro body cannot start a new statement, causing an ERROR.
-# Pattern: `while ... do begin ... end;` where the `;` trails the closing `end`.
-Fallout2_Restoration_Project/scripts_src/newreno/nif2hint.ssl
-
 # Whitespace-only blank lines in procedure bodies (scanner bug).
 # Lines containing only spaces or tabs — but not fully empty lines — cause parse
 # errors in procedure bodies and before `else` clauses. Only a bare newline is
