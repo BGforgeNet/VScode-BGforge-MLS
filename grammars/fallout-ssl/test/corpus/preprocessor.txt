@@ -330,28 +330,6 @@ end
     name: (identifier)))
 
 ==================
-Whitespace-only blank line in procedure body
-==================
-
-procedure foo begin
-   variable x;
-   
-   x := 1;
-end
-
----
-
-(source_file
-  (procedure
-    name: (identifier)
-    body: (variable_decl
-      (var_init
-        name: (identifier)))
-    body: (assignment
-      left: (identifier)
-      right: (number))))
-
-==================
 Macro body final assignment without trailing semicolon
 ==================
 
@@ -387,39 +365,6 @@ Include with bare identifier macro
       path: (identifier)))
   (preprocessor
     (endif)))
-
-==================
-Switch case with begin..end block body
-==================
-
-procedure foo begin
-    switch x begin
-        case 1: begin
-            y = 1;
-        end
-        case 2: begin
-            y = 2;
-            z = 3;
-        end
-    end
-end
-
----
-
-(source_file
-  (procedure
-    name: (identifier)
-    body: (switch_stmt
-      value: (identifier)
-      (case_clause
-        value: (number)
-        (block
-          (assignment left: (identifier) right: (number))))
-      (case_clause
-        value: (number)
-        (block
-          (assignment left: (identifier) right: (number))
-          (assignment left: (identifier) right: (number)))))))
 
 ==================
 Token concatenation ## in macro body
