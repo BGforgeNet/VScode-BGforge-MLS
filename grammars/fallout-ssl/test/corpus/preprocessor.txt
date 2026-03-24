@@ -330,6 +330,28 @@ end
     name: (identifier)))
 
 ==================
+Whitespace-only blank line in procedure body
+==================
+
+procedure foo begin
+   variable x;
+   
+   x := 1;
+end
+
+---
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (variable_decl
+      (var_init
+        name: (identifier)))
+    body: (assignment
+      left: (identifier)
+      right: (number))))
+
+==================
 Macro body final assignment without trailing semicolon
 ==================
 

@@ -27,6 +27,9 @@ Fallout2_Restoration_Project/scripts_src/newreno/nceldrid.ssl
 # If_Companion_Needs_Healing macro
 Fallout2_Restoration_Project/scripts_src/valtcity/vcdrtroy.ssl
 
+# martin_sees_lockpick_block macro
+Fallout2_Restoration_Project/scripts_src/valtcity/vivltdr3.ssl
+
 # Comment inside parenthesized expression (formatter limitation)
 sfall/artifacts/mods/gl_npcarmor.ssl
 
@@ -62,15 +65,6 @@ Fallout2_Restoration_Project/scripts_src/sanfran/fctnkmer.ssl
 Fallout2_Restoration_Project/scripts_src/sanfran/fitguntb.ssl
 Fallout2_Restoration_Project/scripts_src/sanfran/fitmertb.ssl
 Fallout2_Restoration_Project/scripts_src/sierra/wtlndmin.ssl
-
-# Whitespace-only blank lines in procedure bodies (scanner bug).
-# Lines containing only spaces or tabs — but not fully empty lines — cause parse
-# errors in procedure bodies and before `else` clauses. Only a bare newline is
-# transparent; a line of trailing spaces is not.
-Fallout2_Restoration_Project/scripts_src/maps/bhrnddst.ssl
-Fallout2_Restoration_Project/scripts_src/valtcity/vivltdr3.ssl
-sfall/artifacts/example_mods/rain/data/scripts/gltsrain.ssl
-sfall/artifacts/example_mods/rain/data/scripts/shader_test/gltsrain.ssl
 
 # `##` token-paste operator in variable declarations (grammar limitation).
 # The scanner emits `##` only inside `#define` macro bodies. The grammar does not

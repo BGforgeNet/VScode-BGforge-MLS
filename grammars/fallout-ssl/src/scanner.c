@@ -108,6 +108,19 @@ bool tree_sitter_ssl_external_scanner_scan(
         }
     }
 
+    /* Skip leading horizontal whitespace when NEWLINE is valid (outside #define).
+     * Without this, a whitespace-only line (spaces/tabs + newline) strands the \n:
+     * the scanner returns false at the first space, the internal lex machine SKIPs
+     * the spaces, but then \n is never offered to the scanner and the lex fails.
+     * Skipping here is safe: if we return false below, tree-sitter resets to
+     * current_position and the internal lex machine re-processes the whitespace. */
+    if (valid_symbols[NEWLINE] && !valid_symbols[LINE_END]) {
+        while (lexer->lookahead == ' '  || lexer->lookahead == '\t' ||
+               lexer->lookahead == '\f' || lexer->lookahead == '\v') {
+            lexer->advance(lexer, false);
+        }
+    }
+
     /* Only handle newline characters below */
     if (lexer->lookahead != '\n' && lexer->lookahead != '\r') {
         return false;
