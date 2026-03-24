@@ -2,9 +2,31 @@
 
 ## Unreleased
 
-- Fallout SSL: hovering over engine procedure definitions (e.g. `map_enter_p_proc`, `start`) now shows the built-in engine description. If the procedure has user JSDoc, the engine description is appended after a separator.
-- Fallout SSL: fixed hover not working for procedures defined in header files that contain macros using the `##` token-paste operator (e.g. `animate_##type##_to_tile`). The grammar now parses `##` correctly as a context-sensitive operator inside `#define` bodies, preventing a parse error that previously swallowed the rest of the file.
-- Fallout SSL: `##` token-paste operator is now syntax-highlighted as a preprocessor keyword; surrounding identifier segments get function coloring.
+### Fallout SSL
+
+- Hovering over engine procedure definitions (e.g. `map_enter_p_proc`, `start`) now shows the built-in engine description. If the procedure has user JSDoc, the engine description is appended after a separator.
+- `##` token-paste operator is now supported in macro bodies — variable declarations, assignments, and expressions — in addition to procedure names. Fixes parse errors in files that use `##` outside of identifiers.
+- Fixed hover not working for procedures defined in header files that contain macros using the `##` token-paste operator (e.g. `animate_##type##_to_tile`). The grammar now parses `##` correctly as a context-sensitive operator inside `#define` bodies, preventing a parse error that previously swallowed the rest of the file.
+- `##` token-paste operator is now syntax-highlighted as a preprocessor keyword; surrounding identifier segments get function coloring.
+- `#include` directives now accept bare identifier paths (without quotes), as used in some real-world scripts.
+- `switch` `case` and `default` clauses now accept a `begin ... end` block body (sfall extension), in addition to the standard statement list.
+- Macro bodies now allow a top-level assignment without a trailing semicolon.
+- Fixed parse errors caused by backslash line-continuation followed by a blank line.
+- Fixed parse errors caused by whitespace-only blank lines inside procedure bodies.
+- Hover signatures for procedures and macros now show untyped parameters as `var name` and highlight parameter names with `variable.parameter` coloring.
+- Fixed rename not working for macro parameters.
+
+### WeiDU
+
+- `ADD_STATE_TRIGGER` now accepts multiple state numbers after the trigger string (e.g. `ADD_STATE_TRIGGER ~file~ N ~trigger~ N1 N2 N3`), matching the WeiDU spec.
+
+### Formatter
+
+- The formatter CLI now exits with a non-zero status when the input file contains syntax errors, instead of silently producing output from a broken AST.
+
+### TSSL
+
+- Fixed a crash when the source contains empty statements (bare semicolons).
 
 ## 3.3.1
 
