@@ -4,7 +4,7 @@
 # BAF files with syntax errors in original source
 Ascension/ascension/powers/baf/SLAYER_DOCUMENTATION.baf
 BGT-WeiDU/bgt/base/baf/aram00.baf
-BGT-WeiDU/bgt/base/baf/a6bio.baf
+BGT-WeiDU/bgt/modify/baf/a6bio.baf
 rr/rr/rr_core/compile/rr#wspi.baf
 rr/rr/rr_cyric/compile/rr#camb1.baf
 
