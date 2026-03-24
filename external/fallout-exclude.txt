@@ -72,11 +72,6 @@ Fallout2_Restoration_Project/scripts_src/sierra/wtlndmin.ssl
 Fallout2_Restoration_Project/scripts_src/ncr/waypnt.ssl
 Fallout2_Restoration_Project/scripts_src/vault13/waypnt.ssl
 
-# CRLF line endings (scanner limitation).
-# The `\r` character mid-line (before `\n`) causes ERROR nodes. The line continuation
-# rule handles `\\\r\n` but `\r` appearing elsewhere in the line is not consumed.
-Fallout2_Restoration_Project/scripts_src/global/gl_k_lenny_look.ssl
-
 # Empty macro parameter list `()` (grammar limitation).
 # `#define MACRO ()` — the grammar expects `commaSep($.identifier)` for params,
 # so an empty `()` produces a MISSING identifier error.
@@ -91,12 +86,11 @@ Fallout2_Restoration_Project/scripts_src/template/sprtrp0.ssl
 Fallout2_Restoration_Project/scripts_src/newreno/ncftully.ssl
 Fallout2_Restoration_Project/scripts_src/newreno/ncnikki.ssl
 
-# sfall compound assignment operators (grammar limitation).
-# sfall extends SSL with `+=`, `-=`, `*=`, `/=` compound assignment operators.
-# The base SSL grammar only supports `:=` (simple assignment).
-# Pattern: `variable += expression;`
+# If_Companion_Needs_Healing macro — partial `if` condition at macro end (grammar limitation).
+# The macro body ends with `if (unhealthy_members > 0)` — no `then` or body.
+# The call site supplies `then ...`, so post-expansion it is valid. The parser
+# sees a bare `if (condition)` with no `then`, which cannot complete the if_stmt rule.
 Fallout2_Restoration_Project/scripts_src/brokhill/hcdoc.ssl
-Fallout2_Restoration_Project/scripts_src/sierra/wcsecbot.ssl
 
 # sfall language extensions not yet supported by the grammar (grammar limitation).
 # These files use sfall-specific syntax beyond what the base SSL grammar handles:

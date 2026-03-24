@@ -112,6 +112,8 @@ bool tree_sitter_ssl_external_scanner_scan(
      * Without this, a whitespace-only line (spaces/tabs + newline) strands the \n:
      * the scanner returns false at the first space, the internal lex machine SKIPs
      * the spaces, but then \n is never offered to the scanner and the lex fails.
+     * This also fixes CRLF files: a trailing space before \r\n would similarly strand
+     * the \r without this skip.
      * Skipping here is safe: if we return false below, tree-sitter resets to
      * current_position and the internal lex machine re-processes the whitespace. */
     if (valid_symbols[NEWLINE] && !valid_symbols[LINE_END]) {
