@@ -17,7 +17,8 @@ export function findContainingProcedure(node: Node): Node | null {
     return null;
 }
 
-function findContainingDefine(node: Node): Node | null {
+/** Walk ancestors to find the nearest containing Define node, or null if not inside a #define. */
+export function findContainingDefine(node: Node): Node | null {
     let current: Node | null = node.parent;
     while (current) {
         if (current.type === SyntaxType.Define) {
@@ -28,7 +29,11 @@ function findContainingDefine(node: Node): Node | null {
     return null;
 }
 
-function findMacroParamDefinitionNode(defineNode: Node, symbolName: string): Node | null {
+/**
+ * Find the identifier node in a Define's params that matches symbolName.
+ * Returns null if the define has no params or if the name is not among them.
+ */
+export function findMacroParamDefinitionNode(defineNode: Node, symbolName: string): Node | null {
     const params = defineNode.childForFieldName("params");
     if (!params) {
         return null;

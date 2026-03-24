@@ -8,7 +8,7 @@
  */
 
 import type { Node } from "web-tree-sitter";
-import { ScopeKind } from "./scope-kinds";
+import { ScopeKind, assertNeverScope } from "./scope-kinds";
 import type { SslSymbolScope } from "./symbol-scope";
 import { isLocalToProc, resolveIdentifierDefinitionNode } from "./symbol-definitions";
 import { parseMacroParams } from "./macro-utils";
@@ -24,6 +24,31 @@ function isMacroParam(defineNode: Node, symbolName: string): boolean {
     if (!paramsNode) return false;
     const params = parseMacroParams(paramsNode.text);
     return params.includes(symbolName);
+}
+
+/**
+ * Resolve the AST subtree to search based on the symbol's scope.
+ * File and External scopes search the full tree; Procedure and Macro scopes
+ * are restricted to their containing node.
+ *
+ * The explicit return type + exhaustive switch ensures a compile error if a
+ * new ScopeKind variant is added without updating this function.
+ */
+function resolveSearchRoot(symbolInfo: SslSymbolScope, rootNode: Node): Node {
+    switch (symbolInfo.scope) {
+        case ScopeKind.File:
+            return rootNode;
+        case ScopeKind.External:
+            // Guarded before this call (findScopedReferences returns [] for External);
+            // included here only to satisfy exhaustive coverage.
+            return rootNode;
+        case ScopeKind.Procedure:
+            return symbolInfo.procedureNode ?? rootNode;
+        case ScopeKind.Macro:
+            return symbolInfo.defineNode ?? rootNode;
+        default:
+            return assertNeverScope(symbolInfo.scope);
+    }
 }
 
 /**
@@ -47,10 +72,13 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
         return [];
     }
 
+    // Guard: macro scope requires a defineNode to restrict the search
+    if (symbolInfo.scope === ScopeKind.Macro && !symbolInfo.defineNode) {
+        return [];
+    }
+
     const refs: Node[] = [];
-    const searchRoot = symbolInfo.scope === ScopeKind.Procedure && symbolInfo.procedureNode
-        ? symbolInfo.procedureNode
-        : rootNode;
+    const searchRoot = resolveSearchRoot(symbolInfo, rootNode);
 
     if (symbolInfo.definitionNode) {
         function visitResolved(node: Node): void {

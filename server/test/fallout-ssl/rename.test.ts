@@ -598,16 +598,94 @@ procedure helper begin end
             expect(edits.length).toBe(2);
         });
 
-        it("returns null when cursor is on macro parameter in body", () => {
+        it("renames macro parameter from its definition site (in params)", () => {
+            const text = `
+#define Current_Distance_From_Obj(the_obj)  tile_distance_objs(self_obj,the_obj)
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "the_obj" in the macro params (character 34 on line 1)
+            const position: Position = { line: 1, character: 34 };
+            const result = renameSymbol(text, position, "target_obj", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // param definition + 1 usage in body = 2
+            expect(edits.length).toBe(2);
+            for (const edit of edits) {
+                expect(edit.newText).toBe("target_obj");
+            }
+        });
+
+        it("renames macro parameter from a usage inside the macro body", () => {
+            const text = `
+#define Current_Distance_From_Obj(the_obj)  tile_distance_objs(self_obj,the_obj)
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "the_obj" at the end of the macro body (character 73 on line 1)
+            const position: Position = { line: 1, character: 73 };
+            const result = renameSymbol(text, position, "target_obj", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // param definition + 1 usage in body = 2
+            expect(edits.length).toBe(2);
+            for (const edit of edits) {
+                expect(edit.newText).toBe("target_obj");
+            }
+        });
+
+        it("renames macro parameter without affecting same-named param in another macro", () => {
+            const text = `
+#define ADD(a, b) ((a) + (b))
+#define MUL(a, b) ((a) * (b))
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "a" in ADD's params (character 12)
+            const position: Position = { line: 1, character: 12 };
+            const result = renameSymbol(text, position, "x", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // ADD param "a" def + 1 usage in ADD body = 2 (MUL's "a" untouched)
+            expect(edits.length).toBe(2);
+            // All edits on line 1 (ADD), none on line 2 (MUL)
+            for (const edit of edits) {
+                expect(edit.range.start.line).toBe(1);
+            }
+        });
+
+        it("renames macro parameter without affecting same-named file-scope symbol", () => {
+            const text = `
+variable a;
+#define ADD(a, b) ((a) + (b))
+procedure foo begin
+    a := 1;
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "a" in ADD's params (character 12 on line 2)
+            const position: Position = { line: 2, character: 12 };
+            const result = renameSymbol(text, position, "x", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // Only ADD's param def + 1 usage in body = 2; variable "a" and foo's usage untouched
+            expect(edits.length).toBe(2);
+            for (const edit of edits) {
+                expect(edit.range.start.line).toBe(2);
+            }
+        });
+
+        it("prepareRenameSymbol returns range for macro parameter", () => {
             const text = `
 #define ADD(a, b) ((a) + (b))
 `;
-            // Cursor on "a" inside the macro body - this is a macro param, not file-scope
+            // Cursor on "a" inside the macro body
             const position: Position = { line: 1, character: 20 };
             const result = prepareRenameSymbol(text, position);
 
-            // Macro params are not file-scope defs and not procedure-scoped, so not renameable
-            expect(result).toBeNull();
+            expect(result).not.toBeNull();
+            expect(result?.placeholder).toBe("a");
         });
     });
 
