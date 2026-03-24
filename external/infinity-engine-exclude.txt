@@ -4,7 +4,8 @@
 # BAF files with syntax errors in original source
 Ascension/ascension/powers/baf/SLAYER_DOCUMENTATION.baf
 BGT-WeiDU/bgt/base/baf/aram00.baf
-BGT-WeiDU/bgt/modify/baf/a6bio.baf
+BGT-WeiDU/bgt/base/baf/a6bio.baf
+rr/rr/rr_core/compile/rr#wspi.baf
 rr/rr/rr_cyric/compile/rr#camb1.baf
 
 # BAF template files using WeiDU %variable% placeholders as standalone triggers/actions
@@ -13,3 +14,37 @@ bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/displaystring.baf
 bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/intuition.baf
 bg2-tweaks-and-tricks/tnt/components/starting_bags/ar0602.baf
 bg2-tweaks-and-tricks/tnt/components/uncheese_project_image/g_pispy1.baf
+
+# ADD_STATE_TRIGGER with multiple state numbers (grammar limitation).
+# WeiDU allows `ADD_STATE_TRIGGER ~dialog~ N ~trigger~ N1 N2 N3 ...` — the trigger
+# applies to multiple states listed after the condition. The grammar only parses
+# a single state number after the trigger expression.
+BGT-WeiDU/bgt/base/d_bg1/abedwin.d
+BGT-WeiDU/bgt/base/d_bg1/abjaheir.d
+BGT-WeiDU/bgt/base/d_bg1/abminsc.d
+BGT-WeiDU/bgt/base/d_bg1/abviconi.d
+BGT-WeiDU/bgt/base/d_bg1/aedwin.d
+BGT-WeiDU/bgt/base/d_bg1/aedwinj.d
+BGT-WeiDU/bgt/base/d_bg1/aedwinp.d
+BGT-WeiDU/bgt/base/d_bg1/aimoen2p.d
+BGT-WeiDU/bgt/base/d_bg1/ajaheiraj.d
+BGT-WeiDU/bgt/base/d_bg1/aminscj.d
+BGT-WeiDU/bgt/base/d_bg1/aminscp.d
+BGT-WeiDU/bgt/base/d_bg1/aviconij.d
+BGT-WeiDU/bgt/base/d_bg1/aviconip.d
+BGT-WeiDU/bgt/compat/bgt/ajaheirap.d
+BGT-WeiDU/bgt/compat/nej2/replace/ajaheirap.d
+BGT-WeiDU/bgt/compat/nejimoen/replace/aimoen2p.d
+BGT-WeiDU/bgt/compat/tdd/kagaip.d
+BGT-WeiDU/bgt/compat/tdd/kivanp.d
+BGT-WeiDU/bgt/compat/tdd/montap.d
+BGT-WeiDU/bgt/compat/tdd/shartp.d
+BGT-WeiDU/bgt/compat/tdd/xzarp.d
+BGT-WeiDU/bgt/compat/tdd/yeslip.d
+BGT-WeiDU/bgt/compat/ts/replace/xbcoran.d
+BGT-WeiDU/bgt/compat/ts/replace/xcoran.d
+BGT-WeiDU/bgt/compat/ts/replace/xcoranp.d
+BGT-WeiDU/bgt/compat/ts/replace/xdynap.d
+BGT-WeiDU/bgt/fixpack/rdushai.d
+BGT-WeiDU/bgt/fixpack/remerso.d
+BGT-WeiDU/bgt/fixpack/rgerde.d
