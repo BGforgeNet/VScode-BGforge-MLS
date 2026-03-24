@@ -7,7 +7,7 @@ repository:
   full:
     name: meta.fallout-ssl-tooltip
     patterns:
-      # Type + name at line start: "int game_time", "macro restock_fix(obj)", "void display_msg(string msg)"
+      # Type + function name at line start: "int game_time", "macro restock_fix(obj)", "void display_msg(string msg)"
       # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
       - captures:
           "1":
@@ -15,11 +15,50 @@ repository:
           "2":
             name: entity.name.function
         match: ^\b(?i)(array|any|bool|int|list|map|macro|mixed|float|ObjectPtr|proc|string|void)\b[[:blank:]]+\b(\w+)\b
-      # Standalone type in parameter lists: the "int" in "void foo(int x)", the "string" in "(string msg)"
+      # "procedure funcname" at line start (procedure is a keyword, not a type)
+      - captures:
+          "1":
+            name: keyword.control.fallout-ssl-tooltip
+          "2":
+            name: entity.name.function
+        match: ^\b(?i)(procedure)\b[[:blank:]]+\b(\w+)\b
+      # Parameter list: everything inside (...) is parameter context
+      - begin: \(
+        end: \)
+        patterns:
+          - include: "#params"
+      # Standalone type outside the parameter list
       - captures:
           "1":
             name: storage.type.fallout-ssl-tooltip
         match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
-      # Fallback: delegate to main grammar for keywords (procedure, variable), identifiers, etc.
+      # Fallback: full SSL grammar for macro body lines, string literals, identifiers, etc.
+      # Listed last so explicit patterns above (line-start, begin/end) take priority.
       - include: source.fallout-ssl
-        match: .
+  params:
+    patterns:
+      # "var" placeholder keyword for untyped parameters: "var critter", "var count"
+      - captures:
+          "1":
+            name: keyword.control.fallout-ssl-tooltip
+          "2":
+            name: variable.parameter.fallout-ssl-tooltip
+        match: \b(var)\b[[:blank:]]+\b(\w+)\b
+      # Typed parameter: "int x", "string msg"
+      # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
+      - captures:
+          "1":
+            name: storage.type.fallout-ssl-tooltip
+          "2":
+            name: variable.parameter.fallout-ssl-tooltip
+        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b[[:blank:]]+\b(\w+)\b
+      # Standalone type (without following identifier, e.g. at end of partial input)
+      - captures:
+          "1":
+            name: storage.type.fallout-ssl-tooltip
+        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
+      # Fallback: SSL grammar handles string literals, numbers, and identifiers in
+      # function call argument lists (body lines shown as second block in macro hovers).
+      # Safe inside begin/end: the end:\) boundary prevents the SSL grammar from
+      # consuming beyond the closing parenthesis.
+      - include: source.fallout-ssl

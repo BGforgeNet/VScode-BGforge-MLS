@@ -14,6 +14,7 @@
 import fs from "node:fs";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
+import { formatSignature } from "./shared/signature-format.ts";
 import { buildSignatureBlock, buildWeiduHoverContent, formatDeprecation } from "./shared/tooltip-format.ts";
 import { buildFalloutArgsTable, buildWeiduTable, type VarRow, type VarSection } from "./shared/tooltip-table.ts";
 import { WEIDU_TP2_CALLABLE_PREFIX } from "./shared/stanza-names.ts";
@@ -189,12 +190,15 @@ export function getDetail(item: DataItem, includeTypes = true, stanzaName?: stri
 
         // Fallout format: show "returnType name(type arg, ...)"
         if (item.args !== undefined) {
-            if (includeTypes) {
-                const argsStr = item.args.map((a) => `${a.type} ${a.name}`).join(", ");
-                return `${item.type} ${item.name}(${argsStr})`;
-            }
-            const argsStr = item.args.map((a) => a.name).join(", ");
-            return `${item.name}(${argsStr})`;
+            const params = item.args.map((a) => ({
+                name: a.name,
+                type: includeTypes ? a.type : undefined,
+            }));
+            return formatSignature({
+                name: item.name,
+                prefix: includeTypes && item.type ? `${item.type} ` : "",
+                params,
+            });
         }
     }
 

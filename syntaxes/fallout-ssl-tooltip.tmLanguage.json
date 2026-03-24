@@ -26,6 +26,28 @@
         {
           "captures": {
             "1": {
+              "name": "keyword.control.fallout-ssl-tooltip"
+            },
+            "2": {
+              "name": "entity.name.function"
+            }
+          },
+          "match": "^\\b(?i)(procedure)\\b[[:blank:]]+\\b(\\w+)\\b",
+          "name": "meta.fallout-ssl-tooltip"
+        },
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "patterns": [
+            {
+              "include": "#params"
+            }
+          ],
+          "name": "meta.fallout-ssl-tooltip"
+        },
+        {
+          "captures": {
+            "1": {
               "name": "storage.type.fallout-ssl-tooltip"
             }
           },
@@ -34,8 +56,44 @@
         },
         {
           "include": "source.fallout-ssl",
-          "match": ".",
           "name": "meta.fallout-ssl-tooltip"
+        }
+      ]
+    },
+    "params": {
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "keyword.control.fallout-ssl-tooltip"
+            },
+            "2": {
+              "name": "variable.parameter.fallout-ssl-tooltip"
+            }
+          },
+          "match": "\\b(var)\\b[[:blank:]]+\\b(\\w+)\\b"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "storage.type.fallout-ssl-tooltip"
+            },
+            "2": {
+              "name": "variable.parameter.fallout-ssl-tooltip"
+            }
+          },
+          "match": "\\b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\\b[[:blank:]]+\\b(\\w+)\\b"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "storage.type.fallout-ssl-tooltip"
+            }
+          },
+          "match": "\\b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\\b"
+        },
+        {
+          "include": "source.fallout-ssl"
         }
       ]
     }

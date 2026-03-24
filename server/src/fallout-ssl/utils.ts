@@ -101,10 +101,10 @@ function buildProcedureSignature(
     params: ParamInfo[],
     parsed: jsdoc.JSdoc | null
 ): string {
-    // Always build from AST params, enrich with JSDoc types
+    // Always build from AST params, enrich with JSDoc types; use "var" for untyped params
     const sigParams: SignatureParam[] = params.map((p, idx) => ({
         name: p.name,
-        type: parsed?.args[idx]?.type,
+        type: parsed?.args[idx]?.type ?? "var",
         defaultValue: p.defaultValue,
     }));
 

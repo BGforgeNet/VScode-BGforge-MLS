@@ -76,7 +76,7 @@ function buildMacroSignature(macro: MacroData): string {
     const params = macro.hasParams && macro.params
         ? macro.params.map((name, idx) => ({
             name,
-            type: macro.jsdoc?.args[idx]?.type,
+            type: macro.jsdoc?.args[idx]?.type ?? "var",
         }))
         : [];
 
@@ -132,7 +132,7 @@ export function buildSignatureHelp(
 ): signature.SigInfoEx {
     const parameters: ParameterInformation[] = definitionParams.map((p, idx) => {
         const arg = jsd?.args[idx];
-        let label = arg?.type ? `${arg.type} ${p.name}` : p.name;
+        let label = arg?.type ? `${arg.type} ${p.name}` : `var ${p.name}`;
         if (p.defaultValue) {
             label += ` = ${p.defaultValue}`;
         }
