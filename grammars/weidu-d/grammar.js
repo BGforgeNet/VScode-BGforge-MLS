@@ -258,14 +258,17 @@ export default grammar({
         set_weight: ($) =>
             seq("SET_WEIGHT", field("file", $._filename), field("state", $._state_label), field("weight", $._weight_value)),
 
-        // ADD_STATE_TRIGGER filename stateN [dActionWhen] triggerString
+        // ADD_STATE_TRIGGER filename stateN [dActionWhen] triggerString [stateN ...]
+        // WeiDU allows the trigger to apply to multiple additional states listed after
+        // the trigger string.
         add_state_trigger: ($) =>
             seq(
                 "ADD_STATE_TRIGGER",
                 field("file", $._filename),
                 field("state", $._state_label),
                 optional($.d_action_when),
-                field("trigger", $.string)
+                field("trigger", $.string),
+                repeat($._state_label)
             ),
 
         // ADD_TRANS_TRIGGER filename stateN triggerString [moreStates] [DO transNumbers] [dActionWhen]

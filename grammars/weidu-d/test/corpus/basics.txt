@@ -151,6 +151,23 @@ IF ~trigger~ THEN BEGIN label SAY ~text~ COPY_TRANS filename label END
           state: (state_label_alnum))))))
 
 ================================================================================
+ADD_STATE_TRIGGER with multiple state numbers
+================================================================================
+
+ADD_STATE_TRIGGER ~bedwin~ 29 ~Global("ENDOFBG1","GLOBAL",2)~ 31 34 36
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (add_state_trigger
+    file: (string (tilde_string (tilde_content)))
+    state: (state_label_alnum)
+    trigger: (string (tilde_string (tilde_content)))
+    (state_label_alnum)
+    (state_label_alnum)
+    (state_label_alnum)))
+
+================================================================================
 ALTER_TRANS operation
 ================================================================================
 
