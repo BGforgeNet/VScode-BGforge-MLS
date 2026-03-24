@@ -33,9 +33,6 @@ Fallout2_Restoration_Project/scripts_src/valtcity/vivltdr3.ssl
 # Comment inside parenthesized expression (formatter limitation)
 sfall/artifacts/mods/gl_npcarmor.ssl
 
-# Uses `default` as a macro parameter name and variable — reserved keyword
-Fallout2_Party_Orders/source/gl_p_party_orders.ssl
-
 # Assignment without semicolon in macro body — nested case (grammar limitation).
 # The C preprocessor pastes macro bodies verbatim, so a trailing `;` is optional.
 # The grammar handles the simple case: `#define MACRO identifier := expression`
@@ -43,6 +40,7 @@ Fallout2_Party_Orders/source/gl_p_party_orders.ssl
 # no-`;` assignment is inside an `if`/`else`/`while` branch:
 # e.g. `#define M if (x) then obj := 0`
 # Full support would require duplicating the statement grammar for macro context.
+Fallout2_Party_Orders/source/gl_p_party_orders.ssl
 Fallout2_Restoration_Project/scripts_src/den/dcrebdor.ssl
 Fallout2_Restoration_Project/scripts_src/generic/ziblkjck.ssl
 Fallout2_Restoration_Project/scripts_src/main/nhmyron.ssl

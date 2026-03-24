@@ -444,8 +444,13 @@ export default grammar({
     paren_expr: ($) => seq("(", $._expression, ")"),
 
     // Terminals
-    // NOTE: identifier can match reserved words (begin, end, etc.) when not in keyword position.
-    // This is a tree-sitter limitation. Reserved word detection is handled semantically in the formatter.
+    // NOTE: SSL does not formally reserve most keywords — the language spec allows identifiers
+    // like `default` or `begin` as variable names. However, tree-sitter's `word` property
+    // (set to `$.identifier`) causes the lexer to prefer a keyword token over the identifier
+    // token whenever that keyword appears in the current lookahead set. In practice this means
+    // keywords such as `default` (used in switch) are effectively reserved in most parser
+    // states, because a switch statement can appear anywhere a statement is expected.
+    // Semantic detection of reserved-word identifiers is handled in the formatter, not here.
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
     number: ($) => token(choice(/\d+\.\d+/, /\.\d+/, /\d+/, /0x[0-9a-fA-F]+/)),

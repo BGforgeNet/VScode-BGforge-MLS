@@ -494,9 +494,16 @@ and or not bwand bwor bwxor bwnot
 
 ### Technical Notes
 
+SSL does not formally reserve most keywords — the language spec allows identifiers
+like `default` or `begin` as variable names. However, tree-sitter's `word` property
+(set to `$.identifier`) causes the lexer to prefer a keyword token over the identifier
+token whenever that keyword appears in the current lookahead set. In practice, keywords
+such as `default` (used in `switch`) are effectively reserved in most parser states,
+because a `switch` statement can appear anywhere a statement is expected.
+
 Tree-sitter's regex-based lexer cannot exclude keywords from the identifier pattern
-(negative lookahead is not supported). Keywords take precedence over identifiers only
-when the grammar explicitly expects them.
+(negative lookahead is not supported). The formatter detects keyword-as-identifier
+usage and reports it as an error — this semantic check keeps the grammar simple.
 
 #### External Scanner
 
