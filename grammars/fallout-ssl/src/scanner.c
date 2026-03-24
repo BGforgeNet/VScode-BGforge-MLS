@@ -8,6 +8,13 @@
  * Tree-sitter calls the external scanner before processing extras, so the scanner
  * gets first look at newline characters and can decide their role.
  *
+ * LINE_END from backslash continuation: GCC splices \<LF> pairs in preprocessor
+ * directives. If the spliced line is blank (or EOF), that blank \n terminates the
+ * #define just like a bare newline. The internal lex machine SKIPs through the
+ * entire \<LF> sequence without invoking the scanner on the blank line that follows.
+ * We intercept this by skipping leading horizontal whitespace in the scanner before
+ * looking for \, so we can emit LINE_END for the \<LF><blank><LF> pattern.
+ *
  * TOKEN_PASTE: The C preprocessor ## operator used inside SSL macro bodies to
  * concatenate tokens (e.g. animate_##type##_to_tile). This token is emitted ONLY
  * when LINE_END is also a valid symbol (i.e. we are inside a #define body), so ##
@@ -52,6 +59,53 @@ bool tree_sitter_ssl_external_scanner_scan(
          * mark_end was not called after advancing past the first #, so tree-sitter
          * resets the lexer to the position of the # and re-lexes it normally. */
         return false;
+    }
+
+    /* Line continuation + blank line (GCC preprocessor behavior).
+     *
+     * When a macro body line ends with \<LF>, GCC splices the continuation. If
+     * the spliced (continued) line is blank or contains only whitespace, the blank
+     * \n acts as the macro terminator, just like a bare newline would.
+     *
+     * The internal lex machine SKIPs the entire \<LF> sequence as a line
+     * continuation extra and then fails when it hits the blank \n, because no
+     * lex state handles a lone \n without a preceding real token on that line.
+     * This causes error recovery to swallow the blank line and never emit LINE_END.
+     *
+     * Fix: when LINE_END is valid, skip any leading horizontal whitespace first,
+     * then check for the \<LF><blank-line> pattern. Skipping whitespace here is
+     * safe: if we return false (non-blank continuation), tree-sitter resets the
+     * lexer to current_position and the internal lex machine processes the
+     * whitespace normally via its SKIP transitions. */
+    if (valid_symbols[LINE_END]) {
+        /* Skip leading horizontal whitespace (mirrors the lex machine's SKIP). */
+        while (lexer->lookahead == ' '  || lexer->lookahead == '\t' ||
+               lexer->lookahead == '\f' || lexer->lookahead == '\v') {
+            lexer->advance(lexer, false);
+        }
+
+        if (lexer->lookahead == '\\') {
+            lexer->advance(lexer, false);          /* consume \ */
+            if (lexer->lookahead == '\r') lexer->advance(lexer, false);
+            if (lexer->lookahead != '\n') return false;
+            lexer->advance(lexer, false);          /* consume continuation \n */
+            /* Skip any horizontal whitespace on the (blank) continuation line. */
+            while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+                lexer->advance(lexer, false);
+            }
+            /* Blank line or EOF after continuation → LINE_END terminates macro. */
+            if (lexer->lookahead == '\n' || lexer->lookahead == '\r' ||
+                lexer->eof(lexer)) {
+                if (lexer->lookahead == '\r') lexer->advance(lexer, false);
+                if (lexer->lookahead == '\n') lexer->advance(lexer, false);
+                lexer->mark_end(lexer);
+                lexer->result_symbol = LINE_END;
+                return true;
+            }
+            /* Real content on the continuation line: return false so the lex
+             * machine handles \<LF> as a normal line continuation via SKIP. */
+            return false;
+        }
     }
 
     /* Only handle newline characters below */

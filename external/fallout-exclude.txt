@@ -60,22 +60,11 @@ Fallout2_Restoration_Project/scripts_src/sanfran/fitguntb.ssl
 Fallout2_Restoration_Project/scripts_src/sanfran/fitmertb.ssl
 Fallout2_Restoration_Project/scripts_src/sierra/wtlndmin.ssl
 
-# Trailing `\` on last macro body line with blank continuation (grammar limitation).
-# A `\` at the end of the final macro body line attempts line continuation, but the
-# next line is blank or empty — no valid continuation token follows.
-# Pattern: `end;\` or `expr;\` as last macro line, followed by a blank line.
+# Semicolon after block-ending `end` in macro body (grammar limitation).
+# The grammar's `block` rule ends with `end` (no semicolon). A bare `;` immediately
+# following `end` within a macro body cannot start a new statement, causing an ERROR.
+# Pattern: `while ... do begin ... end;` where the `;` trails the closing `end`.
 Fallout2_Restoration_Project/scripts_src/newreno/nif2hint.ssl
-Fallout2_Restoration_Project/scripts_src/valtcity/vccoubar.ssl
-Fallout2_Restoration_Project/scripts_src/valtcity/vcdwnbar.ssl
-
-# Trailing whitespace after `\` continuation marker (grammar limitation).
-# The line continuation rule matches `/\\\r?\n/` (backslash immediately before newline).
-# Lines ending with `\   ` (backslash + trailing spaces) are not recognized as
-# continuations — the spaces between `\` and the newline break the match.
-Fallout2_Restoration_Project/scripts_src/navarro/cicmdwch.ssl
-Fallout2_Restoration_Project/scripts_src/navarro/cidocwch.ssl
-Fallout2_Restoration_Project/scripts_src/navarro/ciqunwch.ssl
-Fallout2_Restoration_Project/scripts_src/navarro/cirulwch.ssl
 
 # Whitespace-only blank lines in procedure bodies (scanner bug).
 # Lines containing only spaces or tabs — but not fully empty lines — cause parse

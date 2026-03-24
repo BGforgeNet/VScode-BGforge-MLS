@@ -307,6 +307,29 @@ Multiline macro
           (identifier))))))
 
 ==================
+Backslash continuation followed by blank line
+==================
+
+#define FOO a + b \
+
+procedure foo begin
+end
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body
+        (expression_stmt
+          (binary_expr
+            left: (identifier)
+            right: (identifier))))))
+  (procedure
+    name: (identifier)))
+
+==================
 Token concatenation ## in macro body
 ==================
 
