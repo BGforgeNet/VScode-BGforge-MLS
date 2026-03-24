@@ -92,7 +92,7 @@ export default grammar({
     // The C preprocessor pastes macro bodies verbatim, so a trailing `;` is not required.
     macro_final_assign: ($) =>
       seq(
-        field("left", choice($.identifier, $.subscript_expr, $.member_expr)),
+        field("left", choice($.identifier, $.token_paste_identifier, $.subscript_expr, $.member_expr)),
         choice(":=", "=", "+=", "-=", "*=", "/="),
         field("right", $._expression)
       ),
@@ -183,7 +183,7 @@ export default grammar({
 
     var_init: ($) =>
       seq(
-        field("name", $.identifier),
+        field("name", choice($.identifier, $.token_paste_identifier)),
         optional(seq("[", field("size", $._expression), "]")),  // static array: variable a[10]
         optional(seq(choice(":=", "="), field("value", $._expression)))
       ),
@@ -332,7 +332,7 @@ export default grammar({
       )),
 
     assignment: ($) =>
-      seq(field("left", choice($.identifier, $.subscript_expr, $.member_expr)), choice(":=", "=", "+=", "-=", "*=", "/="), field("right", $._expression), ";"),
+      seq(field("left", choice($.identifier, $.token_paste_identifier, $.subscript_expr, $.member_expr)), choice(":=", "=", "+=", "-=", "*=", "/="), field("right", $._expression), ";"),
 
     expression_stmt: ($) => seq($._expression, optional(";")),
 
@@ -431,9 +431,10 @@ export default grammar({
 
     // ## token-pasting: animate_##type##_to_tile (valid inside #define bodies only;
     // the external scanner only emits _token_paste when LINE_END is also valid).
-    // Intentionally not added to assignment.left, subscript_expr.object,
-    // member_expr.object, or macro_call_stmt: ## in those positions does not
-    // occur in real SSL macro bodies, so the scope is kept minimal.
+    // Added to: call_expr.func, assignment.left, macro_final_assign.left, var_init.name,
+    // and _expression (covers return/expression contexts).
+    // Not added to: subscript_expr.object, member_expr.object, macro_call_stmt —
+    // ## in those positions does not occur in real SSL macro bodies.
     token_paste_identifier: ($) =>
       seq($.identifier, repeat1(seq($._token_paste, $.identifier))),
 

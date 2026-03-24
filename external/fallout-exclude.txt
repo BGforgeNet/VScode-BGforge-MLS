@@ -66,9 +66,11 @@ Fallout2_Restoration_Project/scripts_src/sanfran/fitguntb.ssl
 Fallout2_Restoration_Project/scripts_src/sanfran/fitmertb.ssl
 Fallout2_Restoration_Project/scripts_src/sierra/wtlndmin.ssl
 
-# `##` token-paste operator in variable declarations (grammar limitation).
-# The scanner emits `##` only inside `#define` macro bodies. The grammar does not
-# handle `variable tile##x := 0` — token-paste in a `variable` declaration.
+# waypnt.ssl: no-`;` at macro ends (grammar limitation).
+# `##` is supported in variable declarations, assignments, and expressions.
+# Remaining blocker: final `variable_decl` without `;` (`variable lTime##x := 0`)
+# and `return tile##x` without `;` nested inside an `if` body — same class as
+# nested no-`;` assignment, which cannot complete the statement rule.
 Fallout2_Restoration_Project/scripts_src/ncr/waypnt.ssl
 Fallout2_Restoration_Project/scripts_src/vault13/waypnt.ssl
 

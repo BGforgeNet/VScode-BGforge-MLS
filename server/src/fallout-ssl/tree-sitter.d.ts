@@ -537,7 +537,7 @@ export interface ArrayExprNode extends NamedNodeBase {
 
 export interface AssignmentNode extends NamedNodeBase {
   type: SyntaxType.Assignment;
-  leftNode: IdentifierNode | MemberExprNode | SubscriptExprNode;
+  leftNode: IdentifierNode | MemberExprNode | SubscriptExprNode | TokenPasteIdentifierNode;
   rightNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
@@ -783,7 +783,7 @@ export interface UndefNode extends NamedNodeBase {
 
 export interface VarInitNode extends NamedNodeBase {
   type: SyntaxType.VarInit;
-  nameNode: IdentifierNode;
+  nameNode: IdentifierNode | TokenPasteIdentifierNode;
   sizeNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   valueNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }

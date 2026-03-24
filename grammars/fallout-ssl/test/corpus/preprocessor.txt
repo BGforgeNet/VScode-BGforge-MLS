@@ -413,3 +413,82 @@ Token concatenation ## in macro body
               (identifier))
             args: (identifier)))))))
 
+==================
+Token paste ## in variable declaration name
+==================
+
+#define tvarMK(x) \
+  variable tile##x := 0; \
+  variable lTime##x := 0
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (variable_decl
+          (var_init
+            name: (token_paste_identifier
+              (identifier)
+              (identifier))
+            value: (number)))
+        (variable_decl
+          (var_init
+            name: (token_paste_identifier
+              (identifier)
+              (identifier))
+            value: (number)))))))
+
+==================
+Token paste ## in assignment left-hand side
+==================
+
+#define tvarTile(x, y) tile##x := y
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params
+        (identifier)
+        (identifier))
+      body: (macro_body
+        (assignment
+          left: (token_paste_identifier
+            (identifier)
+            (identifier))
+          right: (identifier))))))
+
+==================
+Token paste ## in return expression
+==================
+
+#define TILEBLK(x) \
+  if (number == x) then \
+    return tile##x;
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (if_stmt
+          cond: (paren_expr
+            (binary_expr
+              left: (identifier)
+              right: (identifier)))
+          then: (return_stmt
+            (token_paste_identifier
+              (identifier)
+              (identifier))))))))
+
