@@ -80,7 +80,8 @@ export default grammar({
     // Macro body: parsed as real SSL statements (expressions are covered via expression_stmt).
     // Terminated by LINE_END from the external scanner (bare newline = end of #define).
     // Line continuations (\<newline>) are in extras, so multi-line macros work transparently.
-    // The final statement may be an assignment without a trailing `;` (sslc allows this).
+    // The final statement may be an assignment without a trailing `;` (valid: the C
+    // preprocessor pastes macro bodies verbatim, so no trailing `;` is required).
     macro_body: ($) =>
       choice(
         repeat1($._statement),
