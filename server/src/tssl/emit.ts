@@ -467,6 +467,9 @@ function processFunctionBody(bodyNode: Node, indent: string = "", ctx: TsslConte
             case SyntaxKind.BreakStatement:
                 result += `${indent}break;\n`;
                 break;
+            case SyntaxKind.EmptyStatement:
+                // bare `;` — no output needed
+                break;
             default:
                 throw new Error(`Unhandled statement type: ${stmt.getKindName()}. Code: ${stmt.getText().substring(0, 100)}`);
         }
