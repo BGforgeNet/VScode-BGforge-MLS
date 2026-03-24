@@ -1522,6 +1522,14 @@
           "include": "#sfall-functions"
         },
         {
+          "match": "\\b\\w+(?=##)",
+          "name": "entity.name.function.fallout-ssl"
+        },
+        {
+          "match": "(?<=##)\\w+",
+          "name": "entity.name.function.fallout-ssl"
+        },
+        {
           "match": "\\b(\\w+)\\s*(?=\\()",
           "name": "entity.name.function.fallout-ssl"
         },
@@ -1603,6 +1611,10 @@
         {
           "match": "(\\#include)",
           "name": "keyword.control.import.fallout-ssl"
+        },
+        {
+          "match": "##",
+          "name": "keyword.control.fallout-ssl"
         },
         {
           "include": "#operators"
