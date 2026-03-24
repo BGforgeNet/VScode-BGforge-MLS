@@ -86,11 +86,6 @@ Fallout2_Restoration_Project/scripts_src/vault13/waypnt.ssl
 # rule handles `\\\r\n` but `\r` appearing elsewhere in the line is not consumed.
 Fallout2_Restoration_Project/scripts_src/global/gl_k_lenny_look.ssl
 
-# `#include` with bare identifier path (grammar limitation).
-# The grammar only supports `#include "quoted/path"` or `#include <angle/bracket>`.
-# Pattern: `#include IDENTIFIER` — unquoted bare identifier as include path.
-Fallout2_Restoration_Project/scripts_src/generic/zilocker.ssl
-
 # Empty macro parameter list `()` (grammar limitation).
 # `#define MACRO ()` — the grammar expects `commaSep($.identifier)` for params,
 # so an empty `()` produces a MISSING identifier error.

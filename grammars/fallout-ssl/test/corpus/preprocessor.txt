@@ -330,6 +330,26 @@ end
     name: (identifier)))
 
 ==================
+Include with bare identifier macro
+==================
+
+#ifdef EXTRA_HEADER
+#include EXTRA_HEADER
+#endif
+
+---
+
+(source_file
+  (preprocessor
+    (ifdef
+      name: (identifier)))
+  (preprocessor
+    (include
+      path: (identifier)))
+  (preprocessor
+    (endif)))
+
+==================
 Token concatenation ## in macro body
 ==================
 

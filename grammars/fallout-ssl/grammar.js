@@ -90,7 +90,8 @@ export default grammar({
         alias(token(prec(1, seq("#", "include"))), "#include"),
         field("path", choice(
           $.string,
-          alias(token(seq("<", /[^>]+/, ">")), $.string)
+          alias(token(seq("<", /[^>]+/, ">")), $.string),
+          $.identifier  // bare macro: #include EXTRA_HEADER (macro expands to a path)
         ))
       ),
 

@@ -655,7 +655,7 @@ export interface IfndefNode extends NamedNodeBase {
 
 export interface IncludeNode extends NamedNodeBase {
   type: SyntaxType.Include;
-  pathNode: StringNode;
+  pathNode: IdentifierNode | StringNode;
 }
 
 export interface MacroBodyNode extends NamedNodeBase {
