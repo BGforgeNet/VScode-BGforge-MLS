@@ -80,6 +80,30 @@ The `##` operator is context-sensitive: it is only recognized inside `#define` b
 (where `_line_end` is a valid token). Outside macro bodies it remains a syntax error.
 This is enforced by the external scanner (`src/scanner.c`).
 
+#### Omitting the trailing `;` in macro bodies
+
+The C preprocessor performs textual substitution — the macro body is pasted into the
+call site as-is. Whether a trailing `;` is needed depends on how the macro is invoked,
+not on the macro body itself. It is therefore common to omit the final `;`:
+
+```ssl
+#define set_counter  counter := 0    // no ; — pasted as-is at call site
+#define reset        x := 0; y := 0  // ; on all but last — valid
+```
+
+The grammar supports this for the simple case where the final statement is a top-level
+assignment directly inside the macro body.
+
+**Limitation:** when the no-`;` assignment is nested inside a control-flow branch, the
+grammar does not handle it and will produce a parse error:
+
+```ssl
+// NOT supported — assignment inside else branch lacks ;
+#define set_obj  if (x) then a := 1 else a := 0
+```
+
+Full support would require duplicating the statement grammar for macro context.
+
 Token-pasted call expressions are parsed as `token_paste_identifier` nodes:
 ```
 (call_expr

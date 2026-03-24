@@ -330,6 +330,23 @@ end
     name: (identifier)))
 
 ==================
+Macro body final assignment without trailing semicolon
+==================
+
+#define set_counter   counter := 0
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body
+        (assignment
+          left: (identifier)
+          right: (number))))))
+
+==================
 Include with bare identifier macro
 ==================
 

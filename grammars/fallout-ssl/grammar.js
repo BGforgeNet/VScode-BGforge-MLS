@@ -80,8 +80,21 @@ export default grammar({
     // Macro body: parsed as real SSL statements (expressions are covered via expression_stmt).
     // Terminated by LINE_END from the external scanner (bare newline = end of #define).
     // Line continuations (\<newline>) are in extras, so multi-line macros work transparently.
+    // The final statement may be an assignment without a trailing `;` (sslc allows this).
     macro_body: ($) =>
-      repeat1($._statement),
+      choice(
+        repeat1($._statement),
+        seq(repeat($._statement), alias($.macro_final_assign, $.assignment))
+      ),
+
+    // Assignment without trailing semicolon — valid only as the final statement of a macro body.
+    // The C preprocessor pastes macro bodies verbatim, so a trailing `;` is not required.
+    macro_final_assign: ($) =>
+      seq(
+        field("left", choice($.identifier, $.subscript_expr, $.member_expr)),
+        choice(":=", "=", "+=", "-=", "*=", "/="),
+        field("right", $._expression)
+      ),
 
     // #include "file" or #include <file>
     // Combined token(prec(1, ...)) so "#include" wins over other_preprocessor
