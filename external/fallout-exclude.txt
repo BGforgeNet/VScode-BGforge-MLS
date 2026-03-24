@@ -92,6 +92,3 @@ Fallout2_Restoration_Project/scripts_src/newreno/ncnikki.ssl
 # sees a bare `if (condition)` with no `then`, which cannot complete the if_stmt rule.
 Fallout2_Restoration_Project/scripts_src/brokhill/hcdoc.ssl
 
-# sfall language extensions not yet supported by the grammar (grammar limitation).
-# - gl_healing_skill_mod.ssl: `case VALUE: begin ... end` switch statement syntax
-sfall/artifacts/example_mods/FirstAidDoctorRepairMod/gl_healing_skill_mod.ssl

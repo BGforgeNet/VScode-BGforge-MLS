@@ -298,10 +298,10 @@ export default grammar({
       ),
 
     case_clause: ($) =>
-      seq("case", field("value", $._expression), ":", repeat($._statement)),
+      seq("case", field("value", $._expression), ":", choice($.block, repeat($._statement))),
 
     default_clause: ($) =>
-      seq("default", ":", repeat($._statement)),
+      seq("default", ":", choice($.block, repeat($._statement))),
 
     return_stmt: ($) => seq("return", optional($._expression), ";"),
 

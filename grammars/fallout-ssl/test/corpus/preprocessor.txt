@@ -389,6 +389,39 @@ Include with bare identifier macro
     (endif)))
 
 ==================
+Switch case with begin..end block body
+==================
+
+procedure foo begin
+    switch x begin
+        case 1: begin
+            y = 1;
+        end
+        case 2: begin
+            y = 2;
+            z = 3;
+        end
+    end
+end
+
+---
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (switch_stmt
+      value: (identifier)
+      (case_clause
+        value: (number)
+        (block
+          (assignment left: (identifier) right: (number))))
+      (case_clause
+        value: (number)
+        (block
+          (assignment left: (identifier) right: (number))
+          (assignment left: (identifier) right: (number)))))))
+
+==================
 Token concatenation ## in macro body
 ==================
 
