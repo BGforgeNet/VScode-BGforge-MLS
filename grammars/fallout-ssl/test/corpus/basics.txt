@@ -245,6 +245,130 @@ end
           right: (identifier))))))
 
 ================================================================================
+For loop with compound assignment update
+================================================================================
+
+procedure foo begin
+    for (i := 0; i < 10; i += 2) begin
+        x = i;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (for_stmt
+      init: (for_init_assign
+        name: (identifier)
+        value: (number))
+      cond: (binary_expr
+        left: (identifier)
+        right: (number))
+      update: (for_update_assign
+        left: (identifier)
+        right: (number))
+      body: (block
+        (assignment
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+For loop with decrement update
+================================================================================
+
+procedure foo begin
+    for (i := 10; i > 0; i -= 1) begin
+        x = i;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (for_stmt
+      init: (for_init_assign
+        name: (identifier)
+        value: (number))
+      cond: (binary_expr
+        left: (identifier)
+        right: (number))
+      update: (for_update_assign
+        left: (identifier)
+        right: (number))
+      body: (block
+        (assignment
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+For loop with subscript update
+================================================================================
+
+procedure foo begin
+    for (i := 0; i < 10; arr[i] += 1) begin
+        x = i;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (for_stmt
+      init: (for_init_assign
+        name: (identifier)
+        value: (number))
+      cond: (binary_expr
+        left: (identifier)
+        right: (number))
+      update: (for_update_assign
+        left: (subscript_expr
+          object: (identifier)
+          index: (identifier))
+        right: (number))
+      body: (block
+        (assignment
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+For loop with member expression update
+================================================================================
+
+procedure foo begin
+    for (i := 0; i < 10; obj.count += 1) begin
+        x = i;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (for_stmt
+      init: (for_init_assign
+        name: (identifier)
+        value: (number))
+      cond: (binary_expr
+        left: (identifier)
+        right: (number))
+      update: (for_update_assign
+        left: (member_expr
+          object: (identifier)
+          member: (identifier))
+        right: (number))
+      body: (block
+        (assignment
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
 Foreach loop
 ================================================================================
 
@@ -559,6 +683,40 @@ String literal
 
 procedure foo begin
     x = "hello";
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (string))))
+
+================================================================================
+String with escaped quotes
+================================================================================
+
+procedure foo begin
+    x = "hello \"world\"";
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (string))))
+
+================================================================================
+String with escaped backslash
+================================================================================
+
+procedure foo begin
+    x = "back\\slash";
 end
 
 --------------------------------------------------------------------------------

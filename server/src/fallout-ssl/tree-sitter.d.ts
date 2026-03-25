@@ -283,6 +283,7 @@ export const enum SyntaxType {
   ExpressionStmt = "expression_stmt",
   ForInitAssign = "for_init_assign",
   ForStmt = "for_stmt",
+  ForUpdateAssign = "for_update_assign",
   ForVarDecl = "for_var_decl",
   ForeachStmt = "foreach_stmt",
   IfStmt = "if_stmt",
@@ -418,6 +419,7 @@ export type SyntaxNode =
   | ExpressionStmtNode
   | ForInitAssignNode
   | ForStmtNode
+  | ForUpdateAssignNode
   | ForVarDeclNode
   | ForeachStmtNode
   | IfStmtNode
@@ -617,7 +619,13 @@ export interface ForStmtNode extends NamedNodeBase {
   bodyNode: AssignmentNode | BlockNode | BreakStmtNode | CallStmtNode | ContinueStmtNode | ExpressionStmtNode | ForStmtNode | ForeachStmtNode | IfStmtNode | PreprocessorNode | ReturnStmtNode | SwitchStmtNode | VariableDeclNode | WhileStmtNode;
   condNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
   initNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | ForInitAssignNode | ForVarDeclNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
-  updateNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+  updateNode?: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | ForUpdateAssignNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
+}
+
+export interface ForUpdateAssignNode extends NamedNodeBase {
+  type: SyntaxType.ForUpdateAssign;
+  leftNode: IdentifierNode | MemberExprNode | SubscriptExprNode;
+  rightNode: ArrayExprNode | BinaryExprNode | BooleanNode | CallExprNode | IdentifierNode | MapExprNode | MemberExprNode | NumberNode | ParenExprNode | ProcRefNode | StringNode | SubscriptExprNode | TernaryExprNode | TokenPasteIdentifierNode | UnaryExprNode;
 }
 
 export interface ForVarDeclNode extends NamedNodeBase {

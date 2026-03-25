@@ -234,7 +234,7 @@ export default grammar({
         ";",
         field("cond", optional($._expression)),
         ";",
-        field("update", optional($._expression)),
+        field("update", optional(choice($.for_update_assign, $._expression))),
         ")",
         field("body", $._stmt_or_block)
       ),
@@ -246,6 +246,14 @@ export default grammar({
     // Assignment in for loop init without variable keyword: i = 0
     for_init_assign: ($) =>
       seq(field("name", $.identifier), choice(":=", "="), field("value", $._expression)),
+
+    // Assignment in for loop update: i += 1, i := i + 1, etc. (no trailing semicolon)
+    for_update_assign: ($) =>
+      seq(
+        field("left", choice($.identifier, $.subscript_expr, $.member_expr)),
+        choice(":=", "=", "+=", "-=", "*=", "/="),
+        field("right", $._expression)
+      ),
 
     // foreach has multiple forms:
     // - foreach var in expr body
@@ -457,7 +465,7 @@ export default grammar({
 
     boolean: ($) => choice("true", "false"),
 
-    string: ($) => /"[^"]*"/,
+    string: ($) => /"([^"\\]|\\.)*"/,
 
     comment: ($) => token(seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")),
 
