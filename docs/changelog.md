@@ -32,6 +32,7 @@
 
 ### TSSL
 
+- `map()` with no arguments now transpiles to `{}` (empty map literal).
 - Fixed a crash when the source contains empty statements (bare semicolons).
 
 ## 3.3.1

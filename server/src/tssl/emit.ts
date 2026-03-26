@@ -502,6 +502,9 @@ function processCallExpression(callExpr: Node, ctx: TsslContext): string {
         return `[${processedArgs.join(', ')}]`;
     }
     if (fnName === 'map') {
+        if (args.length === 0) {
+            return '{}';
+        }
         // map() takes a single object argument, just output it directly
         const arg0 = args[0];
         if (args.length === 1 && arg0) {

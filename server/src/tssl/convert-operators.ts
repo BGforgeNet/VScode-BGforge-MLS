@@ -166,8 +166,11 @@ export function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
                 return `[${args.join(', ')}]`;
             }
             if (fnName === 'map') {
-                // map() takes a single object argument, just output it directly
                 const mapArgs = call.getArguments();
+                if (mapArgs.length === 0) {
+                    return '{}';
+                }
+                // map() takes a single object argument, just output it directly
                 const mapArg0 = mapArgs[0];
                 if (mapArgs.length === 1 && mapArg0) {
                     return convertOperatorsAST(mapArg0, ctx);
