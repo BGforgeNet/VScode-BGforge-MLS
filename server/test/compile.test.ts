@@ -145,7 +145,7 @@ describe("compile dispatcher", () => {
         it("shows success message after TD transpile", async () => {
             mockTdCompile.mockResolvedValue({ dPath: "/output/test.d", warnings: [] });
 
-            await compile("file:///test.td", "typescript", false, "td content");
+            await compile("file:///test.td", "typescript", true, "td content");
 
             expect(mockShowInfo).toHaveBeenCalledWith(
                 expect.stringContaining("Transpiled to")
@@ -161,7 +161,7 @@ describe("compile dispatcher", () => {
                 ],
             });
 
-            await compile("file:///test.td", "typescript", false, "td content");
+            await compile("file:///test.td", "typescript", true, "td content");
 
             expect(mockShowWarning).toHaveBeenCalledWith(
                 expect.stringContaining("Transpiled to test.d. Orphan states: orphan1, orphan2")
@@ -173,7 +173,7 @@ describe("compile dispatcher", () => {
         it("shows error message on TD transpile failure", async () => {
             mockTdCompile.mockRejectedValue(new Error("Parse error in TD"));
 
-            await compile("file:///test.td", "typescript", false, "bad td");
+            await compile("file:///test.td", "typescript", true, "bad td");
 
             expect(mockShowError).toHaveBeenCalledWith(
                 expect.stringContaining("TD: Parse error in TD")
@@ -223,7 +223,7 @@ describe("compile dispatcher", () => {
         it("shows error message on TBAF transpile failure", async () => {
             mockTbafCompile.mockRejectedValue(new Error("TBAF syntax error"));
 
-            await compile("file:///test.tbaf", "typescript", false, "bad tbaf");
+            await compile("file:///test.tbaf", "typescript", true, "bad tbaf");
 
             expect(mockShowError).toHaveBeenCalledWith(
                 expect.stringContaining("TBAF: TBAF syntax error")
@@ -247,7 +247,7 @@ describe("compile dispatcher", () => {
         it("shows error message on TSSL transpile failure", async () => {
             mockTsslCompile.mockRejectedValue(new Error("TSSL error"));
 
-            await compile("file:///test.tssl", "typescript", false, "bad tssl");
+            await compile("file:///test.tssl", "typescript", true, "bad tssl");
 
             expect(mockShowError).toHaveBeenCalledWith(
                 expect.stringContaining("TSSL: TSSL error")
