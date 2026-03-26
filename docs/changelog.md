@@ -26,6 +26,10 @@
 
 - The formatter CLI now exits with a non-zero status when the input file contains syntax errors, instead of silently producing output from a broken AST.
 
+### Transpilers
+
+- Fixed notification popups (success/error messages) appearing on every keystroke or save during automatic validation for TSSL, TBAF, and TD transpilers. Notifications now only appear when compile is triggered manually.
+
 ### TSSL
 
 - Fixed a crash when the source contains empty statements (bare semicolons).

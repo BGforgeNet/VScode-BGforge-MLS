@@ -55,22 +55,26 @@ export async function compile(uri: string, langId: string, interactive = false, 
             try {
                 const { dPath, warnings } = await td.compile(uri, text);
                 const dName = path.basename(dPath);
-                if (warnings.length > 0) {
-                    const orphanNames = warnings.map(w => w.message.match(/^Function "(.+)" /)?.[1] ?? "?");
-                    const msg = `Transpiled to ${dName}. Orphan states: ${orphanNames.join(", ")}`;
-                    showWarning(msg);
-                } else {
-                    showInfo(`Transpiled to ${dName}`);
+                if (interactive) {
+                    if (warnings.length > 0) {
+                        const orphanNames = warnings.map(w => w.message.match(/^Function "(.+)" /)?.[1] ?? "?");
+                        const msg = `Transpiled to ${dName}. Orphan states: ${orphanNames.join(", ")}`;
+                        showWarning(msg);
+                    } else {
+                        showInfo(`Transpiled to ${dName}`);
+                    }
                 }
                 // Chain D compilation if weidu and game path are configured
                 if (settings.weidu.path && settings.weidu.gamePath) {
                     const dUri = pathToUri(dPath);
                     const dText = await fs.promises.readFile(dPath, 'utf-8');
-                    await weidu.compile(dUri, settings.weidu, true, dText);
+                    await weidu.compile(dUri, settings.weidu, interactive, dText);
                 }
             } catch (error) {
                 const msg = errorMessage(error);
-                showError(`TD: ${msg}`);
+                if (interactive) {
+                    showError(`TD: ${msg}`);
+                }
             }
             return;
         }
@@ -79,16 +83,20 @@ export async function compile(uri: string, langId: string, interactive = false, 
             try {
                 const bafPath = await tbaf.compile(uri, text);
                 const bafName = path.basename(bafPath);
-                showInfo(`Transpiled to ${bafName}`);
+                if (interactive) {
+                    showInfo(`Transpiled to ${bafName}`);
+                }
                 // Chain BAF compilation if weidu and game path are configured
                 if (settings.weidu.path && settings.weidu.gamePath) {
                     const bafUri = pathToUri(bafPath);
                     const bafText = await fs.promises.readFile(bafPath, 'utf-8');
-                    await weidu.compile(bafUri, settings.weidu, true, bafText);
+                    await weidu.compile(bafUri, settings.weidu, interactive, bafText);
                 }
             } catch (error) {
                 const msg = errorMessage(error);
-                showError(`TBAF: ${msg}`);
+                if (interactive) {
+                    showError(`TBAF: ${msg}`);
+                }
             }
             return;
         }
@@ -96,15 +104,19 @@ export async function compile(uri: string, langId: string, interactive = false, 
             try {
                 const sslPath = await tssl.compile(uri, text);
                 const sslName = path.basename(sslPath);
-                showInfo(`Transpiled to ${sslName}`);
+                if (interactive) {
+                    showInfo(`Transpiled to ${sslName}`);
+                }
                 // Chain SSL compilation via registry
                 const sslUri = pathToUri(sslPath);
                 const sslText = await fs.promises.readFile(sslPath, 'utf-8');
                 clearDiagnostics(sslUri);
-                await registry.compile(LANG_FALLOUT_SSL, sslUri, sslText, true);
+                await registry.compile(LANG_FALLOUT_SSL, sslUri, sslText, interactive);
             } catch (error) {
                 const msg = errorMessage(error);
-                showError(`TSSL: ${msg}`);
+                if (interactive) {
+                    showError(`TSSL: ${msg}`);
+                }
             }
         }
         return;
