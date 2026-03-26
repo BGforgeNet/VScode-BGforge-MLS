@@ -67,11 +67,21 @@
         "semanticTokenScopes": [
             {
                 "scopes": {
-                    "resref": ["constant.language.weidu-tp2.resref"],
-                    "byte": ["constant.language.iesdp.byte"],
-                    "char": ["constant.language.iesdp.char"],
-                    "dword": ["constant.language.iesdp.dword"],
-                    "int": ["constant.language.weidu-tp2"]
+                    "resref": [
+                        "constant.language.weidu-tp2.resref"
+                    ],
+                    "byte": [
+                        "constant.language.iesdp.byte"
+                    ],
+                    "char": [
+                        "constant.language.iesdp.char"
+                    ],
+                    "dword": [
+                        "constant.language.iesdp.dword"
+                    ],
+                    "int": [
+                        "constant.language.weidu-tp2"
+                    ]
                 }
             }
         ],
@@ -516,11 +526,11 @@
         "@oxlint/plugins": "^1.55.0",
         "@types/mocha": "^10.0.10",
         "@types/node": "^22.19.13",
-        "@vitest/coverage-v8": "^4.1.0",
+        "@vitest/coverage-v8": "^4.1.2",
         "@vscode/codicons": "^0.0.44",
         "@vscode/vsce": "^3.7.1",
         "esbuild": "^0.27.4",
-        "knip": "^5.85.0",
+        "knip": "^6.0.6",
         "mocha": "^11.7.5",
         "oxfmt": "^0.17.0",
         "oxlint": "^1.15.0",
@@ -529,11 +539,11 @@
         "tree-sitter-cli": "0.26.3",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
-        "vite": "^8.0.0",
-        "vitest": "^4.1.0",
+        "vite": "^8.0.3",
+        "vitest": "^4.1.2",
         "vscode-oniguruma": "^2.0.1",
         "vscode-textmate": "^9.3.2",
-        "yaml": "^2.8.2"
+        "yaml": "^2.8.3"
     },
     "categories": [
         "Programming Languages"
@@ -547,8 +557,6 @@
         "overrides": {
             "mocha>diff": ">=8.0.3",
             "mocha>serialize-javascript": ">=7.0.3",
-            "flatted": ">=3.4.0",
-            "undici": ">=7.24.0",
             "yauzl": ">=3.2.1"
         }
     }

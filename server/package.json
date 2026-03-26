@@ -48,7 +48,7 @@
         "vscode-languageserver": "8.1.0",
         "vscode-languageserver-textdocument": "^1.0.12",
         "web-tree-sitter": "^0.26.6",
-        "yaml": "^2.8.2"
+        "yaml": "^2.8.3"
     },
     "optionalDependencies": {
         "sslc-emscripten-noderawfs": "https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz"
@@ -56,6 +56,6 @@
     "devDependencies": {
         "@types/ini": "^4.1.1",
         "@types/node": "^20.19.35",
-        "vitest": "^4.0.18"
+        "vitest": "^4.1.2"
     }
 }
