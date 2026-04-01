@@ -16,7 +16,7 @@
         "test": "./scripts/test.sh"
     },
     "dependencies": {
-        "binary-parser": "^2.3.0",
+        "typed-binary": "^4.3.3",
         "vscode-languageclient": "8.1.0",
         "vscode-languageserver-protocol": "3.17.3"
     },

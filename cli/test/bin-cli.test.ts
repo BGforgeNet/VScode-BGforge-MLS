@@ -179,6 +179,58 @@ describe("bin CLI integration", () => {
         });
     });
 
+    describe("load mode", () => {
+        it("converts JSON back to identical binary", () => {
+            const proFile = path.join(FIXTURES, "misc", "00000001.pro");
+            const jsonFile = path.join(FIXTURES, "misc", "00000001.json");
+            if (!fs.existsSync(proFile) || !fs.existsSync(jsonFile)) return;
+
+            const tmpJson = path.join(tmpDir, "load.json");
+            fs.copyFileSync(jsonFile, tmpJson);
+
+            const { code, stdout } = run(tmpJson, "--load");
+            expect(code).toBe(0);
+            expect(stdout).toContain("Wrote:");
+
+            const tmpPro = path.join(tmpDir, "load.pro");
+            expect(fs.existsSync(tmpPro)).toBe(true);
+
+            const original = fs.readFileSync(proFile);
+            const recreated = fs.readFileSync(tmpPro);
+            expect(original.equals(recreated)).toBe(true);
+        });
+
+        it("round-trips all fixture types via JSON", () => {
+            const dirs = ["misc", "walls", "tiles", "critters", "scenery", "items"];
+            for (const dir of dirs) {
+                const dirPath = path.join(FIXTURES, dir);
+                if (!fs.existsSync(dirPath)) continue;
+                const files = fs.readdirSync(dirPath).filter(f => f.endsWith(".json"));
+                for (const jsonFile of files) {
+                    const srcJson = path.join(dirPath, jsonFile);
+                    const srcPro = path.join(dirPath, jsonFile.replace(/\.json$/, ".pro"));
+                    if (!fs.existsSync(srcPro)) continue;
+
+                    const tmpJson = path.join(tmpDir, jsonFile);
+                    fs.copyFileSync(srcJson, tmpJson);
+                    const { code } = run(tmpJson, "--load");
+                    expect(code).toBe(0);
+
+                    const tmpPro = path.join(tmpDir, jsonFile.replace(/\.json$/, ".pro"));
+                    const original = fs.readFileSync(srcPro);
+                    const recreated = fs.readFileSync(tmpPro);
+                    expect(original.equals(recreated)).toBe(true);
+                }
+            }
+        });
+
+        it("exits 1 for nonexistent JSON file", () => {
+            const { code, stderr } = run("/nonexistent/file.json", "--load");
+            expect(code).toBe(1);
+            expect(stderr).toContain("Not found");
+        });
+    });
+
     describe("directory mode", () => {
         it("requires -r flag", () => {
             const { code, stderr } = run(tmpDir);

@@ -56,4 +56,6 @@ export interface BinaryParser {
     readonly extensions: string[];
     /** Parse binary data and return structured result */
     parse(data: Uint8Array): ParseResult;
+    /** Serialize structured result back to binary data (optional, for editors) */
+    serialize?(result: ParseResult): Uint8Array;
 }

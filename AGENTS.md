@@ -12,7 +12,7 @@ This file provides guidance to AI agents (Claude, Gemini, etc.) when working wit
 - **Temporary artifacts:** Put transient test/build files under the repo-level `tmp/` directory (or `os.tmpdir()` when system temp is required). Do not create ad hoc temp directories under source trees like `server/test/`, `cli/test/`, or `scripts/**`.
 - **Avoid parallel logic when extending an existing transform/helper path.** If a change adds a second implementation of behavior that already exists elsewhere in the repo (for example a second HTML-to-markdown normalizer, parser cleanup path, or provider indexing lifecycle), stop and check whether the logic should be shared instead. Treat this as a review concern, not optional cleanup.
 - **Prefer guarded helpers over scattered type assertions.** When third-party typings are too loose, isolate narrowing in small runtime-checked helper functions instead of spreading raw `as` casts through the implementation. Use direct casts only as a last resort and keep them localized.
-- **Use `pnpm` exclusively.** Never use `npm` or `npx`. Run commands via `pnpm exec <command>` instead of `npx <command>`. This applies to all contexts, including subagents and delegated tasks — always pass this constraint when spawning child agents.
+- **Use `pnpm` exclusively. Never use `npx`.** This is a hard requirement. Every time you reach for `npx`, `npm`, or any npm-series command, stop and use `pnpm exec` instead. Example: `pnpm exec playwright` not `npx playwright`. This applies to all contexts including one-off commands, scripts, subagents, and delegated tasks. If pnpm is not available in a context, install it first or use the workspace package.json scripts.
 - **Prefer canonical tool scoping over hardcoded file lists.** When wiring linters, formatters, or link checkers, use the tool's normal config and ignore mechanisms (`.gitignore`, `.remarkignore`, config files, ignore flags) instead of manually enumerating repo paths in scripts. Only hardcode file lists as a last resort, and document why if you must.
 - **Do not change documentation structure just to satisfy a checker.** Never add fake headings, placeholder sections, or other invented doc structure solely to make anchors pass. Fix the link target, remove the bad link, or add a real section only when the document genuinely needs it.
 - **After completing a milestone, run the full verification pass and review the result.** Default milestone close-out is: run `pnpm build:all`, run `pnpm test:all`, then do a brief self-review of the diff for regressions, dead code, and stale references.
@@ -110,7 +110,7 @@ cd grammars/weidu-tp2 && pnpm test   # or any grammars/*/
 
 Three artifact streams, all triggered by `git tag vX.Y.Z` -> GitHub Actions. See `docs/architecture.md` for packaging details.
 
-**Version management:** Root `package.json` and `server/package.json` must have identical versions (currently 3.2.0). Other packages have independent versions. Bump manually, commit as "Update changelog, bump version: X.Y.Z", then tag.
+**Version management:** Root `package.json` and `server/package.json` must have identical versions (currently 3.4.0). Other packages have independent versions. Bump manually, commit as "Update changelog, bump version: X.Y.Z", then tag.
 
 **Changelog entries:** Document only user-facing changes (new features, bug fixes, behavior changes). Do not include implementation details (refactoring, test additions, code quality improvements, internal constants). Users care about what changed, not how it was implemented.
 

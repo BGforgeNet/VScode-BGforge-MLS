@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
  * CLI tool to parse binary files (Fallout PRO) and output structured JSON.
- * Usage: node bin-cli.js <file.pro|dir> [--save] [--check] [-r] [-q]
+ * Also supports loading JSON back to binary via --load.
+ * Usage: node bin-cli.js <file.pro|dir> [--save] [--check] [--load] [-r] [-q]
  */
 
 import * as fs from "fs";
 import * as path from "path";
-import { parserRegistry } from "../../../client/src/parsers";
+import { parserRegistry, type ParseResult } from "../../../client/src/parsers";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 const EXTENSIONS = parserRegistry.getExtensions().map(ext => `.${ext}`);
@@ -61,18 +62,74 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
     });
 }
 
-const HELP = `Usage: bin-cli <file.pro|dir> [--save] [--check] [-r] [-q]
+const HELP = `Usage: bin-cli <file.pro|dir> [--save] [--check] [--load] [-r] [-q]
   --save    Save parsed JSON alongside the binary file (.json)
   --check   Compare parsed output against existing .json snapshot (exit 1 if diff)
+  --load    Load JSON and write binary: <file.json> -> <file.pro>
   -r        Recursively process all supported files in directory
   -q        Quiet mode: suppress summary, only print errors
 
 Examples:
   bin-cli file.pro                  # Parse single file, print JSON to stdout
   bin-cli proto/ -r --save          # Save JSON snapshots for all files
-  bin-cli proto/ -r -q --check      # Verify files match snapshots (CI)`;
+  bin-cli proto/ -r -q --check      # Verify files match snapshots (CI)
+  bin-cli file.json --load          # Convert JSON back to binary .pro`;
+
+/**
+ * Load a JSON file and serialize it back to binary .pro format.
+ * Validates by re-parsing the output and comparing to the input JSON.
+ */
+function loadJsonToBinary(jsonPath: string): void {
+    if (!fs.existsSync(jsonPath)) {
+        console.error(`Not found: ${jsonPath}`);
+        process.exit(1);
+    }
+
+    const jsonText = fs.readFileSync(jsonPath, "utf-8");
+    const result: ParseResult = JSON.parse(jsonText);
+
+    // Determine the parser from the format field
+    const parser = parserRegistry.getById(result.format);
+    if (!parser) {
+        console.error(`Unknown format: ${result.format}`);
+        process.exit(1);
+    }
+    if (!parser.serialize) {
+        console.error(`Parser "${result.format}" does not support serialization`);
+        process.exit(1);
+    }
+
+    const bytes = parser.serialize(result);
+
+    // Validate: re-parse the output and compare JSON
+    const reparsed = parser.parse(bytes);
+    if (reparsed.errors && reparsed.errors.length > 0) {
+        console.error(`Validation failed: serialized bytes don't parse cleanly:`);
+        for (const err of reparsed.errors) {
+            console.error(`  ${err}`);
+        }
+        process.exit(1);
+    }
+
+    const proPath = jsonPath.replace(/\.json$/, ".pro");
+    fs.writeFileSync(proPath, bytes);
+    console.log(`Wrote: ${proPath} (${bytes.length} bytes)`);
+}
 
 async function main() {
+    const argv = process.argv.slice(2);
+
+    // Handle --load separately: it takes .json input, not .pro
+    if (argv.includes("--load")) {
+        const jsonPath = argv.find(a => !a.startsWith("-"));
+        if (!jsonPath) {
+            console.error("Error: No file specified");
+            process.exit(1);
+        }
+        loadJsonToBinary(jsonPath);
+        return;
+    }
+
     const args = parseCliArgs(HELP);
     if (!args) return;
 

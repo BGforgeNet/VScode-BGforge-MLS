@@ -398,7 +398,8 @@
             "value": "Female",
             "offset": 184,
             "size": 4,
-            "type": "enum"
+            "type": "enum",
+            "rawValue": 1
           }
         ],
         "expanded": true

@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.5.0
+
+### PRO Binary Editor
+
+- The PRO file editor is now editable: double-click a number, enum, or flags field to modify its value. Changes are validated before saving.
+- Undo and redo are fully supported via Ctrl+Z / Ctrl+Y (or Cmd on macOS).
+- Field validation errors are shown inline below the field.
+- Renamed from "BGforge Binary Viewer" to "BGforge Binary Editor" to reflect the new capabilities.
+
+### Documentation
+
+- AGENTS.md: Clarified pnpm usage requirements.
+
 ## 3.4.0
 
 ### Fallout SSL

@@ -91,9 +91,9 @@ importers:
 
   client:
     dependencies:
-      binary-parser:
-        specifier: ^2.3.0
-        version: 2.3.0
+      typed-binary:
+        specifier: ^4.3.3
+        version: 4.3.3
       vscode-languageclient:
         specifier: 8.1.0
         version: 8.1.0
@@ -1343,10 +1343,6 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
-
-  binary-parser@2.3.0:
-    resolution: {integrity: sha512-TXOlPrhvi+kZUv3vA1qZ+MBdqZdihF8gWw7j/MRINiJqXH652GtLSqFTHNPjG8kHbiMQSCATG9oat9ao6aA8dA==}
-    engines: {node: '>=14'}
 
   binaryextensions@6.11.0:
     resolution: {integrity: sha512-sXnYK/Ij80TO3lcqZVV2YgfKN5QjUWIRk/XSm2J/4bd/lPko3lvk0O4ZppH6m+6hB2/GTu+ptNwVFe1xh+QLQw==}
@@ -2767,7 +2763,7 @@ packages:
     resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
 
   sslc-emscripten-noderawfs@https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz:
-    resolution: {tarball: https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz}
+    resolution: {integrity: sha512-oQEOCRLmCodC1MlcIVAqGyTb3aWLpJ7c9tQm4CF8hrf9feZoxcIvSfwKpkcq0FykigqVGdpFpkbwQBS8yqo28Q==, tarball: https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz}
     version: 1.0.0
     hasBin: true
 
@@ -2926,6 +2922,9 @@ packages:
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
+
+  typed-binary@4.3.3:
+    resolution: {integrity: sha512-W2hLsSzt3k/tg38gDE4Fn/QiwcoqGuUHBc2cb3mXuH7KcYxe/GM57vzW14s2/bawB4R5knGgGq8Xb57vsaJ4Sg==}
 
   typed-rest-client@1.8.11:
     resolution: {integrity: sha512-5UvfMpd1oelmUPRbbaVnq+rHP7ng2cE4qoQkQeAqxRL6PklkxsM0g32/HL0yfvruK6ojQ5x8EE+HF4YV6DtuCA==}
@@ -4194,8 +4193,6 @@ snapshots:
     optional: true
 
   binary-extensions@2.3.0: {}
-
-  binary-parser@2.3.0: {}
 
   binaryextensions@6.11.0:
     dependencies:
@@ -6018,6 +6015,8 @@ snapshots:
   type-fest@3.13.1: {}
 
   type-fest@4.41.0: {}
+
+  typed-binary@4.3.3: {}
 
   typed-rest-client@1.8.11:
     dependencies:

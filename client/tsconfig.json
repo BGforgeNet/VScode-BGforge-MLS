@@ -18,7 +18,9 @@
         "noEmit": true,
         "allowImportingTsExtensions": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        // typed-binary references Float16Array (ES2024) in its .d.ts files
+        "skipLibCheck": true
     },
     "include": [
         "src",

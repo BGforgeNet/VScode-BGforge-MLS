@@ -1,4 +1,6 @@
+import { BufferReader } from "typed-binary";
 import { BinaryParser, ParseResult, ParsedGroup, ParsedField } from "./types";
+import { serializePro } from "./pro-serializer";
 import {
     ObjectType, ItemSubType, ScenerySubType, DamageType, MaterialType,
     FRMType, BodyType, KillType, ElevatorType, WeaponAnimCode, StatType, ScriptType,
@@ -11,15 +13,22 @@ import {
     CRITTER_BONUS_DT, CRITTER_BONUS_DR, CRITTER_SKILLS,
 } from "./pro-types";
 import {
-    headerParser, itemCommonParser, armorParser, containerParser, drugParser,
-    weaponParser, ammoParser, miscItemParser, keyParser, critterParser,
-    sceneryCommonParser, doorParser, stairsParser, elevatorParser, ladderParser,
-    genericSceneryParser, wallParser, tileParser, miscParser,
-    HeaderData, ItemCommonData, ArmorData, ContainerData, DrugData, WeaponData,
-    AmmoData, MiscItemData, KeyData, CritterData, SceneryCommonData,
-    DoorData, StairsData, ElevatorData, LadderData, GenericSceneryData,
-    WallData, TileData, MiscData,
-} from "./pro-parsers";
+    headerSchema, itemCommonSchema, armorSchema, containerSchema, drugSchema,
+    weaponSchema, ammoSchema, miscItemSchema, keySchema, critterSchema,
+    sceneryCommonSchema, doorSchema, stairsSchema, elevatorSchema, ladderSchema,
+    genericScenerySchema, wallSchema, tileSchema, miscSchema,
+    type HeaderData, type ItemCommonData, type ArmorData, type ContainerData, type DrugData,
+    type WeaponData, type AmmoData, type MiscItemData, type KeyData, type CritterData,
+    type SceneryCommonData, type DoorData, type StairsData, type ElevatorData,
+    type LadderData, type GenericSceneryData, type WallData, type TileData, type MiscData,
+} from "./pro-schemas";
+
+/**
+ * Create a big-endian BufferReader from a Uint8Array, optionally starting at byteOffset
+ */
+function reader(data: Uint8Array, byteOffset = 0): BufferReader {
+    return new BufferReader(data.buffer, { endianness: "big", byteOffset: data.byteOffset + byteOffset });
+}
 
 /**
  * Parse flags into array of names
@@ -349,7 +358,7 @@ function parseCritter(data: CritterData, errors: string[]): ParsedGroup[] {
         group("Base Damage Resistance", fieldsFromDefs(CRITTER_BASE_DR, critterData, errors), false),
         group("Demographics", [
             field("Age", data.age, 0xb4, 4, "int32"),
-            field("Gender", data.gender === 0 ? "Male" : "Female", 0xb8, 4, "enum"),
+            field("Gender", data.gender === 0 ? "Male" : "Female", 0xb8, 4, "enum", undefined, data.gender),
         ]),
         group("Bonus Primary Stats", fieldsFromDefs(CRITTER_BONUS_PRIMARY, critterData, errors), false),
         group("Bonus Secondary Stats", fieldsFromDefs(CRITTER_BONUS_SECONDARY, critterData, errors), false),
@@ -369,7 +378,7 @@ function parseCritter(data: CritterData, errors: string[]): ParsedGroup[] {
  * Parse scenery common and subtypes
  */
 function parseScenery(
-    buffer: Buffer,
+    data: Uint8Array,
     scenery: SceneryCommonData,
     errors: string[]
 ): ParsedGroup[] {
@@ -384,10 +393,9 @@ function parseScenery(
         field("Sound ID", scenery.soundId, 0x28, 1, "uint8"),
     ]));
 
-    const subTypeBuffer = buffer.subarray(SCENERY_SUBTYPE_OFFSET);
     switch (scenery.subType) {
         case 0: { // Door
-            const door: DoorData = doorParser.parse(subTypeBuffer);
+            const door: DoorData = doorSchema.read(reader(data, SCENERY_SUBTYPE_OFFSET));
             groups.push(group("Door Properties", [
                 field("Walk Through", door.walkThruFlag === 0 ? "No" : "Yes", 0x29, 4, "enum"),
                 field("Unknown", door.unknown, 0x2d, 4, "uint32"),
@@ -395,7 +403,7 @@ function parseScenery(
             break;
         }
         case 1: { // Stairs
-            const stairs: StairsData = stairsParser.parse(subTypeBuffer);
+            const stairs: StairsData = stairsSchema.read(reader(data, SCENERY_SUBTYPE_OFFSET));
             const destTile = stairs.destTileAndElevation & 0x3ffffff;
             const destElev = (stairs.destTileAndElevation >> 26) & 0x3f;
             groups.push(group("Stairs Properties", [
@@ -406,7 +414,7 @@ function parseScenery(
             break;
         }
         case 2: { // Elevator
-            const elevator: ElevatorData = elevatorParser.parse(subTypeBuffer);
+            const elevator: ElevatorData = elevatorSchema.read(reader(data, SCENERY_SUBTYPE_OFFSET));
             groups.push(group("Elevator Properties", [
                 enumField("Elevator Type", elevator.elevatorType, ElevatorType, 0x29, 4, errors),
                 field("Elevator Level", elevator.elevatorLevel, 0x2d, 4, "uint32"),
@@ -415,7 +423,7 @@ function parseScenery(
         }
         case 3: // Ladder Bottom
         case 4: { // Ladder Top
-            const ladder: LadderData = ladderParser.parse(subTypeBuffer);
+            const ladder: LadderData = ladderSchema.read(reader(data, SCENERY_SUBTYPE_OFFSET));
             const destTile = ladder.destTileAndElevation & 0x3ffffff;
             const destElev = (ladder.destTileAndElevation >> 26) & 0x3f;
             groups.push(group("Ladder Properties", [
@@ -425,9 +433,9 @@ function parseScenery(
             break;
         }
         case 5: { // Generic
-            const generic: GenericSceneryData = genericSceneryParser.parse(subTypeBuffer);
+            const genScenery: GenericSceneryData = genericScenerySchema.read(reader(data, SCENERY_SUBTYPE_OFFSET));
             groups.push(group("Generic Properties", [
-                field("Unknown", generic.unknown, 0x29, 4, "uint32"),
+                field("Unknown", genScenery.unknown, 0x29, 4, "uint32"),
             ]));
             break;
         }
@@ -494,9 +502,12 @@ class ProParser implements BinaryParser {
         }
     }
 
+    serialize(result: ParseResult): Uint8Array {
+        return serializePro(result);
+    }
+
     private parseInternal(data: Uint8Array): ParseResult {
-        const buffer = Buffer.from(data);
-        const fileSize = buffer.length;
+        const fileSize = data.length;
 
         // Validate file size limits
         if (fileSize > MAX_PRO_SIZE) {
@@ -507,7 +518,7 @@ class ProParser implements BinaryParser {
         }
 
         // Parse header to determine type
-        const header: HeaderData = headerParser.parse(buffer);
+        const header: HeaderData = headerSchema.read(reader(data));
         const objectType = (header.objectTypeAndId >> 24) & 0xff;
 
         // Validate file size based on object type
@@ -519,7 +530,7 @@ class ProParser implements BinaryParser {
                 if (fileSize < HEADER_SIZE + ITEM_COMMON_SIZE) {
                     return this.fail(`Item file too small: ${fileSize} bytes, need at least ${HEADER_SIZE + ITEM_COMMON_SIZE}`);
                 }
-                const itemCommon: ItemCommonData = itemCommonParser.parse(buffer.subarray(HEADER_SIZE));
+                const itemCommon: ItemCommonData = itemCommonSchema.read(reader(data, HEADER_SIZE));
                 subType = itemCommon.subType;
                 const subTypeSize = ITEM_SUBTYPE_SIZES[subType as number];
                 if (subTypeSize === undefined) {
@@ -535,7 +546,7 @@ class ProParser implements BinaryParser {
                 if (fileSize < HEADER_SIZE + SCENERY_COMMON_SIZE) {
                     return this.fail(`Scenery file too small: ${fileSize} bytes, need at least ${HEADER_SIZE + SCENERY_COMMON_SIZE}`);
                 }
-                const sceneryCommon: SceneryCommonData = sceneryCommonParser.parse(buffer.subarray(HEADER_SIZE));
+                const sceneryCommon: SceneryCommonData = sceneryCommonSchema.read(reader(data, HEADER_SIZE));
                 subType = sceneryCommon.subType;
                 const subTypeSize = SCENERY_SUBTYPE_SIZES[subType as number];
                 if (subTypeSize === undefined) {
@@ -566,35 +577,33 @@ class ProParser implements BinaryParser {
         const errors: string[] = [];
         const headerGroup = parseHeader(header, errors);
         const groups: (ParsedField | ParsedGroup)[] = [headerGroup];
-        const typeBuffer = buffer.subarray(HEADER_SIZE);
 
         switch (objectType) {
             case 0: { // Item
-                const itemCommon: ItemCommonData = itemCommonParser.parse(typeBuffer);
+                const itemCommon: ItemCommonData = itemCommonSchema.read(reader(data, HEADER_SIZE));
                 groups.push(parseItemCommon(itemCommon, HEADER_SIZE, errors));
 
-                const subTypeBuffer = buffer.subarray(ITEM_SUBTYPE_OFFSET);
                 switch (itemCommon.subType) {
                     case 0: // Armor
-                        groups.push(parseArmor(armorParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET));
+                        groups.push(parseArmor(armorSchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET));
                         break;
                     case 1: // Container
-                        groups.push(parseContainer(containerParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET));
+                        groups.push(parseContainer(containerSchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET));
                         break;
                     case 2: // Drug
-                        groups.push(parseDrug(drugParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET, errors));
+                        groups.push(parseDrug(drugSchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET, errors));
                         break;
                     case 3: // Weapon
-                        groups.push(parseWeapon(weaponParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET, errors));
+                        groups.push(parseWeapon(weaponSchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET, errors));
                         break;
                     case 4: // Ammo
-                        groups.push(parseAmmo(ammoParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET));
+                        groups.push(parseAmmo(ammoSchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET));
                         break;
                     case 5: // Misc
-                        groups.push(parseMiscItem(miscItemParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET));
+                        groups.push(parseMiscItem(miscItemSchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET));
                         break;
                     case 6: // Key
-                        groups.push(parseKey(keyParser.parse(subTypeBuffer), ITEM_SUBTYPE_OFFSET));
+                        groups.push(parseKey(keySchema.read(reader(data, ITEM_SUBTYPE_OFFSET)), ITEM_SUBTYPE_OFFSET));
                         break;
                     default:
                         return this.fail(`Unknown item subtype: ${itemCommon.subType}`);
@@ -602,27 +611,27 @@ class ProParser implements BinaryParser {
                 break;
             }
             case 1: { // Critter
-                const critter: CritterData = critterParser.parse(typeBuffer);
+                const critter: CritterData = critterSchema.read(reader(data, HEADER_SIZE));
                 groups.push(...parseCritter(critter, errors));
                 break;
             }
             case 2: { // Scenery
-                const scenery: SceneryCommonData = sceneryCommonParser.parse(typeBuffer);
-                groups.push(...parseScenery(buffer, scenery, errors));
+                const scenery: SceneryCommonData = sceneryCommonSchema.read(reader(data, HEADER_SIZE));
+                groups.push(...parseScenery(data, scenery, errors));
                 break;
             }
             case 3: { // Wall
-                const wall: WallData = wallParser.parse(typeBuffer);
+                const wall: WallData = wallSchema.read(reader(data, HEADER_SIZE));
                 groups.push(parseWall(wall, errors));
                 break;
             }
             case 4: { // Tile
-                const tile: TileData = tileParser.parse(typeBuffer);
+                const tile: TileData = tileSchema.read(reader(data, HEADER_SIZE));
                 groups.push(parseTile(tile, errors));
                 break;
             }
             case 5: { // Misc
-                const misc: MiscData = miscParser.parse(typeBuffer);
+                const misc: MiscData = miscSchema.read(reader(data, HEADER_SIZE));
                 groups.push(parseMisc(misc));
                 break;
             }

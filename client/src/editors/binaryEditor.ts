@@ -1,18 +1,56 @@
+/**
+ * Custom editor provider for binary PRO files.
+ * Displays parsed structure in an editable tree view with undo/redo and save.
+ */
+
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import { parserRegistry, ParseResult, ParsedField, ParsedGroup } from "../parsers";
+import { parserRegistry, ParseResult } from "../parsers";
 import { escapeHtml } from "../utils";
+import { ProDocument } from "./binaryEditor-document";
+import { validateEnum, validateFlags } from "./binaryEditor-validation";
+import type { WebviewToExtension, ExtensionToWebview, InitMessage } from "./binaryEditor-messages";
+import {
+    ObjectType, ItemSubType, ScenerySubType, DamageType, MaterialType,
+    FRMType, BodyType, KillType, ElevatorType, WeaponAnimCode, StatType,
+    HeaderFlags, ItemFlagsExt, WallLightFlags, ActionFlags, ContainerFlags, CritterFlags,
+    ScriptType,
+} from "../parsers/pro-types";
 
-/**
- * Custom editor provider for binary files.
- * Displays parsed structure in a tree view.
- */
 // Maximum file size for binary viewer (1MB should be plenty for any game data file)
 const MAX_FILE_SIZE = 1024 * 1024;
 
-class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
-    public static readonly viewType = "bgforge.binaryViewer";
+/** Enum lookup tables keyed by field name as shown in the UI */
+const ENUM_TABLES: Record<string, Record<number, string>> = {
+    "Object Type": ObjectType,
+    "FRM Type": FRMType,
+    "Sub Type": { ...ItemSubType, ...ScenerySubType },
+    "Material": MaterialType,
+    "Damage Type": DamageType,
+    "Body Type": BodyType,
+    "Kill Type": KillType,
+    "Elevator Type": ElevatorType,
+    "Animation Code": WeaponAnimCode,
+    "Stat 0": StatType,
+    "Stat 1": StatType,
+    "Stat 2": StatType,
+    "Script Type": ScriptType,
+    "Gender": { 0: "Male", 1: "Female" },
+};
+
+/** Flag lookup tables keyed by field name */
+const FLAG_TABLES: Record<string, Record<number, string>> = {
+    "Flags": HeaderFlags,
+    "Flags Ext": ItemFlagsExt,
+    "Wall Light Flags": WallLightFlags,
+    "Action Flags": ActionFlags,
+    "Open Flags": ContainerFlags,
+    "Critter Flags": CritterFlags,
+};
+
+class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
+    public static readonly viewType = "bgforge.binaryEditor";
 
     // Cached assets (loaded once per extension lifetime)
     private static cachedHtml: string | undefined;
@@ -23,96 +61,206 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
 
     private readonly extensionUri: vscode.Uri;
 
+    /** Per-document disposables, cleaned up when document is disposed */
+    private readonly documentSubscriptions = new Map<ProDocument, vscode.Disposable[]>();
+
+    private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<ProDocument>>();
+    readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
+
     constructor(context: vscode.ExtensionContext) {
         this.extensionUri = context.extensionUri;
     }
 
-    /**
-     * Called when a custom document is opened.
-     */
+    // -- CustomEditorProvider lifecycle -------------------------------------
+
     async openCustomDocument(
         uri: vscode.Uri,
         _openContext: vscode.CustomDocumentOpenContext,
-        _token: vscode.CancellationToken
-    ): Promise<vscode.CustomDocument> {
-        return { uri, dispose: () => {} };
+        _token: vscode.CancellationToken,
+    ): Promise<ProDocument> {
+        const parseResult = await this.parseFile(uri);
+        const doc = new ProDocument(uri, parseResult);
+
+        const subscriptions: vscode.Disposable[] = [];
+
+        // Forward document edit events to VSCode for dirty tracking and undo/redo
+        subscriptions.push(doc.onDidChange((e) => this._onDidChangeCustomDocument.fire(e)));
+
+        // Clean up subscriptions when document is disposed
+        subscriptions.push(doc.onDidDispose(() => {
+            const subs = this.documentSubscriptions.get(doc);
+            if (subs) {
+                for (const sub of subs) sub.dispose();
+                this.documentSubscriptions.delete(doc);
+            }
+        }));
+
+        this.documentSubscriptions.set(doc, subscriptions);
+
+        return doc;
     }
 
-    /**
-     * Called when the editor needs to be displayed.
-     */
     async resolveCustomEditor(
-        document: vscode.CustomDocument,
+        document: ProDocument,
         webviewPanel: vscode.WebviewPanel,
-        _token: vscode.CancellationToken
+        _token: vscode.CancellationToken,
     ): Promise<void> {
         webviewPanel.webview.options = {
             enableScripts: true,
             localResourceRoots: [this.extensionUri],
         };
 
-        // Initial render
-        await this.updateWebview(document.uri, webviewPanel);
+        // Set the initial HTML shell
+        webviewPanel.webview.html = this.getHtmlShell(document);
 
-        // Watch for file changes
-        const watcher = vscode.workspace.createFileSystemWatcher(
-            new vscode.RelativePattern(document.uri, "*")
-        );
-        watcher.onDidChange(async (uri) => {
-            if (uri.fsPath === document.uri.fsPath) {
-                await this.updateWebview(document.uri, webviewPanel);
+        // Handle messages from webview
+        webviewPanel.webview.onDidReceiveMessage((msg: WebviewToExtension) => {
+            switch (msg.type) {
+                case "ready":
+                    this.sendInit(webviewPanel.webview, document);
+                    break;
+                case "edit":
+                    this.handleEdit(webviewPanel.webview, document, msg.fieldPath, msg.value);
+                    break;
             }
         });
 
-        // Dispose watcher when panel closes
-        webviewPanel.onDidDispose(() => watcher.dispose());
+        // Re-send data when content changes (undo/redo)
+        document.onDidChangeContent(() => {
+            this.sendInit(webviewPanel.webview, document);
+        });
+    }
+
+    async saveCustomDocument(document: ProDocument, _cancellation: vscode.CancellationToken): Promise<void> {
+        const bytes = document.getContent();
+        await vscode.workspace.fs.writeFile(document.uri, bytes);
+    }
+
+    async saveCustomDocumentAs(document: ProDocument, destination: vscode.Uri, _cancellation: vscode.CancellationToken): Promise<void> {
+        const bytes = document.getContent();
+        await vscode.workspace.fs.writeFile(destination, bytes);
+    }
+
+    async revertCustomDocument(document: ProDocument, _cancellation: vscode.CancellationToken): Promise<void> {
+        const parseResult = await this.parseFile(document.uri);
+        document.reset(parseResult);
+    }
+
+    async backupCustomDocument(
+        document: ProDocument,
+        context: vscode.CustomDocumentBackupContext,
+        _cancellation: vscode.CancellationToken,
+    ): Promise<vscode.CustomDocumentBackup> {
+        const bytes = document.getContent();
+        await vscode.workspace.fs.writeFile(context.destination, bytes);
+        return { id: context.destination.toString(), delete: () => vscode.workspace.fs.delete(context.destination) };
+    }
+
+    // -- Message handling ---------------------------------------------------
+
+    private sendInit(webview: vscode.Webview, document: ProDocument): void {
+        const msg: InitMessage = {
+            type: "init",
+            parseResult: document.parseResult,
+            enums: ENUM_TABLES,
+            flags: FLAG_TABLES,
+        };
+        webview.postMessage(msg);
+    }
+
+    private handleEdit(webview: vscode.Webview, document: ProDocument, fieldPath: string, rawValue: number): void {
+        // Determine validation context from field path
+        const fieldName = fieldPath.split(".").pop() ?? "";
+
+        // Validate enum fields
+        const enumTable = ENUM_TABLES[fieldName];
+        if (enumTable) {
+            const err = validateEnum(rawValue, enumTable);
+            if (err) {
+                const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: err };
+                webview.postMessage(msg);
+                return;
+            }
+        }
+
+        // Validate flag fields
+        const flagTable = FLAG_TABLES[fieldName];
+        if (flagTable) {
+            const err = validateFlags(rawValue, flagTable);
+            if (err) {
+                const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: err };
+                webview.postMessage(msg);
+                return;
+            }
+        }
+
+        // Compute display value
+        const displayValue = this.computeDisplayValue(fieldName, rawValue);
+
+        // Apply edit
+        const edit = document.applyEdit(fieldPath, rawValue, displayValue);
+        if (!edit) {
+            const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: `Field not found: ${fieldPath}` };
+            webview.postMessage(msg);
+        }
     }
 
     /**
-     * Read, parse, and update webview content
+     * Compute display value from raw value for a given field name.
      */
-    private async updateWebview(uri: vscode.Uri, webviewPanel: vscode.WebviewPanel): Promise<void> {
-        let fileData: Uint8Array;
-        try {
-            fileData = await vscode.workspace.fs.readFile(uri);
-        } catch {
-            webviewPanel.webview.html = `<html><body><h1>File not found</h1><p>${escapeHtml(uri.fsPath)}</p></body></html>`;
-            return;
+    private computeDisplayValue(fieldName: string, rawValue: number): string {
+        const enumTable = ENUM_TABLES[fieldName];
+        if (enumTable) {
+            return enumTable[rawValue] ?? `Unknown (${rawValue})`;
         }
 
-        // Check file size limit
+        const flagTable = FLAG_TABLES[fieldName];
+        if (flagTable) {
+            const flags: string[] = [];
+            for (const [bit, name] of Object.entries(flagTable)) {
+                const bitVal = Number(bit);
+                if (bitVal === 0) {
+                    if (rawValue === 0) flags.push(name);
+                } else if (rawValue & bitVal) {
+                    flags.push(name);
+                }
+            }
+            return flags.length > 0 ? flags.join(", ") : "(none)";
+        }
+
+        return String(rawValue);
+    }
+
+    // -- File parsing -------------------------------------------------------
+
+    private async parseFile(uri: vscode.Uri): Promise<ParseResult> {
+        const fileData = await vscode.workspace.fs.readFile(uri);
+
         if (fileData.length > MAX_FILE_SIZE) {
-            webviewPanel.webview.html = `<html><body><h1>File too large</h1><p>File size: ${fileData.length} bytes, max: ${MAX_FILE_SIZE}</p></body></html>`;
-            return;
+            return {
+                format: "error",
+                formatName: "Error",
+                root: { name: "Error", fields: [], expanded: true },
+                errors: [`File too large: ${fileData.length} bytes, max: ${MAX_FILE_SIZE}`],
+            };
         }
 
         const extension = path.extname(uri.fsPath);
         const parser = parserRegistry.getByExtension(extension);
-        const fileName = path.basename(uri.fsPath);
 
-        let parseResult: ParseResult;
         if (!parser) {
-            parseResult = {
+            return {
                 format: "unknown",
                 formatName: "Unknown Format",
-                root: { name: "Error", fields: [] },
+                root: { name: "Error", fields: [], expanded: true },
                 errors: [`No parser registered for extension: ${extension}`],
             };
-        } else {
-            try {
-                parseResult = parser.parse(fileData);
-            } catch (err) {
-                parseResult = {
-                    format: "error",
-                    formatName: "Parse Error",
-                    root: { name: "Error", fields: [] },
-                    errors: [err instanceof Error ? err.message : String(err)],
-                };
-            }
         }
 
-        webviewPanel.webview.html = this.getHtmlContent(parseResult, fileName);
+        return parser.parse(fileData);
     }
+
+    // -- HTML rendering (shell only, data sent via postMessage) --------------
 
     private loadAsset(relativePath: string): string {
         const fullPath = path.join(this.extensionUri.fsPath, relativePath);
@@ -128,7 +276,6 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
     private invalidateCacheIfNeeded(): void {
         const currentPath = this.extensionUri.fsPath;
         if (BinaryEditorProvider.cachedExtensionPath && BinaryEditorProvider.cachedExtensionPath !== currentPath) {
-            // Extension path changed - invalidate cache
             BinaryEditorProvider.cachedHtml = undefined;
             BinaryEditorProvider.cachedCommonCss = undefined;
             BinaryEditorProvider.cachedCss = undefined;
@@ -161,74 +308,25 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
 
     private getJs(): string {
         if (!BinaryEditorProvider.cachedJs) {
-            // Built by esbuild-webviews - preserves editors/ subdir
             BinaryEditorProvider.cachedJs = this.loadAsset(path.join("client", "out", "editors", "binaryEditor-webview.js"));
         }
         return BinaryEditorProvider.cachedJs;
     }
 
     /**
-     * Generate HTML content for the webview
+     * Generate the HTML shell. The tree content is rendered client-side
+     * from data sent via postMessage.
      */
-    private getHtmlContent(parseResult: ParseResult, fileName: string): string {
-        const errorsHtml = parseResult.errors?.length
-            ? `<div class="errors">${parseResult.errors.map((e) => `<div>${escapeHtml(e)}</div>`).join("")}</div>`
-            : "";
-
-        const warningsHtml = parseResult.warnings?.length
-            ? `<div class="warnings">${parseResult.warnings.map((w) => `<div>${escapeHtml(w)}</div>`).join("")}</div>`
-            : "";
-
+    private getHtmlShell(document: ProDocument): string {
+        const fileName = path.basename(document.uri.fsPath);
         return this.getHtmlTemplate()
             .replace(/\{\{fileName\}\}/g, escapeHtml(fileName))
-            .replace("{{formatName}}", escapeHtml(parseResult.formatName))
+            .replace("{{formatName}}", escapeHtml(document.parseResult.formatName))
             .replace("{{styles}}", this.getCss())
-            .replace("{{errors}}", errorsHtml)
-            .replace("{{warnings}}", warningsHtml)
-            .replace("{{tree}}", parseResult.root.fields.map((child) => this.renderNode(child)).join(""))
+            .replace("{{errors}}", "")
+            .replace("{{warnings}}", "")
+            .replace("{{tree}}", '<div class="loading">Loading...</div>')
             .replace("/* __SCRIPT__ */", this.getJs());
-    }
-
-    /**
-     * Render a node (field or group) to HTML
-     */
-    private renderNode(node: ParsedField | ParsedGroup): string {
-        if ("fields" in node) {
-            // It's a group
-            const expanded = node.expanded !== false ? "expanded" : "";
-            const children = node.fields.map((child) => this.renderNode(child)).join("");
-            return `
-                <div class="group ${expanded}">
-                    <div class="group-header">
-                        <span class="group-name">${escapeHtml(node.name)}</span>
-                    </div>
-                    <div class="group-content">
-                        ${children}
-                    </div>
-                </div>
-            `;
-        } else {
-            // It's a field (ParsedField always has offset)
-            const valueClass = this.getValueClass(node.type);
-            const offset = `0x${node.offset.toString(16).toUpperCase().padStart(4, "0")}`;
-            return `
-                <div class="field">
-                    <span class="field-name">${escapeHtml(node.name)}:</span>
-                    <span class="field-value ${valueClass}">${escapeHtml(String(node.value))}</span>
-                    <span class="field-offset">[${offset}]</span>
-                    <span class="field-type">${escapeHtml(node.type)}</span>
-                </div>
-            `;
-        }
-    }
-
-    /**
-     * Get CSS class for value based on type
-     */
-    private getValueClass(type: string): string {
-        if (type.includes("int") || type.includes("uint")) return "number";
-        if (type === "enum") return "enum";
-        return "";
     }
 }
 

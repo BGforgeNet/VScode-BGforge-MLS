@@ -260,8 +260,8 @@
         ],
         "customEditors": [
             {
-                "viewType": "bgforge.binaryViewer",
-                "displayName": "BGforge Binary Viewer",
+                "viewType": "bgforge.binaryEditor",
+                "displayName": "BGforge Binary Editor",
                 "selector": [
                     {
                         "filenamePattern": "*.pro"
