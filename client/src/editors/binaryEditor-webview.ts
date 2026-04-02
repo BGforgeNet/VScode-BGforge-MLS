@@ -176,8 +176,10 @@
             .filter(([bit]) => Number(bit) !== 0)
             .map(([bit, name]) => {
                 const bitVal = Number(bit);
-                const checked = (raw & bitVal) !== 0 ? " checked" : "";
-                return `<label class="flag-label"><input type="checkbox" class="flag-checkbox" data-field="${escapeHtml(fieldPath)}" data-bit="${bitVal}" data-raw="${raw}"${checked} />${escapeHtml(name)}</label>`;
+                const checked = (raw & bitVal) !== 0;
+                const checkedClass = checked ? " checked" : "";
+                const ariaChecked = checked ? "true" : "false";
+                return `<label class="flag-label"><span role="checkbox" aria-checked="${ariaChecked}" tabindex="0" class="flag-checkbox${checkedClass}" data-field="${escapeHtml(fieldPath)}" data-bit="${bitVal}" data-raw="${raw}"></span>${escapeHtml(name)}</label>`;
             })
             .join("");
         return `<span class="field-flags">${checkboxes}</span>`;
@@ -219,22 +221,45 @@
             });
         });
 
-        // Flag checkboxes
-        treeEl.querySelectorAll<HTMLInputElement>(".flag-checkbox").forEach((checkbox) => {
-            checkbox.addEventListener("change", () => {
+        // Flag checkboxes - using 'click' instead of 'change' since we manually manage state via classList
+        treeEl.querySelectorAll<HTMLElement>(".flag-checkbox").forEach((checkbox) => {
+            checkbox.addEventListener("click", () => {
                 const fieldPath = checkbox.dataset.field;
                 if (!fieldPath) return;
+
+                // Toggle checked state
+                checkbox.classList.toggle("checked");
+                checkbox.setAttribute("aria-checked", checkbox.classList.contains("checked") ? "true" : "false");
 
                 // Compute new flag value from all checkboxes in this group
                 const container = checkbox.closest(".field-flags");
                 if (!container) return;
                 let value = 0;
-                container.querySelectorAll<HTMLInputElement>(".flag-checkbox").forEach((cb) => {
-                    if (cb.checked) value |= parseInt(cb.dataset.bit ?? "0", 10);
+                container.querySelectorAll<HTMLElement>(".flag-checkbox").forEach((cb) => {
+                    if (cb.classList.contains("checked")) value |= parseInt(cb.dataset.bit ?? "0", 10);
                 });
 
                 clearFieldError(fieldPath);
                 vscode.postMessage({ type: "edit", fieldPath, value });
+            });
+
+            // Keyboard support: spacebar/Enter toggles checkbox
+            checkbox.addEventListener("keydown", (e: KeyboardEvent) => {
+                if (e.key === " " || e.key === "Enter") {
+                    e.preventDefault();
+                    checkbox.click();
+                }
+            });
+        });
+
+        // Flag labels (clicking label toggles the associated checkbox)
+        treeEl.querySelectorAll<HTMLElement>(".flag-label").forEach((label) => {
+            label.addEventListener("click", (e) => {
+                const checkbox = label.querySelector<HTMLElement>(".flag-checkbox");
+                if (checkbox) {
+                    e.preventDefault();
+                    checkbox.click();
+                }
             });
         });
     }

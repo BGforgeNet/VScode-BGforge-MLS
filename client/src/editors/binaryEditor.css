@@ -257,13 +257,47 @@ input[type="number"]:hover::-webkit-outer-spin-button {
     color: var(--vscode-editor-foreground);
 }
 
+/* Custom checkbox implementation.
+ * VSCode webviews use native HTML form controls rendered by the OS, which ignore
+ * background-color styling. To make checkboxes match the VSCode theme (dark background),
+ * we replace <input type="checkbox"> with a styled <span role="checkbox">.
+ * Native checkboxes would render with a white background regardless of CSS.
+ * See: https://github.com/microsoft/vscode/issues/8569 */
+
 .flag-checkbox {
-    accent-color: var(--vscode-checkbox-checkedForeground, #007acc);
+    display: inline-block;
+    background-color: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border);
     cursor: pointer;
-    width: 16px;
-    height: 16px;
-    margin: 0;
+    width: 14px;
+    height: 14px;
+    margin: 0 4px 0 0;
     vertical-align: middle;
+    border-radius: 3px;
+    position: relative;
+}
+
+.flag-checkbox:focus {
+    outline: 2px solid var(--vscode-focusBorder);
+    outline-offset: 1px;
+}
+
+.flag-checkbox.checked {
+    background-color: var(--vscode-input-background);
+    border-color: var(--vscode-input-border);
+}
+
+/* Custom checkmark using CSS border technique (rotated L-shape forms the check) */
+.flag-checkbox.checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid var(--vscode-symbolIcon-fieldForeground, #75beff);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 /* -- Loading state ---------------------------------------------------------- */
