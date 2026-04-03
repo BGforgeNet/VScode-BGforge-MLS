@@ -1593,6 +1593,7 @@
 	"file": "_default",
 	"fileExtensions": {
 		"tpp": "weidu-tp2-patch",
+		"map": "fallout-worldmap-txt",
 		"bsl": "_bsl",
 		"mdo": "_mdo",
 		"cls": "_salesforce",
@@ -2032,6 +2033,7 @@
 	"light": {
 		"file": "_default_light",
 		"fileExtensions": {
+			"map": "fallout-worldmap-txt_light",
 			"bsl": "_bsl_light",
 			"mdo": "_mdo_light",
 			"cls": "_salesforce_light",
