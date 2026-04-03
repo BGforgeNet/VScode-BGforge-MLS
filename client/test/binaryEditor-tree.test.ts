@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import type { ParseResult } from "../src/parsers/types";
 import { mapParser } from "../src/parsers/map";
+import { proParser } from "../src/parsers/pro";
 import { buildBinaryEditorTreeState } from "../src/editors/binaryEditor-tree";
 
 function makeProResult(): ParseResult {
@@ -28,6 +29,11 @@ function makeProResult(): ParseResult {
 function loadMapResult(mapName: string, gracefulMapBoundaries = false, skipMapTiles = false): ParseResult {
     const mapPath = path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps", mapName);
     return mapParser.parse(new Uint8Array(fs.readFileSync(mapPath)), { gracefulMapBoundaries, skipMapTiles });
+}
+
+function loadProResult(subDir: string, fileName: string): ParseResult {
+    const proPath = path.resolve("client/testFixture/proto", subDir, fileName);
+    return proParser.parse(new Uint8Array(fs.readFileSync(proPath)));
 }
 
 describe("buildBinaryEditorTreeState", () => {
@@ -128,6 +134,56 @@ describe("buildBinaryEditorTreeState", () => {
         });
     });
 
+    it("hides low-signal MAP placeholder fields from the editor tree while keeping meaningful script state visible", () => {
+        const tree = buildBinaryEditorTreeState(loadMapResult("arcaves.map"));
+        const init = tree.getInitMessagePayload();
+
+        const headerNode = init.rootChildren.find((node) => node.name === "Header");
+        expect(headerNode).toBeDefined();
+        const headerChildren = tree.getChildren(headerNode!.id);
+        expect(headerChildren.find((node) => node.name === "Padding (field_3C)")).toBeUndefined();
+
+        const timerScripts = init.rootChildren.find((node) => node.name === "Timer Scripts");
+        expect(timerScripts).toBeDefined();
+        const extent0 = tree.getChildren(timerScripts!.id).find((node) => node.name === "Extent 0");
+        expect(extent0).toBeDefined();
+        const slot0 = tree.getChildren(extent0!.id).find((node) => node.name === "Slot 0");
+        expect(slot0).toBeDefined();
+        const slotChildren = tree.getChildren(slot0!.id);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Next Script Link (legacy)")).toBeUndefined();
+        expect(slotChildren.find((node) => node.name === "Entry 0 Unknown Field 0x48")).toBeUndefined();
+        expect(slotChildren.find((node) => node.name === "Entry 0 Legacy Field 0x50")).toBeUndefined();
+        expect(slotChildren.find((node) => node.name === "Entry 0 Program Pointer Slot")).toMatchObject({
+            editable: false,
+        });
+        expect(slotChildren.find((node) => node.name === "Entry 0 Check Margin (how_much)")).toBeDefined();
+
+        const objectsNode = init.rootChildren.find((node) => node.name === "Objects Section");
+        expect(objectsNode).toBeDefined();
+        const elevation0 = tree.getChildren(objectsNode!.id).find((node) => node.name === "Elevation 0 Objects");
+        expect(elevation0).toBeDefined();
+        const firstObject = tree.getChildren(elevation0!.id).find((node) => node.name === "Object 0.0 (Misc)");
+        expect(firstObject).toBeDefined();
+        const firstObjectChildren = tree.getChildren(firstObject!.id);
+        expect(firstObjectChildren.find((node) => node.name === "Field 74")).toBeUndefined();
+    });
+
+    it("hides generic PRO unknown fields and empty groups from the editor tree", () => {
+        const tree = buildBinaryEditorTreeState(loadProResult("misc", "00000001.pro"));
+        const init = tree.getInitMessagePayload();
+
+        expect(init.rootChildren.find((node) => node.name === "Misc Properties")).toBeUndefined();
+
+        const sceneryTree = buildBinaryEditorTreeState(loadProResult("scenery", "00000008.pro"));
+        const sceneryInit = sceneryTree.getInitMessagePayload();
+        const doorProperties = sceneryInit.rootChildren.find((node) => node.name === "Door Properties");
+        expect(doorProperties).toBeDefined();
+
+        const doorChildren = sceneryTree.getChildren(doorProperties!.id);
+        expect(doorChildren.find((node) => node.name === "Walk Through")).toBeDefined();
+        expect(doorChildren.find((node) => node.name === "Unknown")).toBeUndefined();
+    });
+
     it("disables MAP edits for structural and opaque fields", () => {
         const tree = buildBinaryEditorTreeState(loadMapResult("arcaves.map"));
         const init = tree.getInitMessagePayload();
@@ -152,6 +208,8 @@ describe("buildBinaryEditorTreeState", () => {
         expect(slotChildren.find((node) => node.name === "Entry 0 Flags")?.editable).toBe(true);
         expect(slotChildren.find((node) => node.name === "Entry 0 Index")?.editable).toBe(true);
         expect(slotChildren.find((node) => node.name === "Entry 0 Local Vars Offset")?.editable).toBe(false);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Program Pointer Slot")?.editable).toBe(false);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Check Margin (how_much)")?.editable).toBe(true);
 
         const objectsNode = init.rootChildren.find((node) => node.name === "Objects Section");
         expect(objectsNode).toBeDefined();

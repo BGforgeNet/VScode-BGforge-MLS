@@ -220,7 +220,7 @@ function parseScriptEntryFields(
     fields.push(field(`${label} SID`, sid, currentOffset, 4, "uint32"));
 
     const field4View = new DataView(data.buffer, data.byteOffset + currentOffset + 4, 4);
-    fields.push(field(`${label} Field 4`, field4View.getInt32(0, false), currentOffset + 4, 4, "int32"));
+    fields.push(field(`${label} Next Script Link (legacy)`, field4View.getInt32(0, false), currentOffset + 4, 4, "int32"));
 
     let pos = 8;
     if (actualScriptType === 1) {
@@ -236,9 +236,9 @@ function parseScriptEntryFields(
         pos += 4;
     }
 
-    const commonNames = ["Flags", "Index", "Program", "Owner ID", "Local Vars Offset",
+    const commonNames = ["Flags", "Index", "Program Pointer Slot", "Owner ID", "Local Vars Offset",
         "Num Local Vars", "Return Value", "Action", "Fixed Param", "Action Being Used",
-        "Script Overrides", "Field 48", "How Much", "Field 50"];
+        "Script Overrides", "Unknown Field 0x48", "Check Margin (how_much)", "Legacy Field 0x50"];
     for (const [index, name] of commonNames.entries()) {
         if (currentOffset + pos + 4 > data.length) {
             errors.push(`Script entry ${label} overflow at offset 0x${(currentOffset + pos).toString(16)}`);

@@ -27,13 +27,52 @@ export interface BinaryEditorTreeState {
     getChildren(nodeId: string): BinaryEditorNode[];
 }
 
+function shouldHideFieldFromEditor(parseResult: ParseResult, entry: ParsedField): boolean {
+    // Keep parser fidelity for round-trip/debugging, but omit low-signal raw
+    // placeholders from the editor tree because they do not help end users edit
+    // the file safely.
+    if (entry.name === "Unknown") {
+        return true;
+    }
+
+    if (parseResult.format !== "map") {
+        return false;
+    }
+
+    return entry.name === "Padding (field_3C)"
+        || entry.name === "Field 74"
+        // Fallout 2 CE only gives useful semantics for the persisted program slot
+        // and how_much value. The other script-entry fields below remain legacy or
+        // unknown engine internals, so the editor hides them from the normal tree.
+        || /^Entry \d+ (Next Script Link \(legacy\)|Unknown Field 0x48|Legacy Field 0x50)$/.test(entry.name);
+}
+
+function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | ParsedGroup): ParsedField | ParsedGroup | undefined {
+    if (!isGroup(entry)) {
+        return shouldHideFieldFromEditor(parseResult, entry) ? undefined : entry;
+    }
+
+    const projectedChildren = entry.fields
+        .map((child) => projectDisplayEntry(parseResult, child))
+        .filter((child): child is ParsedField | ParsedGroup => child !== undefined);
+
+    if (projectedChildren.length === 0) {
+        return undefined;
+    }
+
+    return group(entry.name, projectedChildren, entry.expanded !== false, entry.description);
+}
+
 function buildDisplayRoot(parseResult: ParseResult): ParsedGroup {
     if (parseResult.errors && parseResult.errors.length > 0) {
         return group(parseResult.root.name, [], parseResult.root.expanded, parseResult.root.description);
     }
 
     if (parseResult.format !== "map") {
-        return parseResult.root;
+        const projectedFields = parseResult.root.fields
+            .map((entry) => projectDisplayEntry(parseResult, entry))
+            .filter((entry): entry is ParsedField | ParsedGroup => entry !== undefined);
+        return group(parseResult.root.name, projectedFields, parseResult.root.expanded, parseResult.root.description);
     }
 
     const projectedFields: (ParsedField | ParsedGroup)[] = [];
@@ -48,7 +87,10 @@ function buildDisplayRoot(parseResult: ParseResult): ParsedGroup {
             continue;
         }
 
-        projectedFields.push(entry);
+        const projectedEntry = projectDisplayEntry(parseResult, entry);
+        if (projectedEntry) {
+            projectedFields.push(projectedEntry);
+        }
     }
 
     return group(parseResult.root.name, projectedFields, parseResult.root.expanded, parseResult.root.description);

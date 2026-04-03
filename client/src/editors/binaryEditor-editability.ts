@@ -17,7 +17,7 @@ function isMapFieldEditable(fieldPath: string, fieldName: string): boolean {
         }
 
         if (
-            /^Entry \d+ (Local Vars Offset|Num Local Vars|Field 48|Field 50)$/.test(fieldName)
+            /^Entry \d+ (Local Vars Offset|Num Local Vars|Program Pointer Slot|Unknown Field 0x48|Legacy Field 0x50)$/.test(fieldName)
         ) {
             return false;
         }
