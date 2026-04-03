@@ -7,65 +7,25 @@
  */
 
 import * as vscode from "vscode";
-import * as fs from "fs";
 import * as path from "path";
 import { LanguageClient, ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageclient/node";
 import { escapeHtml } from "../utils";
+import { getCachedCssAsset, getCachedHtmlAsset, getCachedJsAsset } from "../webview-assets";
 import { LSP_COMMAND_PARSE_DIALOG } from "../../../shared/protocol";
 
-// ---------------------------------------------------------------------------
-// Asset caching -- reads from disk once, invalidated when extension updates
-// ---------------------------------------------------------------------------
-
-let cachedHtml: string | undefined;
-let cachedCommonCss: string | undefined;
-let cachedCss: string | undefined;
-let cachedJs: string | undefined;
-let cachedExtensionPath: string | undefined;
-
-function loadAsset(extensionPath: string, relativePath: string): string {
-    const fullPath = path.join(extensionPath, relativePath);
-    return fs.readFileSync(fullPath, "utf8");
-}
-
-/** Invalidate cache when extension path changes (e.g. after extension update). */
-function invalidateCacheIfNeeded(extensionPath: string): void {
-    if (cachedExtensionPath !== extensionPath) {
-        cachedHtml = undefined;
-        cachedCommonCss = undefined;
-        cachedCss = undefined;
-        cachedJs = undefined;
-        cachedExtensionPath = extensionPath;
-    }
-}
-
 function getHtmlTemplate(extensionPath: string): string {
-    if (!cachedHtml) {
-        cachedHtml = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.html"));
-    }
-    return cachedHtml;
-}
-
-function getCommonCss(extensionPath: string): string {
-    if (!cachedCommonCss) {
-        cachedCommonCss = loadAsset(extensionPath, path.join("client", "src", "webview-common.css"));
-    }
-    return cachedCommonCss;
+    return getCachedHtmlAsset("dialog-tree", extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.html"));
 }
 
 function getCss(extensionPath: string): string {
-    if (!cachedCss) {
-        cachedCss = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.css"));
-    }
-    return getCommonCss(extensionPath) + "\n" + cachedCss;
+    return getCachedCssAsset("dialog-tree", extensionPath, [
+        path.join("client", "src", "webview-common.css"),
+        path.join("client", "src", "dialog-tree", "dialogTree.css"),
+    ]);
 }
 
 function getJs(extensionPath: string): string {
-    // Built by esbuild-webviews to client/out/
-    if (!cachedJs) {
-        cachedJs = loadAsset(extensionPath, path.join("client", "out", "dialog-tree", "dialogTree-webview.js"));
-    }
-    return cachedJs;
+    return getCachedJsAsset("dialog-tree", extensionPath, path.join("client", "out", "dialog-tree", "dialogTree-webview.js"));
 }
 
 // Re-export so dialog tree builders (dialogTree.ts, dialogTree-d.ts) can import from "./shared"
@@ -89,7 +49,6 @@ function buildBreadcrumbHtml(filePath: string, iconUri: string): string {
 }
 
 function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensionPath: string, fileName: string, filePath: string, iconUri: string): string {
-    invalidateCacheIfNeeded(extensionPath);
     // Function replacers prevent $-pattern interpretation in replacement strings
     // ($&, $', $` are special even with string search patterns).
     return getHtmlTemplate(extensionPath)

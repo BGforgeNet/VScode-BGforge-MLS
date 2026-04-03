@@ -153,7 +153,12 @@ function parseVariablesSection(data: Uint8Array, header: MapHeader): ParsedGroup
     return groups;
 }
 
-function parseTiles(data: Uint8Array, header: MapHeader, currentOffset: number): { tiles: Map<number, ParsedGroup[]>; offset: number } {
+function parseTiles(
+    data: Uint8Array,
+    header: MapHeader,
+    currentOffset: number,
+    skipMapTiles = false,
+): { tiles: Map<number, ParsedGroup[]>; offset: number } {
     const tiles = new Map<number, ParsedGroup[]>();
 
     for (let elev = 0; elev < 3; elev++) {
@@ -164,6 +169,12 @@ function parseTiles(data: Uint8Array, header: MapHeader, currentOffset: number):
         }
 
         const elevTiles: ParsedGroup[] = [];
+        if (skipMapTiles) {
+            tiles.set(elev, elevTiles);
+            currentOffset += TILE_DATA_SIZE_PER_ELEVATION;
+            continue;
+        }
+
         const tileFields: ParsedField[] = [];
 
         for (let i = 0; i < TILES_PER_ELEVATION; i++) {
@@ -837,7 +848,7 @@ class MapParser implements BinaryParser {
         rootFields.push(...parseVariablesSection(data, header));
 
         let currentOffset = varOffset + header.numGlobalVars * 4 + header.numLocalVars * 4;
-        const { tiles, offset: tileEndOffset } = parseTiles(data, header, currentOffset);
+        const { tiles, offset: tileEndOffset } = parseTiles(data, header, currentOffset, options?.skipMapTiles);
         tiles.forEach((elevTiles) => rootFields.push(...elevTiles));
         currentOffset = tileEndOffset;
 

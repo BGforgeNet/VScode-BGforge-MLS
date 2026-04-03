@@ -25,9 +25,9 @@ function makeProResult(): ParseResult {
     };
 }
 
-function loadMapResult(mapName: string, gracefulMapBoundaries = false): ParseResult {
+function loadMapResult(mapName: string, gracefulMapBoundaries = false, skipMapTiles = false): ParseResult {
     const mapPath = path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps", mapName);
-    return mapParser.parse(new Uint8Array(fs.readFileSync(mapPath)), { gracefulMapBoundaries });
+    return mapParser.parse(new Uint8Array(fs.readFileSync(mapPath)), { gracefulMapBoundaries, skipMapTiles });
 }
 
 describe("buildBinaryEditorTreeState", () => {
@@ -84,6 +84,13 @@ describe("buildBinaryEditorTreeState", () => {
         const initBytes = Buffer.byteLength(JSON.stringify(tree.getInitMessagePayload()));
 
         expect(initBytes).toBeLessThan(10_000);
+    });
+
+    it("omits the synthetic Tiles root when the editor parse skips MAP tiles entirely", () => {
+        const tree = buildBinaryEditorTreeState(loadMapResult("artemple.map", true, true));
+        const init = tree.getInitMessagePayload();
+
+        expect(init.rootChildren.some((node) => node.name === "Tiles")).toBe(false);
     });
 
     it("shows only parse errors for strict MAP failures", () => {

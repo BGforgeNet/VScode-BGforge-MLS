@@ -1,16 +1,16 @@
 /**
- * Custom editor provider for binary PRO files.
+ * Custom editor provider for binary PRO and MAP files.
  * Displays parsed structure in an editable tree view with undo/redo and save.
  */
 
 import * as vscode from "vscode";
 import * as path from "path";
-import * as fs from "fs";
 import { BinaryParser, parserRegistry, ParseResult } from "../parsers";
 import { escapeHtml } from "../utils";
+import { getCachedCssAsset, getCachedHtmlAsset, getCachedJsAsset } from "../webview-assets";
 import { BinaryDocument } from "./binaryEditor-document";
 import { buildBinaryEditorTreeState, BinaryEditorTreeState } from "./binaryEditor-tree";
-import { validateEnum, validateFlags } from "./binaryEditor-validation";
+import { validateFieldEdit } from "./binaryEditor-validation";
 import type { WebviewToExtension, ExtensionToWebview, InitMessage } from "./binaryEditor-messages";
 import { resolveDisplayValue, resolveEnumLookup, resolveFlagLookup } from "./binaryEditor-lookups";
 import { BinaryEditorRefreshGate } from "./binaryEditor-refreshGate";
@@ -22,13 +22,6 @@ type EditableBinaryParser = BinaryParser & {
 
 class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument> {
     public static readonly viewType = "bgforge.binaryEditor";
-
-    // Cached assets (loaded once per extension lifetime)
-    private static cachedHtml: string | undefined;
-    private static cachedCommonCss: string | undefined;
-    private static cachedCss: string | undefined;
-    private static cachedJs: string | undefined;
-    private static cachedExtensionPath: string | undefined;
 
     private readonly extensionUri: vscode.Uri;
 
@@ -152,8 +145,6 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
             rootChildren: payload.rootChildren,
             warnings: payload.warnings,
             errors: payload.errors,
-            enums: {},
-            flags: {},
         };
         webview.postMessage(msg);
     }
@@ -180,6 +171,13 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
         // Determine validation context from field path
         const fieldName = fieldPath.split(".").pop() ?? "";
         const format = document.parseResult.format;
+        const field = document.getField(fieldPath);
+
+        if (!field) {
+            const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: `Field not found: ${fieldPath}` };
+            webview.postMessage(msg);
+            return;
+        }
 
         if (localEditTracker.shouldUndo(fieldPath, rawValue)) {
             localEditTracker.clear();
@@ -196,26 +194,13 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
             return;
         }
 
-        // Validate enum fields
         const enumTable = resolveEnumLookup(format, fieldPath, fieldName);
-        if (enumTable) {
-            const err = validateEnum(rawValue, enumTable);
-            if (err) {
-                const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: err };
-                webview.postMessage(msg);
-                return;
-            }
-        }
-
-        // Validate flag fields
         const flagTable = resolveFlagLookup(format, fieldPath, fieldName);
-        if (flagTable) {
-            const err = validateFlags(rawValue, flagTable);
-            if (err) {
-                const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: err };
-                webview.postMessage(msg);
-                return;
-            }
+        const validationError = validateFieldEdit(rawValue, field.type, enumTable, flagTable);
+        if (validationError) {
+            const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: validationError };
+            webview.postMessage(msg);
+            return;
         }
 
         // Compute display value
@@ -267,63 +252,28 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
         }
 
         const fileData = await vscode.workspace.fs.readFile(uri);
+        const parseOptions = extension === ".map" ? { skipMapTiles: true } : undefined;
         return {
-            parseResult: parser.parse(fileData),
+            parseResult: parser.parse(fileData, parseOptions),
             parser: parser as EditableBinaryParser,
         };
     }
 
     // -- HTML rendering (shell only, data sent via postMessage) --------------
 
-    private loadAsset(relativePath: string): string {
-        const fullPath = path.join(this.extensionUri.fsPath, relativePath);
-        try {
-            return fs.readFileSync(fullPath, "utf8");
-        } catch (err) {
-            const msg = `Failed to load ${relativePath}: ${err}`;
-            console.error(msg);
-            throw new Error(msg);
-        }
-    }
-
-    private invalidateCacheIfNeeded(): void {
-        const currentPath = this.extensionUri.fsPath;
-        if (BinaryEditorProvider.cachedExtensionPath && BinaryEditorProvider.cachedExtensionPath !== currentPath) {
-            BinaryEditorProvider.cachedHtml = undefined;
-            BinaryEditorProvider.cachedCommonCss = undefined;
-            BinaryEditorProvider.cachedCss = undefined;
-            BinaryEditorProvider.cachedJs = undefined;
-        }
-        BinaryEditorProvider.cachedExtensionPath = currentPath;
-    }
-
     private getHtmlTemplate(): string {
-        this.invalidateCacheIfNeeded();
-        if (!BinaryEditorProvider.cachedHtml) {
-            BinaryEditorProvider.cachedHtml = this.loadAsset(path.join("client", "src", "editors", "binaryEditor.html"));
-        }
-        return BinaryEditorProvider.cachedHtml;
-    }
-
-    private getCommonCss(): string {
-        if (!BinaryEditorProvider.cachedCommonCss) {
-            BinaryEditorProvider.cachedCommonCss = this.loadAsset(path.join("client", "src", "webview-common.css"));
-        }
-        return BinaryEditorProvider.cachedCommonCss;
+        return getCachedHtmlAsset("binary-editor", this.extensionUri.fsPath, path.join("client", "src", "editors", "binaryEditor.html"));
     }
 
     private getCss(): string {
-        if (!BinaryEditorProvider.cachedCss) {
-            BinaryEditorProvider.cachedCss = this.loadAsset(path.join("client", "src", "editors", "binaryEditor.css"));
-        }
-        return this.getCommonCss() + "\n" + BinaryEditorProvider.cachedCss;
+        return getCachedCssAsset("binary-editor", this.extensionUri.fsPath, [
+            path.join("client", "src", "webview-common.css"),
+            path.join("client", "src", "editors", "binaryEditor.css"),
+        ]);
     }
 
     private getJs(): string {
-        if (!BinaryEditorProvider.cachedJs) {
-            BinaryEditorProvider.cachedJs = this.loadAsset(path.join("client", "out", "editors", "binaryEditor-webview.js"));
-        }
-        return BinaryEditorProvider.cachedJs;
+        return getCachedJsAsset("binary-editor", this.extensionUri.fsPath, path.join("client", "out", "editors", "binaryEditor-webview.js"));
     }
 
     /**

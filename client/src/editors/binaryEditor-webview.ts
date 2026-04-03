@@ -43,8 +43,6 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
         rootChildren: BinaryEditorNode[];
         warnings?: string[];
         errors?: string[];
-        enums: Record<string, Record<number, string>>;
-        flags: Record<string, Record<number, string>>;
     }
 
     interface ChildrenMessage {
@@ -68,9 +66,6 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
 
     type ExtensionToWebview = InitMessage | ChildrenMessage | UpdateFieldMessage | ValidationErrorMessage;
 
-    let currentEnums: Record<string, Record<number, string>> = {};
-    let currentFlags: Record<string, Record<number, string>> = {};
-
     const nodeById = new Map<string, BinaryEditorNode>();
     const confirmedRawValues = new Map<string, number | string>();
     const childrenLoaded = new Set<string>();
@@ -89,8 +84,6 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
         const msg = event.data as ExtensionToWebview;
         switch (msg.type) {
             case "init":
-                currentEnums = msg.enums ?? {};
-                currentFlags = msg.flags ?? {};
                 renderRoot(msg);
                 break;
             case "children":
@@ -233,8 +226,8 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
 
     function createFieldValueElement(node: BinaryEditorNode): HTMLElement {
         const fieldPath = node.fieldPath ?? "";
-        const enumTable = node.enumOptions ?? currentEnums[node.name];
-        const flagTable = node.flagOptions ?? currentFlags[node.name];
+        const enumTable = node.enumOptions;
+        const flagTable = node.flagOptions;
 
         if (node.editable && enumTable && node.valueType === "enum") {
             return createEnumSelect(fieldPath, node, enumTable);
@@ -272,6 +265,7 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
         input.className = `field-input number ${numericFormat === "hex32" ? "hex" : "decimal"}`.trim();
         input.dataset.field = fieldPath;
         input.dataset.numericFormat = numericFormat;
+        input.dataset.valueType = node.valueType ?? "";
         input.value = formatEditableNumberValue(Number.isNaN(raw) ? 0 : raw, numericFormat);
 
         const increment = document.createElement("button");
@@ -328,6 +322,16 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
         const raw = typeof node.rawValue === "number" ? node.rawValue : 0;
         const container = document.createElement("span");
         container.className = "field-flags";
+        const zeroFlagLabel = flagDefs[0];
+
+        if (zeroFlagLabel !== undefined) {
+            const zeroState = document.createElement("span");
+            zeroState.className = "flag-zero-state";
+            zeroState.dataset.zeroStateFor = fieldPath;
+            zeroState.textContent = zeroFlagLabel;
+            zeroState.classList.toggle("hidden", raw !== 0);
+            container.appendChild(zeroState);
+        }
 
         for (const [bit, name] of Object.entries(flagDefs)) {
             const bitValue = Number(bit);
@@ -437,6 +441,8 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
         const checkboxes = fieldEl.querySelectorAll<HTMLElement>(".flag-checkbox");
         if (checkboxes.length > 0) {
             const numericRaw = typeof rawValue === "number" ? rawValue : Number.parseInt(String(rawValue), 10) || 0;
+            const zeroState = fieldEl.querySelector<HTMLElement>(".flag-zero-state");
+            zeroState?.classList.toggle("hidden", numericRaw !== 0);
             checkboxes.forEach((checkbox) => {
                 const bit = Number.parseInt(checkbox.dataset.bit ?? "0", 10);
                 const checked = (numericRaw & bit) !== 0;
@@ -490,11 +496,11 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
                 return;
             }
             const numericFormat = input.dataset.numericFormat === "hex32" ? "hex32" : "decimal";
-            const currentValue = parseEditableNumberValue(input.value, numericFormat);
+            const currentValue = parseEditableNumberValue(input.value, numericFormat, input.dataset.valueType);
             if (Number.isNaN(currentValue)) {
                 return;
             }
-            const nextValue = (currentValue + delta) | 0;
+            const nextValue = currentValue + delta;
             input.value = formatEditableNumberValue(nextValue, numericFormat);
             clearFieldError(fieldPath);
             vscode.postMessage({ type: "edit", fieldPath, value: nextValue });
@@ -553,7 +559,11 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
             if (!fieldPath) {
                 return;
             }
-            const value = parseEditableNumberValue(target.value, target.dataset.numericFormat === "hex32" ? "hex32" : "decimal");
+            const value = parseEditableNumberValue(
+                target.value,
+                target.dataset.numericFormat === "hex32" ? "hex32" : "decimal",
+                target.dataset.valueType,
+            );
             if (Number.isNaN(value)) {
                 return;
             }
@@ -592,12 +602,12 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
                 return;
             }
             const numericFormat = target.dataset.numericFormat === "hex32" ? "hex32" : "decimal";
-            const currentValue = parseEditableNumberValue(target.value, numericFormat);
+            const currentValue = parseEditableNumberValue(target.value, numericFormat, target.dataset.valueType);
             if (Number.isNaN(currentValue)) {
                 return;
             }
             const delta = keyboardEvent.key === "ArrowUp" ? 1 : -1;
-            const nextValue = (currentValue + delta) | 0;
+            const nextValue = currentValue + delta;
             target.value = formatEditableNumberValue(nextValue, numericFormat);
             clearFieldError(fieldPath);
             vscode.postMessage({ type: "edit", fieldPath, value: nextValue });

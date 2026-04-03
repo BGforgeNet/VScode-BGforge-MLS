@@ -84,6 +84,19 @@ describe("MAP parser - real maps", () => {
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
     });
 
+    it("can skip loading tile groups for editor-oriented MAP parsing", () => {
+        const mapData = loadMap(REAL_MAPS[0]);
+        const result = mapParser.parse(mapData, { skipMapTiles: true, gracefulMapBoundaries: true });
+
+        expect(result.errors).toBeUndefined();
+        expect(result.root.fields.some((field) =>
+            field && typeof field === "object" && "name" in field && /^Elevation \d+ Tiles$/.test(String(field.name))
+        )).toBe(false);
+
+        const serialized = mapParser.serialize!(result);
+        expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+    });
+
     it("re-packs tile ids and flags into the original 32-bit word", () => {
         const mapData = loadMap(REAL_MAPS[0]);
         const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });

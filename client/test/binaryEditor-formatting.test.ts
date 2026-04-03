@@ -40,4 +40,11 @@ describe("binaryEditor-formatting", () => {
         expect(Number.isNaN(parseEditableNumberValue("", "hex32"))).toBe(true);
         expect(Number.isNaN(parseEditableNumberValue("xyz", "hex32"))).toBe(true);
     });
+
+    it("parses hex32 values according to the backing integer type", () => {
+        expect(parseEditableNumberValue("FFFFFFFF", "hex32", "uint32")).toBe(0xFFFFFFFF);
+        expect(parseEditableNumberValue("FFFFFFFF", "hex32", "int32")).toBe(-1);
+        expect(parseEditableNumberValue("80000000", "hex32", "uint32")).toBe(0x80000000);
+        expect(parseEditableNumberValue("80000000", "hex32", "int32")).toBe(-2147483648);
+    });
 });

@@ -48,6 +48,10 @@ export class BinaryDocument implements vscode.CustomDocument {
         return this._parseResult;
     }
 
+    getField(fieldPath: string): ParsedField | undefined {
+        return this.findField(fieldPath);
+    }
+
     /**
      * Serialize the current state back to binary bytes.
      */

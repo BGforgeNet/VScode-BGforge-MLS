@@ -53,10 +53,6 @@ export interface InitMessage {
     readonly rootChildren: BinaryEditorNode[];
     readonly warnings?: string[];
     readonly errors?: string[];
-    /** Enum lookup tables keyed by field type, e.g. { "Object Type": { 0: "Item", ... } } */
-    readonly enums: Record<string, Record<number, string>>;
-    /** Flag lookup tables keyed by field name */
-    readonly flags: Record<string, Record<number, string>>;
 }
 
 export interface ChildrenMessage {

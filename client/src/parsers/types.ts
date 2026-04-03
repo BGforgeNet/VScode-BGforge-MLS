@@ -50,6 +50,11 @@ export interface ParseOptions {
      * opaque object section instead of reporting a parse error.
      */
     gracefulMapBoundaries?: boolean;
+    /**
+     * Skip materializing MAP tile fields while still preserving the underlying
+     * bytes for round-trip serialization.
+     */
+    skipMapTiles?: boolean;
 }
 
 /**

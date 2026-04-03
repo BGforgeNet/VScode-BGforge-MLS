@@ -65,3 +65,24 @@ export function validateFlags(value: number, flagDefs: Record<number, string>): 
     }
     return undefined;
 }
+
+export function validateFieldEdit(
+    value: number,
+    type: string,
+    enumLookup?: Record<number, string>,
+    flagDefs?: Record<number, string>,
+): string | undefined {
+    if (type === "enum") {
+        return enumLookup ? validateEnum(value, enumLookup) : undefined;
+    }
+
+    if (type === "flags") {
+        return flagDefs ? validateFlags(value, flagDefs) : undefined;
+    }
+
+    if (type.includes("int") || type.includes("uint")) {
+        return validateNumericRange(value, type);
+    }
+
+    return undefined;
+}

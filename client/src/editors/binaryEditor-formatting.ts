@@ -42,7 +42,7 @@ export function sanitizeEditableNumberValue(text: string, numericFormat: Numeric
     return trimmed.replace(/-/g, "");
 }
 
-export function parseEditableNumberValue(text: string, numericFormat: NumericFormat): number {
+export function parseEditableNumberValue(text: string, numericFormat: NumericFormat, valueType?: string): number {
     const sanitized = sanitizeEditableNumberValue(text.trim(), numericFormat);
     if (sanitized.length === 0 || sanitized === "-") {
         return Number.NaN;
@@ -50,7 +50,15 @@ export function parseEditableNumberValue(text: string, numericFormat: NumericFor
 
     if (numericFormat === "hex32") {
         const parsed = Number.parseInt(sanitized, 16);
-        return parsed | 0;
+        if (!Number.isFinite(parsed)) {
+            return Number.NaN;
+        }
+
+        if (valueType?.startsWith("int") && parsed >= 0x8000_0000) {
+            return parsed - 0x1_0000_0000;
+        }
+
+        return parsed;
     }
 
     return Number.parseInt(sanitized, 10);

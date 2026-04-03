@@ -145,6 +145,12 @@ body {
     padding: 2px 4px;
 }
 
+.flag-zero-state {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.9em;
+    padding: 2px 4px;
+}
+
 .field-meta {
     grid-column: 3;
     grid-row: 1;

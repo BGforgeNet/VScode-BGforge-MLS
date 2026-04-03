@@ -8,6 +8,7 @@ import {
     validateNumericRange,
     validateEnum,
     validateFlags,
+    validateFieldEdit,
 } from "../src/editors/binaryEditor-validation";
 
 describe("validateNumericRange", () => {
@@ -106,5 +107,22 @@ describe("validateFlags", () => {
 
     it("accepts zero flags even with no zero key", () => {
         expect(validateFlags(0, { 0x01: "A" })).toBeUndefined();
+    });
+});
+
+describe("validateFieldEdit", () => {
+    it("rejects out-of-range numeric edits before writing", () => {
+        expect(validateFieldEdit(256, "uint8")).toContain("out of range");
+        expect(validateFieldEdit(-1, "uint32")).toContain("out of range");
+    });
+
+    it("validates enum fields against both range and lookup", () => {
+        expect(validateFieldEdit(1, "enum", { 0: "A", 1: "B" })).toBeUndefined();
+        expect(validateFieldEdit(2, "enum", { 0: "A", 1: "B" })).toContain("Invalid value");
+    });
+
+    it("validates flag fields against the declared mask", () => {
+        expect(validateFieldEdit(0x03, "flags", undefined, { 0x01: "A", 0x02: "B" })).toBeUndefined();
+        expect(validateFieldEdit(0x08, "flags", undefined, { 0x01: "A", 0x02: "B" })).toContain("Invalid flag bits");
     });
 });
