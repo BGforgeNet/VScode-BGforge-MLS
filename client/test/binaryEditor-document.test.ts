@@ -1,5 +1,5 @@
 /**
- * Unit tests for ProDocument edit model.
+ * Unit tests for BinaryDocument edit model.
  * Tests field lookup, edit application, undo/redo callbacks, and serialization.
  */
 
@@ -19,7 +19,7 @@ vi.mock("vscode", () => {
     return { EventEmitter, Uri: { file: (p: string) => ({ fsPath: p, scheme: "file", toString: () => p }) } };
 });
 
-import { ProDocument } from "../src/editors/binaryEditor-document";
+import { BinaryDocument } from "../src/editors/binaryEditor-document";
 import type { ParseResult } from "../src/parsers/types";
 
 function makeTestResult(): ParseResult {
@@ -54,11 +54,11 @@ function makeTestResult(): ParseResult {
 // Provide vscode.Uri for the document constructor
 const fakeUri = { fsPath: "/test/file.pro", scheme: "file", toString: () => "/test/file.pro" } as any;
 
-describe("ProDocument", () => {
-    let doc: ProDocument;
+describe("BinaryDocument", () => {
+    let doc: BinaryDocument;
 
     beforeEach(() => {
-        doc = new ProDocument(fakeUri, makeTestResult());
+        doc = new BinaryDocument(fakeUri, makeTestResult(), () => new Uint8Array([1, 2, 3]));
     });
 
     it("exposes the parse result", () => {

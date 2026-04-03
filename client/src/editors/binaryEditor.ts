@@ -6,50 +6,21 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import { parserRegistry, ParseResult } from "../parsers";
+import { BinaryParser, parserRegistry, ParseResult } from "../parsers";
 import { escapeHtml } from "../utils";
-import { ProDocument } from "./binaryEditor-document";
+import { BinaryDocument } from "./binaryEditor-document";
+import { buildBinaryEditorTreeState, BinaryEditorTreeState } from "./binaryEditor-tree";
 import { validateEnum, validateFlags } from "./binaryEditor-validation";
 import type { WebviewToExtension, ExtensionToWebview, InitMessage } from "./binaryEditor-messages";
-import {
-    ObjectType, ItemSubType, ScenerySubType, DamageType, MaterialType,
-    FRMType, BodyType, KillType, ElevatorType, WeaponAnimCode, StatType,
-    HeaderFlags, ItemFlagsExt, WallLightFlags, ActionFlags, ContainerFlags, CritterFlags,
-    ScriptType,
-} from "../parsers/pro-types";
+import { resolveDisplayValue, resolveEnumLookup, resolveFlagLookup } from "./binaryEditor-lookups";
+import { BinaryEditorRefreshGate } from "./binaryEditor-refreshGate";
+import { BinaryEditorLocalEditTracker } from "./binaryEditor-localEditTracker";
 
-// Maximum file size for binary viewer (1MB should be plenty for any game data file)
-const MAX_FILE_SIZE = 1024 * 1024;
-
-/** Enum lookup tables keyed by field name as shown in the UI */
-const ENUM_TABLES: Record<string, Record<number, string>> = {
-    "Object Type": ObjectType,
-    "FRM Type": FRMType,
-    "Sub Type": { ...ItemSubType, ...ScenerySubType },
-    "Material": MaterialType,
-    "Damage Type": DamageType,
-    "Body Type": BodyType,
-    "Kill Type": KillType,
-    "Elevator Type": ElevatorType,
-    "Animation Code": WeaponAnimCode,
-    "Stat 0": StatType,
-    "Stat 1": StatType,
-    "Stat 2": StatType,
-    "Script Type": ScriptType,
-    "Gender": { 0: "Male", 1: "Female" },
+type EditableBinaryParser = BinaryParser & {
+    serialize: NonNullable<BinaryParser["serialize"]>;
 };
 
-/** Flag lookup tables keyed by field name */
-const FLAG_TABLES: Record<string, Record<number, string>> = {
-    "Flags": HeaderFlags,
-    "Flags Ext": ItemFlagsExt,
-    "Wall Light Flags": WallLightFlags,
-    "Action Flags": ActionFlags,
-    "Open Flags": ContainerFlags,
-    "Critter Flags": CritterFlags,
-};
-
-class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
+class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument> {
     public static readonly viewType = "bgforge.binaryEditor";
 
     // Cached assets (loaded once per extension lifetime)
@@ -62,9 +33,10 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
     private readonly extensionUri: vscode.Uri;
 
     /** Per-document disposables, cleaned up when document is disposed */
-    private readonly documentSubscriptions = new Map<ProDocument, vscode.Disposable[]>();
+    private readonly documentSubscriptions = new Map<BinaryDocument, vscode.Disposable[]>();
+    private readonly treeStates = new Map<BinaryDocument, BinaryEditorTreeState>();
 
-    private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<ProDocument>>();
+    private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<BinaryDocument>>();
     readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
 
     constructor(context: vscode.ExtensionContext) {
@@ -77,9 +49,9 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
         uri: vscode.Uri,
         _openContext: vscode.CustomDocumentOpenContext,
         _token: vscode.CancellationToken,
-    ): Promise<ProDocument> {
-        const parseResult = await this.parseFile(uri);
-        const doc = new ProDocument(uri, parseResult);
+    ): Promise<BinaryDocument> {
+        const { parseResult, parser } = await this.parseFile(uri);
+        const doc = new BinaryDocument(uri, parseResult, parser.serialize.bind(parser));
 
         const subscriptions: vscode.Disposable[] = [];
 
@@ -93,6 +65,7 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
                 for (const sub of subs) sub.dispose();
                 this.documentSubscriptions.delete(doc);
             }
+            this.treeStates.delete(doc);
         }));
 
         this.documentSubscriptions.set(doc, subscriptions);
@@ -101,10 +74,13 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
     }
 
     async resolveCustomEditor(
-        document: ProDocument,
+        document: BinaryDocument,
         webviewPanel: vscode.WebviewPanel,
         _token: vscode.CancellationToken,
     ): Promise<void> {
+        const refreshGate = new BinaryEditorRefreshGate();
+        const localEditTracker = new BinaryEditorLocalEditTracker();
+
         webviewPanel.webview.options = {
             enableScripts: true,
             localResourceRoots: [this.extensionUri],
@@ -119,35 +95,42 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
                 case "ready":
                     this.sendInit(webviewPanel.webview, document);
                     break;
+                case "getChildren":
+                    this.sendChildren(webviewPanel.webview, document, msg.nodeId);
+                    break;
                 case "edit":
-                    this.handleEdit(webviewPanel.webview, document, msg.fieldPath, msg.value);
+                    void this.handleEdit(webviewPanel.webview, document, msg.fieldPath, msg.value, refreshGate, localEditTracker);
                     break;
             }
         });
 
         // Re-send data when content changes (undo/redo)
         document.onDidChangeContent(() => {
+            if (refreshGate.consumeShouldSkipFullRefresh()) {
+                return;
+            }
+            localEditTracker.clear();
             this.sendInit(webviewPanel.webview, document);
         });
     }
 
-    async saveCustomDocument(document: ProDocument, _cancellation: vscode.CancellationToken): Promise<void> {
+    async saveCustomDocument(document: BinaryDocument, _cancellation: vscode.CancellationToken): Promise<void> {
         const bytes = document.getContent();
         await vscode.workspace.fs.writeFile(document.uri, bytes);
     }
 
-    async saveCustomDocumentAs(document: ProDocument, destination: vscode.Uri, _cancellation: vscode.CancellationToken): Promise<void> {
+    async saveCustomDocumentAs(document: BinaryDocument, destination: vscode.Uri, _cancellation: vscode.CancellationToken): Promise<void> {
         const bytes = document.getContent();
         await vscode.workspace.fs.writeFile(destination, bytes);
     }
 
-    async revertCustomDocument(document: ProDocument, _cancellation: vscode.CancellationToken): Promise<void> {
-        const parseResult = await this.parseFile(document.uri);
+    async revertCustomDocument(document: BinaryDocument, _cancellation: vscode.CancellationToken): Promise<void> {
+        const { parseResult } = await this.parseFile(document.uri);
         document.reset(parseResult);
     }
 
     async backupCustomDocument(
-        document: ProDocument,
+        document: BinaryDocument,
         context: vscode.CustomDocumentBackupContext,
         _cancellation: vscode.CancellationToken,
     ): Promise<vscode.CustomDocumentBackup> {
@@ -158,22 +141,63 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
 
     // -- Message handling ---------------------------------------------------
 
-    private sendInit(webview: vscode.Webview, document: ProDocument): void {
+    private sendInit(webview: vscode.Webview, document: BinaryDocument): void {
+        const treeState = buildBinaryEditorTreeState(document.parseResult);
+        this.treeStates.set(document, treeState);
+        const payload = treeState.getInitMessagePayload();
         const msg: InitMessage = {
             type: "init",
-            parseResult: document.parseResult,
-            enums: ENUM_TABLES,
-            flags: FLAG_TABLES,
+            format: payload.format,
+            formatName: payload.formatName,
+            rootChildren: payload.rootChildren,
+            warnings: payload.warnings,
+            errors: payload.errors,
+            enums: {},
+            flags: {},
         };
         webview.postMessage(msg);
     }
 
-    private handleEdit(webview: vscode.Webview, document: ProDocument, fieldPath: string, rawValue: number): void {
+    private sendChildren(webview: vscode.Webview, document: BinaryDocument, nodeId: string): void {
+        const treeState = this.treeStates.get(document) ?? buildBinaryEditorTreeState(document.parseResult);
+        this.treeStates.set(document, treeState);
+        const msg: ExtensionToWebview = {
+            type: "children",
+            nodeId,
+            children: treeState.getChildren(nodeId),
+        };
+        webview.postMessage(msg);
+    }
+
+    private async handleEdit(
+        webview: vscode.Webview,
+        document: BinaryDocument,
+        fieldPath: string,
+        rawValue: number,
+        refreshGate: BinaryEditorRefreshGate,
+        localEditTracker: BinaryEditorLocalEditTracker,
+    ): Promise<void> {
         // Determine validation context from field path
         const fieldName = fieldPath.split(".").pop() ?? "";
+        const format = document.parseResult.format;
+
+        if (localEditTracker.shouldUndo(fieldPath, rawValue)) {
+            localEditTracker.clear();
+            refreshGate.beginIncrementalEdit();
+            await vscode.commands.executeCommand("undo");
+            const displayValue = resolveDisplayValue(format, fieldPath, fieldName, rawValue);
+            const msg: ExtensionToWebview = {
+                type: "updateField",
+                fieldPath,
+                displayValue,
+                rawValue,
+            };
+            webview.postMessage(msg);
+            return;
+        }
 
         // Validate enum fields
-        const enumTable = ENUM_TABLES[fieldName];
+        const enumTable = resolveEnumLookup(format, fieldPath, fieldName);
         if (enumTable) {
             const err = validateEnum(rawValue, enumTable);
             if (err) {
@@ -184,7 +208,7 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
         }
 
         // Validate flag fields
-        const flagTable = FLAG_TABLES[fieldName];
+        const flagTable = resolveFlagLookup(format, fieldPath, fieldName);
         if (flagTable) {
             const err = validateFlags(rawValue, flagTable);
             if (err) {
@@ -195,69 +219,58 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
         }
 
         // Compute display value
-        const displayValue = this.computeDisplayValue(fieldName, rawValue);
+        const displayValue = resolveDisplayValue(format, fieldPath, fieldName, rawValue);
 
         // Apply edit
+        refreshGate.beginIncrementalEdit();
         const edit = document.applyEdit(fieldPath, rawValue, displayValue);
         if (!edit) {
+            refreshGate.cancelIncrementalEdit();
             const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: `Field not found: ${fieldPath}` };
             webview.postMessage(msg);
+            return;
         }
-    }
+        localEditTracker.record(edit);
 
-    /**
-     * Compute display value from raw value for a given field name.
-     */
-    private computeDisplayValue(fieldName: string, rawValue: number): string {
-        const enumTable = ENUM_TABLES[fieldName];
-        if (enumTable) {
-            return enumTable[rawValue] ?? `Unknown (${rawValue})`;
-        }
-
-        const flagTable = FLAG_TABLES[fieldName];
-        if (flagTable) {
-            const flags: string[] = [];
-            for (const [bit, name] of Object.entries(flagTable)) {
-                const bitVal = Number(bit);
-                if (bitVal === 0) {
-                    if (rawValue === 0) flags.push(name);
-                } else if (rawValue & bitVal) {
-                    flags.push(name);
-                }
-            }
-            return flags.length > 0 ? flags.join(", ") : "(none)";
-        }
-
-        return String(rawValue);
+        const msg: ExtensionToWebview = {
+            type: "updateField",
+            fieldPath,
+            displayValue,
+            rawValue,
+        };
+        webview.postMessage(msg);
     }
 
     // -- File parsing -------------------------------------------------------
 
-    private async parseFile(uri: vscode.Uri): Promise<ParseResult> {
-        const fileData = await vscode.workspace.fs.readFile(uri);
-
-        if (fileData.length > MAX_FILE_SIZE) {
-            return {
-                format: "error",
-                formatName: "Error",
-                root: { name: "Error", fields: [], expanded: true },
-                errors: [`File too large: ${fileData.length} bytes, max: ${MAX_FILE_SIZE}`],
-            };
-        }
-
+    private async parseFile(uri: vscode.Uri): Promise<{ parseResult: ParseResult; parser: EditableBinaryParser }> {
         const extension = path.extname(uri.fsPath);
         const parser = parserRegistry.getByExtension(extension);
 
-        if (!parser) {
-            return {
+        if (!parser?.serialize) {
+            const parseResult: ParseResult = {
                 format: "unknown",
                 formatName: "Unknown Format",
                 root: { name: "Error", fields: [], expanded: true },
-                errors: [`No parser registered for extension: ${extension}`],
+                errors: [`No editable parser registered for extension: ${extension}`],
+            };
+            return {
+                parseResult,
+                parser: {
+                    id: "unknown",
+                    name: "Unknown",
+                    extensions: [],
+                    parse: () => parseResult,
+                    serialize: () => new Uint8Array(),
+                },
             };
         }
 
-        return parser.parse(fileData);
+        const fileData = await vscode.workspace.fs.readFile(uri);
+        return {
+            parseResult: parser.parse(fileData),
+            parser: parser as EditableBinaryParser,
+        };
     }
 
     // -- HTML rendering (shell only, data sent via postMessage) --------------
@@ -317,7 +330,7 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<ProDocument> {
      * Generate the HTML shell. The tree content is rendered client-side
      * from data sent via postMessage.
      */
-    private getHtmlShell(document: ProDocument): string {
+    private getHtmlShell(document: BinaryDocument): string {
         const fileName = path.basename(document.uri.fsPath);
         return this.getHtmlTemplate()
             .replace(/\{\{fileName\}\}/g, escapeHtml(fileName))

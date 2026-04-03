@@ -104,11 +104,14 @@ describe("findFiles", () => {
 
     beforeEach(() => {
         fs.mkdirSync(path.join(tmpDir, "sub"), { recursive: true });
+        fs.mkdirSync(path.join(tmpDir, "node_modules", "pkg"), { recursive: true });
         fs.writeFileSync(path.join(tmpDir, "a.ssl"), "");
         fs.writeFileSync(path.join(tmpDir, "b.baf"), "");
         fs.writeFileSync(path.join(tmpDir, "c.txt"), "");
         fs.writeFileSync(path.join(tmpDir, "sub", "d.ssl"), "");
         fs.writeFileSync(path.join(tmpDir, "sub", "e.baf"), "");
+        fs.writeFileSync(path.join(tmpDir, "node_modules", "pkg", "ignored.map"), "");
+        fs.writeFileSync(path.join(tmpDir, "node_modules", "pkg", "ignored.ssl"), "");
     });
 
     afterEach(() => {
@@ -136,6 +139,13 @@ describe("findFiles", () => {
         const files = findFiles(tmpDir, [".ssl"]);
         const basenames = files.map(f => path.basename(f));
         expect(basenames).toContain("upper.SSL");
+    });
+
+    it("skips dependency directories like node_modules", () => {
+        const files = findFiles(tmpDir, [".ssl", ".map"]);
+        const basenames = files.map(f => path.basename(f)).sort();
+        expect(basenames).not.toContain("ignored.map");
+        expect(basenames).not.toContain("ignored.ssl");
     });
 });
 

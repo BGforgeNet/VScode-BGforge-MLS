@@ -12,6 +12,7 @@ import * as path from "path";
 const CLI = path.resolve("cli/bin/out/bin-cli.js");
 const NODE = process.execPath;
 const FIXTURES = path.resolve("client/testFixture/proto");
+const RP_MAPS = path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps");
 
 /** Run the bin CLI, returning exit code, stdout, stderr. */
 function run(...args: string[]): { code: number; stdout: string; stderr: string } {
@@ -149,6 +150,32 @@ describe("bin CLI integration", () => {
     });
 
     describe("error handling", () => {
+        it("fails ambiguous MAP parsing by default", () => {
+            const mapFile = path.join(RP_MAPS, "sfsheng.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "sfsheng-strict.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const { code, stderr } = run(tmpMap, "--save");
+            expect(code).toBe(1);
+            expect(stderr).toContain("overflow");
+        });
+
+        it("allows ambiguous MAP parsing with --graceful-map", () => {
+            const mapFile = path.join(RP_MAPS, "sfsheng.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "sfsheng-graceful.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const { code, stdout, stderr } = run(tmpMap, "--save", "--graceful-map");
+            expect(code).toBe(0);
+            expect(stderr).toBe("");
+            expect(stdout).toContain("Saved:");
+            expect(fs.existsSync(path.join(tmpDir, "sfsheng-graceful.json"))).toBe(true);
+        });
+
         it("exits 1 for parse errors in binary", () => {
             const badFile = path.join(FIXTURES, "bad", "too-small.pro");
             if (!fs.existsSync(badFile)) return;
@@ -222,6 +249,26 @@ describe("bin CLI integration", () => {
                     expect(original.equals(recreated)).toBe(true);
                 }
             }
+        });
+
+        it("preserves .map extension when loading MAP JSON back to binary", () => {
+            const mapFile = path.join(RP_MAPS, "artemple.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "artemple.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const saveResult = run(tmpMap, "--save", "--graceful-map");
+            expect(saveResult.code).toBe(0);
+
+            const tmpJson = path.join(tmpDir, "artemple.json");
+            expect(fs.existsSync(tmpJson)).toBe(true);
+
+            const loadResult = run(tmpJson, "--load", "--graceful-map");
+            expect(loadResult.code).toBe(0);
+            expect(loadResult.stdout).toContain("Wrote:");
+            expect(fs.existsSync(path.join(tmpDir, "artemple.map"))).toBe(true);
+            expect(fs.existsSync(path.join(tmpDir, "artemple.pro"))).toBe(false);
         });
 
         it("exits 1 for nonexistent JSON file", () => {

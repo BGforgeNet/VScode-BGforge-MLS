@@ -89,6 +89,7 @@ body {
 .group.expanded > .group-content {
     display: grid;
     grid-template-columns: 180px 200px 1fr;
+    column-gap: 10px;
     align-items: start;
     padding-bottom: 4px;
 }
@@ -220,10 +221,100 @@ body {
     padding-right: 2px;
 }
 
+.field-number-group {
+    grid-column: 2;
+    grid-row: 1;
+    display: inline-flex;
+    align-items: stretch;
+}
+
+.field-number-group .field-input {
+    grid-column: auto;
+    grid-row: auto;
+    width: 124px;
+    max-width: 124px;
+    flex: 0 0 auto;
+}
+
+.field-number-editor,
+.field-step {
+    box-sizing: border-box;
+    height: 22px;
+}
+
+.field-number-editor {
+    display: inline-flex;
+    align-items: stretch;
+    position: relative;
+    border: 1px solid var(--vscode-input-border);
+    background-color: var(--vscode-input-background);
+    border-radius: 3px;
+    overflow: hidden;
+    width: 124px;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.field-number-group.hex .field-input {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--vscode-debugTokenExpression-number, #b5cea8);
+    min-width: 0;
+    padding-left: 22px;
+    padding-right: 4px;
+}
+
+.field-input-prefix,
+.field-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vscode-input-foreground);
+}
+
+.field-input-prefix {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-editor-font-size, 13px);
+    font-weight: normal;
+    color: var(--vscode-symbolIcon-enumeratorForeground, #ee9d28);
+    line-height: 1;
+}
+
+.field-step {
+    min-width: 24px;
+    padding: 0;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--vscode-input-border);
+    background-color: var(--vscode-input-background);
+}
+
+.field-number-group > .field-input + .field-step,
+.field-number-group > .field-number-editor + .field-step {
+    border-radius: 3px;
+    margin-left: 4px;
+}
+
+.field-step:last-child {
+    border-radius: 3px;
+    margin-left: 4px;
+}
+
+.field-step:hover {
+    background-color: var(--vscode-toolbar-hoverBackground, var(--vscode-list-hoverBackground));
+}
+
 .field-input.enum {
     color: var(--vscode-symbolIcon-enumeratorForeground, #ee9d28);
     cursor: pointer;
-    max-width: 124px;
+    width: 180px;
+    max-width: 180px;
 }
 
 select.field-input option {

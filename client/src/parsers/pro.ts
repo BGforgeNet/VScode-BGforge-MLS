@@ -1,5 +1,5 @@
 import { BufferReader } from "typed-binary";
-import { BinaryParser, ParseResult, ParsedGroup, ParsedField } from "./types";
+import { BinaryParser, ParseOptions, ParseResult, ParsedGroup, ParsedField } from "./types";
 import { serializePro } from "./pro-serializer";
 import {
     ObjectType, ItemSubType, ScenerySubType, DamageType, MaterialType,
@@ -494,7 +494,7 @@ class ProParser implements BinaryParser {
         };
     }
 
-    parse(data: Uint8Array): ParseResult {
+    parse(data: Uint8Array, _options?: ParseOptions): ParseResult {
         try {
             return this.parseInternal(data);
         } catch (err) {

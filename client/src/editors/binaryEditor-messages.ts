@@ -3,7 +3,25 @@
  * All messages are serialized via postMessage as JSON.
  */
 
-import type { ParseResult } from "../parsers";
+export interface BinaryEditorNode {
+    readonly id: string;
+    readonly parentId: string;
+    readonly kind: "group" | "field";
+    readonly name: string;
+    readonly description?: string;
+    readonly expandable: boolean;
+    readonly expanded?: boolean;
+    readonly fieldPath?: string;
+    readonly editable?: boolean;
+    readonly value?: string;
+    readonly rawValue?: number | string;
+    readonly offset?: number;
+    readonly size?: number;
+    readonly valueType?: string;
+    readonly numericFormat?: "decimal" | "hex32";
+    readonly enumOptions?: Record<number, string>;
+    readonly flagOptions?: Record<number, string>;
+}
 
 // -- Webview -> Extension ---------------------------------------------------
 
@@ -19,17 +37,32 @@ export interface ReadyMessage {
     readonly type: "ready";
 }
 
-export type WebviewToExtension = EditMessage | ReadyMessage;
+export interface GetChildrenMessage {
+    readonly type: "getChildren";
+    readonly nodeId: string;
+}
+
+export type WebviewToExtension = EditMessage | ReadyMessage | GetChildrenMessage;
 
 // -- Extension -> Webview ---------------------------------------------------
 
 export interface InitMessage {
     readonly type: "init";
-    readonly parseResult: ParseResult;
+    readonly format: string;
+    readonly formatName: string;
+    readonly rootChildren: BinaryEditorNode[];
+    readonly warnings?: string[];
+    readonly errors?: string[];
     /** Enum lookup tables keyed by field type, e.g. { "Object Type": { 0: "Item", ... } } */
     readonly enums: Record<string, Record<number, string>>;
     /** Flag lookup tables keyed by field name */
     readonly flags: Record<string, Record<number, string>>;
+}
+
+export interface ChildrenMessage {
+    readonly type: "children";
+    readonly nodeId: string;
+    readonly children: BinaryEditorNode[];
 }
 
 export interface UpdateFieldMessage {
@@ -48,4 +81,4 @@ export interface ValidationErrorMessage {
     readonly message: string;
 }
 
-export type ExtensionToWebview = InitMessage | UpdateFieldMessage | ValidationErrorMessage;
+export type ExtensionToWebview = InitMessage | ChildrenMessage | UpdateFieldMessage | ValidationErrorMessage;

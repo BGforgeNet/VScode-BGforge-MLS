@@ -44,6 +44,14 @@ export interface ParseResult {
     errors?: string[];
 }
 
+export interface ParseOptions {
+    /**
+     * Allow MAP files with ambiguous script/object boundaries to fall back to an
+     * opaque object section instead of reporting a parse error.
+     */
+    gracefulMapBoundaries?: boolean;
+}
+
 /**
  * Interface for binary file parsers
  */
@@ -55,7 +63,7 @@ export interface BinaryParser {
     /** File extensions this parser handles (without dot) */
     readonly extensions: string[];
     /** Parse binary data and return structured result */
-    parse(data: Uint8Array): ParseResult;
+    parse(data: Uint8Array, options?: ParseOptions): ParseResult;
     /** Serialize structured result back to binary data (optional, for editors) */
     serialize?(result: ParseResult): Uint8Array;
 }

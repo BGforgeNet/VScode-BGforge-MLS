@@ -265,6 +265,9 @@
                 "selector": [
                     {
                         "filenamePattern": "*.pro"
+                    },
+                    {
+                        "filenamePattern": "*.map"
                     }
                 ],
                 "priority": "default"

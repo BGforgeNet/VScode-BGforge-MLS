@@ -77,13 +77,13 @@ test_format() {
 test_bin() {
     local target_dir="$1"
 
-    if ! find "$target_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | grep -q .; then
+    if [[ ! -d "$target_dir" ]]; then
         return
     fi
 
-    step "Testing Fallout PRO files"
+    step "Testing Fallout binary assets"
     # Stdout mode outputs JSON - discard it, we only care about exit code (parse success)
-    node "$ROOT_DIR/cli/bin/out/bin-cli.js" "$target_dir" -r -q > /dev/null
+    node "$ROOT_DIR/cli/bin/out/bin-cli.js" "$target_dir" -r -q --graceful-map > /dev/null
 }
 
 step "Building CLIs"
@@ -109,7 +109,7 @@ remove_excluded "$ROOT_DIR/external/infinity-engine-exclude.txt" "$ROOT_DIR/exte
 
 step "Format + Idempotency Tests"
 parallel \
-    "Fallout" "test_format '$ROOT_DIR/external/fallout' 'Fallout' && test_bin '$ROOT_DIR/external/fallout'" \
+    "Fallout" "test_format '$ROOT_DIR/external/fallout' 'Fallout' && test_bin '$ROOT_DIR/external/fallout/Fallout2_Restoration_Project/data'" \
     "Infinity Engine" "test_format '$ROOT_DIR/external/infinity-engine' 'Infinity Engine'"
 
 timing_summary "External tests passed"

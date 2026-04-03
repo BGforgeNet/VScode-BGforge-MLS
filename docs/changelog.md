@@ -1,17 +1,11 @@
 # Changelog
 
-## 3.5.0
+## WIP
 
-### PRO Binary Editor
+### Binary Formats
 
-- The PRO file editor is now editable: double-click a number, enum, or flags field to modify its value. Changes are validated before saving.
-- Undo and redo are fully supported via Ctrl+Z / Ctrl+Y (or Cmd on macOS).
-- Field validation errors are shown inline below the field.
-- Renamed from "BGforge Binary Viewer" to "BGforge Binary Editor" to reflect the new capabilities.
-
-### Documentation
-
-- AGENTS.md: Clarified pnpm usage requirements.
+- Fallout 2 PRO viewer is now an editor.
+- Added support for Fallout 2 MAP files in the editor.
 
 ## 3.4.0
 

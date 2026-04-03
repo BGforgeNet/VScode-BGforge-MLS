@@ -84,8 +84,8 @@ vscode-mls/
 |   |   +-- engine-proc-hover.ts    Engine procedure hover docs injection
 |   |   +-- indicator.ts            Server initialization progress indicator
 |   |   +-- dialog-tree/            Dialog tree preview (webview panels)
-|   |   +-- editors/                Binary .pro file editor (custom editor)
-|   |   +-- parsers/                Binary file parsers (.pro format)
+|   |   +-- editors/                Binary .pro/.map editor (custom editor)
+|   |   +-- parsers/                Binary file parsers (.pro/.map)
 |   |   +-- test/                   E2E tests (mocha + vscode test runner)
 |   +-- out/                    esbuild output
 |
@@ -118,7 +118,7 @@ vscode-mls/
 +-- cli/                    Standalone CLI tools
 |   +-- format/                 Format CLI (all languages)
 |   +-- transpile/              Transpile CLI (TSSL, TBAF, TD)
-|   +-- bin/                    Binary parser CLI (.pro -> JSON)
+|   +-- bin/                    Binary parser CLI (.pro/.map -> JSON)
 |   +-- cli-utils.ts            Shared CLI utilities
 |   +-- test/                   CLI tests
 |
@@ -209,7 +209,7 @@ activate()
   |
   +-> Create LanguageClient (IPC transport to server)
   +-> Register commands (compile, dialog preview)
-  +-> Register binary editor provider (.pro files)
+  +-> Register binary editor provider (.pro/.map files)
   +-> Register dialog tree webview panels
   +-> Start server (server/out/server.js)
 ```
@@ -231,7 +231,12 @@ Two webview-based features, each with a host-side and browser-side module:
 | Dialog Tree (SSL) | `dialog-tree/dialogTree.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in SSL |
 | Dialog Tree (D/TD) | `dialog-tree/dialogTree-d.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in D/TD |
 | Dialog Tree (TSSL) | `dialog-tree/dialogTree.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in TSSL |
-| Binary Editor | `editors/binaryEditor.ts` | `binaryEditor-webview.ts` | Open .pro file |
+| Binary Editor | `editors/binaryEditor.ts` | `binaryEditor-webview.ts` | Open .pro or .map file |
+
+Binary editor design choice:
+
+- `.map` files are parsed strictly in the custom editor. If strict parsing fails, the editor shows the parse errors instead of silently falling back to heuristic recovery.
+- Graceful MAP fallback remains available in non-editor workflows such as the binary CLI via `--graceful-map`, where corpus parsing and opaque-byte round-tripping are more useful than an editable strict tree.
 
 ## Server Architecture
 
@@ -343,10 +348,10 @@ and esbuild-wasm. Reports orphan warnings for TD files.
 ### Binary CLI
 
 ```
-node bin-cli.js <file.pro|dir> [--save] [--check] [-r] [-q]
+node bin-cli.js <file.pro|file.map|dir> [--save] [--check] [--load] [--graceful-map] [-r] [-q]
 ```
 
-Parses Fallout `.pro` binary files and outputs structured JSON.
+Parses Fallout `.pro` and `.map` binary files and outputs structured JSON. `--load` writes JSON back using the parser's native extension, and `--graceful-map` allows ambiguous MAP object boundaries to fall back to opaque bytes for corpus and round-trip workflows.
 
 ### Shared CLI Infrastructure
 

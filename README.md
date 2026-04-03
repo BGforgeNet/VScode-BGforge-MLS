@@ -66,7 +66,7 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 | Fallout worldmap    | worldmap.txt | Completion, hover, syntax highlighting |
 | Fallout MSG         | .msg        | Syntax highlighting   |
 | Fallout scripts.lst | scripts.lst | Syntax highlighting   |
-| Fallout PRO         | .pro        | Binary viewer         |
+| Fallout PRO / MAP   | .pro, .map  | Binary editor         |
 | WeiDU TRA           | .tra        | Syntax highlighting   |
 | Infinity 2DA        | .2da        | Syntax highlighting   |
 

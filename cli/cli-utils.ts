@@ -52,6 +52,9 @@ export function findFiles(dir: string, extensions: readonly string[]): string[] 
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
+            if (entry.name === "node_modules" || entry.name === ".git") {
+                continue;
+            }
             files.push(...findFiles(fullPath, extensions));
         } else if (extensions.some(ext => entry.name.toLowerCase().endsWith(ext))) {
             files.push(fullPath);

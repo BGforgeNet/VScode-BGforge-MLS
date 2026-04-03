@@ -1,0 +1,190 @@
+import { describe, expect, it } from "vitest";
+import * as fs from "fs";
+import * as path from "path";
+import type { ParseResult } from "../src/parsers/types";
+import { mapParser } from "../src/parsers/map";
+import { buildBinaryEditorTreeState } from "../src/editors/binaryEditor-tree";
+
+function makeProResult(): ParseResult {
+    return {
+        format: "pro",
+        formatName: "Fallout PRO (Prototype)",
+        root: {
+            name: "PRO File",
+            fields: [
+                {
+                    name: "Header",
+                    expanded: true,
+                    fields: [
+                        { name: "Object Type", value: "Misc", offset: 0, size: 1, type: "enum", rawValue: 5 },
+                        { name: "Text ID", value: 100, offset: 4, size: 4, type: "uint32" },
+                    ],
+                },
+            ],
+        },
+    };
+}
+
+function loadMapResult(mapName: string, gracefulMapBoundaries = false): ParseResult {
+    const mapPath = path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps", mapName);
+    return mapParser.parse(new Uint8Array(fs.readFileSync(mapPath)), { gracefulMapBoundaries });
+}
+
+describe("buildBinaryEditorTreeState", () => {
+    it("builds root and lazy children for non-MAP parse results", () => {
+        const tree = buildBinaryEditorTreeState(makeProResult());
+        const init = tree.getInitMessagePayload();
+
+        expect(init.rootChildren).toHaveLength(1);
+        expect(init.rootChildren[0]).toMatchObject({
+            name: "Header",
+            kind: "group",
+            expandable: true,
+        });
+
+        const headerChildren = tree.getChildren(init.rootChildren[0].id);
+        expect(headerChildren.map((node) => node.name)).toEqual(["Object Type", "Text ID"]);
+        expect(headerChildren[0]).toMatchObject({
+            kind: "field",
+            fieldPath: "Header.Object Type",
+            editable: true,
+            enumOptions: { 0: "Item", 1: "Critter", 2: "Scenery", 3: "Wall", 4: "Tile", 5: "Misc" },
+        });
+    });
+
+    it("uses compact MAP summaries as lazy root nodes", () => {
+        const fullResult = loadMapResult("artemple.map", true);
+        const tree = buildBinaryEditorTreeState(fullResult);
+        const init = tree.getInitMessagePayload();
+
+        expect(init.rootChildren.map((node) => node.name)).toEqual([
+            "Header",
+            "Tiles",
+            "Timer Scripts",
+            "Item Scripts",
+            "Objects Section",
+        ]);
+
+        const tilesNode = init.rootChildren.find((node) => node.name === "Tiles");
+        expect(tilesNode).toBeDefined();
+        const tilesChildren = tree.getChildren(tilesNode!.id);
+        expect(tilesChildren).toEqual([]);
+
+        const objectsNode = init.rootChildren.find((node) => node.name === "Objects Section");
+        expect(objectsNode).toBeDefined();
+        const objectSectionChildren = tree.getChildren(objectsNode!.id);
+        expect(objectSectionChildren.map((node) => node.name).slice(0, 2)).toEqual([
+            "Total Objects",
+            "Elevation 0 Objects",
+        ]);
+    });
+
+    it("keeps MAP init payload tiny for large real maps", () => {
+        const tree = buildBinaryEditorTreeState(loadMapResult("navarro.map", true));
+        const initBytes = Buffer.byteLength(JSON.stringify(tree.getInitMessagePayload()));
+
+        expect(initBytes).toBeLessThan(10_000);
+    });
+
+    it("shows only parse errors for strict MAP failures", () => {
+        const tree = buildBinaryEditorTreeState(loadMapResult("sfsheng.map"));
+        const init = tree.getInitMessagePayload();
+
+        expect(init.errors?.some((error) => error.includes("overflow"))).toBe(true);
+        expect(init.rootChildren).toEqual([]);
+    });
+
+    it("attaches MAP enum and flag options to lazy field nodes", () => {
+        const tree = buildBinaryEditorTreeState(loadMapResult("arcaves.map"));
+        const init = tree.getInitMessagePayload();
+
+        const headerNode = init.rootChildren.find((node) => node.name === "Header");
+        expect(headerNode).toBeDefined();
+        const headerChildren = tree.getChildren(headerNode!.id);
+        expect(headerChildren.find((node) => node.name === "Default Elevation")).toMatchObject({
+            valueType: "enum",
+            enumOptions: { 0: "0", 1: "1", 2: "2" },
+        });
+
+        const timerScripts = init.rootChildren.find((node) => node.name === "Timer Scripts");
+        expect(timerScripts).toBeDefined();
+        const timerExtents = tree.getChildren(timerScripts!.id);
+        const extent0 = timerExtents.find((node) => node.name === "Extent 0");
+        expect(extent0).toBeDefined();
+        const slots = tree.getChildren(extent0!.id);
+        const slot0 = slots.find((node) => node.name === "Slot 0");
+        expect(slot0).toBeDefined();
+        const slotChildren = tree.getChildren(slot0!.id);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Flags")).toMatchObject({
+            valueType: "flags",
+            flagOptions: { 1: "Loaded", 2: "NoSpatial", 4: "Executed", 8: "NoSave", 16: "NoRemove" },
+        });
+    });
+
+    it("disables MAP edits for structural and opaque fields", () => {
+        const tree = buildBinaryEditorTreeState(loadMapResult("arcaves.map"));
+        const init = tree.getInitMessagePayload();
+
+        const headerNode = init.rootChildren.find((node) => node.name === "Header");
+        expect(headerNode).toBeDefined();
+        const headerChildren = tree.getChildren(headerNode!.id);
+        expect(headerChildren.find((node) => node.name === "Num Local Vars")?.editable).toBe(false);
+        expect(headerChildren.find((node) => node.name === "Default Elevation")?.editable).toBe(true);
+
+        const timerScripts = init.rootChildren.find((node) => node.name === "Timer Scripts");
+        expect(timerScripts).toBeDefined();
+        const timerExtents = tree.getChildren(timerScripts!.id);
+        const extent0 = timerExtents.find((node) => node.name === "Extent 0");
+        expect(extent0).toBeDefined();
+        const extentChildren = tree.getChildren(extent0!.id);
+        expect(extentChildren.find((node) => node.name === "Extent Length")?.editable).toBe(false);
+
+        const slot0 = tree.getChildren(extent0!.id).find((node) => node.name === "Slot 0");
+        expect(slot0).toBeDefined();
+        const slotChildren = tree.getChildren(slot0!.id);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Flags")?.editable).toBe(true);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Index")?.editable).toBe(true);
+        expect(slotChildren.find((node) => node.name === "Entry 0 Local Vars Offset")?.editable).toBe(false);
+
+        const objectsNode = init.rootChildren.find((node) => node.name === "Objects Section");
+        expect(objectsNode).toBeDefined();
+        const objectSectionChildren = tree.getChildren(objectsNode!.id);
+        expect(objectSectionChildren.find((node) => node.name === "Total Objects")?.editable).toBe(false);
+
+        const elevation0 = objectSectionChildren.find((node) => node.name === "Elevation 0 Objects");
+        expect(elevation0).toBeDefined();
+        const elevation0Children = tree.getChildren(elevation0!.id);
+        expect(elevation0Children.find((node) => node.name === "Object Count")?.editable).toBe(false);
+
+        const firstObject = elevation0Children.find((node) => node.name === "Object 0.0 (Misc)");
+        expect(firstObject).toBeDefined();
+        const firstObjectChildren = tree.getChildren(firstObject!.id);
+        expect(firstObjectChildren.find((node) => node.name === "ID")?.editable).toBe(true);
+        expect(firstObjectChildren.find((node) => node.name === "Rotation")?.editable).toBe(true);
+        expect(firstObjectChildren.find((node) => node.name === "Screen X")?.editable).toBe(true);
+        expect(firstObjectChildren.find((node) => node.name === "Screen Y")?.editable).toBe(true);
+        expect(firstObjectChildren.find((node) => node.name === "PID")).toMatchObject({
+            editable: true,
+            value: "0x500000C",
+            numericFormat: "hex32",
+        });
+        expect(firstObjectChildren.find((node) => node.name === "FID")).toMatchObject({
+            numericFormat: "hex32",
+        });
+        expect(firstObjectChildren.find((node) => node.name === "CID")).toMatchObject({
+            editable: true,
+            numericFormat: "hex32",
+        });
+        expect(firstObjectChildren.find((node) => node.name === "Inventory Header")?.editable).toBeUndefined();
+
+        const inventoryHeader = firstObjectChildren.find((node) => node.name === "Inventory Header");
+        expect(inventoryHeader).toBeDefined();
+        const inventoryFields = tree.getChildren(inventoryHeader!.id);
+        expect(inventoryFields.find((node) => node.name === "Inventory Length")?.editable).toBe(false);
+
+        const objectData = firstObjectChildren.find((node) => node.name === "Object Data");
+        expect(objectData).toBeDefined();
+        const objectDataFields = tree.getChildren(objectData!.id);
+        expect(objectDataFields.find((node) => node.name === "Data Flags")?.editable).toBe(true);
+    });
+});

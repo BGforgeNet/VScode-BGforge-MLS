@@ -1,17 +1,16 @@
 /**
- * ProDocument: custom document model for the binary PRO editor.
+ * BinaryDocument: custom document model for the binary editor.
  * Holds the current ParseResult and raw bytes, supports editing fields,
  * and integrates with VSCode's undo/redo via CustomDocumentEditEvent.
  */
 
 import * as vscode from "vscode";
-import { ParseResult, ParsedField, ParsedGroup } from "../parsers";
-import { serializePro } from "../parsers/pro-serializer";
+import { BinaryParser, ParseResult, ParsedField, ParsedGroup } from "../parsers";
 
 /**
  * Represents a single field edit for undo/redo.
  */
-interface FieldEdit {
+export interface FieldEdit {
     readonly fieldPath: string;
     readonly oldRawValue: number;
     readonly oldDisplayValue: string;
@@ -20,17 +19,18 @@ interface FieldEdit {
 }
 
 /**
- * Custom document for PRO binary files.
+ * Custom document for binary files handled by a registered parser.
  * Manages parsed state and exposes an edit API.
  */
-export class ProDocument implements vscode.CustomDocument {
+export class BinaryDocument implements vscode.CustomDocument {
     readonly uri: vscode.Uri;
     private _parseResult: ParseResult;
+    private readonly serializer: NonNullable<BinaryParser["serialize"]>;
 
     private readonly _onDidDispose = new vscode.EventEmitter<void>();
     readonly onDidDispose = this._onDidDispose.event;
 
-    private readonly _onDidChange = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<ProDocument>>();
+    private readonly _onDidChange = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<BinaryDocument>>();
     /** VSCode listens to this for dirty state and undo/redo */
     readonly onDidChange = this._onDidChange.event;
 
@@ -38,9 +38,10 @@ export class ProDocument implements vscode.CustomDocument {
     /** Internal event: content changed, webview should refresh */
     readonly onDidChangeContent = this._onDidChangeContent.event;
 
-    constructor(uri: vscode.Uri, parseResult: ParseResult) {
+    constructor(uri: vscode.Uri, parseResult: ParseResult, serializer: NonNullable<BinaryParser["serialize"]>) {
         this.uri = uri;
         this._parseResult = parseResult;
+        this.serializer = serializer;
     }
 
     get parseResult(): ParseResult {
@@ -51,7 +52,7 @@ export class ProDocument implements vscode.CustomDocument {
      * Serialize the current state back to binary bytes.
      */
     getContent(): Uint8Array {
-        return serializePro(this._parseResult);
+        return this.serializer(this._parseResult);
     }
 
     /**
