@@ -69,7 +69,8 @@ const HELP = `Usage: bin-cli <file.pro|file.map|dir> [--save] [--check] [--load]
   --save    Save parsed JSON alongside the binary file (.json)
   --check   Compare parsed output against existing .json snapshot (exit 1 if diff)
   --load    Load JSON and write binary using the parser's native extension
-  --graceful-map  Allow ambiguous MAP object boundaries to fall back to opaque bytes
+  --graceful-map  Opt into permissive MAP boundary guessing for ambiguous files (default is strict;
+                  required again on --load for JSON snapshots created from ambiguous MAP bytes)
   -r        Recursively process all supported files in directory
   -q        Quiet mode: suppress summary, only print errors
 
@@ -77,7 +78,9 @@ Examples:
   bin-cli file.pro                  # Parse single file, print JSON to stdout
   bin-cli proto/ -r --save          # Save JSON snapshots for all files
   bin-cli proto/ -r -q --check      # Verify files match snapshots (CI)
-  bin-cli file.json --load          # Convert JSON back to binary (.pro/.map/etc.)`;
+  bin-cli file.json --load          # Convert JSON back to binary (.pro/.map/etc.)
+  bin-cli sfsheng.json --load --graceful-map
+                                   # Reload an ambiguous MAP snapshot saved with --graceful-map`;
 
 /**
  * Load a JSON file and serialize it back to binary format.

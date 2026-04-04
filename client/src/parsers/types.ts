@@ -38,10 +38,23 @@ export interface ParseResult {
     formatName: string;
     /** Parsed structure as groups and fields */
     root: ParsedGroup;
+    /** Raw byte ranges preserved when parts of the format cannot be decoded structurally */
+    opaqueRanges?: ParseOpaqueRange[];
     /** Any warnings during parsing */
     warnings?: string[];
     /** Any errors during parsing */
     errors?: string[];
+}
+
+/**
+ * Raw byte range preserved in JSON for undecoded sections.
+ * Bytes are chunked into short hex strings to keep diffs readable.
+ */
+export interface ParseOpaqueRange {
+    label: string;
+    offset: number;
+    size: number;
+    hexChunks: string[];
 }
 
 export interface ParseOptions {

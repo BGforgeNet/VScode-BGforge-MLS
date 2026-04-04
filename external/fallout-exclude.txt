@@ -92,3 +92,12 @@ Fallout2_Restoration_Project/scripts_src/newreno/ncnikki.ssl
 # sees a bare `if (condition)` with no `then`, which cannot complete the if_stmt rule.
 Fallout2_Restoration_Project/scripts_src/brokhill/hcdoc.ssl
 
+# MAP file with ambiguous script/object boundary in strict mode.
+# The current strict MAP parser reports:
+# - `Script entry Entry 6891 overflow at offset 0x80cec`
+# - `Script entry Entry 6892 truncated at offset 0x80cec`
+# - `Script extent 430 metadata truncated for script type 3`
+# Permissive `--graceful-map` mode can preserve the undecidable tail opaquely,
+# but strict external tests should exclude this file until the boundary can be
+# derived from a stronger format rule.
+Fallout2_Restoration_Project/data/maps/sfsheng.map

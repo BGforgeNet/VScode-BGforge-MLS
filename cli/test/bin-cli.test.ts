@@ -176,6 +176,25 @@ describe("bin CLI integration", () => {
             expect(fs.existsSync(path.join(tmpDir, "sfsheng-graceful.json"))).toBe(true);
         });
 
+        it("saves strict MAP JSON for PRO-dependent object tails without --graceful-map", () => {
+            const mapFile = path.join(RP_MAPS, "denbus1.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "denbus1.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const { code, stdout, stderr } = run(tmpMap, "--save");
+            expect(code).toBe(0);
+            expect(stderr).toBe("");
+            expect(stdout).toContain("Saved:");
+
+            const jsonText = fs.readFileSync(path.join(tmpDir, "denbus1.json"), "utf-8");
+            const parsed = JSON.parse(jsonText) as {
+                opaqueRanges?: Array<{ label: string }>;
+            };
+            expect(parsed.opaqueRanges?.[0]?.label).toBe("objects-tail");
+        });
+
         it("exits 1 for parse errors in binary", () => {
             const badFile = path.join(FIXTURES, "bad", "too-small.pro");
             if (!fs.existsSync(badFile)) return;
@@ -269,6 +288,87 @@ describe("bin CLI integration", () => {
             expect(loadResult.stdout).toContain("Wrote:");
             expect(fs.existsSync(path.join(tmpDir, "artemple.map"))).toBe(true);
             expect(fs.existsSync(path.join(tmpDir, "artemple.pro"))).toBe(false);
+        });
+
+        it("loads strict MAP JSON with PRO-dependent opaque ranges back to identical bytes", () => {
+            const mapFile = path.join(RP_MAPS, "denbus1.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "denbus1.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const saveResult = run(tmpMap, "--save");
+            expect(saveResult.code).toBe(0);
+
+            const tmpJson = path.join(tmpDir, "denbus1.json");
+            const loadResult = run(tmpJson, "--load");
+            expect(loadResult.code).toBe(0);
+
+            const original = fs.readFileSync(mapFile);
+            const recreated = fs.readFileSync(tmpMap);
+            expect(original.equals(recreated)).toBe(true);
+        });
+
+        it("round-trips ambiguous MAP JSON back to identical bytes with opaque ranges", () => {
+            const mapFile = path.join(RP_MAPS, "sfsheng.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "sfsheng.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const saveResult = run(tmpMap, "--save", "--graceful-map");
+            expect(saveResult.code).toBe(0);
+
+            const tmpJson = path.join(tmpDir, "sfsheng.json");
+            const loadResult = run(tmpJson, "--load", "--graceful-map");
+            expect(loadResult.code).toBe(0);
+
+            const original = fs.readFileSync(mapFile);
+            const recreated = fs.readFileSync(tmpMap);
+            expect(original.equals(recreated)).toBe(true);
+        });
+
+        it("rejects loading ambiguous MAP JSON without --graceful-map", () => {
+            const mapFile = path.join(RP_MAPS, "sfsheng.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "sfsheng.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const saveResult = run(tmpMap, "--save", "--graceful-map");
+            expect(saveResult.code).toBe(0);
+
+            const tmpJson = path.join(tmpDir, "sfsheng.json");
+            const loadResult = run(tmpJson, "--load");
+            expect(loadResult.code).toBe(1);
+            expect(loadResult.stderr).toContain("Validation failed");
+            expect(loadResult.stderr).toContain("overflow");
+        });
+
+        it("writes opaque MAP ranges as short hex chunks for readable diffs", () => {
+            const mapFile = path.join(RP_MAPS, "sfsheng.map");
+            if (!fs.existsSync(mapFile)) return;
+
+            const tmpMap = path.join(tmpDir, "sfsheng.map");
+            fs.copyFileSync(mapFile, tmpMap);
+
+            const saveResult = run(tmpMap, "--save", "--graceful-map");
+            expect(saveResult.code).toBe(0);
+
+            const tmpJson = path.join(tmpDir, "sfsheng.json");
+            const jsonText = fs.readFileSync(tmpJson, "utf-8");
+            const parsed = JSON.parse(jsonText) as {
+                opaqueRanges?: Array<{ label: string; hexChunks: string[] }>;
+            };
+
+            expect(parsed.opaqueRanges?.[0]?.label).toBe("objects-tail");
+            expect(parsed.opaqueRanges?.[0]?.hexChunks.length).toBeGreaterThan(0);
+
+            const chunkLines = jsonText
+                .split("\n")
+                .filter((line) => /^\s+"[0-9a-f]+",?$/.test(line));
+            expect(chunkLines.length).toBeGreaterThan(0);
+            expect(chunkLines.every((line) => line.length <= 80)).toBe(true);
         });
 
         it("exits 1 for nonexistent JSON file", () => {

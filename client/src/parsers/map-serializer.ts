@@ -5,8 +5,9 @@
  * to the output buffer at its declared offset and size.
  */
 
-import { ParseResult, ParsedGroup, ParsedField } from "./types";
+import { ParseOpaqueRange, ParseResult, ParsedGroup, ParsedField } from "./types";
 import { HEADER_SIZE } from "./map-schemas";
+import { decodeOpaqueRange } from "./opaque-range";
 
 type MapParseResult = ParseResult & {
     __sourceData?: Uint8Array;
@@ -57,6 +58,10 @@ export function serializeMap(result: ParseResult): Uint8Array {
         const end = f.offset + f.size;
         if (end > maxEnd) maxEnd = end;
     });
+    for (const opaqueRange of result.opaqueRanges ?? []) {
+        const end = opaqueRange.offset + opaqueRange.size;
+        if (end > maxEnd) maxEnd = end;
+    }
 
     if (maxEnd < HEADER_SIZE) {
         maxEnd = HEADER_SIZE;
@@ -71,9 +76,17 @@ export function serializeMap(result: ParseResult): Uint8Array {
     }
     const view = new DataView(buf);
 
+    writeOpaqueRanges(bytes, result.opaqueRanges);
     writeGroup(view, result.root, sourceData);
 
     return bytes;
+}
+
+function writeOpaqueRanges(target: Uint8Array, opaqueRanges?: ParseOpaqueRange[]): void {
+    for (const opaqueRange of opaqueRanges ?? []) {
+        const bytes = decodeOpaqueRange(opaqueRange);
+        target.set(bytes, opaqueRange.offset);
+    }
 }
 
 function visitFields(group: ParsedGroup, fn: (f: ParsedField) => void): void {

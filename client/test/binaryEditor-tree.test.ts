@@ -27,7 +27,10 @@ function makeProResult(): ParseResult {
 }
 
 function loadMapResult(mapName: string, gracefulMapBoundaries = false, skipMapTiles = false): ParseResult {
-    const mapPath = path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps", mapName);
+    const fixtureMapPath = path.resolve("client/testFixture/maps", mapName);
+    const mapPath = fs.existsSync(fixtureMapPath)
+        ? fixtureMapPath
+        : path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps", mapName);
     return mapParser.parse(new Uint8Array(fs.readFileSync(mapPath)), { gracefulMapBoundaries, skipMapTiles });
 }
 

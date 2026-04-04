@@ -11,8 +11,9 @@
  * 6. Objects per elevation (variable count)
  */
 
-import { BinaryParser, ParseOptions, ParseResult, ParsedGroup, ParsedField } from "./types";
+import { BinaryParser, ParseOpaqueRange, ParseOptions, ParseResult, ParsedGroup, ParsedField } from "./types";
 import { serializeMap } from "./map-serializer";
+import { encodeOpaqueRange } from "./opaque-range";
 import {
     MapVersion, MapFlags, MapElevation, ObjectFlags, Rotation, ScriptFlags, ScriptProc, ScriptType, Skill,
     hasElevation,
@@ -273,6 +274,7 @@ function parseScripts(
     for (let scriptType = 0; scriptType < scriptTypeCount; scriptType++) {
         if (currentOffset + 4 > data.length) break;
         if (data.length - currentOffset < 4) break;
+        const countOffset = currentOffset;
         const view = new DataView(data.buffer, data.byteOffset + currentOffset, 4);
         const count = view.getInt32(0, false);
         currentOffset += 4;
@@ -280,10 +282,19 @@ function parseScripts(
         if (count < 0) {
             break;
         }
-        if (count === 0) continue;
-        if (currentOffset >= data.length) break;
 
-        const scriptEntries: (ParsedField | ParsedGroup)[] = [];
+        const scriptEntries: (ParsedField | ParsedGroup)[] = [
+            field("Script Count", count, countOffset, 4, "int32"),
+        ];
+
+        if (count === 0) {
+            scripts.push(group(`${ScriptType[scriptType] ?? `Type${scriptType}`} Scripts`, scriptEntries));
+            continue;
+        }
+        if (currentOffset >= data.length) {
+            scripts.push(group(`${ScriptType[scriptType] ?? `Type${scriptType}`} Scripts`, scriptEntries));
+            break;
+        }
         const extentCount = Math.ceil(count / 16);
 
         for (let extentIndex = 0; extentIndex < extentCount; extentIndex++) {
@@ -533,7 +544,7 @@ function parseObjects(
     header: MapHeader,
     currentOffset: number,
     errors: string[]
-): { offset: number; group: ParsedGroup } {
+): { offset: number; group: ParsedGroup; opaqueTailOffset?: number } {
     if (currentOffset >= data.length) {
         return {
             offset: currentOffset,
@@ -607,6 +618,12 @@ function parseObjects(
                 : `Opaque trailing object bytes remain from offset 0x${currentOffset.toString(16)}; full decoding requires PRO-backed subtype resolution`,
             currentOffset
         ));
+
+        return {
+            offset: data.length,
+            group: group("Objects Section", sectionFields),
+            opaqueTailOffset: currentOffset,
+        };
     }
 
     return { offset: data.length, group: group("Objects Section", sectionFields) };
@@ -829,6 +846,7 @@ class MapParser implements BinaryParser {
 
     private parseInternal(data: Uint8Array, options?: ParseOptions): ParseResult {
         const errors: string[] = [];
+        const opaqueRanges: ParseOpaqueRange[] = [];
 
         if (data.length < HEADER_SIZE) {
             return this.fail(`File too small: ${data.length} bytes, need at least ${HEADER_SIZE}`);
@@ -863,12 +881,13 @@ class MapParser implements BinaryParser {
             const scriptTailCandidates = [0, 1, 2, 3, 4, 5].map((scriptTypeCount) => {
                 const candidateErrors: string[] = [];
                 const { scripts, offset: scriptOffset } = parseScripts(data, currentOffset, candidateErrors, scriptTypeCount);
-                const { group: objectsGroup } = parseObjects(data, header, scriptOffset, candidateErrors);
+                const { group: objectsGroup, opaqueTailOffset } = parseObjects(data, header, scriptOffset, candidateErrors);
 
                 return {
                     scripts,
                     scriptOffset,
                     objectsGroup,
+                    opaqueTailOffset,
                     candidateErrors,
                     score: scoreParsedTail(scriptTypeCount, candidateErrors, objectsGroup),
                 };
@@ -887,19 +906,34 @@ class MapParser implements BinaryParser {
                 ? chosenTail.objectsGroup
                 : buildOpaqueObjectsGroup(chosenTail.scriptOffset);
             rootFields.push(objectsGroup);
+
+            const opaqueRange = encodeOpaqueRange(
+                "objects-tail",
+                data,
+                chosenTailIsConfident ? (chosenTail.opaqueTailOffset ?? data.length) : chosenTail.scriptOffset
+            );
+            if (opaqueRange) {
+                opaqueRanges.push(opaqueRange);
+            }
         } else {
             const { scripts, offset: scriptOffset } = parseScripts(data, currentOffset, errors, STRICT_MAP_SCRIPT_TYPE_COUNT);
-            const { group: objectsGroup } = parseObjects(data, header, scriptOffset, errors);
+            const { group: objectsGroup, opaqueTailOffset } = parseObjects(data, header, scriptOffset, errors);
 
             rootFields.push(...scripts);
             currentOffset = scriptOffset;
             rootFields.push(objectsGroup);
+
+            const opaqueRange = encodeOpaqueRange("objects-tail", data, opaqueTailOffset ?? data.length);
+            if (opaqueRange) {
+                opaqueRanges.push(opaqueRange);
+            }
         }
 
         return {
             format: this.id,
             formatName: this.name,
             root: group("MAP File", rootFields),
+            opaqueRanges: opaqueRanges.length > 0 ? opaqueRanges : undefined,
             errors: errors.length > 0 ? errors : undefined,
         };
     }

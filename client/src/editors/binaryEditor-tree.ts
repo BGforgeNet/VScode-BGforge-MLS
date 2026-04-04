@@ -47,6 +47,22 @@ function shouldHideFieldFromEditor(parseResult: ParseResult, entry: ParsedField)
         || /^Entry \d+ (Next Script Link \(legacy\)|Unknown Field 0x48|Legacy Field 0x50)$/.test(entry.name);
 }
 
+function shouldHideMapGroupFromEditor(entry: ParsedGroup): boolean {
+    if (!entry.name.endsWith("Scripts")) {
+        return false;
+    }
+
+    if (entry.fields.length !== 1) {
+        return false;
+    }
+
+    const [firstField] = entry.fields;
+    return firstField !== undefined
+        && !isGroup(firstField)
+        && firstField.name === "Script Count"
+        && firstField.value === 0;
+}
+
 function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | ParsedGroup): ParsedField | ParsedGroup | undefined {
     if (!isGroup(entry)) {
         return shouldHideFieldFromEditor(parseResult, entry) ? undefined : entry;
@@ -57,6 +73,10 @@ function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | Pars
         .filter((child): child is ParsedField | ParsedGroup => child !== undefined);
 
     if (projectedChildren.length === 0) {
+        return undefined;
+    }
+
+    if (parseResult.format === "map" && shouldHideMapGroupFromEditor(group(entry.name, projectedChildren, entry.expanded !== false, entry.description))) {
         return undefined;
     }
 

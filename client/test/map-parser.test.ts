@@ -13,6 +13,22 @@ const REAL_MAPS = [
     path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/sftanker.map"),
 ] as const;
 
+const LOCAL_FIXTURE_MAPS = new Set([
+    "artemple.map",
+    "arcaves.map",
+    "bhrnddst.map",
+    "denbus1.map",
+    "newr2.map",
+    "sfsheng.map",
+]);
+
+function resolveMapPath(fileName: string): string {
+    if (LOCAL_FIXTURE_MAPS.has(fileName)) {
+        return path.resolve("client/testFixture/maps", fileName);
+    }
+    return path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps", fileName);
+}
+
 function loadMap(mapPath: string): Uint8Array {
     return new Uint8Array(fs.readFileSync(mapPath));
 }
@@ -84,6 +100,19 @@ describe("MAP parser - real maps", () => {
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
     });
 
+    it("strict mode preserves PRO-dependent object tails as opaque ranges without parse errors", () => {
+        const mapData = loadMap(resolveMapPath("denbus1.map"));
+        const result = mapParser.parse(mapData);
+
+        expect(result.errors).toBeUndefined();
+        expect(result.opaqueRanges?.[0]).toMatchObject({
+            label: "objects-tail",
+        });
+
+        const serialized = mapParser.serialize!(result);
+        expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+    });
+
     it("can skip loading tile groups for editor-oriented MAP parsing", () => {
         const mapData = loadMap(REAL_MAPS[0]);
         const result = mapParser.parse(mapData, { skipMapTiles: true, gracefulMapBoundaries: true });
@@ -147,7 +176,7 @@ describe("MAP parser - real maps", () => {
     });
 
     it("parses arcaves.map object headers at the correct script boundary", () => {
-        const mapData = loadMap(path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/arcaves.map"));
+        const mapData = loadMap(resolveMapPath("arcaves.map"));
         const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
 
         expect(result.errors).toBeUndefined();
@@ -167,7 +196,7 @@ describe("MAP parser - real maps", () => {
     });
 
     it("stops MAP filename decoding at the first NUL byte", () => {
-        const mapData = loadMap(path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/newr2.map"));
+        const mapData = loadMap(resolveMapPath("newr2.map"));
         const result = mapParser.parse(mapData);
 
         expect(result.errors).toBeUndefined();
@@ -177,7 +206,7 @@ describe("MAP parser - real maps", () => {
     });
 
     it("exposes MAP enums and flags with semantic field types", () => {
-        const mapData = loadMap(path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/arcaves.map"));
+        const mapData = loadMap(resolveMapPath("arcaves.map"));
         const result = mapParser.parse(mapData);
 
         expect(result.errors).toBeUndefined();
@@ -210,7 +239,7 @@ describe("MAP parser - real maps", () => {
         expect(findFieldByName(firstObject!.fields, "Elevation").type).toBe("enum");
 
         const exitGridResult = mapParser.parse(
-            loadMap(path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/bhrnddst.map"))
+            loadMap(resolveMapPath("bhrnddst.map"))
         );
         expect(exitGridResult.errors).toBeUndefined();
 
@@ -230,7 +259,7 @@ describe("MAP parser - real maps", () => {
     });
 
     it("parses sfsheng.map without script overflow errors", () => {
-        const mapData = loadMap(path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/sfsheng.map"));
+        const mapData = loadMap(resolveMapPath("sfsheng.map"));
         const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
 
         expect(result.errors).toBeUndefined();
@@ -242,7 +271,7 @@ describe("MAP parser - real maps", () => {
     it.each([
         "sfsheng.map",
     ])("falls back to an opaque object section for ambiguous %s boundaries", (fileName) => {
-        const mapData = loadMap(path.resolve(`external/fallout/Fallout2_Restoration_Project/data/maps/${fileName}`));
+        const mapData = loadMap(resolveMapPath(fileName));
         const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
 
         expect(result.errors).toBeUndefined();
@@ -264,14 +293,50 @@ describe("MAP parser - real maps", () => {
         expect(firstObject).toBeUndefined();
     });
 
+    it("round-trips an ambiguous MAP through JSON using opaque byte ranges", () => {
+        const mapData = loadMap(resolveMapPath("sfsheng.map"));
+        const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
+
+        expect(result.errors).toBeUndefined();
+
+        const jsonText = JSON.stringify(result, null, 2);
+        const reparsed = JSON.parse(jsonText);
+        const serialized = mapParser.serialize!(reparsed);
+
+        expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+    });
+
+    it("emits diff-friendly chunked opaque byte ranges for ambiguous MAP tails", () => {
+        const mapData = loadMap(resolveMapPath("sfsheng.map"));
+        const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
+        const jsonText = JSON.stringify(result, null, 2);
+        const parsed = JSON.parse(jsonText) as {
+            opaqueRanges?: Array<{ label: unknown; offset: unknown; size: unknown; hexChunks: unknown }>;
+        };
+
+        expect(parsed.opaqueRanges).toBeDefined();
+        expect(parsed.opaqueRanges!.length).toBeGreaterThan(0);
+
+        const [opaqueRange] = parsed.opaqueRanges!;
+        expect(opaqueRange?.label).toBe("objects-tail");
+        expect(typeof opaqueRange?.offset).toBe("number");
+        expect(typeof opaqueRange?.size).toBe("number");
+        expect(Array.isArray(opaqueRange?.hexChunks)).toBe(true);
+        expect((opaqueRange!.hexChunks as unknown[]).length).toBeGreaterThan(0);
+        expect((opaqueRange!.hexChunks as unknown[]).every((chunk) =>
+            typeof chunk === "string" && /^[0-9a-f]+$/.test(chunk) && chunk.length <= 64
+        )).toBe(true);
+    });
+
     it.each([
         "sfsheng.map",
     ])("fails strict parsing for deterministic %s script parse errors", (fileName) => {
-        const mapData = loadMap(path.resolve(`external/fallout/Fallout2_Restoration_Project/data/maps/${fileName}`));
+        const mapData = loadMap(resolveMapPath(fileName));
         const result = mapParser.parse(mapData);
 
         expect(result.errors).toBeDefined();
         expect(result.errors?.some((error) => error.includes("overflow"))).toBe(true);
+        expect(result.opaqueRanges).toBeUndefined();
     });
 });
 

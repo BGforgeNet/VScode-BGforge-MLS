@@ -83,7 +83,7 @@ test_bin() {
 
     step "Testing Fallout binary assets"
     # Stdout mode outputs JSON - discard it, we only care about exit code (parse success)
-    node "$ROOT_DIR/cli/bin/out/bin-cli.js" "$target_dir" -r -q --graceful-map > /dev/null
+    node "$ROOT_DIR/cli/bin/out/bin-cli.js" "$target_dir" -r -q > /dev/null
 }
 
 step "Building CLIs"
