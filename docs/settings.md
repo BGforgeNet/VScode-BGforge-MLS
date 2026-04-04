@@ -9,6 +9,7 @@ All settings are under the `bgforge` namespace.
 | Setting                    | Default | Description                                                                                                                          |
 | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `bgforge.validate`         | `saveAndType`  | When validation runs: `manual` = only when invoked explicitly, `save` = on save, `type` = while editing, `saveAndType` = on both save and edit. `type`/`saveAndType` are disk-intensive and debounced at 300ms. |
+| `bgforge.binaryEditor.autoDumpJson` | `false` | Whether saving a file in the binary editor should also write a JSON snapshot next to it. |
 | `bgforge.debug`            | `false` | Enable debug logging in the Output panel (BGforge MLS channel)                                                                       |
 
 ## Fallout SSL

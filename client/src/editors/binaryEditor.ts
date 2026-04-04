@@ -7,7 +7,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { BinaryParser, parserRegistry, ParseResult } from "../parsers";
 import { getSnapshotPath } from "../parsers/json-snapshot-path";
-import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../parsers/json-snapshot";
+import { parseBinaryJsonSnapshot } from "../parsers/json-snapshot";
 import { escapeHtml } from "../utils";
 import { getCachedCssAsset, getCachedHtmlAsset, getCachedJsAsset } from "../webview-assets";
 import { BinaryDocument } from "./binaryEditor-document";
@@ -15,6 +15,7 @@ import { buildBinaryEditorTreeState, BinaryEditorTreeState } from "./binaryEdito
 import { validateFieldEdit } from "./binaryEditor-validation";
 import type { WebviewToExtension, ExtensionToWebview, InitMessage } from "./binaryEditor-messages";
 import { resolveDisplayValue, resolveEnumLookup, resolveFlagLookup } from "./binaryEditor-lookups";
+import { saveBinaryDocumentArtifacts, writeBinaryJsonSnapshot } from "./binaryEditor-save";
 import { BinaryEditorRefreshGate } from "./binaryEditor-refreshGate";
 import { BinaryEditorLocalEditTracker } from "./binaryEditor-localEditTracker";
 
@@ -117,12 +118,12 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
 
     async saveCustomDocument(document: BinaryDocument, _cancellation: vscode.CancellationToken): Promise<void> {
         const bytes = document.getContent();
-        await vscode.workspace.fs.writeFile(document.uri, bytes);
+        await saveBinaryDocumentArtifacts(document.uri, document.uri, bytes, document.parseResult);
     }
 
     async saveCustomDocumentAs(document: BinaryDocument, destination: vscode.Uri, _cancellation: vscode.CancellationToken): Promise<void> {
         const bytes = document.getContent();
-        await vscode.workspace.fs.writeFile(destination, bytes);
+        await saveBinaryDocumentArtifacts(document.uri, destination, bytes, document.parseResult);
     }
 
     async revertCustomDocument(document: BinaryDocument, _cancellation: vscode.CancellationToken): Promise<void> {
@@ -143,9 +144,7 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
     // -- Message handling ---------------------------------------------------
 
     private async handleDumpJson(document: BinaryDocument): Promise<void> {
-        const jsonUri = vscode.Uri.file(getSnapshotPath(document.uri.fsPath));
-        const json = createBinaryJsonSnapshot(document.parseResult);
-        await vscode.workspace.fs.writeFile(jsonUri, Buffer.from(json, "utf8"));
+        const jsonUri = await writeBinaryJsonSnapshot(document.uri, document.parseResult);
         void vscode.window.showInformationMessage(`Saved JSON snapshot: ${path.basename(jsonUri.fsPath)}`);
     }
 

@@ -440,6 +440,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Enable debug logging in the Output panel (BGforge MLS channel). Useful for troubleshooting rename, include resolution, and other issues."
+                },
+                "bgforge.binaryEditor.autoDumpJson": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether saving a file in the binary editor should also write a JSON snapshot next to it."
                 }
             }
         },

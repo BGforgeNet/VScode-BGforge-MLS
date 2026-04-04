@@ -2,9 +2,9 @@
 
 ## WIP
 
-- Fallout 2 binary viewer is now an editor, supporting **Dump to JSON** and **Load from JSON** actions.
+- Binary viewer is now an editor, supporting **Dump to JSON** and **Load from JSON** actions, and `autoDumpJson` setting.
 - Added best-effort support for Fallout 2 MAP files in the editor and bin cli.
-- JSdoc now supports `bit` type.
+- Added `bit` type support to JSdoc.
 
 ## 3.4.0
 
