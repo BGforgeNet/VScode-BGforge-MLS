@@ -14,7 +14,7 @@ repository:
             name: storage.type.fallout-ssl-tooltip
           "2":
             name: entity.name.function
-        match: ^\b(?i)(array|any|bool|int|list|map|macro|mixed|float|ObjectPtr|proc|string|void)\b[[:blank:]]+\b(\w+)\b
+        match: ^\b(?i)(array|any|bit|bool|int|list|map|macro|mixed|float|ObjectPtr|proc|string|void)\b[[:blank:]]+\b(\w+)\b
       # "procedure funcname" at line start (procedure is a keyword, not a type)
       - captures:
           "1":
@@ -31,7 +31,7 @@ repository:
       - captures:
           "1":
             name: storage.type.fallout-ssl-tooltip
-        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
+        match: \b(?i)(array|any|bit|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
       # Fallback: full SSL grammar for macro body lines, string literals, identifiers, etc.
       # Listed last so explicit patterns above (line-start, begin/end) take priority.
       - include: source.fallout-ssl
@@ -51,12 +51,12 @@ repository:
             name: storage.type.fallout-ssl-tooltip
           "2":
             name: variable.parameter.fallout-ssl-tooltip
-        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b[[:blank:]]+\b(\w+)\b
+        match: \b(?i)(array|any|bit|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b[[:blank:]]+\b(\w+)\b
       # Standalone type (without following identifier, e.g. at end of partial input)
       - captures:
           "1":
             name: storage.type.fallout-ssl-tooltip
-        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
+        match: \b(?i)(array|any|bit|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
       # Fallback: SSL grammar handles string literals, numbers, and identifiers in
       # function call argument lists (body lines shown as second block in macro hovers).
       # Safe inside begin/end: the end:\) boundary prevents the SSL grammar from

@@ -224,6 +224,12 @@ describe("fallout-ssl JSDoc completion", () => {
             }
         });
 
+        it("includes bit in Fallout type completions", () => {
+            const items = getJsdocCompletions(FALLOUT_JSDOC_TYPES, typePrefix);
+            const bitItem = items.find(i => i.label === "bit");
+            expect(bitItem?.kind).toBe(CompletionItemKind.TypeParameter);
+        });
+
         it("does not return WeiDU-only types", () => {
             const items = getJsdocCompletions(FALLOUT_JSDOC_TYPES, typePrefix);
             const typeLabels = items.map(i => i.label);

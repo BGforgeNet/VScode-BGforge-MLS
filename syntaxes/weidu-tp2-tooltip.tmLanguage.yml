@@ -40,7 +40,7 @@ repository:
   datatypes:
     patterns:
       # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
-      - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref|string|array|bool|ids|list|map|filename)\b
+      - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref|string|array|bit|bool|ids|list|map|filename)\b
         name: support.type.weidu-tp2-tooltip.datatype
 
       - match: \b(offset)\b

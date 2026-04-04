@@ -15,6 +15,7 @@
 export const FALLOUT_JSDOC_TYPE_NAMES: readonly string[] = [
     "array",
     "any",
+    "bit",
     "bool",
     "float",
     "int",
@@ -28,6 +29,7 @@ export const FALLOUT_JSDOC_TYPE_NAMES: readonly string[] = [
 /** Type names available in WeiDU JSDoc annotations. Keys must match WEIDU_JSDOC_TYPES in weidu-types.ts. */
 export const WEIDU_JSDOC_TYPE_NAMES: readonly string[] = [
     "array",
+    "bit",
     "bool",
     "filename",
     "ids",

@@ -10,7 +10,7 @@ patterns:
 repository:
   # Known JSDoc type alternation, used in brace-less patterns for disambiguation.
   # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
-  # All types: array, any, bool, filename, float, ids, int, list, map, mixed, ObjectPtr, resref, string
+  # All types: array, any, bit, bool, filename, float, ids, int, list, map, mixed, ObjectPtr, resref, string
   # Compound types (e.g., "resref offset") are only valid in braced @type, not in braceless patterns.
 
   param:
@@ -60,7 +60,7 @@ repository:
             patterns:
               - include: '#type'
       # @param type name (without braces, type must be a known JSDoc type)
-      - match: '(@arg|@param)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\s+(\w+)(!)?'
+      - match: '(@arg|@param)\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\s+(\w+)(!)?'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
@@ -71,7 +71,7 @@ repository:
           '4':
             name: invalid
       # @param type (without braces, no name, type must be a known JSDoc type)
-      - match: '(@arg|@param)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\b'
+      - match: '(@arg|@param)\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\b'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
@@ -110,7 +110,7 @@ repository:
             patterns:
               - include: '#type'
       # @ret type name description (named return, type before name, braceless, type must be known)
-      - match: '(@ret|@return|@returns)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\s+(\w+)'
+      - match: '(@ret|@return|@returns)\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\s+(\w+)'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
@@ -119,7 +119,7 @@ repository:
           '3':
             name: variable.bgforge-mls-docstring
       # @ret type description (unnamed, without braces, type must be known)
-      - match: '(@ret|@return|@returns)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\b'
+      - match: '(@ret|@return|@returns)\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\b'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
@@ -151,7 +151,7 @@ repository:
     patterns:
       # All JSDoc types (Fallout + WeiDU + custom)
       # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
-      - match: \b(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\b
+      - match: \b(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\b
         name: support.type.bgforge-mls-docstring
 
   comment:

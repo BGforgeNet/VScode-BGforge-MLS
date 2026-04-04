@@ -13,6 +13,7 @@ interface FalloutType {
 export const FALLOUT_JSDOC_TYPES: ReadonlyMap<string, FalloutType> = new Map([
     ["array", { detail: "Array type" }],
     ["any", { detail: "Any type" }],
+    ["bit", { detail: "Bit type" }],
     ["bool", { detail: "Boolean type" }],
     ["float", { detail: "Floating point type" }],
     ["int", { detail: "Integer type" }],

@@ -95,7 +95,7 @@
           }
         },
         {
-          "match": "(@arg|@param)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\s+(\\w+)(!)?",
+          "match": "(@arg|@param)\\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\s+(\\w+)(!)?",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"
@@ -112,7 +112,7 @@
           }
         },
         {
-          "match": "(@arg|@param)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\b",
+          "match": "(@arg|@param)\\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\b",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"
@@ -176,7 +176,7 @@
           }
         },
         {
-          "match": "(@ret|@return|@returns)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\s+(\\w+)",
+          "match": "(@ret|@return|@returns)\\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\s+(\\w+)",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"
@@ -190,7 +190,7 @@
           }
         },
         {
-          "match": "(@ret|@return|@returns)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\b",
+          "match": "(@ret|@return|@returns)\\s+(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\b",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"
@@ -239,7 +239,7 @@
     "type": {
       "patterns": [
         {
-          "match": "\\b(array|any|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\b",
+          "match": "\\b(array|any|bit|bool|filename|float|ids|int|list|map|mixed|ObjectPtr|resref|string)\\b",
           "name": "support.type.bgforge-mls-docstring"
         }
       ]

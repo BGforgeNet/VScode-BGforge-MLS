@@ -15,6 +15,7 @@ interface WeiduType {
 /** All known WeiDU JSDoc types with their display detail and variable category. */
 export const WEIDU_JSDOC_TYPES: ReadonlyMap<string, WeiduType> = new Map([
     ["array", { detail: "Array type", category: "int" }],
+    ["bit", { detail: "Bit type", category: "int" }],
     ["bool", { detail: "Boolean type", category: "int" }],
     ["filename", { detail: "File name", category: "str" }],
     ["ids", { detail: "IDS reference", category: "str" }],

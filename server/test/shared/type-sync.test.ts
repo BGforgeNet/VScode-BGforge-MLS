@@ -78,6 +78,13 @@ describe("JSDoc type sync", () => {
             }
         });
 
+        it("WEIDU_JSDOC_TYPES includes bit with int category metadata", () => {
+            expect(WEIDU_JSDOC_TYPES.get("bit")).toEqual({
+                detail: "Bit type",
+                category: "int",
+            });
+        });
+
         it("WEIDU_JSDOC_TYPES extra keys are compound types only", () => {
             // Compound types (containing spaces, e.g. "resref offset") are valid in braced
             // @type annotations but not in braceless @param/@ret patterns, so they appear
