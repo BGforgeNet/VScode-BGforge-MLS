@@ -12,7 +12,7 @@ Originally a VS Code extension, it now also works with various other editors. Se
 
 - [**Languages**](#languages): Fallout SSL; WeiDU BAF, D, TP2.
 - [**Transpilers**](#transpilers): TSSL, TBAF, TD.
-- [**Other formats**](#other-formats): TRA, MSG, 2DA, Fallout PRO, worldmap.txt and scripts.lst.
+- [**Other formats**](#other-formats): TRA, MSG, 2DA, Fallout PRO, MAP, worldmap.txt and scripts.lst.
 - [**Installation**](#installation)
 - [**Hotkeys**](#hotkeys)
 - **Screenshots**: [completion](#infinity-engine-highlighting-and-completion), [hover](#fallout-highlighting-and-hovers), [error reporting](#error-reporting), [dialog tree preview](#dialog-tree-preview).
@@ -66,7 +66,8 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 | Fallout worldmap    | worldmap.txt | Completion, hover, syntax highlighting |
 | Fallout MSG         | .msg        | Syntax highlighting   |
 | Fallout scripts.lst | scripts.lst | Syntax highlighting   |
-| Fallout PRO / MAP   | .pro, .map  | Binary editor         |
+| Fallout PRO         | .pro        | Binary editor         |
+| Fallout MAP         | .map        | Binary editor         |
 | WeiDU TRA           | .tra        | Syntax highlighting   |
 | Infinity 2DA        | .2da        | Syntax highlighting   |
 

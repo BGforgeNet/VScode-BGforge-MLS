@@ -1,7 +1,7 @@
 {
     "name": "@bgforge/mls-server",
     "description": "LSP server for Fallout SSL, WeiDU (BAF/D/TP2), and related modding languages",
-    "version": "3.4.0",
+    "version": "3.5.0",
     "author": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",
     "main": "out/server.js",

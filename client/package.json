@@ -3,7 +3,7 @@
     "description": "BGforge MLS client",
     "author": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",
-    "version": "3.0.0",
+    "version": "3.5.0",
     "publisher": "BGforge",
     "repository": {
         "type": "git",

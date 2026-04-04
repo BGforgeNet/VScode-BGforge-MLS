@@ -1,6 +1,6 @@
 # Changelog
 
-## WIP
+## 3.5.0
 
 - Binary viewer is now an editor, supporting **Dump to JSON** and **Load from JSON** actions, and `autoDumpJson` setting.
 - Added best-effort support for Fallout 2 MAP files in the editor and bin cli.
