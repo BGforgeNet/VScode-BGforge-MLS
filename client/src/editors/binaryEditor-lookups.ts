@@ -64,7 +64,12 @@ const MAP_ENUM_TABLES: Record<string, Record<number, string>> = {
 };
 
 const MAP_FLAG_TABLES: Record<string, Record<number, string>> = {
-    "Map Flags": MapFlags,
+    "Map Flags": {
+        0x1: MapFlags[0x1]!,
+        0x2: "Has Elevation 0",
+        0x4: "Has Elevation 1",
+        0x8: "Has Elevation 2",
+    },
 };
 
 const SCRIPT_PROC_DROPDOWN = Object.fromEntries(
@@ -137,6 +142,16 @@ export function resolveDisplayValue(
 
     const flagTable = resolveFlagLookup(format, fieldPath, fieldName);
     if (flagTable) {
+        if (format === "map" && fieldPath === "Header.Map Flags") {
+            const enabledFlags = Object.entries(flagTable)
+                .filter(([bit]) => {
+                    const numericBit = Number(bit);
+                    return numericBit === 0x1 ? (rawValue & numericBit) !== 0 : (rawValue & numericBit) === 0;
+                })
+                .map(([, name]) => name);
+            return enabledFlags.length > 0 ? enabledFlags.join(", ") : "(none)";
+        }
+
         const flags: string[] = [];
         for (const [bit, name] of Object.entries(flagTable)) {
             const bitVal = Number(bit);

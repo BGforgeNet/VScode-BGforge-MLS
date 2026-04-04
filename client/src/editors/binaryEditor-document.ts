@@ -6,6 +6,7 @@
 
 import * as vscode from "vscode";
 import { BinaryParser, ParseResult, ParsedField, ParsedGroup } from "../parsers";
+import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../parsers/json-snapshot";
 
 /**
  * Represents a single field edit for undo/redo.
@@ -67,6 +68,27 @@ export class BinaryDocument implements vscode.CustomDocument {
         this._onDidChangeContent.fire();
     }
 
+    replaceParseResult(parseResult: ParseResult, label: string): void {
+        const previousParseResult = cloneParseResult(this._parseResult);
+        const nextParseResult = cloneParseResult(parseResult);
+        this._parseResult = cloneParseResult(nextParseResult);
+
+        this._onDidChange.fire({
+            document: this,
+            label,
+            undo: () => {
+                this._parseResult = cloneParseResult(previousParseResult);
+                this._onDidChangeContent.fire();
+            },
+            redo: () => {
+                this._parseResult = cloneParseResult(nextParseResult);
+                this._onDidChangeContent.fire();
+            },
+        });
+
+        this._onDidChangeContent.fire();
+    }
+
     /**
      * Apply an edit to a field. Fires onDidChange for VSCode undo integration.
      * Returns the edit if successful, undefined if field not found.
@@ -95,11 +117,11 @@ export class BinaryDocument implements vscode.CustomDocument {
             document: this,
             label: `Edit ${fieldPath}`,
             undo: () => {
-                this.setFieldValue(field, oldRawValue, oldDisplayValue);
+                this.setFieldValueByPath(fieldPath, oldRawValue, oldDisplayValue);
                 this._onDidChangeContent.fire();
             },
             redo: () => {
-                this.setFieldValue(field, newRawValue, newDisplayValue);
+                this.setFieldValueByPath(fieldPath, newRawValue, newDisplayValue);
                 this._onDidChangeContent.fire();
             },
         });
@@ -128,12 +150,24 @@ export class BinaryDocument implements vscode.CustomDocument {
         (field as { rawValue?: number | string }).rawValue = rawValue;
     }
 
+    private setFieldValueByPath(fieldPath: string, rawValue: number, displayValue: string): void {
+        const field = this.findField(fieldPath);
+        if (!field) {
+            return;
+        }
+        this.setFieldValue(field, rawValue, displayValue);
+    }
+
     dispose(): void {
         this._onDidDispose.fire();
         this._onDidDispose.dispose();
         this._onDidChange.dispose();
         this._onDidChangeContent.dispose();
     }
+}
+
+function cloneParseResult(parseResult: ParseResult): ParseResult {
+    return parseBinaryJsonSnapshot(createBinaryJsonSnapshot(parseResult));
 }
 
 /**

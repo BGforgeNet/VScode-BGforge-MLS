@@ -159,6 +159,70 @@ describe("BinaryDocument", () => {
         });
     });
 
+    describe("replaceParseResult", () => {
+        it("replaces the parse result through undoable document edit events", () => {
+            const events: any[] = [];
+            doc.onDidChange((event) => events.push(event));
+
+            const replacement = makeTestResult();
+            (replacement.root.fields[0] as any).fields[2].value = 777;
+
+            doc.replaceParseResult(replacement, "Load JSON snapshot");
+
+            expect(doc.parseResult).toStrictEqual(replacement);
+            expect(doc.parseResult).not.toBe(replacement);
+            expect(events).toHaveLength(1);
+            expect(events[0].label).toBe("Load JSON snapshot");
+
+            events[0].undo();
+            expect(doc.parseResult.root.fields[0]).not.toBe(replacement.root.fields[0]);
+            expect(((doc.parseResult.root.fields[0] as any).fields[2]).value).toBe(100);
+
+            events[0].redo();
+            expect(doc.parseResult).toStrictEqual(replacement);
+            expect(doc.parseResult).not.toBe(replacement);
+        });
+
+        it("restores the originally loaded snapshot on redo after later edits", () => {
+            const events: any[] = [];
+            doc.onDidChange((event) => events.push(event));
+
+            const replacement = makeTestResult();
+            (replacement.root.fields[0] as any).fields[2].value = 777;
+            doc.replaceParseResult(replacement, "Load JSON snapshot");
+            doc.applyEdit("Header.Text ID", 888, "888");
+
+            events[1].undo();
+            events[0].undo();
+            events[0].redo();
+
+            const header = doc.parseResult.root.fields[0] as any;
+            const textId = header.fields.find((f: any) => f.name === "Text ID");
+            expect(textId.value).toBe(777);
+            expect(textId.rawValue).toBeUndefined();
+        });
+
+        it("reapplies later field edits after a load undo/redo cycle", () => {
+            const events: any[] = [];
+            doc.onDidChange((event) => events.push(event));
+
+            const replacement = makeTestResult();
+            (replacement.root.fields[0] as any).fields[2].value = 777;
+            doc.replaceParseResult(replacement, "Load JSON snapshot");
+            doc.applyEdit("Header.Text ID", 888, "888");
+
+            events[1].undo();
+            events[0].undo();
+            events[0].redo();
+            events[1].redo();
+
+            const header = doc.parseResult.root.fields[0] as any;
+            const textId = header.fields.find((f: any) => f.name === "Text ID");
+            expect(textId.value).toBe("888");
+            expect(textId.rawValue).toBe(888);
+        });
+    });
+
     describe("getContent", () => {
         it("returns a Uint8Array", () => {
             const content = doc.getContent();

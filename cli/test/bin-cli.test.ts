@@ -64,9 +64,15 @@ describe("bin CLI integration", () => {
     describe("check mode", () => {
         it("exits 0 when JSON snapshot matches", () => {
             const proFile = path.join(FIXTURES, "misc", "00000001.pro");
-            const jsonFile = path.join(FIXTURES, "misc", "00000001.json");
+            const jsonFile = path.join(FIXTURES, "misc", "00000001.pro.json");
             if (!fs.existsSync(proFile) || !fs.existsSync(jsonFile)) return;
-            const { code } = run(proFile, "--check");
+
+            const tmpPro = path.join(tmpDir, "match.pro");
+            const tmpJson = path.join(tmpDir, "match.pro.json");
+            fs.copyFileSync(proFile, tmpPro);
+            fs.copyFileSync(jsonFile, tmpJson);
+
+            const { code } = run(tmpPro, "--check");
             expect(code).toBe(0);
         });
 
@@ -76,7 +82,7 @@ describe("bin CLI integration", () => {
 
             // Copy .pro to temp, create stale .json
             const tmpPro = path.join(tmpDir, "test.pro");
-            const tmpJson = path.join(tmpDir, "test.json");
+            const tmpJson = path.join(tmpDir, "test.pro.json");
             fs.copyFileSync(proFile, tmpPro);
             fs.writeFileSync(tmpJson, '{"stale": true}\n');
 
@@ -90,7 +96,7 @@ describe("bin CLI integration", () => {
             if (!fs.existsSync(proFile)) return;
 
             const tmpPro = path.join(tmpDir, "diff.pro");
-            const tmpJson = path.join(tmpDir, "diff.json");
+            const tmpJson = path.join(tmpDir, "diff.pro.json");
             fs.copyFileSync(proFile, tmpPro);
             fs.writeFileSync(tmpJson, '{"wrong": "content"}\n');
 
@@ -125,7 +131,7 @@ describe("bin CLI integration", () => {
             const { code, stdout } = run(tmpPro, "--save");
             expect(code).toBe(0);
             expect(stdout).toContain("Saved:");
-            const jsonPath = path.join(tmpDir, "save.json");
+            const jsonPath = path.join(tmpDir, "save.pro.json");
             expect(fs.existsSync(jsonPath)).toBe(true);
             // Verify it's valid JSON with trailing newline
             const content = fs.readFileSync(jsonPath, "utf-8");
@@ -173,7 +179,7 @@ describe("bin CLI integration", () => {
             expect(code).toBe(0);
             expect(stderr).toBe("");
             expect(stdout).toContain("Saved:");
-            expect(fs.existsSync(path.join(tmpDir, "sfsheng-graceful.json"))).toBe(true);
+            expect(fs.existsSync(path.join(tmpDir, "sfsheng-graceful.map.json"))).toBe(true);
         });
 
         it("saves strict MAP JSON for PRO-dependent object tails without --graceful-map", () => {
@@ -188,11 +194,11 @@ describe("bin CLI integration", () => {
             expect(stderr).toBe("");
             expect(stdout).toContain("Saved:");
 
-            const jsonText = fs.readFileSync(path.join(tmpDir, "denbus1.json"), "utf-8");
+            const jsonText = fs.readFileSync(path.join(tmpDir, "denbus1.map.json"), "utf-8");
             const parsed = JSON.parse(jsonText) as {
                 opaqueRanges?: Array<{ label: string }>;
             };
-            expect(parsed.opaqueRanges?.[0]?.label).toBe("objects-tail");
+            expect(parsed.opaqueRanges?.some((range) => range.label === "objects-tail")).toBe(true);
         });
 
         it("exits 1 for parse errors in binary", () => {
@@ -228,7 +234,7 @@ describe("bin CLI integration", () => {
     describe("load mode", () => {
         it("converts JSON back to identical binary", () => {
             const proFile = path.join(FIXTURES, "misc", "00000001.pro");
-            const jsonFile = path.join(FIXTURES, "misc", "00000001.json");
+            const jsonFile = path.join(FIXTURES, "misc", "00000001.pro.json");
             if (!fs.existsSync(proFile) || !fs.existsSync(jsonFile)) return;
 
             const tmpJson = path.join(tmpDir, "load.json");
@@ -251,10 +257,10 @@ describe("bin CLI integration", () => {
             for (const dir of dirs) {
                 const dirPath = path.join(FIXTURES, dir);
                 if (!fs.existsSync(dirPath)) continue;
-                const files = fs.readdirSync(dirPath).filter(f => f.endsWith(".json"));
+                const files = fs.readdirSync(dirPath).filter(f => f.endsWith(".pro.json"));
                 for (const jsonFile of files) {
                     const srcJson = path.join(dirPath, jsonFile);
-                    const srcPro = path.join(dirPath, jsonFile.replace(/\.json$/, ".pro"));
+                    const srcPro = path.join(dirPath, jsonFile.replace(/\.pro\.json$/, ".pro"));
                     if (!fs.existsSync(srcPro)) continue;
 
                     const tmpJson = path.join(tmpDir, jsonFile);
@@ -262,7 +268,7 @@ describe("bin CLI integration", () => {
                     const { code } = run(tmpJson, "--load");
                     expect(code).toBe(0);
 
-                    const tmpPro = path.join(tmpDir, jsonFile.replace(/\.json$/, ".pro"));
+                    const tmpPro = path.join(tmpDir, jsonFile.replace(/\.pro\.json$/, ".pro"));
                     const original = fs.readFileSync(srcPro);
                     const recreated = fs.readFileSync(tmpPro);
                     expect(original.equals(recreated)).toBe(true);
@@ -280,7 +286,7 @@ describe("bin CLI integration", () => {
             const saveResult = run(tmpMap, "--save", "--graceful-map");
             expect(saveResult.code).toBe(0);
 
-            const tmpJson = path.join(tmpDir, "artemple.json");
+            const tmpJson = path.join(tmpDir, "artemple.map.json");
             expect(fs.existsSync(tmpJson)).toBe(true);
 
             const loadResult = run(tmpJson, "--load", "--graceful-map");
@@ -300,7 +306,7 @@ describe("bin CLI integration", () => {
             const saveResult = run(tmpMap, "--save");
             expect(saveResult.code).toBe(0);
 
-            const tmpJson = path.join(tmpDir, "denbus1.json");
+            const tmpJson = path.join(tmpDir, "denbus1.map.json");
             const loadResult = run(tmpJson, "--load");
             expect(loadResult.code).toBe(0);
 
@@ -319,7 +325,7 @@ describe("bin CLI integration", () => {
             const saveResult = run(tmpMap, "--save", "--graceful-map");
             expect(saveResult.code).toBe(0);
 
-            const tmpJson = path.join(tmpDir, "sfsheng.json");
+            const tmpJson = path.join(tmpDir, "sfsheng.map.json");
             const loadResult = run(tmpJson, "--load", "--graceful-map");
             expect(loadResult.code).toBe(0);
 
@@ -338,7 +344,7 @@ describe("bin CLI integration", () => {
             const saveResult = run(tmpMap, "--save", "--graceful-map");
             expect(saveResult.code).toBe(0);
 
-            const tmpJson = path.join(tmpDir, "sfsheng.json");
+            const tmpJson = path.join(tmpDir, "sfsheng.map.json");
             const loadResult = run(tmpJson, "--load");
             expect(loadResult.code).toBe(1);
             expect(loadResult.stderr).toContain("Validation failed");
@@ -355,14 +361,15 @@ describe("bin CLI integration", () => {
             const saveResult = run(tmpMap, "--save", "--graceful-map");
             expect(saveResult.code).toBe(0);
 
-            const tmpJson = path.join(tmpDir, "sfsheng.json");
+            const tmpJson = path.join(tmpDir, "sfsheng.map.json");
             const jsonText = fs.readFileSync(tmpJson, "utf-8");
             const parsed = JSON.parse(jsonText) as {
                 opaqueRanges?: Array<{ label: string; hexChunks: string[] }>;
             };
 
-            expect(parsed.opaqueRanges?.[0]?.label).toBe("objects-tail");
-            expect(parsed.opaqueRanges?.[0]?.hexChunks.length).toBeGreaterThan(0);
+            const objectsTailRange = parsed.opaqueRanges?.find((range) => range.label === "objects-tail");
+            expect(objectsTailRange).toBeDefined();
+            expect(objectsTailRange?.hexChunks.length).toBeGreaterThan(0);
 
             const chunkLines = jsonText
                 .split("\n")
@@ -390,7 +397,7 @@ describe("bin CLI integration", () => {
             if (!fs.existsSync(proFile)) return;
 
             const tmpPro = path.join(tmpDir, "a.pro");
-            const tmpJson = path.join(tmpDir, "a.json");
+            const tmpJson = path.join(tmpDir, "a.pro.json");
             fs.copyFileSync(proFile, tmpPro);
             fs.writeFileSync(tmpJson, '{"stale": true}\n');
 

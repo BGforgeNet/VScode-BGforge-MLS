@@ -6,6 +6,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { BinaryParser, parserRegistry, ParseResult } from "../parsers";
+import { getSnapshotPath } from "../parsers/json-snapshot-path";
+import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../parsers/json-snapshot";
 import { escapeHtml } from "../utils";
 import { getCachedCssAsset, getCachedHtmlAsset, getCachedJsAsset } from "../webview-assets";
 import { BinaryDocument } from "./binaryEditor-document";
@@ -94,6 +96,12 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
                 case "edit":
                     void this.handleEdit(webviewPanel.webview, document, msg.fieldPath, msg.value, refreshGate, localEditTracker);
                     break;
+                case "dumpJson":
+                    void this.handleDumpJson(document);
+                    break;
+                case "loadJson":
+                    void this.handleLoadJson(document);
+                    break;
             }
         });
 
@@ -133,6 +141,53 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
     }
 
     // -- Message handling ---------------------------------------------------
+
+    private async handleDumpJson(document: BinaryDocument): Promise<void> {
+        const jsonUri = vscode.Uri.file(getSnapshotPath(document.uri.fsPath));
+        const json = createBinaryJsonSnapshot(document.parseResult);
+        await vscode.workspace.fs.writeFile(jsonUri, Buffer.from(json, "utf8"));
+        void vscode.window.showInformationMessage(`Saved JSON snapshot: ${path.basename(jsonUri.fsPath)}`);
+    }
+
+    private async handleLoadJson(document: BinaryDocument): Promise<void> {
+        const jsonUri = vscode.Uri.file(getSnapshotPath(document.uri.fsPath));
+
+        try {
+            const jsonText = Buffer.from(await vscode.workspace.fs.readFile(jsonUri)).toString("utf8");
+            const snapshot = parseBinaryJsonSnapshot(jsonText);
+            const parser = this.getEditableParser(path.extname(document.uri.fsPath));
+
+            if (!parser) {
+                void vscode.window.showErrorMessage(`No editable parser registered for ${path.basename(document.uri.fsPath)}`);
+                return;
+            }
+
+            if (snapshot.format !== document.parseResult.format) {
+                void vscode.window.showErrorMessage(
+                    `JSON snapshot format ${snapshot.format} does not match ${document.parseResult.format}`,
+                );
+                return;
+            }
+
+            const bytes = parser.serialize(snapshot);
+            const reparsed = parser.parse(bytes, this.getParseOptions(path.extname(document.uri.fsPath)));
+            if (reparsed.errors && reparsed.errors.length > 0) {
+                const strictMapSuffix = path.extname(document.uri.fsPath) === ".map"
+                    ? " Editor JSON load intentionally stays strict; ambiguous MAP snapshots still require CLI --graceful-map."
+                    : "";
+                void vscode.window.showErrorMessage(
+                    `Failed to load ${path.basename(jsonUri.fsPath)}: ${reparsed.errors[0]}${strictMapSuffix}`,
+                );
+                return;
+            }
+
+            document.replaceParseResult(reparsed, `Load ${path.basename(jsonUri.fsPath)}`);
+            void vscode.window.showInformationMessage(`Loaded JSON snapshot: ${path.basename(jsonUri.fsPath)}`);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            void vscode.window.showErrorMessage(`Failed to load JSON snapshot: ${message}`);
+        }
+    }
 
     private sendInit(webview: vscode.Webview, document: BinaryDocument): void {
         const treeState = buildBinaryEditorTreeState(document.parseResult);
@@ -228,11 +283,23 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
 
     // -- File parsing -------------------------------------------------------
 
+    private getEditableParser(extension: string): EditableBinaryParser | undefined {
+        const parser = parserRegistry.getByExtension(extension);
+        if (!parser?.serialize) {
+            return undefined;
+        }
+        return parser as EditableBinaryParser;
+    }
+
+    private getParseOptions(extension: string): { skipMapTiles?: boolean } | undefined {
+        return extension === ".map" ? { skipMapTiles: true } : undefined;
+    }
+
     private async parseFile(uri: vscode.Uri): Promise<{ parseResult: ParseResult; parser: EditableBinaryParser }> {
         const extension = path.extname(uri.fsPath);
-        const parser = parserRegistry.getByExtension(extension);
+        const parser = this.getEditableParser(extension);
 
-        if (!parser?.serialize) {
+        if (!parser) {
             const parseResult: ParseResult = {
                 format: "unknown",
                 formatName: "Unknown Format",
@@ -252,10 +319,9 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
         }
 
         const fileData = await vscode.workspace.fs.readFile(uri);
-        const parseOptions = extension === ".map" ? { skipMapTiles: true } : undefined;
         return {
-            parseResult: parser.parse(fileData, parseOptions),
-            parser: parser as EditableBinaryParser,
+            parseResult: parser.parse(fileData, this.getParseOptions(extension)),
+            parser,
         };
     }
 

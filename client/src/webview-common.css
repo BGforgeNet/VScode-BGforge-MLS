@@ -30,13 +30,16 @@ html {
 }
 
 .content {
-    display: flex;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: clamp(520px, 48vw, 820px) 250px;
+    align-items: start;
+    justify-content: start;
     gap: 40px;
 }
 
 .sidebar {
-    flex-shrink: 0;
+    width: 250px;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -57,7 +60,9 @@ html {
     border-radius: 2px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 0.9em;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .toolbar button:hover {
@@ -65,7 +70,7 @@ html {
 }
 
 .search-box input {
-    width: 250px;
+    width: 100%;
     padding: 6px 10px;
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);

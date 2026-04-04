@@ -2,7 +2,7 @@ import type { ParseResult, ParsedField, ParsedGroup } from "../parsers";
 import type { BinaryEditorNode } from "./binaryEditor-messages";
 import { isEditableFieldForFormat } from "./binaryEditor-editability";
 import { formatNumericValue, resolveNumericFormat } from "./binaryEditor-formatting";
-import { resolveEnumLookup, resolveFlagLookup } from "./binaryEditor-lookups";
+import { resolveDisplayValue, resolveEnumLookup, resolveFlagLookup } from "./binaryEditor-lookups";
 
 interface TreeNodeRecord {
     readonly id: string;
@@ -145,13 +145,17 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
 
         const fieldPath = makeFieldPath(parentPath, entry.name);
         const numericFormat = resolveNumericFormat(parseResult.format, entry.name);
+        const enumOptions = resolveEnumLookup(parseResult.format, fieldPath, entry.name);
+        const flagOptions = resolveFlagLookup(parseResult.format, fieldPath, entry.name);
         const numericValue = typeof entry.rawValue === "number"
             ? entry.rawValue
             : typeof entry.value === "number"
                 ? entry.value
                 : undefined;
         const displayValue = typeof numericValue === "number"
-            ? formatNumericValue(numericValue, numericFormat)
+            ? enumOptions || flagOptions
+                ? resolveDisplayValue(parseResult.format, fieldPath, entry.name, numericValue)
+                : formatNumericValue(numericValue, numericFormat)
             : String(entry.value);
         nodes.set(id, {
             id,
@@ -171,8 +175,8 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
                 size: entry.size,
                 valueType: entry.type,
                 numericFormat,
-                enumOptions: resolveEnumLookup(parseResult.format, fieldPath, entry.name),
-                flagOptions: resolveFlagLookup(parseResult.format, fieldPath, entry.name),
+                enumOptions,
+                flagOptions,
             },
         });
         return id;

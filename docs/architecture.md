@@ -237,6 +237,10 @@ Binary editor design choice:
 
 - `.map` files are parsed strictly in the custom editor. If strict parsing fails, the editor shows the parse errors instead of silently falling back to heuristic recovery.
 - Graceful MAP fallback remains available in non-editor workflows such as the binary CLI via `--graceful-map`, where corpus parsing and opaque-byte round-tripping are more useful than an editable strict tree.
+- The editor includes `Dump to JSON` and `Load from JSON` sidebar actions. Snapshots use extension-preserving sidecars such as `file.pro.json` and `file.map.json`.
+- MAP JSON snapshots are fidelity snapshots, not just `JSON.stringify(parseResult)`. Any MAP region the editor intentionally omits from the visible tree, such as tiles or opaque tails, must still be carried in the snapshot so JSON round-trips remain byte-preserving.
+- That byte preservation applies to omitted MAP regions, not to hidden tails inside parsed fields. Once a field is modeled by the editor, JSON load/save treats the parsed value as authoritative and rewrites that field in canonical form, even if the original fixed-width slot had extra non-semantic bytes after the visible value.
+- JSON load in the custom editor intentionally stays strict for MAP files even when a snapshot was originally produced from a graceful parse. This is on purpose: ambiguous MAP bytes should not spread through normal editor workflows. Users who explicitly want to reload those ambiguous snapshots must use the binary CLI with `--graceful-map`.
 - The custom editor intentionally omits MAP tile data. Tiles are large, mostly low-signal bulk data for editor workflows, so the editor skips materializing them entirely and preserves their bytes only for round-trip save/revert.
 - The MAP editor hides a few script-entry struct slots that Fallout 2 CE still leaves as legacy or unknown internals. It keeps meaningful fields visible, renames them to match CE semantics where possible, and leaves the persisted program pointer slot read-only because the engine treats the saved pointer value as non-semantic.
 - The editor sends a lazy tree model to the webview rather than one large pre-expanded JSON payload. Enum/flag choices are attached per field node, and MAP projection now lives in the tree builder instead of a separate compacted parse-result layer.
@@ -356,6 +360,7 @@ node bin-cli.js <file.pro|file.map|dir> [--save] [--check] [--load] [--graceful-
 ```
 
 Parses Fallout `.pro` and `.map` binary files and outputs structured JSON. `--load` writes JSON back using the parser's native extension, and `--graceful-map` allows ambiguous MAP object boundaries to fall back to opaque bytes for corpus and round-trip workflows.
+Snapshots are saved as extension-preserving sidecars such as `file.pro.json` and `file.map.json`. Ambiguous MAP snapshots intentionally require `--graceful-map` again on load.
 
 ### Shared CLI Infrastructure
 

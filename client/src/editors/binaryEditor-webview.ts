@@ -79,6 +79,8 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
     const searchInput = document.getElementById("search") as HTMLInputElement | null;
     const expandAllBtn = document.getElementById("expand-all");
     const collapseAllBtn = document.getElementById("collapse-all");
+    const dumpJsonBtn = document.getElementById("dump-json");
+    const loadJsonBtn = document.getElementById("load-json");
 
     window.addEventListener("message", (event) => {
         const msg = event.data as ExtensionToWebview;
@@ -233,8 +235,8 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
             return createEnumSelect(fieldPath, node, enumTable);
         }
 
-        if (node.editable && flagTable && node.valueType === "flags") {
-            return createFlagsInput(fieldPath, node, flagTable);
+        if (flagTable && node.valueType === "flags") {
+            return createFlagsInput(fieldPath, node, flagTable, node.editable === true);
         }
 
         if (node.editable && isNumericType(node.valueType ?? "")) {
@@ -318,13 +320,14 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
         fieldPath: string,
         node: BinaryEditorNode,
         flagDefs: Record<number, string>,
+        editable: boolean,
     ): HTMLElement {
         const raw = typeof node.rawValue === "number" ? node.rawValue : 0;
         const container = document.createElement("span");
-        container.className = "field-flags";
+        container.className = `field-flags ${editable ? "editable" : "readonly"}`.trim();
         const zeroFlagLabel = flagDefs[0];
 
-        if (zeroFlagLabel !== undefined) {
+        if (editable && zeroFlagLabel !== undefined) {
             const zeroState = document.createElement("span");
             zeroState.className = "flag-zero-state";
             zeroState.dataset.zeroStateFor = fieldPath;
@@ -340,24 +343,34 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
             }
 
             const label = document.createElement("label");
-            label.className = "flag-label";
+            label.className = `flag-label ${editable ? "editable" : "readonly"}`.trim();
 
             const checkbox = document.createElement("span");
-            checkbox.className = "flag-checkbox";
-            if ((raw & bitValue) !== 0) {
+            checkbox.className = `flag-checkbox ${editable ? "editable" : "readonly"}`.trim();
+            if (isReadonlyFlagEnabled(fieldPath, bitValue, raw)) {
                 checkbox.classList.add("checked");
             }
             checkbox.setAttribute("role", "checkbox");
-            checkbox.setAttribute("tabindex", "0");
             checkbox.setAttribute("aria-checked", checkbox.classList.contains("checked") ? "true" : "false");
-            checkbox.dataset.field = fieldPath;
-            checkbox.dataset.bit = String(bitValue);
+            checkbox.setAttribute("aria-disabled", editable ? "false" : "true");
+            if (editable) {
+                checkbox.setAttribute("tabindex", "0");
+                checkbox.dataset.field = fieldPath;
+                checkbox.dataset.bit = String(bitValue);
+            }
 
             label.append(checkbox, document.createTextNode(name));
             container.appendChild(label);
         }
 
         return container;
+    }
+
+    function isReadonlyFlagEnabled(fieldPath: string, bitValue: number, rawValue: number): boolean {
+        if (fieldPath === "Header.Map Flags" && bitValue !== 0x1) {
+            return (rawValue & bitValue) === 0;
+        }
+        return (rawValue & bitValue) !== 0;
     }
 
     function renderChildren(nodeId: string, children: BinaryEditorNode[]): void {
@@ -647,6 +660,14 @@ import { formatEnumDisplayValue } from "./binaryEditor-lookups";
     collapseAllBtn?.addEventListener("click", () => {
         expandAllActive = false;
         treeEl.querySelectorAll<HTMLElement>(".group").forEach((groupEl) => groupEl.classList.remove("expanded"));
+    });
+
+    dumpJsonBtn?.addEventListener("click", () => {
+        vscode.postMessage({ type: "dumpJson" });
+    });
+
+    loadJsonBtn?.addEventListener("click", () => {
+        vscode.postMessage({ type: "loadJson" });
     });
 
     function filterTree(query: string): void {

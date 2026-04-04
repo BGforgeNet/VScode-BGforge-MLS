@@ -35,6 +35,9 @@ const PID_TYPE_SCENERY = 2;
 const PID_TYPE_MISC = 5;
 const FIRST_EXIT_GRID_PID = 0x5000010;
 const LAST_EXIT_GRID_PID = 0x5000017;
+const HEADER_PADDING_OFFSET = 0x3C;
+const HEADER_PADDING_SIZE = 176;
+const HEADER_OPAQUE_END = HEADER_SIZE;
 
 function field(
     name: string,
@@ -108,7 +111,7 @@ function parseHeaderSection(data: Uint8Array, errors: string[]): ParsedGroup {
         field("Num Global Vars", header.numGlobalVars, 0x30, 4, "int32"),
         field("Map ID", header.mapId, 0x34, 4, "int32"),
         field("Timestamp", header.timestamp, 0x38, 4, "uint32"),
-        field("Padding (field_3C)", `(${header.field_3C.length} values)`, 0x3C, 176, "padding"),
+        field("Padding (field_3C)", `(${header.field_3C.length} values)`, HEADER_PADDING_OFFSET, HEADER_PADDING_SIZE, "padding"),
     ]);
 }
 
@@ -159,8 +162,9 @@ function parseTiles(
     header: MapHeader,
     currentOffset: number,
     skipMapTiles = false,
-): { tiles: Map<number, ParsedGroup[]>; offset: number } {
+): { tiles: Map<number, ParsedGroup[]>; offset: number; skippedRange?: ParseOpaqueRange } {
     const tiles = new Map<number, ParsedGroup[]>();
+    const tileSectionStart = currentOffset;
 
     for (let elev = 0; elev < 3; elev++) {
         if (!hasElevation(header.flags, elev)) continue;
@@ -198,7 +202,11 @@ function parseTiles(
         currentOffset += TILE_DATA_SIZE_PER_ELEVATION;
     }
 
-    return { tiles, offset: currentOffset };
+    const skippedRange = skipMapTiles
+        ? encodeOpaqueRange("tiles", data, tileSectionStart, currentOffset)
+        : undefined;
+
+    return { tiles, offset: currentOffset, skippedRange };
 }
 
 function parseScriptEntryFields(
@@ -861,14 +869,26 @@ class MapParser implements BinaryParser {
         const rootFields: (ParsedField | ParsedGroup)[] = [];
 
         rootFields.push(parseHeaderSection(data, errors));
+        const headerPaddingRange = encodeOpaqueRange(
+            "header-padding",
+            data,
+            HEADER_PADDING_OFFSET,
+            HEADER_OPAQUE_END,
+        );
+        if (headerPaddingRange) {
+            opaqueRanges.push(headerPaddingRange);
+        }
 
         const varOffset = HEADER_SIZE;
         rootFields.push(...parseVariablesSection(data, header));
 
         let currentOffset = varOffset + header.numGlobalVars * 4 + header.numLocalVars * 4;
-        const { tiles, offset: tileEndOffset } = parseTiles(data, header, currentOffset, options?.skipMapTiles);
+        const { tiles, offset: tileEndOffset, skippedRange } = parseTiles(data, header, currentOffset, options?.skipMapTiles);
         tiles.forEach((elevTiles) => rootFields.push(...elevTiles));
         currentOffset = tileEndOffset;
+        if (skippedRange) {
+            opaqueRanges.push(skippedRange);
+        }
 
         // TODO(map): Fallout 2 CE uses SCRIPT_TYPE_COUNT == 5 in
         // tmp/fallout2-ce/src/scripts.cc and tmp/fallout2-ce/src/scripts.h, but

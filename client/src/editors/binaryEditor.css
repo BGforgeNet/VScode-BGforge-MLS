@@ -8,6 +8,14 @@
 :root {
     --vscode-font-family: var(--vscode-editor-font-family, monospace);
     --indent-size: 20px;
+    --tree-name-col: 32ch;
+    --tree-value-col: 180px;
+    --tree-meta-col: 18ch;
+    --tree-col-gap: 16px;
+    --tree-reserved-width: calc(
+        var(--indent-size) + 16px + var(--tree-name-col) + var(--tree-value-col) +
+            var(--tree-meta-col) + (var(--tree-col-gap) * 2) + 24px
+    );
 }
 
 body {
@@ -41,9 +49,15 @@ body {
     border: 1px solid var(--vscode-inputValidation-errorBorder);
 }
 
+.content {
+    grid-template-columns: var(--tree-reserved-width) 250px;
+}
+
 .tree {
-    min-width: 500px;
+    width: var(--tree-reserved-width);
+    min-width: 0;
     line-height: 1.6;
+    overflow-x: auto;
 }
 
 /* -- Groups ---------------------------------------------------------------- */
@@ -88,8 +102,8 @@ body {
 
 .group.expanded > .group-content {
     display: grid;
-    grid-template-columns: 180px 200px 1fr;
-    column-gap: 10px;
+    grid-template-columns: var(--tree-name-col) var(--tree-value-col) var(--tree-meta-col);
+    column-gap: var(--tree-col-gap);
     align-items: start;
     padding-bottom: 4px;
 }
@@ -354,6 +368,15 @@ input[type="number"]:hover::-webkit-outer-spin-button {
     color: var(--vscode-editor-foreground);
 }
 
+.flag-label.readonly {
+    cursor: default;
+    color: var(--vscode-descriptionForeground);
+}
+
+.flag-label.readonly:hover {
+    color: var(--vscode-descriptionForeground);
+}
+
 /* Custom checkbox implementation.
  * VSCode webviews use native HTML form controls rendered by the OS, which ignore
  * background-color styling. To make checkboxes match the VSCode theme (dark background),
@@ -395,6 +418,16 @@ input[type="number"]:hover::-webkit-outer-spin-button {
     border: solid var(--vscode-symbolIcon-fieldForeground, #75beff);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
+}
+
+.flag-checkbox.readonly {
+    cursor: default;
+    opacity: 0.65;
+    border-color: var(--vscode-widget-border, var(--vscode-input-border));
+}
+
+.flag-checkbox.readonly.checked::after {
+    border-color: var(--vscode-descriptionForeground);
 }
 
 /* -- Loading state ---------------------------------------------------------- */

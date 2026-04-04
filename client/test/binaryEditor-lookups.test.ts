@@ -50,6 +50,13 @@ describe("binaryEditor-lookups", () => {
             0x10: "NoRemove",
         });
 
+        expect(resolveFlagLookup("map", "Header.Map Flags", "Map Flags")).toEqual({
+            0x1: "Savegame",
+            0x2: "Has Elevation 0",
+            0x4: "Has Elevation 1",
+            0x8: "Has Elevation 2",
+        });
+
         expect(resolveFlagLookup("map", "Objects Section.Elevation 0 Objects.Object 0.0 (Misc).Flags", "Flags")).toMatchObject({
             0x01: "Hidden",
             0x20000000: "LightThru",
@@ -62,6 +69,7 @@ describe("binaryEditor-lookups", () => {
             0x08: "Flat",
         });
         expect(resolveDisplayValue("pro", "Header.Flags", "Flags", 0x08)).toContain("Flat");
+        expect(resolveDisplayValue("map", "Header.Map Flags", "Map Flags", 0)).toContain("Has Elevation 0");
         expect(resolveDisplayValue("map", "Objects Section.Elevation 0 Objects.Object 0.0 (Misc).Flags", "Flags", 0x20000000)).toContain("LightThru");
     });
 

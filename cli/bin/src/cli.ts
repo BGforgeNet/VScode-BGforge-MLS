@@ -8,6 +8,11 @@
 import * as fs from "fs";
 import * as path from "path";
 import { parserRegistry, type ParseOptions, type ParseResult } from "../../../client/src/parsers";
+import {
+    getOutputPathForJsonSnapshot,
+    getSnapshotPath,
+} from "../../../client/src/parsers/json-snapshot-path";
+import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../../../client/src/parsers/json-snapshot";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 const EXTENSIONS = parserRegistry.getExtensions().map(ext => `.${ext}`);
@@ -36,8 +41,8 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
             return "error";
         }
 
-        const json = JSON.stringify(result, null, 2);
-        const jsonPath = filePath.replace(/\.[^.]+$/, ".json");
+        const json = createBinaryJsonSnapshot(result).trimEnd();
+        const jsonPath = getSnapshotPath(filePath);
 
         if (mode === "save") {
             const existing = fs.existsSync(jsonPath) ? fs.readFileSync(jsonPath, "utf-8").trim() : null;
@@ -66,8 +71,8 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 }
 
 const HELP = `Usage: bin-cli <file.pro|file.map|dir> [--save] [--check] [--load] [-r] [-q]
-  --save    Save parsed JSON alongside the binary file (.json)
-  --check   Compare parsed output against existing .json snapshot (exit 1 if diff)
+  --save    Save parsed JSON alongside the binary file (.pro.json/.map.json)
+  --check   Compare parsed output against existing JSON snapshot (exit 1 if diff)
   --load    Load JSON and write binary using the parser's native extension
   --graceful-map  Opt into permissive MAP boundary guessing for ambiguous files (default is strict;
                   required again on --load for JSON snapshots created from ambiguous MAP bytes)
@@ -78,8 +83,8 @@ Examples:
   bin-cli file.pro                  # Parse single file, print JSON to stdout
   bin-cli proto/ -r --save          # Save JSON snapshots for all files
   bin-cli proto/ -r -q --check      # Verify files match snapshots (CI)
-  bin-cli file.json --load          # Convert JSON back to binary (.pro/.map/etc.)
-  bin-cli sfsheng.json --load --graceful-map
+  bin-cli file.pro.json --load      # Convert JSON back to binary (.pro/.map/etc.)
+  bin-cli sfsheng.map.json --load --graceful-map
                                    # Reload an ambiguous MAP snapshot saved with --graceful-map`;
 
 /**
@@ -93,7 +98,7 @@ function loadJsonToBinary(jsonPath: string): void {
     }
 
     const jsonText = fs.readFileSync(jsonPath, "utf-8");
-    const result: ParseResult = JSON.parse(jsonText);
+    const result: ParseResult = parseBinaryJsonSnapshot(jsonText);
 
     // Determine the parser from the format field
     const parser = parserRegistry.getById(result.format);
@@ -124,7 +129,7 @@ function loadJsonToBinary(jsonPath: string): void {
         process.exit(1);
     }
 
-    const outputPath = jsonPath.replace(/\.json$/, `.${outputExtension}`);
+    const outputPath = getOutputPathForJsonSnapshot(jsonPath, outputExtension);
     fs.writeFileSync(outputPath, bytes);
     console.log(`Wrote: ${outputPath} (${bytes.length} bytes)`);
 }

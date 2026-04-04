@@ -195,6 +195,8 @@ describe("buildBinaryEditorTreeState", () => {
         expect(headerNode).toBeDefined();
         const headerChildren = tree.getChildren(headerNode!.id);
         expect(headerChildren.find((node) => node.name === "Num Local Vars")?.editable).toBe(false);
+        expect(headerChildren.find((node) => node.name === "Map Flags")?.editable).toBe(false);
+        expect(headerChildren.find((node) => node.name === "Map Flags")?.value).toContain("Has Elevation 0");
         expect(headerChildren.find((node) => node.name === "Default Elevation")?.editable).toBe(true);
 
         const timerScripts = init.rootChildren.find((node) => node.name === "Timer Scripts");

@@ -4,8 +4,8 @@
 
 ### Binary Formats
 
-- Fallout 2 PRO viewer is now an editor.
-- Added support for Fallout 2 MAP files in the editor.
+- Fallout 2 binary viewer is now an editor, supporting **Dump to JSON** and **Load from JSON** actions.
+- Added best-effort support for Fallout 2 MAP files in the editor and bin cli.
 
 ## 3.4.0
 

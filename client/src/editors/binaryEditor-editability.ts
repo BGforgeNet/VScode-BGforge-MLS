@@ -6,7 +6,12 @@ function isPotentiallyEditableValue(field: ParsedField): boolean {
 
 function isMapFieldEditable(fieldPath: string, fieldName: string): boolean {
     if (fieldPath.startsWith("Header.")) {
-        if (fieldName === "Version" || fieldName === "Num Local Vars" || fieldName === "Num Global Vars") {
+        if (
+            fieldName === "Version"
+            || fieldName === "Num Local Vars"
+            || fieldName === "Num Global Vars"
+            || fieldName === "Map Flags"
+        ) {
             return false;
         }
     }

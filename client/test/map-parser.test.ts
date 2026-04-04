@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 import { mapParser } from "../src/parsers/map";
+import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../src/parsers/json-snapshot";
 
 const REAL_MAPS = [
     path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/artemple.map"),
@@ -21,6 +22,19 @@ const LOCAL_FIXTURE_MAPS = new Set([
     "newr2.map",
     "sfsheng.map",
 ]);
+
+const LOCAL_STRICT_FIXTURE_MAPS = [
+    "artemple.map",
+    "arcaves.map",
+    "bhrnddst.map",
+    "denbus1.map",
+    "newr2.map",
+] as const;
+
+const LOCAL_GRACEFUL_FIXTURE_MAPS = [
+    ...LOCAL_STRICT_FIXTURE_MAPS,
+    "sfsheng.map",
+] as const;
 
 function resolveMapPath(fileName: string): string {
     if (LOCAL_FIXTURE_MAPS.has(fileName)) {
@@ -100,14 +114,72 @@ describe("MAP parser - real maps", () => {
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
     });
 
+    it.each(LOCAL_STRICT_FIXTURE_MAPS)(
+        "strict JSON snapshots round-trip %s byte-for-byte",
+        (fileName) => {
+            const mapData = loadMap(resolveMapPath(fileName));
+            const result = mapParser.parse(mapData);
+
+            expect(result.errors).toBeUndefined();
+
+            const snapshot = parseBinaryJsonSnapshot(createBinaryJsonSnapshot(result));
+            const serialized = mapParser.serialize!(snapshot);
+
+            expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+        }
+    );
+
+    it.each(LOCAL_STRICT_FIXTURE_MAPS)(
+        "strict editor-mode JSON snapshots round-trip %s byte-for-byte",
+        (fileName) => {
+            const mapData = loadMap(resolveMapPath(fileName));
+            const result = mapParser.parse(mapData, { skipMapTiles: true });
+
+            expect(result.errors).toBeUndefined();
+
+            const snapshot = parseBinaryJsonSnapshot(createBinaryJsonSnapshot(result));
+            const serialized = mapParser.serialize!(snapshot);
+
+            expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+        }
+    );
+
+    it.each(LOCAL_GRACEFUL_FIXTURE_MAPS)(
+        "graceful JSON snapshots round-trip %s byte-for-byte",
+        (fileName) => {
+            const mapData = loadMap(resolveMapPath(fileName));
+            const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
+
+            expect(result.errors).toBeUndefined();
+
+            const snapshot = parseBinaryJsonSnapshot(createBinaryJsonSnapshot(result));
+            const serialized = mapParser.serialize!(snapshot);
+
+            expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+        }
+    );
+
+    it.each(LOCAL_GRACEFUL_FIXTURE_MAPS)(
+        "graceful editor-mode JSON snapshots round-trip %s byte-for-byte",
+        (fileName) => {
+            const mapData = loadMap(resolveMapPath(fileName));
+            const result = mapParser.parse(mapData, { gracefulMapBoundaries: true, skipMapTiles: true });
+
+            expect(result.errors).toBeUndefined();
+
+            const snapshot = parseBinaryJsonSnapshot(createBinaryJsonSnapshot(result));
+            const serialized = mapParser.serialize!(snapshot);
+
+            expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+        }
+    );
+
     it("strict mode preserves PRO-dependent object tails as opaque ranges without parse errors", () => {
         const mapData = loadMap(resolveMapPath("denbus1.map"));
         const result = mapParser.parse(mapData);
 
         expect(result.errors).toBeUndefined();
-        expect(result.opaqueRanges?.[0]).toMatchObject({
-            label: "objects-tail",
-        });
+        expect(result.opaqueRanges?.some((range) => range.label === "objects-tail")).toBe(true);
 
         const serialized = mapParser.serialize!(result);
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
@@ -123,6 +195,18 @@ describe("MAP parser - real maps", () => {
         )).toBe(false);
 
         const serialized = mapParser.serialize!(result);
+        expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+    });
+
+    it("preserves skipped tile bytes through JSON snapshots", () => {
+        const mapData = loadMap(REAL_MAPS[0]);
+        const result = mapParser.parse(mapData, { skipMapTiles: true, gracefulMapBoundaries: true });
+
+        expect(result.opaqueRanges?.some((range) => range.label === "tiles")).toBe(true);
+
+        const reparsedSnapshot = parseBinaryJsonSnapshot(createBinaryJsonSnapshot(result));
+        const serialized = mapParser.serialize!(reparsedSnapshot);
+
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
     });
 
@@ -317,8 +401,8 @@ describe("MAP parser - real maps", () => {
         expect(parsed.opaqueRanges).toBeDefined();
         expect(parsed.opaqueRanges!.length).toBeGreaterThan(0);
 
-        const [opaqueRange] = parsed.opaqueRanges!;
-        expect(opaqueRange?.label).toBe("objects-tail");
+        const opaqueRange = parsed.opaqueRanges!.find((range) => range.label === "objects-tail");
+        expect(opaqueRange).toBeDefined();
         expect(typeof opaqueRange?.offset).toBe("number");
         expect(typeof opaqueRange?.size).toBe("number");
         expect(Array.isArray(opaqueRange?.hexChunks)).toBe(true);
@@ -336,7 +420,7 @@ describe("MAP parser - real maps", () => {
 
         expect(result.errors).toBeDefined();
         expect(result.errors?.some((error) => error.includes("overflow"))).toBe(true);
-        expect(result.opaqueRanges).toBeUndefined();
+        expect(result.opaqueRanges?.some((range) => range.label === "objects-tail")).toBe(false);
     });
 });
 

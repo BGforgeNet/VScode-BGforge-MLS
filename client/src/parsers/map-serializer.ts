@@ -76,8 +76,8 @@ export function serializeMap(result: ParseResult): Uint8Array {
     }
     const view = new DataView(buf);
 
-    writeOpaqueRanges(bytes, result.opaqueRanges);
     writeGroup(view, result.root, sourceData);
+    writeOpaqueRanges(bytes, result.opaqueRanges);
 
     return bytes;
 }
@@ -117,6 +117,10 @@ function writeGroup(view: DataView, group: ParsedGroup, sourceData?: Uint8Array)
 
     for (const f of fields) {
         if (f.name === "Objects Data Size") {
+            continue;
+        }
+
+        if (f.type === "padding") {
             continue;
         }
 

@@ -42,7 +42,15 @@ export interface GetChildrenMessage {
     readonly nodeId: string;
 }
 
-export type WebviewToExtension = EditMessage | ReadyMessage | GetChildrenMessage;
+export interface DumpJsonMessage {
+    readonly type: "dumpJson";
+}
+
+export interface LoadJsonMessage {
+    readonly type: "loadJson";
+}
+
+export type WebviewToExtension = EditMessage | ReadyMessage | GetChildrenMessage | DumpJsonMessage | LoadJsonMessage;
 
 // -- Extension -> Webview ---------------------------------------------------
 

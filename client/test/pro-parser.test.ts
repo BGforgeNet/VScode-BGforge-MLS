@@ -27,7 +27,7 @@ function loadFixtures(subDir: string): Array<{ name: string; proPath: string; js
         .map((f) => ({
             name: `${subDir}/${f}`,
             proPath: path.join(dir, f),
-            jsonPath: path.join(dir, f.replace(/\.pro$/, ".json")),
+            jsonPath: path.join(dir, f.replace(/\.pro$/, ".pro.json")),
         }))
         .filter((entry) => fs.existsSync(entry.jsonPath));
 }
