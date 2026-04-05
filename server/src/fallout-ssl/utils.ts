@@ -656,7 +656,11 @@ export function buildVariableSymbol(
     parsed?: jsdoc.JSdoc | null,
     displayPath?: string,
 ): VariableSymbol {
-    const sigText = parsed?.type ? `${parsed.type} ${name}` : name;
+    const sigText = parsed?.type
+        ? `${parsed.type} ${name}`
+        : description
+            ? `${description} ${name}`
+            : `variable ${name}`;
     let hoverValue = buildSignatureBlock(sigText, LANG_FALLOUT_SSL_TOOLTIP, displayPath);
 
     if (description) {

@@ -304,6 +304,7 @@ variable score := 0;
         expect(contents).toBeDefined();
         const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("score");
+        expect(value).toContain("variable score");
         expect(value).toContain("The player's current score.");
     });
 
