@@ -52,7 +52,7 @@ base_functions:
         Returns the action frame of the given art frame on a given object (who). This can be used as the delay in an animation registration sequence.
 
     - name: anim_busy
-      detail: int anim_busy(ObjectPtr who)
+      detail: bool anim_busy(ObjectPtr who)
       doc: |-
         Returns True if object (who) is currently animating, otherwise False. This can be used to determine if a given object has completed an animation.
 

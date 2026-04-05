@@ -62,7 +62,7 @@
     "anim_busy": {
         "contents": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint anim_busy(ObjectPtr who)\n```\nReturns True if object (who) is currently animating, otherwise False. This can be used to determine if a given object has completed an animation."
+            "value": "```fallout-ssl-tooltip\nbool anim_busy(ObjectPtr who)\n```\nReturns True if object (who) is currently animating, otherwise False. This can be used to determine if a given object has completed an animation."
         }
     },
     "animate_move_obj_to_tile": {
