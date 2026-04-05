@@ -12,6 +12,7 @@ import * as os from "os";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
+import { REGEX_MSG_INLAY, REGEX_MSG_INLAY_FLOATER_RAND } from "./core/patterns";
 import { getConnection } from "./lsp-connection";
 import { showError, showInfo } from "./user-messages";
 
@@ -213,6 +214,11 @@ export function symbolAtPosition(text: string, position: Position) {
         return traMatch;
     }
 
+    const msgMatch = findMsgArgumentAtPosition(str, pos);
+    if (msgMatch) {
+        return msgMatch;
+    }
+
     // Search for the word's beginning and end.
     let left = str.slice(0, pos + 1).search(/\w+$/),
         right = str.slice(pos).search(/\W/);
@@ -263,6 +269,46 @@ function findTraArgumentAtPosition(line: string, pos: number): string | null {
             return match[0];
         }
     }
+    return null;
+}
+
+/**
+ * Find if cursor is within a Fallout MSG reference.
+ * Returns the normalized hover token form, e.g. "mstr(100" or "floater_rand(307".
+ */
+function findMsgArgumentAtPosition(line: string, pos: number): string | null {
+    for (const match of line.matchAll(new RegExp(REGEX_MSG_INLAY.source, "g"))) {
+        const functionName = match[1];
+        const lineKey = match[2];
+        if (!functionName || !lineKey) {
+            continue;
+        }
+        const start = match.index + match[0].lastIndexOf(lineKey);
+        const end = start + lineKey.length;
+        if (pos >= start && pos < end) {
+            return `${functionName}(${lineKey}`;
+        }
+    }
+
+    for (const match of line.matchAll(new RegExp(REGEX_MSG_INLAY_FLOATER_RAND.source, "g"))) {
+        const firstKey = match[1];
+        const secondKey = match[2];
+        if (!firstKey || !secondKey) {
+            continue;
+        }
+        const firstStart = match.index + match[0].indexOf(firstKey);
+        const firstEnd = firstStart + firstKey.length;
+        if (pos >= firstStart && pos < firstEnd) {
+            return `floater_rand(${firstKey}`;
+        }
+
+        const secondStart = match.index + match[0].lastIndexOf(secondKey);
+        const secondEnd = secondStart + secondKey.length;
+        if (pos >= secondStart && pos < secondEnd) {
+            return `floater_rand(${secondKey}`;
+        }
+    }
+
     return null;
 }
 

@@ -17,6 +17,7 @@ const MSG_FUNCTIONS = [
     "mstr",
     "display_mstr",
     "floater",
+    "floater_rand",
     "NLowOption",
     "BLowOption",
     "GLowOption",
@@ -33,6 +34,9 @@ export const REGEX_MSG_HOVER = new RegExp(`^(${msgFunctionsPattern})\\((\\d+)$`)
 
 /** Matches MSG reference in text for inlay hints (global) */
 export const REGEX_MSG_INLAY = new RegExp(`(${msgFunctionsPattern})\\((\\d+)`, "g");
+
+/** Matches floater_rand() MSG references with two translation IDs. */
+export const REGEX_MSG_INLAY_FLOATER_RAND = /floater_rand\((\d+)\s*,\s*(\d+)/g;
 
 // =============================================================================
 // TRA patterns (WeiDU: baf, d, tp2, etc.)

@@ -24,6 +24,7 @@ import {
 import {
     REGEX_MSG_HOVER,
     REGEX_MSG_INLAY,
+    REGEX_MSG_INLAY_FLOATER_RAND,
     REGEX_TRANSPILER_TRA_HOVER,
     REGEX_TRANSPILER_TRA_INLAY,
     REGEX_TRA_COMMENT,
@@ -551,13 +552,56 @@ export class Translation {
         let lines = text.split("\n");
         lines = lines.slice(range.start.line, range.end.line);
 
+        const pushHint = (line: number, character: number, lineKey: string): void => {
+            const hintValue = this.getHintValue(traEntries, traFileKey, lineKey);
+            hints.push({
+                position: { line, character },
+                label: hintValue.label,
+                tooltip: hintValue.tooltip,
+                kind: 2,
+                paddingLeft: true,
+                paddingRight: true,
+            });
+        };
+
         // Determine regex based on file type
         // keyIndex: which capture group contains the translation ID
         let regex: RegExp;
         let keyIndex: number;
         if (traExt === "msg") {
-            regex = new RegExp(REGEX_MSG_INLAY.source, "g");
-            keyIndex = 2;
+            lines.forEach((lineText, i) => {
+                const lineNumber = range.start.line + i;
+                const lineHints: Array<{ character: number; lineKey: string }> = [];
+
+                for (const match of lineText.matchAll(new RegExp(REGEX_MSG_INLAY.source, "g"))) {
+                    const lineKey = match[2];
+                    if (!lineKey) {
+                        continue;
+                    }
+                    lineHints.push({
+                        character: match.index! + match[0].length,
+                        lineKey,
+                    });
+                }
+
+                for (const match of lineText.matchAll(new RegExp(REGEX_MSG_INLAY_FLOATER_RAND.source, "g"))) {
+                    const secondKey = match[2];
+                    if (!secondKey) {
+                        continue;
+                    }
+                    const secondStart = match[0].lastIndexOf(secondKey);
+                    lineHints.push({
+                        character: match.index! + secondStart + secondKey.length,
+                        lineKey: secondKey,
+                    });
+                }
+
+                lineHints.sort((a, b) => a.character - b.character);
+                for (const lineHint of lineHints) {
+                    pushHint(lineNumber, lineHint.character, lineHint.lineKey);
+                }
+            });
+            return hints;
         } else {
             // TypeScript transpiler files (.tbaf, .td, .ts) use tra(123) syntax.
             // Native WeiDU files (baf, d, tp2) use @123 syntax.
@@ -580,18 +624,7 @@ export class Translation {
                 const char_end = m.index! + m[0].length;
                 const lineKey = m[keyIndex];
                 if (!lineKey) continue;
-
-                const pos = { line: range.start.line + i, character: char_end };
-                const hintValue = this.getHintValue(traEntries, traFileKey, lineKey);
-                const hint: InlayHint = {
-                    position: pos,
-                    label: hintValue.label,
-                    tooltip: hintValue.tooltip,
-                    kind: 2,
-                    paddingLeft: true,
-                    paddingRight: true,
-                };
-                hints.push(hint);
+                pushHint(range.start.line + i, char_end, lineKey);
             }
         });
         return hints;

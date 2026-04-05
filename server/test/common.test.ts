@@ -84,6 +84,18 @@ describe("symbolAtPosition", () => {
         expect(result).toBe("mstr(101");
     });
 
+    it("returns msg reference for first floater_rand() argument", () => {
+        const text = "floater_rand(300, 307);";
+        const result = symbolAtPosition(text, { line: 0, character: 14 });
+        expect(result).toBe("floater_rand(300");
+    });
+
+    it("returns msg reference for second floater_rand() argument", () => {
+        const text = "floater_rand(300, 307);";
+        const result = symbolAtPosition(text, { line: 0, character: 19 });
+        expect(result).toBe("floater_rand(307");
+    });
+
     it("returns tra(100) when cursor on digits of $tra(100)", () => {
         const text = "const x = $tra(100);";
         // Position 15-17 is on the digits

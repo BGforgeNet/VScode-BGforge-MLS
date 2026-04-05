@@ -101,17 +101,50 @@ describe("Translation", () => {
             });
         });
 
-        it("returns inlay hints for .tssl file", async () => {
+        it("returns hover for both floater_rand() ids in .tssl file", async () => {
             await translation.init();
 
             const uri = `file://${tempDir}/test.tssl`;
-            const text = `/** @tra test.msg */\nconst x = mstr(100);\nconst y = mstr(101);`;
+            const text = `/** @tra test.msg */\nfloater_rand(101, 102);`;
+            const firstHover = translation.getHover(uri, "typescript", "floater_rand(101", text);
+            const secondHover = translation.getHover(uri, "typescript", "floater_rand(102", text);
+
+            expect(firstHover?.contents).toMatchObject({
+                kind: "markdown",
+                value: expect.stringContaining("Message 101"),
+            });
+            expect(secondHover?.contents).toMatchObject({
+                kind: "markdown",
+                value: expect.stringContaining("Test message"),
+            });
+        });
+
+        it("returns inlay hints for .tssl file including both floater_rand() ids", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);\nfloater_rand(101, 102);`;
             const range = { start: { line: 0, character: 0 }, end: { line: 3, character: 0 } };
             const hints = translation.getInlayHints(uri, "typescript", text, range);
 
-            expect(hints.length).toBe(2);
+            expect(hints.length).toBe(3);
             expect(hints[0]?.label).toContain("Hello from msg");
             expect(hints[1]?.label).toContain("Message 101");
+            expect(hints[2]?.label).toContain("Test message");
+        });
+
+        it("preserves source order for mixed same-line msg inlay hints", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nfloater_rand(101, 102); mstr(100);`;
+            const range = { start: { line: 0, character: 0 }, end: { line: 2, character: 0 } };
+            const hints = translation.getInlayHints(uri, "typescript", text, range);
+
+            expect(hints.length).toBe(3);
+            expect(hints[0]?.label).toContain("Message 101");
+            expect(hints[1]?.label).toContain("Test message");
+            expect(hints[2]?.label).toContain("Hello from msg");
         });
 
         it("does not return hover for @123 in .tssl file", async () => {
