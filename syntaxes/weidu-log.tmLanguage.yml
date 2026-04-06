@@ -1,0 +1,38 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: WeiDU log
+scopeName: source.weidu-log
+patterns:
+  - begin: "~"
+    beginCaptures:
+      "0":
+        name: keyword.control.weidu-log
+    end: "~"
+    endCaptures:
+      "0":
+        name: keyword.control.weidu-log
+    patterns:
+      - match: "/"
+        name: keyword.control.weidu-log
+      - match: "[^~/]+"
+        name: string.quoted.weidu-log
+  - match: "(#)(\\d+)"
+    captures:
+      "1":
+        name: keyword.control.weidu-log
+      "2":
+        name: constant.numeric.weidu-log
+  - begin: "//"
+    beginCaptures:
+      "0":
+        name: comment.line.double-slash.weidu-log
+    end: "$"
+    name: comment.line.weidu-log
+    patterns:
+      - match: "->"
+        name: keyword.control.weidu-log
+      - match: ":([^:]+)$"
+        captures:
+          "1":
+            name: constant.numeric.weidu-log
+  - match: "[^\\s]+"
+    name: keyword.control.weidu-log

@@ -210,6 +210,15 @@
                 "configuration": "./language-configurations/weidu-tra.language-configuration.json"
             },
             {
+                "id": "weidu-log",
+                "aliases": [
+                    "WeiDU log"
+                ],
+                "filenames": [
+                    "weidu.log"
+                ]
+            },
+            {
                 "id": "bgforge-mls-comment"
             },
             {
@@ -343,6 +352,11 @@
                 "language": "weidu-tra",
                 "scopeName": "source.weidu-tra",
                 "path": "./syntaxes/weidu-tra.tmLanguage.json"
+            },
+            {
+                "language": "weidu-log",
+                "scopeName": "source.weidu-log",
+                "path": "./syntaxes/weidu-log.tmLanguage.json"
             },
             {
                 "language": "bgforge-mls-comment",

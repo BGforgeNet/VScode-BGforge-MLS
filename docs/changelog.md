@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.0
+
+- Added syntax highlighting for `weidu.log`.
+
 ## 3.5.0
 
 - Binary viewer is now an editor, supporting **Dump to JSON** and **Load from JSON** actions, and `autoDumpJson` setting.
