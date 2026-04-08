@@ -1,5 +1,6 @@
 import { BufferReader } from "typed-binary";
-import { BinaryParser, ParseOptions, ParseResult, ParsedGroup, ParsedField } from "./types";
+import { BinaryParser, ParseOptions, ParseResult, ParsedGroup, ParsedField, ParsedFieldType } from "./types";
+import { createProCanonicalSnapshot } from "./pro-canonical";
 import { serializePro } from "./pro-serializer";
 import {
     ObjectType, ItemSubType, ScenerySubType, DamageType, MaterialType,
@@ -62,7 +63,7 @@ function field(
     value: unknown,
     offset: number,
     size: number,
-    type: string,
+    type: ParsedFieldType,
     description?: string,
     rawValue?: number
 ): ParsedField {
@@ -637,12 +638,14 @@ class ProParser implements BinaryParser {
             }
         }
 
-        return {
+        const result: ParseResult = {
             format: this.id,
             formatName: this.name,
             root: group("PRO File", groups),
             errors: errors.length > 0 ? errors : undefined,
         };
+        result.document = createProCanonicalSnapshot(result).document;
+        return result;
     }
 }
 

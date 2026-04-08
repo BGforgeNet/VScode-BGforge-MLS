@@ -12,7 +12,7 @@ import {
     getOutputPathForJsonSnapshot,
     getSnapshotPath,
 } from "../../../client/src/parsers/json-snapshot-path";
-import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../../../client/src/parsers/json-snapshot";
+import { createBinaryJsonSnapshot, loadBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../../../client/src/parsers/json-snapshot";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 const EXTENSIONS = parserRegistry.getExtensions().map(ext => `.${ext}`);
@@ -57,7 +57,13 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
                 console.error(`Missing: ${jsonPath}`);
                 return "error";
             }
-            const expected = fs.readFileSync(jsonPath, "utf-8").trim();
+            const expectedText = fs.readFileSync(jsonPath, "utf-8");
+            let expected = expectedText.trim();
+            try {
+                expected = createBinaryJsonSnapshot(parseBinaryJsonSnapshot(expectedText)).trimEnd();
+            } catch {
+                // Keep the raw text for malformed snapshots so diff reporting still helps.
+            }
             if (json !== expected) {
                 reportDiff(filePath, expected, json);
                 return "changed";
@@ -89,7 +95,7 @@ Examples:
 
 /**
  * Load a JSON file and serialize it back to binary format.
- * Validates by re-parsing the output and comparing to the input JSON.
+ * Validation and semantic round-trip checks happen inside the shared snapshot loader.
  */
 function loadJsonToBinary(jsonPath: string): void {
     if (!fs.existsSync(jsonPath)) {
@@ -98,7 +104,11 @@ function loadJsonToBinary(jsonPath: string): void {
     }
 
     const jsonText = fs.readFileSync(jsonPath, "utf-8");
-    const result: ParseResult = parseBinaryJsonSnapshot(jsonText);
+    const loaded = loadBinaryJsonSnapshot(jsonText, {
+        proParseOptions: CLI_PARSE_OPTIONS,
+        mapParseOptions: CLI_PARSE_OPTIONS,
+    });
+    const result: ParseResult = loaded.parseResult;
 
     // Determine the parser from the format field
     const parser = parserRegistry.getById(result.format);
@@ -111,17 +121,7 @@ function loadJsonToBinary(jsonPath: string): void {
         process.exit(1);
     }
 
-    const bytes = parser.serialize(result);
-
-    // Validate: re-parse the output and compare JSON
-    const reparsed = parser.parse(bytes, CLI_PARSE_OPTIONS);
-    if (reparsed.errors && reparsed.errors.length > 0) {
-        console.error(`Validation failed: serialized bytes don't parse cleanly:`);
-        for (const err of reparsed.errors) {
-            console.error(`  ${err}`);
-        }
-        process.exit(1);
-    }
+    const bytes = loaded.bytes ?? parser.serialize(result);
 
     const outputExtension = parser.extensions[0];
     if (!outputExtension) {

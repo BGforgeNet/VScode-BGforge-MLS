@@ -544,6 +544,9 @@
         "knip:prod": "knip --production --workspace server --include files",
         "publish:server": "./scripts/publish-server.sh"
     },
+    "dependencies": {
+        "zod": "^4.1.12"
+    },
     "devDependencies": {
         "@oxlint/plugins": "^1.55.0",
         "@types/mocha": "^10.0.10",

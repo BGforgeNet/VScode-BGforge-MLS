@@ -1,156 +1,34 @@
 {
+  "schemaVersion": 1,
   "format": "pro",
   "formatName": "Fallout PRO (Prototype)",
-  "root": {
-    "name": "PRO File",
-    "fields": [
-      {
-        "name": "Header",
-        "fields": [
-          {
-            "name": "Object Type",
-            "value": "Scenery",
-            "offset": 0,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 2
-          },
-          {
-            "name": "Object ID",
-            "value": 8,
-            "offset": 1,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Text ID",
-            "value": 800,
-            "offset": 4,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "FRM Type",
-            "value": "Scenery",
-            "offset": 8,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 2
-          },
-          {
-            "name": "FRM ID",
-            "value": 283,
-            "offset": 9,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Light Radius",
-            "value": 0,
-            "offset": 12,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-8 hexes"
-          },
-          {
-            "name": "Light Intensity",
-            "value": 0,
-            "offset": 16,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-65536"
-          },
-          {
-            "name": "Flags",
-            "value": "(none)",
-            "offset": 20,
-            "size": 4,
-            "type": "flags",
-            "rawValue": 0
-          }
-        ],
-        "expanded": true
+  "document": {
+    "header": {
+      "objectType": 2,
+      "objectId": 8,
+      "textId": 800,
+      "frmType": 2,
+      "frmId": 283,
+      "lightRadius": 0,
+      "lightIntensity": 0,
+      "flags": 0
+    },
+    "sections": {
+      "sceneryProperties": {
+        "wallLightFlags": 32768,
+        "actionFlags": 10240,
+        "script": {
+          "type": -1,
+          "id": -1
+        },
+        "subType": 0,
+        "materialId": 1,
+        "soundId": 66
       },
-      {
-        "name": "Scenery Properties",
-        "fields": [
-          {
-            "name": "Wall Light Flags",
-            "value": "WestCorner",
-            "offset": 24,
-            "size": 2,
-            "type": "flags",
-            "rawValue": 32768
-          },
-          {
-            "name": "Action Flags",
-            "value": "(none)",
-            "offset": 26,
-            "size": 2,
-            "type": "flags",
-            "rawValue": 10240
-          },
-          {
-            "name": "Script Type",
-            "value": -1,
-            "offset": 28,
-            "size": 1,
-            "type": "int8"
-          },
-          {
-            "name": "Script ID",
-            "value": -1,
-            "offset": 29,
-            "size": 3,
-            "type": "int24"
-          },
-          {
-            "name": "Sub Type",
-            "value": "Door",
-            "offset": 32,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 0
-          },
-          {
-            "name": "Material",
-            "value": "Metal",
-            "offset": 36,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 1
-          },
-          {
-            "name": "Sound ID",
-            "value": 66,
-            "offset": 40,
-            "size": 1,
-            "type": "uint8"
-          }
-        ],
-        "expanded": true
-      },
-      {
-        "name": "Door Properties",
-        "fields": [
-          {
-            "name": "Walk Through",
-            "value": "No",
-            "offset": 41,
-            "size": 4,
-            "type": "enum"
-          },
-          {
-            "name": "Unknown",
-            "value": 3435973836,
-            "offset": 45,
-            "size": 4,
-            "type": "uint32"
-          }
-        ],
-        "expanded": true
+      "doorProperties": {
+        "walkThrough": 0,
+        "unknown": 3435973836
       }
-    ],
-    "expanded": true
+    }
   }
 }

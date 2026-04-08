@@ -235,11 +235,19 @@ Two webview-based features, each with a host-side and browser-side module:
 
 Binary editor design choice:
 
+Implementation checklist and extension plan for new binary formats live in [`client/src/parsers/README.md`](../client/src/parsers/README.md).
+
 - `.map` files are parsed strictly in the custom editor. If strict parsing fails, the editor shows the parse errors instead of silently falling back to heuristic recovery.
 - Graceful MAP fallback remains available in non-editor workflows such as the binary CLI via `--graceful-map`, where corpus parsing and opaque-byte round-tripping are more useful than an editable strict tree.
 - The editor includes `Dump to JSON` and `Load from JSON` sidebar actions. Snapshots use extension-preserving sidecars such as `file.pro.json` and `file.map.json`.
-- MAP JSON snapshots are fidelity snapshots, not just `JSON.stringify(parseResult)`. Any MAP region the editor intentionally omits from the visible tree, such as tiles or opaque tails, must still be carried in the snapshot so JSON round-trips remain byte-preserving.
-- That byte preservation applies to omitted MAP regions, not to hidden tails inside parsed fields. Once a field is modeled by the editor, JSON load/save treats the parsed value as authoritative and rewrites that field in canonical form, even if the original fixed-width slot had extra non-semantic bytes after the visible value.
+- Binary JSON snapshots are canonical `schemaVersion: 1` documents for both `pro` and `map`. They are validated on dump and load. Legacy editor-tree snapshots are no longer supported.
+- Both binary parsers now separate canonical data from presentation. Parser results still include a tree for the editor, but `ParseResult.document` is the canonical machine model and is the source of truth for JSON dump/load and binary serialization.
+- Presentation metadata such as labels, enum/flag option tables, numeric formatting, and editability is defined separately in `client/src/parsers/presentation-schema.ts`, so external tools can consume the canonical data contract without inheriting the editor tree.
+- Presentation lookups are keyed by stable semantic IDs such as `pro.header.objectType` and `map.scripts[].extents[].slots[].flags`. The old escaped tree-path lookup form is no longer part of the contract.
+- MAP JSON snapshots remain fidelity snapshots. Any MAP region the editor intentionally omits from the visible tree, such as tiles or opaque tails, is still carried in the canonical snapshot so JSON round-trips remain byte-preserving.
+- That byte preservation applies to omitted MAP regions and preserved fixed-width source bytes such as filename slots. Once a field is modeled and changed through the canonical document, JSON load/save treats the parsed value as authoritative and rewrites that field in canonical form.
+- MAP snapshots are semantic documents, not field-layout dumps. Regular decoded MAP fields do not persist `offset`, `size`, `valueType`, or `nodeType`; those remain internal codec concerns. Offsets and sizes are only preserved in `opaqueRanges` for undecoded or intentionally omitted byte spans.
+- MAP snapshots use a single persisted tile encoding: tile bytes must be stored in the `opaqueRanges` entry labeled `tiles`. Decoded tile snapshots are intentionally unsupported.
 - JSON load in the custom editor intentionally stays strict for MAP files even when a snapshot was originally produced from a graceful parse. This is on purpose: ambiguous MAP bytes should not spread through normal editor workflows. Users who explicitly want to reload those ambiguous snapshots must use the binary CLI with `--graceful-map`.
 - The custom editor intentionally omits MAP tile data. Tiles are large, mostly low-signal bulk data for editor workflows, so the editor skips materializing them entirely and preserves their bytes only for round-trip save/revert.
 - The MAP editor hides a few script-entry struct slots that Fallout 2 CE still leaves as legacy or unknown internals. It keeps meaningful fields visible, renames them to match CE semantics where possible, and leaves the persisted program pointer slot read-only because the engine treats the saved pointer value as non-semantic.
@@ -360,7 +368,15 @@ node bin-cli.js <file.pro|file.map|dir> [--save] [--check] [--load] [--graceful-
 ```
 
 Parses Fallout `.pro` and `.map` binary files and outputs structured JSON. `--load` writes JSON back using the parser's native extension, and `--graceful-map` allows ambiguous MAP object boundaries to fall back to opaque bytes for corpus and round-trip workflows.
-Snapshots are saved as extension-preserving sidecars such as `file.pro.json` and `file.map.json`. Ambiguous MAP snapshots intentionally require `--graceful-map` again on load.
+Snapshots are saved as extension-preserving sidecars such as `file.pro.json` and `file.map.json`.
+
+Snapshot contract:
+
+- Snapshots are canonical `schemaVersion: 1` JSON documents, not editor-tree dumps.
+- `pro` and `map` both dump/load through format-specific canonical schemas.
+- Dump and load both validate snapshots, then reload bytes through the native parser as a round-trip safety check.
+- `map` snapshots are semantic and do not expose normal field layout metadata; byte-preservation metadata lives in `opaqueRanges` only.
+- Ambiguous MAP snapshots intentionally require `--graceful-map` again on load.
 
 ### Shared CLI Infrastructure
 

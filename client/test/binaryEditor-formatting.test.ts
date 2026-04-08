@@ -3,18 +3,17 @@ import {
     formatEditableNumberValue,
     formatNumericValue,
     parseEditableNumberValue,
-    resolveNumericFormat,
     sanitizeEditableNumberValue,
 } from "../src/editors/binaryEditor-formatting";
+import { resolveNumericFormat } from "../src/editors/binaryEditor-numericFormat";
 
 describe("binaryEditor-formatting", () => {
     it("uses hex32 formatting for MAP PID/FID/CID/SID fields", () => {
-        expect(resolveNumericFormat("map", "PID")).toBe("hex32");
-        expect(resolveNumericFormat("map", "FID")).toBe("hex32");
-        expect(resolveNumericFormat("map", "CID")).toBe("hex32");
-        expect(resolveNumericFormat("map", "SID")).toBe("hex32");
-        expect(resolveNumericFormat("map", "Entry 0 SID")).toBe("hex32");
-        expect(resolveNumericFormat("map", "Rotation")).toBe("decimal");
+        expect(resolveNumericFormat("map", "map.objects.elevations[].objects[].base.pid", "PID")).toBe("hex32");
+        expect(resolveNumericFormat("map", "map.objects.elevations[].objects[].base.fid", "FID")).toBe("hex32");
+        expect(resolveNumericFormat("map", "map.objects.elevations[].objects[].base.cid", "CID")).toBe("hex32");
+        expect(resolveNumericFormat("map", "map.scripts[].extents[].slots[].sid", "Entry 0 SID")).toBe("hex32");
+        expect(resolveNumericFormat("map", "map.header.defaultOrientation", "Default Orientation")).toBe("decimal");
     });
 
     it("formats signed 32-bit values as raw hex bit patterns", () => {

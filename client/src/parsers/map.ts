@@ -11,7 +11,8 @@
  * 6. Objects per elevation (variable count)
  */
 
-import { BinaryParser, ParseOpaqueRange, ParseOptions, ParseResult, ParsedGroup, ParsedField } from "./types";
+import { BinaryParser, ParseOpaqueRange, ParseOptions, ParseResult, ParsedGroup, ParsedField, ParsedFieldType } from "./types";
+import { rebuildMapCanonicalDocument } from "./map-canonical";
 import { serializeMap } from "./map-serializer";
 import { encodeOpaqueRange } from "./opaque-range";
 import {
@@ -44,7 +45,7 @@ function field(
     value: unknown,
     offset: number,
     size: number,
-    type: string,
+    type: ParsedFieldType,
     description?: string,
     rawValue?: number
 ): ParsedField {
@@ -836,10 +837,10 @@ class MapParser implements BinaryParser {
     parse(data: Uint8Array, options?: ParseOptions): ParseResult {
         try {
             const result = this.parseInternal(data, options);
-            Object.defineProperty(result, "__sourceData", {
+            Object.defineProperty(result, "sourceData", {
                 value: new Uint8Array(data),
                 enumerable: false,
-                configurable: false,
+                configurable: true,
                 writable: false,
             });
             return result;
@@ -869,6 +870,23 @@ class MapParser implements BinaryParser {
         const rootFields: (ParsedField | ParsedGroup)[] = [];
 
         rootFields.push(parseHeaderSection(data, errors));
+        const filenameBytes = data.subarray(0x04, 0x14);
+        const filenameTerminator = filenameBytes.indexOf(0);
+        if (filenameTerminator !== -1) {
+            const trailingStart = 0x04 + filenameTerminator + 1;
+            const trailingBytes = data.subarray(trailingStart, 0x14);
+            if (trailingBytes.some((byte) => byte !== 0)) {
+                const filenameTailRange = encodeOpaqueRange(
+                    "header-filename-tail",
+                    data,
+                    trailingStart,
+                    0x14,
+                );
+                if (filenameTailRange) {
+                    opaqueRanges.push(filenameTailRange);
+                }
+            }
+        }
         const headerPaddingRange = encodeOpaqueRange(
             "header-padding",
             data,
@@ -949,13 +967,15 @@ class MapParser implements BinaryParser {
             }
         }
 
-        return {
+        const result: ParseResult = {
             format: this.id,
             formatName: this.name,
             root: group("MAP File", rootFields),
             opaqueRanges: opaqueRanges.length > 0 ? opaqueRanges : undefined,
             errors: errors.length > 0 ? errors : undefined,
         };
+        result.document = rebuildMapCanonicalDocument(result);
+        return result;
     }
 }
 

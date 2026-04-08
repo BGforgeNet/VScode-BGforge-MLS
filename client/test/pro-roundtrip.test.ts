@@ -119,4 +119,54 @@ describe("PRO round-trip via serializer (parse -> serialize -> byte-identical)",
         const output = proParser.serialize!(parsed);
         expect(Buffer.from(output).equals(Buffer.from(input))).toBe(true);
     });
+
+    it("serializes from the canonical document instead of the display tree when present", () => {
+        const proPath = path.join(FIXTURES, "misc", "00000001.pro");
+        const input = new Uint8Array(fs.readFileSync(proPath));
+        const parsed = proParser.parse(input);
+        expect(parsed.errors).toBeUndefined();
+
+        const header = parsed.root.fields[0];
+        expect(header && "fields" in header).toBe(true);
+        if (!header || !("fields" in header)) {
+            throw new Error("Expected header group");
+        }
+
+        const textId = header.fields.find((entry) => !("fields" in entry) && entry.name === "Text ID");
+        expect(textId && !("fields" in textId)).toBe(true);
+        if (!textId || "fields" in textId) {
+            throw new Error("Expected Text ID field");
+        }
+
+        textId.value = 999999;
+        textId.rawValue = 999999;
+
+        const output = proParser.serialize!(parsed);
+        expect(Buffer.from(output).equals(Buffer.from(input))).toBe(true);
+    });
+
+    it("rejects invalid structural PRO trees instead of using a serializer fallback", () => {
+        const proPath = path.join(FIXTURES, "misc", "00000001.pro");
+        const input = new Uint8Array(fs.readFileSync(proPath));
+        const parsed = proParser.parse(input);
+        expect(parsed.errors).toBeUndefined();
+
+        const header = parsed.root.fields[0];
+        expect(header && "fields" in header).toBe(true);
+        if (!header || !("fields" in header)) {
+            throw new Error("Expected header group");
+        }
+
+        const objectType = header.fields.find((entry) => !("fields" in entry) && entry.name === "Object Type");
+        expect(objectType && !("fields" in objectType)).toBe(true);
+        if (!objectType || "fields" in objectType) {
+            throw new Error("Expected Object Type field");
+        }
+
+        objectType.value = "Critter";
+        objectType.rawValue = 1;
+        parsed.document = undefined;
+
+        expect(() => proParser.serialize!(parsed)).toThrow(/required for critter PRO snapshots/i);
+    });
 });

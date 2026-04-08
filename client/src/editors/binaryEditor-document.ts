@@ -5,18 +5,28 @@
  */
 
 import * as vscode from "vscode";
-import { BinaryParser, ParseResult, ParsedField, ParsedGroup } from "../parsers";
-import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../parsers/json-snapshot";
+import { BinaryParser, ParseOptions, ParseResult, ParsedField, ParsedGroup } from "../parsers";
+import { rebuildMapCanonicalDocument } from "../parsers/map-canonical";
+import { rebuildProCanonicalDocument } from "../parsers/pro-canonical";
+import { buildProStructuralTransitionBytes, isProStructuralFieldId } from "../parsers/pro-transition";
 
 /**
  * Represents a single field edit for undo/redo.
  */
 export interface FieldEdit {
+    readonly fieldId: string;
     readonly fieldPath: string;
     readonly oldRawValue: number;
     readonly oldDisplayValue: string;
     readonly newRawValue: number;
     readonly newDisplayValue: string;
+    readonly incrementalSafe: boolean;
+}
+
+interface BinaryDocumentCodec {
+    readonly serialize: NonNullable<BinaryParser["serialize"]>;
+    readonly parse?: (data: Uint8Array, options?: ParseOptions) => ParseResult;
+    readonly parseOptions?: ParseOptions;
 }
 
 /**
@@ -26,7 +36,7 @@ export interface FieldEdit {
 export class BinaryDocument implements vscode.CustomDocument {
     readonly uri: vscode.Uri;
     private _parseResult: ParseResult;
-    private readonly serializer: NonNullable<BinaryParser["serialize"]>;
+    private readonly codec: BinaryDocumentCodec;
 
     private readonly _onDidDispose = new vscode.EventEmitter<void>();
     readonly onDidDispose = this._onDidDispose.event;
@@ -39,25 +49,25 @@ export class BinaryDocument implements vscode.CustomDocument {
     /** Internal event: content changed, webview should refresh */
     readonly onDidChangeContent = this._onDidChangeContent.event;
 
-    constructor(uri: vscode.Uri, parseResult: ParseResult, serializer: NonNullable<BinaryParser["serialize"]>) {
+    constructor(uri: vscode.Uri, parseResult: ParseResult, codec: BinaryDocumentCodec | NonNullable<BinaryParser["serialize"]>) {
         this.uri = uri;
         this._parseResult = parseResult;
-        this.serializer = serializer;
+        this.codec = typeof codec === "function" ? { serialize: codec } : codec;
     }
 
     get parseResult(): ParseResult {
         return this._parseResult;
     }
 
-    getField(fieldPath: string): ParsedField | undefined {
-        return this.findField(fieldPath);
+    getFieldById(fieldId: string): ParsedField | undefined {
+        return this.findFieldById(fieldId);
     }
 
     /**
      * Serialize the current state back to binary bytes.
      */
     getContent(): Uint8Array {
-        return this.serializer(this._parseResult);
+        return this.codec.serialize(this._parseResult);
     }
 
     /**
@@ -93,19 +103,25 @@ export class BinaryDocument implements vscode.CustomDocument {
      * Apply an edit to a field. Fires onDidChange for VSCode undo integration.
      * Returns the edit if successful, undefined if field not found.
      */
-    applyEdit(fieldPath: string, newRawValue: number, newDisplayValue: string): FieldEdit | undefined {
-        const field = this.findField(fieldPath);
+    applyEdit(fieldId: string, fieldPath: string, newRawValue: number, newDisplayValue: string): FieldEdit | undefined {
+        if (this._parseResult.format === "pro" && this.codec.parse && isProStructuralFieldId(fieldId)) {
+            return this.applyStructuralEdit(fieldId, fieldPath, newRawValue, newDisplayValue);
+        }
+
+        const field = this.findFieldById(fieldId);
         if (!field) return undefined;
 
         const oldRawValue = typeof field.rawValue === "number" ? field.rawValue : (typeof field.value === "number" ? field.value : 0);
         const oldDisplayValue = String(field.value);
 
         const edit: FieldEdit = {
+            fieldId,
             fieldPath,
             oldRawValue,
             oldDisplayValue,
             newRawValue,
             newDisplayValue,
+            incrementalSafe: true,
         };
 
         // Apply the edit
@@ -117,11 +133,11 @@ export class BinaryDocument implements vscode.CustomDocument {
             document: this,
             label: `Edit ${fieldPath}`,
             undo: () => {
-                this.setFieldValueByPath(fieldPath, oldRawValue, oldDisplayValue);
+                this.setFieldValueById(fieldId, oldRawValue, oldDisplayValue);
                 this._onDidChangeContent.fire();
             },
             redo: () => {
-                this.setFieldValueByPath(fieldPath, newRawValue, newDisplayValue);
+                this.setFieldValueById(fieldId, newRawValue, newDisplayValue);
                 this._onDidChangeContent.fire();
             },
         });
@@ -130,12 +146,65 @@ export class BinaryDocument implements vscode.CustomDocument {
         return edit;
     }
 
-    /**
-     * Find a field by its dot-separated path (e.g. "Header.Object Type").
-     */
-    private findField(fieldPath: string): ParsedField | undefined {
-        const parts = fieldPath.split(".");
-        return findFieldInGroup(this._parseResult.root, parts, 0);
+    private findFieldById(fieldId: string): ParsedField | undefined {
+        try {
+            const parts = JSON.parse(fieldId) as unknown;
+            if (!Array.isArray(parts) || !parts.every((part) => typeof part === "string")) {
+                return undefined;
+            }
+            return findFieldBySegments(this._parseResult.root, parts, 0);
+        } catch {
+            return undefined;
+        }
+    }
+
+    private applyStructuralEdit(fieldId: string, fieldPath: string, newRawValue: number, newDisplayValue: string): FieldEdit | undefined {
+        const field = this.findFieldById(fieldId);
+        if (!field || !this.codec.parse) {
+            return undefined;
+        }
+
+        const oldRawValue = typeof field.rawValue === "number" ? field.rawValue : (typeof field.value === "number" ? field.value : 0);
+        const oldDisplayValue = String(field.value);
+        const nextBytes = buildProStructuralTransitionBytes(this._parseResult, fieldId, newRawValue);
+        if (!nextBytes) {
+            return undefined;
+        }
+
+        const reparsed = this.codec.parse(nextBytes, this.codec.parseOptions);
+        if (reparsed.errors && reparsed.errors.length > 0) {
+            return undefined;
+        }
+
+        const previousParseResult = cloneParseResult(this._parseResult);
+        const nextParseResult = cloneParseResult(reparsed);
+        this._parseResult = cloneParseResult(nextParseResult);
+
+        const edit: FieldEdit = {
+            fieldId,
+            fieldPath,
+            oldRawValue,
+            oldDisplayValue,
+            newRawValue,
+            newDisplayValue,
+            incrementalSafe: false,
+        };
+
+        this._onDidChange.fire({
+            document: this,
+            label: `Edit ${fieldPath}`,
+            undo: () => {
+                this._parseResult = cloneParseResult(previousParseResult);
+                this._onDidChangeContent.fire();
+            },
+            redo: () => {
+                this._parseResult = cloneParseResult(nextParseResult);
+                this._onDidChangeContent.fire();
+            },
+        });
+
+        this._onDidChangeContent.fire();
+        return edit;
     }
 
     /**
@@ -148,14 +217,30 @@ export class BinaryDocument implements vscode.CustomDocument {
         // is never shared, in-place updates are safe and much simpler.
         (field as { value: unknown }).value = displayValue;
         (field as { rawValue?: number | string }).rawValue = rawValue;
+        this.refreshCanonicalDocument();
     }
 
-    private setFieldValueByPath(fieldPath: string, rawValue: number, displayValue: string): void {
-        const field = this.findField(fieldPath);
+    private setFieldValueById(fieldId: string, rawValue: number, displayValue: string): void {
+        const field = this.findFieldById(fieldId);
         if (!field) {
             return;
         }
         this.setFieldValue(field, rawValue, displayValue);
+    }
+
+    private refreshCanonicalDocument(): void {
+        try {
+            if (this._parseResult.format === "pro") {
+                this._parseResult.document = rebuildProCanonicalDocument(this._parseResult);
+                return;
+            }
+            if (this._parseResult.format === "map") {
+                this._parseResult.document = rebuildMapCanonicalDocument(this._parseResult);
+                return;
+            }
+        } catch {
+            this._parseResult.document = undefined;
+        }
     }
 
     dispose(): void {
@@ -167,33 +252,38 @@ export class BinaryDocument implements vscode.CustomDocument {
 }
 
 function cloneParseResult(parseResult: ParseResult): ParseResult {
-    return parseBinaryJsonSnapshot(createBinaryJsonSnapshot(parseResult));
+    const cloned = JSON.parse(JSON.stringify(parseResult)) as ParseResult;
+    if (parseResult.sourceData) {
+        cloned.sourceData = new Uint8Array(parseResult.sourceData);
+    }
+    return cloned;
 }
 
-/**
- * Recursively search for a field in the ParseResult tree by path segments.
- */
-function findFieldInGroup(
+function findFieldBySegments(
     group: ParsedGroup,
     pathParts: readonly string[],
     depth: number,
 ): ParsedField | undefined {
+    if (depth >= pathParts.length) {
+        return undefined;
+    }
+
     for (const entry of group.fields) {
         if ("fields" in entry) {
-            // It's a group — if the name matches the current path segment, recurse
-            if (entry.name === pathParts[depth]) {
-                const result = findFieldInGroup(entry, pathParts, depth + 1);
-                if (result) return result;
+            if (entry.name !== pathParts[depth]) {
+                continue;
             }
-            // Also search without matching (groups may be skipped in the path)
-            const result = findFieldInGroup(entry, pathParts, depth);
-            if (result) return result;
-        } else {
-            // It's a field — check if the name matches the last path segment
-            if (entry.name === pathParts[depth] && depth === pathParts.length - 1) {
-                return entry;
+            const result = findFieldBySegments(entry, pathParts, depth + 1);
+            if (result) {
+                return result;
             }
+            continue;
+        }
+
+        if (depth === pathParts.length - 1 && entry.name === pathParts[depth]) {
+            return entry;
         }
     }
+
     return undefined;
 }

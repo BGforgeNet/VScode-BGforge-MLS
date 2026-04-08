@@ -1,3 +1,23 @@
+import type { MapCanonicalDocument } from "./map-canonical";
+import type { ProCanonicalDocument } from "./pro-canonical";
+
+export type BinaryCanonicalDocument = ProCanonicalDocument | MapCanonicalDocument;
+
+export type ParsedFieldType =
+    | "enum"
+    | "flags"
+    | "string"
+    | "padding"
+    | "note"
+    | "uint8"
+    | "uint16"
+    | "uint24"
+    | "uint32"
+    | "int8"
+    | "int16"
+    | "int24"
+    | "int32";
+
 /**
  * Represents a parsed field in a binary structure
  */
@@ -10,8 +30,8 @@ export interface ParsedField {
     offset: number;
     /** Size in bytes */
     size: number;
-    /** Human-readable type description */
-    type: string;
+    /** Binary/editor field kind */
+    type: ParsedFieldType;
     /** Optional description of the field */
     description?: string;
 }
@@ -28,22 +48,32 @@ export interface ParsedGroup {
     expanded?: boolean;
 }
 
-/**
- * Result of parsing a binary file
- */
-export interface ParseResult {
-    /** Format identifier (e.g., "pro", "frm", "map") */
-    format: string;
-    /** Human-readable format name */
-    formatName: string;
+export interface ParseDisplayModel {
     /** Parsed structure as groups and fields */
     root: ParsedGroup;
-    /** Raw byte ranges preserved when parts of the format cannot be decoded structurally */
-    opaqueRanges?: ParseOpaqueRange[];
     /** Any warnings during parsing */
     warnings?: string[];
     /** Any errors during parsing */
     errors?: string[];
+}
+
+export interface ParseSerializationContext {
+    /** Original source bytes when they are needed to preserve undecoded or skipped regions */
+    sourceData?: Uint8Array;
+    /** Raw byte ranges preserved when parts of the format cannot be decoded structurally */
+    opaqueRanges?: ParseOpaqueRange[];
+}
+
+/**
+ * Result of parsing a binary file
+ */
+export interface ParseResult extends ParseDisplayModel, ParseSerializationContext {
+    /** Format identifier (e.g., "pro", "frm", "map") */
+    format: string;
+    /** Human-readable format name */
+    formatName: string;
+    /** Format-specific canonical data model, separate from the editor/display tree */
+    document?: BinaryCanonicalDocument;
 }
 
 /**

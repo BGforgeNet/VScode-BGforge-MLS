@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ParseResult } from "../src/parsers/types";
+import { createBinaryJsonSnapshot } from "../src/parsers/json-snapshot";
 
 const { writeFile, getConfiguration } = vi.hoisted(() => ({
     writeFile: vi.fn(),
@@ -40,7 +41,29 @@ function makeParseResult(): ParseResult {
         root: {
             name: "PRO File",
             expanded: true,
-            fields: [],
+            fields: [
+                {
+                    name: "Header",
+                    expanded: true,
+                    fields: [
+                        { name: "Object Type", value: "Misc", offset: 0, size: 1, type: "enum", rawValue: 5 },
+                        { name: "Object ID", value: 1, offset: 1, size: 3, type: "uint24" },
+                        { name: "Text ID", value: 100, offset: 4, size: 4, type: "uint32" },
+                        { name: "FRM Type", value: "Background", offset: 8, size: 1, type: "enum", rawValue: 5 },
+                        { name: "FRM ID", value: 9, offset: 9, size: 3, type: "uint24" },
+                        { name: "Light Radius", value: 8, offset: 12, size: 4, type: "uint32" },
+                        { name: "Light Intensity", value: 65536, offset: 16, size: 4, type: "uint32" },
+                        { name: "Flags", value: "LightThru", offset: 20, size: 4, type: "flags", rawValue: 536870912 },
+                    ],
+                },
+                {
+                    name: "Misc Properties",
+                    expanded: true,
+                    fields: [
+                        { name: "Unknown", value: 0, offset: 24, size: 4, type: "uint32" },
+                    ],
+                },
+            ],
         },
     };
 }
@@ -95,7 +118,7 @@ describe("saveBinaryDocumentArtifacts", () => {
                 toString: expect.any(Function),
                 with: expect.any(Function),
             },
-            Buffer.from(JSON.stringify(makeParseResult(), null, 2) + "\n", "utf8"),
+            Buffer.from(createBinaryJsonSnapshot(makeParseResult()), "utf8"),
         );
     });
 
@@ -119,7 +142,7 @@ describe("saveBinaryDocumentArtifacts", () => {
                 toString: expect.any(Function),
                 with: expect.any(Function),
             },
-            Buffer.from(JSON.stringify(makeParseResult(), null, 2) + "\n", "utf8"),
+            Buffer.from(createBinaryJsonSnapshot(makeParseResult()), "utf8"),
         );
     });
 
@@ -153,7 +176,7 @@ describe("saveBinaryDocumentArtifacts", () => {
                 authority: "ssh-remote+example",
                 toString: expect.any(Function),
             },
-            Buffer.from(JSON.stringify(makeParseResult(), null, 2) + "\n", "utf8"),
+            Buffer.from(createBinaryJsonSnapshot(makeParseResult()), "utf8"),
         );
     });
 });

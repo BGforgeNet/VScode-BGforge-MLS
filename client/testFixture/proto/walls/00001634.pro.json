@@ -1,121 +1,28 @@
 {
+  "schemaVersion": 1,
   "format": "pro",
   "formatName": "Fallout PRO (Prototype)",
-  "root": {
-    "name": "PRO File",
-    "fields": [
-      {
-        "name": "Header",
-        "fields": [
-          {
-            "name": "Object Type",
-            "value": "Wall",
-            "offset": 0,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 3
-          },
-          {
-            "name": "Object ID",
-            "value": 1634,
-            "offset": 1,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Text ID",
-            "value": 163400,
-            "offset": 4,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "FRM Type",
-            "value": "Walls",
-            "offset": 8,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 3
-          },
-          {
-            "name": "FRM ID",
-            "value": 1691,
-            "offset": 9,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Light Radius",
-            "value": 0,
-            "offset": 12,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-8 hexes"
-          },
-          {
-            "name": "Light Intensity",
-            "value": 0,
-            "offset": 16,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-65536"
-          },
-          {
-            "name": "Flags",
-            "value": "(none)",
-            "offset": 20,
-            "size": 4,
-            "type": "flags",
-            "rawValue": 0
-          }
-        ],
-        "expanded": true
-      },
-      {
-        "name": "Wall Properties",
-        "fields": [
-          {
-            "name": "Wall Light Flags",
-            "value": "SouthCorner",
-            "offset": 24,
-            "size": 2,
-            "type": "flags",
-            "rawValue": 8192
-          },
-          {
-            "name": "Action Flags",
-            "value": "(none)",
-            "offset": 26,
-            "size": 2,
-            "type": "flags",
-            "rawValue": 8192
-          },
-          {
-            "name": "Script Type",
-            "value": -1,
-            "offset": 28,
-            "size": 1,
-            "type": "int8"
-          },
-          {
-            "name": "Script ID",
-            "value": -1,
-            "offset": 29,
-            "size": 3,
-            "type": "int24"
-          },
-          {
-            "name": "Material",
-            "value": "Stone",
-            "offset": 32,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 5
-          }
-        ],
-        "expanded": true
+  "document": {
+    "header": {
+      "objectType": 3,
+      "objectId": 1634,
+      "textId": 163400,
+      "frmType": 3,
+      "frmId": 1691,
+      "lightRadius": 0,
+      "lightIntensity": 0,
+      "flags": 0
+    },
+    "sections": {
+      "wallProperties": {
+        "wallLightFlags": 8192,
+        "actionFlags": 8192,
+        "script": {
+          "type": -1,
+          "id": -1
+        },
+        "materialId": 5
       }
-    ],
-    "expanded": true
+    }
   }
 }

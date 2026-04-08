@@ -1,292 +1,53 @@
 {
+  "schemaVersion": 1,
   "format": "pro",
   "formatName": "Fallout PRO (Prototype)",
-  "root": {
-    "name": "PRO File",
-    "fields": [
-      {
-        "name": "Header",
-        "fields": [
-          {
-            "name": "Object Type",
-            "value": "Item",
-            "offset": 0,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 0
-          },
-          {
-            "name": "Object ID",
-            "value": 79,
-            "offset": 1,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Text ID",
-            "value": 7900,
-            "offset": 4,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "FRM Type",
-            "value": "Items",
-            "offset": 8,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 0
-          },
-          {
-            "name": "FRM ID",
-            "value": 46,
-            "offset": 9,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Light Radius",
-            "value": 0,
-            "offset": 12,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-8 hexes"
-          },
-          {
-            "name": "Light Intensity",
-            "value": 0,
-            "offset": 16,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-65536"
-          },
-          {
-            "name": "Flags",
-            "value": "Flat, LightThru, ShootThru",
-            "offset": 20,
-            "size": 4,
-            "type": "flags",
-            "rawValue": 2684354568
-          }
-        ],
-        "expanded": true
+  "document": {
+    "header": {
+      "objectType": 0,
+      "objectId": 79,
+      "textId": 7900,
+      "frmType": 0,
+      "frmId": 46,
+      "lightRadius": 0,
+      "lightIntensity": 0,
+      "flags": 2684354568
+    },
+    "sections": {
+      "itemProperties": {
+        "flagsExt": 168,
+        "attackModes": 5,
+        "script": {
+          "type": -1,
+          "id": -1
+        },
+        "subType": 3,
+        "materialId": 1,
+        "size": 1,
+        "weight": 1,
+        "cost": 35,
+        "inventoryFrmId": 117440571,
+        "soundId": 48
       },
-      {
-        "name": "Item Properties",
-        "fields": [
-          {
-            "name": "Flags Ext",
-            "value": "Use, Look, PickUp",
-            "offset": 24,
-            "size": 3,
-            "type": "flags",
-            "rawValue": 168
-          },
-          {
-            "name": "Attack Modes",
-            "value": 5,
-            "offset": 27,
-            "size": 1,
-            "type": "uint8"
-          },
-          {
-            "name": "Script Type",
-            "value": -1,
-            "offset": 28,
-            "size": 1,
-            "type": "int8"
-          },
-          {
-            "name": "Script ID",
-            "value": -1,
-            "offset": 29,
-            "size": 3,
-            "type": "int24"
-          },
-          {
-            "name": "Sub Type",
-            "value": "Weapon",
-            "offset": 32,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 3
-          },
-          {
-            "name": "Material",
-            "value": "Metal",
-            "offset": 36,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 1
-          },
-          {
-            "name": "Size",
-            "value": 1,
-            "offset": 40,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "Weight",
-            "value": 1,
-            "offset": 44,
-            "size": 4,
-            "type": "uint32",
-            "description": "pounds"
-          },
-          {
-            "name": "Cost",
-            "value": 35,
-            "offset": 48,
-            "size": 4,
-            "type": "uint32",
-            "description": "caps"
-          },
-          {
-            "name": "Inventory FRM ID",
-            "value": 117440571,
-            "offset": 52,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Sound ID",
-            "value": 48,
-            "offset": 56,
-            "size": 1,
-            "type": "uint8"
-          }
-        ],
-        "expanded": true
-      },
-      {
-        "name": "Weapon Stats",
-        "fields": [
-          {
-            "name": "Animation Code",
-            "value": "None",
-            "offset": 57,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 0
-          },
-          {
-            "name": "Min Damage",
-            "value": 1,
-            "offset": 61,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Max Damage",
-            "value": 1,
-            "offset": 65,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Damage Type",
-            "value": "Normal",
-            "offset": 69,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 0
-          },
-          {
-            "name": "Max Range 1",
-            "value": 15,
-            "offset": 73,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Max Range 2",
-            "value": 0,
-            "offset": 77,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Projectile PID",
-            "value": 83886104,
-            "offset": 81,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Min Strength",
-            "value": 0,
-            "offset": 85,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "AP Cost 1",
-            "value": 1,
-            "offset": 89,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "AP Cost 2",
-            "value": 0,
-            "offset": 93,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Critical Fail",
-            "value": 0,
-            "offset": 97,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Perk",
-            "value": 59,
-            "offset": 101,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Rounds",
-            "value": 0,
-            "offset": 105,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Caliber",
-            "value": 0,
-            "offset": 109,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Ammo PID",
-            "value": -1,
-            "offset": 113,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Max Ammo",
-            "value": 0,
-            "offset": 117,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Sound ID",
-            "value": 52,
-            "offset": 121,
-            "size": 1,
-            "type": "uint8"
-          }
-        ],
-        "expanded": true
+      "weaponStats": {
+        "animCode": 0,
+        "minDamage": 1,
+        "maxDamage": 1,
+        "damageType": 0,
+        "maxRange1": 15,
+        "maxRange2": 0,
+        "projectilePid": 83886104,
+        "minStrength": 0,
+        "apCost1": 1,
+        "apCost2": 0,
+        "criticalFail": 0,
+        "perk": 59,
+        "rounds": 0,
+        "caliber": 0,
+        "ammoPid": -1,
+        "maxAmmo": 0,
+        "soundId": 52
       }
-    ],
-    "expanded": true
+    }
   }
 }

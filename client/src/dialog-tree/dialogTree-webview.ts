@@ -6,6 +6,9 @@
 //   - Expand/collapse all button handlers
 // Each has its own escapeHtml copy (separate esbuild bundle, can't share imports).
 (function () {
+    // @ts-expect-error -- acquireVsCodeApi is injected by VSCode webview runtime
+    const vscode = acquireVsCodeApi();
+
     // Escape HTML for safe interpolation into innerHTML.
     // Values read from DOM properties (.id, .textContent) are browser-decoded,
     // so they must be re-escaped before insertion into innerHTML strings.
@@ -108,6 +111,51 @@
     const searchInput = searchInputEl as HTMLInputElement;
     const searchResults = searchResultsEl as HTMLElement;
     const tree = treeEl as HTMLElement;
+    const sidebar = document.querySelector<HTMLElement>(".sidebar");
+    let fatalErrorShown = false;
+
+    function showFatalError(message: string, error?: unknown): void {
+        if (fatalErrorShown) {
+            return;
+        }
+        fatalErrorShown = true;
+
+        const detail = error instanceof Error
+            ? `${message}\n${error.stack ?? error.message}`
+            : message;
+        console.error("Dialog preview runtime error:", error ?? message);
+        vscode.postMessage({
+            type: "runtimeError",
+            message,
+            stack: error instanceof Error ? error.stack : undefined,
+        });
+
+        const existing = document.querySelector(".errors");
+        existing?.remove();
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "errors";
+        const line = document.createElement("div");
+        line.textContent = detail;
+        wrapper.appendChild(line);
+
+        tree.replaceChildren();
+        tree.classList.remove("hidden");
+        tree.parentElement?.insertBefore(wrapper, tree);
+        searchResults.classList.add("hidden");
+        searchResults.innerHTML = "";
+        sidebar?.classList.add("hidden");
+    }
+
+    window.addEventListener("error", (event) => {
+        showFatalError(event.message || "Unhandled dialog preview error", event.error);
+    });
+
+    window.addEventListener("unhandledrejection", (event) => {
+        const reason = event.reason;
+        const message = reason instanceof Error ? reason.message : String(reason);
+        showFatalError(message || "Unhandled dialog preview promise rejection", reason);
+    });
 
     // Set platform-aware search placeholder
     const isMac = /Macintosh|Mac OS X/.test(navigator.userAgent);

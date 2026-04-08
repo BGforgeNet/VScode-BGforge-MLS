@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { mapParser } from "../src/parsers/map";
 import { createBinaryJsonSnapshot, parseBinaryJsonSnapshot } from "../src/parsers/json-snapshot";
+import type { ParseResult } from "../src/parsers/types";
 
 const REAL_MAPS = [
     path.resolve("external/fallout/Fallout2_Restoration_Project/data/maps/artemple.map"),
@@ -112,6 +113,36 @@ describe("MAP parser - real maps", () => {
         expect(result.errors).toBeUndefined();
         const serialized = mapParser.serialize!(result);
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
+    });
+
+    it("attaches a semantic canonical MAP document alongside the editor tree", () => {
+        const result = mapParser.parse(loadMap(resolveMapPath("artemple.map")), { gracefulMapBoundaries: true }) as ParseResult & {
+            document?: {
+                header?: {
+                    version: number;
+                    filename: string;
+                    defaultPosition: number;
+                };
+                globalVariables?: number[];
+                localVariables?: number[];
+                scripts?: unknown[];
+                objects?: {
+                    totalObjects: number;
+                };
+            };
+        };
+
+        expect(result.document?.header).toMatchObject({
+            version: 20,
+        });
+        expect(typeof result.document?.header?.filename).toBe("string");
+        expect(typeof result.document?.header?.defaultPosition).toBe("number");
+        expect(Array.isArray(result.document?.globalVariables)).toBe(true);
+        expect(Array.isArray(result.document?.localVariables)).toBe(true);
+        expect(Array.isArray(result.document?.scripts)).toBe(true);
+        expect(typeof result.document?.objects?.totalObjects).toBe("number");
+        expect(result.sourceData).toBeInstanceOf(Uint8Array);
+        expect(result.sourceData && Buffer.from(result.sourceData).equals(Buffer.from(loadMap(resolveMapPath("artemple.map"))))).toBe(true);
     });
 
     it.each(LOCAL_STRICT_FIXTURE_MAPS)(
@@ -228,11 +259,24 @@ describe("MAP parser - real maps", () => {
         floorFlagsField.value = 0x5;
         roofField.value = 0x678;
         roofFlagsField.value = 0x9;
+        (result as ParseResult).document = undefined;
 
         const serialized = mapParser.serialize!(result);
         const view = new DataView(serialized.buffer, serialized.byteOffset, serialized.byteLength);
 
         expect(view.getUint32(240, false)).toBe(0x9678_5234);
+    });
+
+    it("serializes from the canonical MAP document instead of the display tree when present", () => {
+        const mapData = loadMap(resolveMapPath("artemple.map"));
+        const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
+
+        const header = findGroupByName(result.root.fields, "Header");
+        const version = findFieldByName(header.fields, "Version");
+        version.value = 999;
+
+        const serialized = mapParser.serialize!(result);
+        expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
     });
 
     it("parses object section counts and leaves a TODO when subtype resolution is missing", () => {

@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 
+import { parseBinaryJsonSnapshot } from "../src/parsers/json-snapshot";
 import { proParser } from "../src/parsers/pro";
 
 const FIXTURES = path.resolve("client/testFixture/proto");
@@ -38,10 +39,33 @@ const goodFixtures = GOOD_DIRS.flatMap(loadFixtures);
 describe("PRO parser - good fixtures", () => {
     it.each(goodFixtures)("parses $name correctly", ({ proPath, jsonPath }) => {
         const proData = new Uint8Array(fs.readFileSync(proPath));
-        const expected = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+        const expected = parseBinaryJsonSnapshot(fs.readFileSync(jsonPath, "utf-8"));
 
         const result = proParser.parse(proData);
         expect(jsonClean(result)).toEqual(expected);
+    });
+
+    it("attaches a canonical PRO document alongside the editor tree", () => {
+        const proPath = path.join(FIXTURES, "misc", "00000001.pro");
+        const result = proParser.parse(new Uint8Array(fs.readFileSync(proPath))) as ParseResult & {
+            document?: {
+                header?: { objectType: number; objectId: number; textId: number };
+                sections?: { miscProperties?: { unknown: number } };
+            };
+        };
+
+        expect(result.document).toMatchObject({
+            header: {
+                objectType: 5,
+                objectId: 1,
+                textId: 100,
+            },
+            sections: {
+                miscProperties: {
+                    unknown: 0,
+                },
+            },
+        });
     });
 });
 

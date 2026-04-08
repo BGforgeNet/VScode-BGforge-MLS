@@ -136,7 +136,8 @@ describe("bin CLI integration", () => {
             // Verify it's valid JSON with trailing newline
             const content = fs.readFileSync(jsonPath, "utf-8");
             expect(content.endsWith("\n")).toBe(true);
-            JSON.parse(content);
+            const parsed = JSON.parse(content) as { schemaVersion?: number };
+            expect(parsed.schemaVersion).toBe(1);
         });
 
         it("does not rewrite up-to-date snapshot", () => {
@@ -153,6 +154,7 @@ describe("bin CLI integration", () => {
             expect(code).toBe(0);
             expect(stdout).not.toContain("Saved:");
         });
+
     });
 
     describe("error handling", () => {

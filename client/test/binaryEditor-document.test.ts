@@ -4,6 +4,8 @@
  */
 
 import { vi, describe, expect, it, beforeEach } from "vitest";
+import * as fs from "fs";
+import * as path from "path";
 
 // Mock vscode EventEmitter with a minimal implementation
 vi.mock("vscode", () => {
@@ -21,11 +23,31 @@ vi.mock("vscode", () => {
 
 import { BinaryDocument } from "../src/editors/binaryEditor-document";
 import type { ParseResult } from "../src/parsers/types";
+import { mapParser } from "../src/parsers/map";
+import { proParser } from "../src/parsers/pro";
+import { buildBinaryEditorTreeState } from "../src/editors/binaryEditor-tree";
 
 function makeTestResult(): ParseResult {
     return {
         format: "pro",
         formatName: "Fallout PRO (Prototype)",
+        document: {
+            header: {
+                objectType: 5,
+                objectId: 1,
+                textId: 100,
+                frmType: 5,
+                frmId: 9,
+                lightRadius: 8,
+                lightIntensity: 65536,
+                flags: 536870912,
+            },
+            sections: {
+                miscProperties: {
+                    unknown: 0,
+                },
+            },
+        },
         root: {
             name: "PRO File",
             fields: [
@@ -36,6 +58,10 @@ function makeTestResult(): ParseResult {
                         { name: "Object Type", value: "Misc", offset: 0, size: 1, type: "enum", rawValue: 5 },
                         { name: "Object ID", value: 1, offset: 1, size: 3, type: "uint24" },
                         { name: "Text ID", value: 100, offset: 4, size: 4, type: "uint32" },
+                        { name: "FRM Type", value: "Background", offset: 8, size: 1, type: "enum", rawValue: 5 },
+                        { name: "FRM ID", value: 9, offset: 9, size: 3, type: "uint24" },
+                        { name: "Light Radius", value: 8, offset: 12, size: 4, type: "uint32" },
+                        { name: "Light Intensity", value: 65536, offset: 16, size: 4, type: "uint32" },
                         { name: "Flags", value: "LightThru", offset: 20, size: 4, type: "flags", rawValue: 536870912 },
                     ],
                 },
@@ -53,6 +79,26 @@ function makeTestResult(): ParseResult {
 
 // Provide vscode.Uri for the document constructor
 const fakeUri = { fsPath: "/test/file.pro", scheme: "file", toString: () => "/test/file.pro" } as any;
+const fieldId = (...parts: string[]) => JSON.stringify(parts);
+
+function loadMapDocument(mapName: string): BinaryDocument {
+    const mapPath = path.resolve("client/testFixture/maps", mapName);
+    const parseResult = mapParser.parse(new Uint8Array(fs.readFileSync(mapPath)));
+    return new BinaryDocument(
+        { fsPath: mapPath, scheme: "file", toString: () => mapPath } as any,
+        parseResult,
+        { parse: mapParser.parse.bind(mapParser), serialize: mapParser.serialize!.bind(mapParser) },
+    );
+}
+
+function loadProDocument(proPath: string): BinaryDocument {
+    const parseResult = proParser.parse(new Uint8Array(fs.readFileSync(proPath)));
+    return new BinaryDocument(
+        { fsPath: proPath, scheme: "file", toString: () => proPath } as any,
+        parseResult,
+        { parse: proParser.parse.bind(proParser), serialize: proParser.serialize!.bind(proParser) },
+    );
+}
 
 describe("BinaryDocument", () => {
     let doc: BinaryDocument;
@@ -68,7 +114,7 @@ describe("BinaryDocument", () => {
 
     describe("applyEdit", () => {
         it("edits a numeric field by path", () => {
-            const edit = doc.applyEdit("Header.Text ID", 200, "200");
+            const edit = doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 200, "200");
             expect(edit).toBeDefined();
             expect(edit!.oldRawValue).toBe(100);
             expect(edit!.newRawValue).toBe(200);
@@ -78,21 +124,36 @@ describe("BinaryDocument", () => {
             const textId = header.fields.find((f: any) => f.name === "Text ID");
             expect(textId.value).toBe("200");
             expect(textId.rawValue).toBe(200);
+            expect((doc.parseResult.document as any).header.textId).toBe(200);
         });
 
         it("edits an enum field preserving rawValue", () => {
-            const edit = doc.applyEdit("Header.Object Type", 1, "Critter");
+            const edit = doc.applyEdit(fieldId("Header", "FRM Type"), "Header.FRM Type", 0, "Items");
             expect(edit).toBeDefined();
             expect(edit!.oldRawValue).toBe(5);
 
             const header = doc.parseResult.root.fields[0] as any;
-            const objType = header.fields.find((f: any) => f.name === "Object Type");
-            expect(objType.value).toBe("Critter");
-            expect(objType.rawValue).toBe(1);
+            const frmType = header.fields.find((f: any) => f.name === "FRM Type");
+            expect(frmType.value).toBe("Items");
+            expect(frmType.rawValue).toBe(0);
+            expect((doc.parseResult.document as any).header.frmType).toBe(0);
+        });
+
+        it("keeps editing responsive when the tree becomes temporarily invalid for canonical sync", () => {
+            const proDoc = loadProDocument(path.resolve("client/testFixture/proto/misc/00000001.pro"));
+
+            expect(() => proDoc.applyEdit(fieldId("Header", "Object Type"), "Header.Object Type", 1, "Critter")).not.toThrow();
+            expect(proDoc.parseResult.document).toBeDefined();
+
+            const groupNames = proDoc.parseResult.root.fields
+                .filter((entry): entry is { name: string; fields: unknown[] } => typeof entry === "object" && entry !== null && "fields" in entry)
+                .map((entry) => entry.name);
+            expect(groupNames).toContain("Critter Properties");
+            expect(groupNames).not.toContain("Misc Properties");
         });
 
         it("returns undefined for nonexistent field", () => {
-            const edit = doc.applyEdit("Header.Nonexistent", 42, "42");
+            const edit = doc.applyEdit(fieldId("Header", "Nonexistent"), "Header.Nonexistent", 42, "42");
             expect(edit).toBeUndefined();
         });
 
@@ -100,7 +161,7 @@ describe("BinaryDocument", () => {
             const events: any[] = [];
             doc.onDidChange((e) => events.push(e));
 
-            doc.applyEdit("Header.Text ID", 200, "200");
+            doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 200, "200");
             expect(events).toHaveLength(1);
             expect(events[0].document).toBe(doc);
             expect(events[0].label).toBe("Edit Header.Text ID");
@@ -112,7 +173,7 @@ describe("BinaryDocument", () => {
             let fired = false;
             doc.onDidChangeContent(() => { fired = true; });
 
-            doc.applyEdit("Header.Text ID", 200, "200");
+            doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 200, "200");
             expect(fired).toBe(true);
         });
     });
@@ -122,7 +183,7 @@ describe("BinaryDocument", () => {
             const events: any[] = [];
             doc.onDidChange((e) => events.push(e));
 
-            doc.applyEdit("Header.Text ID", 200, "200");
+            doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 200, "200");
             events[0].undo();
 
             const header = doc.parseResult.root.fields[0] as any;
@@ -134,7 +195,7 @@ describe("BinaryDocument", () => {
             const events: any[] = [];
             doc.onDidChange((e) => events.push(e));
 
-            doc.applyEdit("Header.Text ID", 200, "200");
+            doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 200, "200");
             events[0].undo();
             events[0].redo();
 
@@ -190,7 +251,7 @@ describe("BinaryDocument", () => {
             const replacement = makeTestResult();
             (replacement.root.fields[0] as any).fields[2].value = 777;
             doc.replaceParseResult(replacement, "Load JSON snapshot");
-            doc.applyEdit("Header.Text ID", 888, "888");
+            doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 888, "888");
 
             events[1].undo();
             events[0].undo();
@@ -209,7 +270,7 @@ describe("BinaryDocument", () => {
             const replacement = makeTestResult();
             (replacement.root.fields[0] as any).fields[2].value = 777;
             doc.replaceParseResult(replacement, "Load JSON snapshot");
-            doc.applyEdit("Header.Text ID", 888, "888");
+            doc.applyEdit(fieldId("Header", "Text ID"), "Header.Text ID", 888, "888");
 
             events[1].undo();
             events[0].undo();
@@ -234,6 +295,30 @@ describe("BinaryDocument", () => {
     describe("dispose", () => {
         it("does not throw", () => {
             expect(() => doc.dispose()).not.toThrow();
+        });
+    });
+
+    describe("MAP field identity", () => {
+        it("resolves editable fields by opaque field id even when display names contain dots", () => {
+            const mapDoc = loadMapDocument("arcaves.map");
+            const tree = buildBinaryEditorTreeState(mapDoc.parseResult);
+            const init = tree.getInitMessagePayload();
+
+            const objectsNode = init.rootChildren.find((node) => node.name === "Objects Section");
+            expect(objectsNode).toBeDefined();
+            const elevation0 = tree.getChildren(objectsNode!.id).find((node) => node.name === "Elevation 0 Objects");
+            expect(elevation0).toBeDefined();
+            const object18 = tree.getChildren(elevation0!.id).find((node) => node.name === "Object 0.18 (Misc)");
+            expect(object18).toBeDefined();
+            const rotation = tree.getChildren(object18!.id).find((node) => node.name === "Rotation");
+
+            expect(rotation).toBeDefined();
+            expect(rotation?.fieldPath).toBe("Objects Section.Elevation 0 Objects.Object 0.18 (Misc).Rotation");
+            expect(rotation?.fieldId).toBeDefined();
+            expect(mapDoc.getFieldById(rotation!.fieldId!)).toMatchObject({
+                name: "Rotation",
+                type: "enum",
+            });
         });
     });
 });

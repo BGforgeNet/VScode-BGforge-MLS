@@ -6,8 +6,10 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { BinaryParser, parserRegistry, ParseResult } from "../parsers";
+import { createSemanticFieldKeyFromId } from "../parsers/presentation-schema";
 import { getSnapshotPath } from "../parsers/json-snapshot-path";
-import { parseBinaryJsonSnapshot } from "../parsers/json-snapshot";
+import { loadBinaryJsonSnapshot } from "../parsers/json-snapshot";
+import { isProStructuralFieldId } from "../parsers/pro-transition";
 import { escapeHtml } from "../utils";
 import { getCachedCssAsset, getCachedHtmlAsset, getCachedJsAsset } from "../webview-assets";
 import { BinaryDocument } from "./binaryEditor-document";
@@ -47,7 +49,11 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
         _token: vscode.CancellationToken,
     ): Promise<BinaryDocument> {
         const { parseResult, parser } = await this.parseFile(uri);
-        const doc = new BinaryDocument(uri, parseResult, parser.serialize.bind(parser));
+        const doc = new BinaryDocument(uri, parseResult, {
+            parse: parser.parse.bind(parser),
+            serialize: parser.serialize.bind(parser),
+            parseOptions: this.getParseOptions(path.extname(uri.fsPath)),
+        });
 
         const subscriptions: vscode.Disposable[] = [];
 
@@ -95,13 +101,17 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
                     this.sendChildren(webviewPanel.webview, document, msg.nodeId);
                     break;
                 case "edit":
-                    void this.handleEdit(webviewPanel.webview, document, msg.fieldPath, msg.value, refreshGate, localEditTracker);
+                    void this.handleEdit(webviewPanel.webview, document, msg.fieldId, msg.fieldPath, msg.value, refreshGate, localEditTracker);
                     break;
                 case "dumpJson":
                     void this.handleDumpJson(document);
                     break;
                 case "loadJson":
                     void this.handleLoadJson(document);
+                    break;
+                case "runtimeError":
+                    console.error(`Binary editor runtime error for ${document.uri.fsPath}: ${msg.message}`, msg.stack ?? "");
+                    void vscode.window.showErrorMessage(`Binary editor failed for ${path.basename(document.uri.fsPath)}: ${msg.message}`);
                     break;
             }
         });
@@ -153,8 +163,16 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
 
         try {
             const jsonText = Buffer.from(await vscode.workspace.fs.readFile(jsonUri)).toString("utf8");
-            const snapshot = parseBinaryJsonSnapshot(jsonText);
-            const parser = this.getEditableParser(path.extname(document.uri.fsPath));
+            const extension = path.extname(document.uri.fsPath);
+            const parseOptions = this.getParseOptions(extension);
+            const loaded = loadBinaryJsonSnapshot(jsonText, {
+                proParseOptions: parseOptions,
+                mapParseOptions: extension === ".map"
+                    ? { ...parseOptions, gracefulMapBoundaries: false }
+                    : parseOptions,
+            });
+            const snapshot = loaded.parseResult;
+            const parser = this.getEditableParser(extension);
 
             if (!parser) {
                 void vscode.window.showErrorMessage(`No editable parser registered for ${path.basename(document.uri.fsPath)}`);
@@ -168,18 +186,7 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
                 return;
             }
 
-            const bytes = parser.serialize(snapshot);
-            const reparsed = parser.parse(bytes, this.getParseOptions(path.extname(document.uri.fsPath)));
-            if (reparsed.errors && reparsed.errors.length > 0) {
-                const strictMapSuffix = path.extname(document.uri.fsPath) === ".map"
-                    ? " Editor JSON load intentionally stays strict; ambiguous MAP snapshots still require CLI --graceful-map."
-                    : "";
-                void vscode.window.showErrorMessage(
-                    `Failed to load ${path.basename(jsonUri.fsPath)}: ${reparsed.errors[0]}${strictMapSuffix}`,
-                );
-                return;
-            }
-
+            const reparsed = loaded.parseResult;
             document.replaceParseResult(reparsed, `Load ${path.basename(jsonUri.fsPath)}`);
             void vscode.window.showInformationMessage(`Loaded JSON snapshot: ${path.basename(jsonUri.fsPath)}`);
         } catch (error) {
@@ -217,29 +224,32 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
     private async handleEdit(
         webview: vscode.Webview,
         document: BinaryDocument,
+        fieldId: string,
         fieldPath: string,
         rawValue: number,
         refreshGate: BinaryEditorRefreshGate,
         localEditTracker: BinaryEditorLocalEditTracker,
     ): Promise<void> {
-        // Determine validation context from field path
-        const fieldName = fieldPath.split(".").pop() ?? "";
         const format = document.parseResult.format;
-        const field = document.getField(fieldPath);
+        const field = document.getFieldById(fieldId);
 
         if (!field) {
-            const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: `Field not found: ${fieldPath}` };
+            const msg: ExtensionToWebview = { type: "validationError", fieldId, fieldPath, message: `Field not found: ${fieldPath}` };
             webview.postMessage(msg);
             return;
         }
 
-        if (localEditTracker.shouldUndo(fieldPath, rawValue)) {
+        const fieldName = field.name;
+        const fieldKey = createSemanticFieldKeyFromId(format, fieldId) ?? fieldPath;
+
+        if (localEditTracker.shouldUndo(fieldId, rawValue)) {
             localEditTracker.clear();
             refreshGate.beginIncrementalEdit();
             await vscode.commands.executeCommand("undo");
-            const displayValue = resolveDisplayValue(format, fieldPath, fieldName, rawValue);
+            const displayValue = resolveDisplayValue(format, fieldKey, fieldName, rawValue);
             const msg: ExtensionToWebview = {
                 type: "updateField",
+                fieldId,
                 fieldPath,
                 displayValue,
                 rawValue,
@@ -248,31 +258,43 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
             return;
         }
 
-        const enumTable = resolveEnumLookup(format, fieldPath, fieldName);
-        const flagTable = resolveFlagLookup(format, fieldPath, fieldName);
+        const enumTable = resolveEnumLookup(format, fieldKey, fieldName);
+        const flagTable = resolveFlagLookup(format, fieldKey, fieldName);
         const validationError = validateFieldEdit(rawValue, field.type, enumTable, flagTable);
         if (validationError) {
-            const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: validationError };
+            const msg: ExtensionToWebview = { type: "validationError", fieldId, fieldPath, message: validationError };
             webview.postMessage(msg);
             return;
         }
 
         // Compute display value
-        const displayValue = resolveDisplayValue(format, fieldPath, fieldName, rawValue);
+        const displayValue = resolveDisplayValue(format, fieldKey, fieldName, rawValue);
 
-        // Apply edit
-        refreshGate.beginIncrementalEdit();
-        const edit = document.applyEdit(fieldPath, rawValue, displayValue);
+        const structuralEdit = format === "pro" && isProStructuralFieldId(fieldId);
+        if (!structuralEdit) {
+            refreshGate.beginIncrementalEdit();
+        }
+
+        const edit = document.applyEdit(fieldId, fieldPath, rawValue, displayValue);
         if (!edit) {
             refreshGate.cancelIncrementalEdit();
-            const msg: ExtensionToWebview = { type: "validationError", fieldPath, message: `Field not found: ${fieldPath}` };
+            const message = structuralEdit
+                ? `Failed to apply structural edit for ${fieldPath}`
+                : `Field not found: ${fieldPath}`;
+            const msg: ExtensionToWebview = { type: "validationError", fieldId, fieldPath, message };
             webview.postMessage(msg);
             return;
         }
         localEditTracker.record(edit);
 
+        if (!edit.incrementalSafe) {
+            refreshGate.cancelIncrementalEdit();
+            return;
+        }
+
         const msg: ExtensionToWebview = {
             type: "updateField",
+            fieldId,
             fieldPath,
             displayValue,
             rawValue,

@@ -11,7 +11,10 @@ export interface BinaryEditorNode {
     readonly description?: string;
     readonly expandable: boolean;
     readonly expanded?: boolean;
+    readonly fieldId?: string;
+    readonly fieldKey?: string;
     readonly fieldPath?: string;
+    readonly flagActivation?: Record<string, "set" | "clear" | "equal">;
     readonly editable?: boolean;
     readonly value?: string;
     readonly rawValue?: number | string;
@@ -27,6 +30,8 @@ export interface BinaryEditorNode {
 
 export interface EditMessage {
     readonly type: "edit";
+    /** Opaque source-tree identifier for the field */
+    readonly fieldId: string;
     /** Dot-separated path from root to the field, e.g. "Header.Object Type" */
     readonly fieldPath: string;
     /** New raw numeric value */
@@ -50,7 +55,13 @@ export interface LoadJsonMessage {
     readonly type: "loadJson";
 }
 
-export type WebviewToExtension = EditMessage | ReadyMessage | GetChildrenMessage | DumpJsonMessage | LoadJsonMessage;
+export interface RuntimeErrorMessage {
+    readonly type: "runtimeError";
+    readonly message: string;
+    readonly stack?: string;
+}
+
+export type WebviewToExtension = EditMessage | ReadyMessage | GetChildrenMessage | DumpJsonMessage | LoadJsonMessage | RuntimeErrorMessage;
 
 // -- Extension -> Webview ---------------------------------------------------
 
@@ -71,6 +82,7 @@ export interface ChildrenMessage {
 
 export interface UpdateFieldMessage {
     readonly type: "updateField";
+    readonly fieldId: string;
     /** Dot-separated path to the changed field */
     readonly fieldPath: string;
     /** New display value */
@@ -81,6 +93,7 @@ export interface UpdateFieldMessage {
 
 export interface ValidationErrorMessage {
     readonly type: "validationError";
+    readonly fieldId?: string;
     readonly fieldPath: string;
     readonly message: string;
 }

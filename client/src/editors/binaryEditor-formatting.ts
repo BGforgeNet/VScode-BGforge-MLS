@@ -1,19 +1,5 @@
 export type NumericFormat = "decimal" | "hex32";
 
-export function resolveNumericFormat(format: string, fieldName: string): NumericFormat {
-    if (format === "map" && (
-        fieldName === "PID"
-        || fieldName === "FID"
-        || fieldName === "CID"
-        || fieldName === "SID"
-        || /^Entry \d+ SID$/.test(fieldName)
-    )) {
-        return "hex32";
-    }
-
-    return "decimal";
-}
-
 export function formatNumericValue(rawValue: number, numericFormat: NumericFormat): string {
     if (numericFormat === "hex32") {
         return `0x${(rawValue >>> 0).toString(16).toUpperCase()}`;

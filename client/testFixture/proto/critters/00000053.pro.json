@@ -1,834 +1,142 @@
 {
+  "schemaVersion": 1,
   "format": "pro",
   "formatName": "Fallout PRO (Prototype)",
-  "root": {
-    "name": "PRO File",
-    "fields": [
-      {
-        "name": "Header",
-        "fields": [
-          {
-            "name": "Object Type",
-            "value": "Critter",
-            "offset": 0,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 1
-          },
-          {
-            "name": "Object ID",
-            "value": 53,
-            "offset": 1,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Text ID",
-            "value": 5300,
-            "offset": 4,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "FRM Type",
-            "value": "Critters",
-            "offset": 8,
-            "size": 1,
-            "type": "enum",
-            "rawValue": 1
-          },
-          {
-            "name": "FRM ID",
-            "value": 120,
-            "offset": 9,
-            "size": 3,
-            "type": "uint24"
-          },
-          {
-            "name": "Light Radius",
-            "value": 0,
-            "offset": 12,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-8 hexes"
-          },
-          {
-            "name": "Light Intensity",
-            "value": 0,
-            "offset": 16,
-            "size": 4,
-            "type": "uint32",
-            "description": "0-65536"
-          },
-          {
-            "name": "Flags",
-            "value": "LightThru",
-            "offset": 20,
-            "size": 4,
-            "type": "flags",
-            "rawValue": 536870912
-          }
-        ],
-        "expanded": true
+  "document": {
+    "header": {
+      "objectType": 1,
+      "objectId": 53,
+      "textId": 5300,
+      "frmType": 1,
+      "frmId": 120,
+      "lightRadius": 0,
+      "lightIntensity": 0,
+      "flags": 536870912
+    },
+    "sections": {
+      "critterProperties": {
+        "flagsExt": 24576,
+        "script": {
+          "type": -1,
+          "id": -1
+        },
+        "headFrmId": -1,
+        "aiPacket": 15,
+        "teamNumber": 1,
+        "critterFlags": 2
       },
-      {
-        "name": "Critter Properties",
-        "fields": [
-          {
-            "name": "Flags Ext",
-            "value": "0x00006000",
-            "offset": 24,
-            "size": 4,
-            "type": "flags",
-            "rawValue": 24576
-          },
-          {
-            "name": "Script Type",
-            "value": -1,
-            "offset": 28,
-            "size": 1,
-            "type": "int8"
-          },
-          {
-            "name": "Script ID",
-            "value": -1,
-            "offset": 29,
-            "size": 3,
-            "type": "int24"
-          },
-          {
-            "name": "Head FRM ID",
-            "value": -1,
-            "offset": 32,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "AI Packet",
-            "value": 15,
-            "offset": 36,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "Team Number",
-            "value": 1,
-            "offset": 40,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "Critter Flags",
-            "value": "Barter",
-            "offset": 44,
-            "size": 4,
-            "type": "flags",
-            "rawValue": 2
-          }
-        ],
-        "expanded": true
+      "basePrimaryStats": {
+        "strength": 4,
+        "perception": 7,
+        "endurance": 3,
+        "charisma": 3,
+        "intelligence": 4,
+        "agility": 6,
+        "luck": 5
       },
-      {
-        "name": "Base Primary Stats",
-        "fields": [
-          {
-            "name": "Strength",
-            "value": 4,
-            "offset": 48,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Perception",
-            "value": 7,
-            "offset": 52,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Endurance",
-            "value": 3,
-            "offset": 56,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Charisma",
-            "value": 3,
-            "offset": 60,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Intelligence",
-            "value": 4,
-            "offset": 64,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Agility",
-            "value": 6,
-            "offset": 68,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Luck",
-            "value": 5,
-            "offset": 72,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": true
+      "baseSecondaryStats": {
+        "hitPoints": 25,
+        "actionPoints": 8,
+        "armorClass": 6,
+        "unarmedDamage": 0,
+        "meleeDamage": 1,
+        "carryWeight": 125,
+        "sequence": 14,
+        "healingRate": 1,
+        "criticalChance": 5,
+        "betterCriticals": 0
       },
-      {
-        "name": "Base Secondary Stats",
-        "fields": [
-          {
-            "name": "Hit Points",
-            "value": 25,
-            "offset": 76,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Action Points",
-            "value": 8,
-            "offset": 80,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Armor Class",
-            "value": 6,
-            "offset": 84,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Unarmed Damage",
-            "value": 0,
-            "offset": 88,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Melee Damage",
-            "value": 1,
-            "offset": 92,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Carry Weight",
-            "value": 125,
-            "offset": 96,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Sequence",
-            "value": 14,
-            "offset": 100,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Healing Rate",
-            "value": 1,
-            "offset": 104,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Critical Chance",
-            "value": 5,
-            "offset": 108,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Better Criticals",
-            "value": 0,
-            "offset": 112,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": true
+      "baseDamageThreshold": {
+        "normal": 0,
+        "laser": 0,
+        "fire": 0,
+        "plasma": 0,
+        "electrical": 0,
+        "emp": 0,
+        "explosive": 0
       },
-      {
-        "name": "Base Damage Threshold",
-        "fields": [
-          {
-            "name": "Normal",
-            "value": 0,
-            "offset": 116,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Laser",
-            "value": 0,
-            "offset": 120,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Fire",
-            "value": 0,
-            "offset": 124,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Plasma",
-            "value": 0,
-            "offset": 128,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Electrical",
-            "value": 0,
-            "offset": 132,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "EMP",
-            "value": 0,
-            "offset": 136,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Explosive",
-            "value": 0,
-            "offset": 140,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": false
+      "baseDamageResistance": {
+        "normal": 0,
+        "laser": 0,
+        "fire": 0,
+        "plasma": 0,
+        "electrical": 0,
+        "emp": 0,
+        "explosive": 0,
+        "radiation": 6,
+        "poison": 15
       },
-      {
-        "name": "Base Damage Resistance",
-        "fields": [
-          {
-            "name": "Normal",
-            "value": "0%",
-            "offset": 144,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Laser",
-            "value": "0%",
-            "offset": 148,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Fire",
-            "value": "0%",
-            "offset": 152,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Plasma",
-            "value": "0%",
-            "offset": 156,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Electrical",
-            "value": "0%",
-            "offset": 160,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "EMP",
-            "value": "0%",
-            "offset": 164,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Explosive",
-            "value": "0%",
-            "offset": 168,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Radiation",
-            "value": "6%",
-            "offset": 172,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Poison",
-            "value": "15%",
-            "offset": 176,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": false
+      "demographics": {
+        "age": 25,
+        "gender": 1
       },
-      {
-        "name": "Demographics",
-        "fields": [
-          {
-            "name": "Age",
-            "value": 25,
-            "offset": 180,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Gender",
-            "value": "Female",
-            "offset": 184,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 1
-          }
-        ],
-        "expanded": true
+      "bonusPrimaryStats": {
+        "strength": 0,
+        "perception": 0,
+        "endurance": 0,
+        "charisma": 0,
+        "intelligence": 0,
+        "agility": 0,
+        "luck": 0
       },
-      {
-        "name": "Bonus Primary Stats",
-        "fields": [
-          {
-            "name": "Strength",
-            "value": 0,
-            "offset": 188,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Perception",
-            "value": 0,
-            "offset": 192,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Endurance",
-            "value": 0,
-            "offset": 196,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Charisma",
-            "value": 0,
-            "offset": 200,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Intelligence",
-            "value": 0,
-            "offset": 204,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Agility",
-            "value": 0,
-            "offset": 208,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Luck",
-            "value": 0,
-            "offset": 212,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": false
+      "bonusSecondaryStats": {
+        "hitPoints": 0,
+        "actionPoints": 0,
+        "armorClass": 0,
+        "unarmedDamage": 0,
+        "meleeDamage": 0,
+        "carryWeight": 0,
+        "sequence": 0,
+        "healingRate": 0,
+        "criticalChance": 0,
+        "betterCriticals": 0
       },
-      {
-        "name": "Bonus Secondary Stats",
-        "fields": [
-          {
-            "name": "Hit Points",
-            "value": 0,
-            "offset": 216,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Action Points",
-            "value": 0,
-            "offset": 220,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Armor Class",
-            "value": 0,
-            "offset": 224,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Unarmed Damage",
-            "value": 0,
-            "offset": 228,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Melee Damage",
-            "value": 0,
-            "offset": 232,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Carry Weight",
-            "value": 0,
-            "offset": 236,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Sequence",
-            "value": 0,
-            "offset": 240,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Healing Rate",
-            "value": 0,
-            "offset": 244,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Critical Chance",
-            "value": 0,
-            "offset": 248,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Better Criticals",
-            "value": 0,
-            "offset": 252,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": false
+      "bonusDamageThreshold": {
+        "normal": 0,
+        "laser": 0,
+        "fire": 0,
+        "plasma": 0,
+        "electrical": 0,
+        "emp": 0,
+        "explosive": 0
       },
-      {
-        "name": "Bonus Damage Threshold",
-        "fields": [
-          {
-            "name": "Normal",
-            "value": 0,
-            "offset": 256,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Laser",
-            "value": 0,
-            "offset": 260,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Fire",
-            "value": 0,
-            "offset": 264,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Plasma",
-            "value": 0,
-            "offset": 268,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Electrical",
-            "value": 0,
-            "offset": 272,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "EMP",
-            "value": 0,
-            "offset": 276,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Explosive",
-            "value": 0,
-            "offset": 280,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": false
+      "bonusDamageResistance": {
+        "normal": 0,
+        "laser": 0,
+        "fire": 0,
+        "plasma": 0,
+        "electrical": 0,
+        "emp": 500,
+        "explosive": 0,
+        "radiation": 0,
+        "poison": 0
       },
-      {
-        "name": "Bonus Damage Resistance",
-        "fields": [
-          {
-            "name": "Normal",
-            "value": 0,
-            "offset": 284,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Laser",
-            "value": 0,
-            "offset": 288,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Fire",
-            "value": 0,
-            "offset": 292,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Plasma",
-            "value": 0,
-            "offset": 296,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Electrical",
-            "value": 0,
-            "offset": 300,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "EMP",
-            "value": 500,
-            "offset": 304,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Explosive",
-            "value": 0,
-            "offset": 308,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Radiation",
-            "value": 0,
-            "offset": 312,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Poison",
-            "value": 0,
-            "offset": 316,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": false
+      "skills": {
+        "skillSmallGuns": 0,
+        "skillBigGuns": 0,
+        "skillEnergyWeapons": 0,
+        "skillUnarmed": 0,
+        "skillMelee": 0,
+        "skillThrowing": 54,
+        "skillFirstAid": 0,
+        "skillDoctor": 0,
+        "skillSneak": 0,
+        "skillLockpick": 0,
+        "skillSteal": 0,
+        "skillTraps": 0,
+        "skillScience": 0,
+        "skillRepair": 0,
+        "skillSpeech": 0,
+        "skillBarter": 0,
+        "skillGambling": 0,
+        "skillOutdoorsman": 0
       },
-      {
-        "name": "Skills",
-        "fields": [
-          {
-            "name": "Small Guns",
-            "value": 0,
-            "offset": 328,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Big Guns",
-            "value": 0,
-            "offset": 332,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Energy Weapons",
-            "value": 0,
-            "offset": 336,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Unarmed",
-            "value": 0,
-            "offset": 340,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Melee",
-            "value": 0,
-            "offset": 344,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Throwing",
-            "value": 54,
-            "offset": 348,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "First Aid",
-            "value": 0,
-            "offset": 352,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Doctor",
-            "value": 0,
-            "offset": 356,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Sneak",
-            "value": 0,
-            "offset": 360,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Lockpick",
-            "value": 0,
-            "offset": 364,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Steal",
-            "value": 0,
-            "offset": 368,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Traps",
-            "value": 0,
-            "offset": 372,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Science",
-            "value": 0,
-            "offset": 376,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Repair",
-            "value": 0,
-            "offset": 380,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Speech",
-            "value": 0,
-            "offset": 384,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Barter",
-            "value": 0,
-            "offset": 388,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Gambling",
-            "value": 0,
-            "offset": 392,
-            "size": 4,
-            "type": "int32"
-          },
-          {
-            "name": "Outdoorsman",
-            "value": 0,
-            "offset": 396,
-            "size": 4,
-            "type": "int32"
-          }
-        ],
-        "expanded": true
-      },
-      {
-        "name": "Final Properties",
-        "fields": [
-          {
-            "name": "Body Type",
-            "value": "Biped",
-            "offset": 400,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 0
-          },
-          {
-            "name": "Experience Value",
-            "value": 30,
-            "offset": 404,
-            "size": 4,
-            "type": "uint32"
-          },
-          {
-            "name": "Kill Type",
-            "value": "Children",
-            "offset": 408,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 2
-          },
-          {
-            "name": "Damage Type",
-            "value": "Normal",
-            "offset": 412,
-            "size": 4,
-            "type": "enum",
-            "rawValue": 0
-          }
-        ],
-        "expanded": true
+      "finalProperties": {
+        "bodyType": 0,
+        "expValue": 30,
+        "killType": 2,
+        "damageType": 0
       }
-    ],
-    "expanded": true
+    }
   }
 }

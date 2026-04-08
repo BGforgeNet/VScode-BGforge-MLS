@@ -1,8 +1,10 @@
 import type { ParseResult, ParsedField, ParsedGroup } from "../parsers";
+import { createFieldKey, resolveFieldPresentation, toSemanticFieldKey } from "../parsers/presentation-schema";
 import type { BinaryEditorNode } from "./binaryEditor-messages";
 import { isEditableFieldForFormat } from "./binaryEditor-editability";
-import { formatNumericValue, resolveNumericFormat } from "./binaryEditor-formatting";
+import { formatNumericValue } from "./binaryEditor-formatting";
 import { resolveDisplayValue, resolveEnumLookup, resolveFlagLookup } from "./binaryEditor-lookups";
+import { resolveNumericFormat } from "./binaryEditor-numericFormat";
 
 interface TreeNodeRecord {
     readonly id: string;
@@ -21,6 +23,14 @@ function isGroup(entry: ParsedField | ParsedGroup): entry is ParsedGroup {
 function makeFieldPath(parentPath: string, name: string): string {
     return parentPath ? `${parentPath}.${name}` : name;
 }
+
+function makeFieldId(sourceSegments: readonly string[]): string {
+    return JSON.stringify(sourceSegments);
+}
+
+type ProjectedEntry =
+    | { readonly kind: "field"; readonly entry: ParsedField; readonly sourceSegments: readonly string[] }
+    | { readonly kind: "group"; readonly entry: ParsedGroup; readonly sourceSegments: readonly string[]; readonly children: readonly ProjectedEntry[] };
 
 export interface BinaryEditorTreeState {
     getInitMessagePayload(): { format: string; formatName: string; errors?: string[]; warnings?: string[]; rootChildren: BinaryEditorNode[] };
@@ -63,57 +73,68 @@ function shouldHideMapGroupFromEditor(entry: ParsedGroup): boolean {
         && firstField.value === 0;
 }
 
-function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | ParsedGroup): ParsedField | ParsedGroup | undefined {
+function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | ParsedGroup, sourceSegments: readonly string[]): ProjectedEntry | undefined {
     if (!isGroup(entry)) {
-        return shouldHideFieldFromEditor(parseResult, entry) ? undefined : entry;
+        return shouldHideFieldFromEditor(parseResult, entry)
+            ? undefined
+            : { kind: "field", entry, sourceSegments };
     }
 
     const projectedChildren = entry.fields
-        .map((child) => projectDisplayEntry(parseResult, child))
-        .filter((child): child is ParsedField | ParsedGroup => child !== undefined);
+        .map((child) => projectDisplayEntry(parseResult, child, [...sourceSegments, child.name]))
+        .filter((child): child is ProjectedEntry => child !== undefined);
 
     if (projectedChildren.length === 0) {
         return undefined;
     }
 
-    if (parseResult.format === "map" && shouldHideMapGroupFromEditor(group(entry.name, projectedChildren, entry.expanded !== false, entry.description))) {
+    if (parseResult.format === "map" && shouldHideMapGroupFromEditor(group(
+        entry.name,
+        projectedChildren.map((child) => child.entry),
+        entry.expanded !== false,
+        entry.description,
+    ))) {
         return undefined;
     }
 
-    return group(entry.name, projectedChildren, entry.expanded !== false, entry.description);
+    return { kind: "group", entry, sourceSegments, children: projectedChildren };
 }
 
-function buildDisplayRoot(parseResult: ParseResult): ParsedGroup {
+function buildDisplayRoot(parseResult: ParseResult): ProjectedEntry[] {
     if (parseResult.errors && parseResult.errors.length > 0) {
-        return group(parseResult.root.name, [], parseResult.root.expanded, parseResult.root.description);
+        return [];
     }
 
     if (parseResult.format !== "map") {
-        const projectedFields = parseResult.root.fields
-            .map((entry) => projectDisplayEntry(parseResult, entry))
-            .filter((entry): entry is ParsedField | ParsedGroup => entry !== undefined);
-        return group(parseResult.root.name, projectedFields, parseResult.root.expanded, parseResult.root.description);
+        return parseResult.root.fields
+            .map((entry) => projectDisplayEntry(parseResult, entry, [entry.name]))
+            .filter((entry): entry is ProjectedEntry => entry !== undefined);
     }
 
-    const projectedFields: (ParsedField | ParsedGroup)[] = [];
+    const projectedFields: ProjectedEntry[] = [];
     let insertedTilesGroup = false;
 
     for (const entry of parseResult.root.fields) {
         if (isGroup(entry) && /^Elevation \d+ Tiles$/.test(entry.name)) {
             if (!insertedTilesGroup) {
-                projectedFields.push(group("Tiles", [], false));
+                projectedFields.push({
+                    kind: "group",
+                    entry: group("Tiles", [], false),
+                    sourceSegments: ["Tiles"],
+                    children: [],
+                });
                 insertedTilesGroup = true;
             }
             continue;
         }
 
-        const projectedEntry = projectDisplayEntry(parseResult, entry);
+        const projectedEntry = projectDisplayEntry(parseResult, entry, [entry.name]);
         if (projectedEntry) {
             projectedFields.push(projectedEntry);
         }
     }
 
-    return group(parseResult.root.name, projectedFields, parseResult.root.expanded, parseResult.root.description);
+    return projectedFields;
 }
 
 export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEditorTreeState {
@@ -122,11 +143,12 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
     const rootChildren: string[] = [];
     let nextId = 0;
 
-    const visitEntry = (entry: ParsedField | ParsedGroup, parentId: string, parentPath: string): string => {
+    const visitEntry = (projected: ProjectedEntry, parentId: string, parentPath: string): string => {
         const id = `node-${nextId++}`;
-        if (isGroup(entry)) {
+        if (projected.kind === "group") {
+            const entry = projected.entry;
             const groupPath = makeFieldPath(parentPath, entry.name);
-            const childIds = entry.fields.map((child) => visitEntry(child, id, groupPath));
+            const childIds = projected.children.map((child) => visitEntry(child, id, groupPath));
             nodes.set(id, {
                 id,
                 children: childIds,
@@ -143,10 +165,15 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
             return id;
         }
 
+        const entry = projected.entry;
         const fieldPath = makeFieldPath(parentPath, entry.name);
-        const numericFormat = resolveNumericFormat(parseResult.format, entry.name);
-        const enumOptions = resolveEnumLookup(parseResult.format, fieldPath, entry.name);
-        const flagOptions = resolveFlagLookup(parseResult.format, fieldPath, entry.name);
+        const fieldId = makeFieldId(projected.sourceSegments);
+        const fieldKey = toSemanticFieldKey(parseResult.format, projected.sourceSegments)
+            ?? createFieldKey(projected.sourceSegments);
+        const presentation = resolveFieldPresentation(parseResult.format, fieldKey, entry.name);
+        const numericFormat = resolveNumericFormat(parseResult.format, fieldKey, entry.name);
+        const enumOptions = resolveEnumLookup(parseResult.format, fieldKey, entry.name);
+        const flagOptions = resolveFlagLookup(parseResult.format, fieldKey, entry.name);
         const numericValue = typeof entry.rawValue === "number"
             ? entry.rawValue
             : typeof entry.value === "number"
@@ -154,7 +181,7 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
                 : undefined;
         const displayValue = typeof numericValue === "number"
             ? enumOptions || flagOptions
-                ? resolveDisplayValue(parseResult.format, fieldPath, entry.name, numericValue)
+                ? resolveDisplayValue(parseResult.format, fieldKey, entry.name, numericValue)
                 : formatNumericValue(numericValue, numericFormat)
             : String(entry.value);
         nodes.set(id, {
@@ -167,8 +194,10 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
                 name: entry.name,
                 description: entry.description,
                 expandable: false,
+                fieldId,
+                fieldKey,
                 fieldPath,
-                editable: isEditableFieldForFormat(parseResult.format, fieldPath, entry),
+                editable: isEditableFieldForFormat(parseResult.format, fieldKey, entry),
                 value: displayValue,
                 rawValue: entry.rawValue,
                 offset: entry.offset,
@@ -177,12 +206,13 @@ export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEdit
                 numericFormat,
                 enumOptions,
                 flagOptions,
+                flagActivation: presentation?.flagActivation,
             },
         });
         return id;
     };
 
-    for (const entry of displayRoot.fields) {
+    for (const entry of displayRoot) {
         rootChildren.push(visitEntry(entry, "root", ""));
     }
 

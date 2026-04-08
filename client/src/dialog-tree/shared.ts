@@ -81,6 +81,12 @@ interface DialogPanelConfig {
     tabIconPath: string;
 }
 
+interface DialogTreeRuntimeErrorMessage {
+    readonly type: "runtimeError";
+    readonly message: string;
+    readonly stack?: string;
+}
+
 export interface DialogPreviewController {
     matchesDocument: (doc: vscode.TextDocument) => boolean;
     openPreview: () => Promise<void>;
@@ -193,6 +199,13 @@ export function registerDialogPanel(
                     { enableScripts: true, localResourceRoots: [context.extensionUri] }
                 );
                 dialogPanel.iconPath = vscode.Uri.joinPath(context.extensionUri, config.tabIconPath);
+                dialogPanel.webview.onDidReceiveMessage((message: DialogTreeRuntimeErrorMessage) => {
+                    if (message.type !== "runtimeError") {
+                        return;
+                    }
+                    console.error(`Dialog preview runtime error for ${currentFilePath ?? fileName}: ${message.message}`, message.stack ?? "");
+                    void vscode.window.showErrorMessage(`Dialog preview failed for ${fileName}: ${message.message}`);
+                });
                 dialogPanel.onDidDispose(() => {
                     dialogPanel = undefined;
                     currentDocumentUri = undefined;
