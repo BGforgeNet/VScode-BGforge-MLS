@@ -6,10 +6,10 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { BinaryParser, parserRegistry, ParseResult } from "../parsers";
+import { formatAdapterRegistry } from "../parsers/format-adapter";
 import { createSemanticFieldKeyFromId } from "../parsers/presentation-schema";
 import { getSnapshotPath } from "../parsers/json-snapshot-path";
 import { loadBinaryJsonSnapshot } from "../parsers/json-snapshot";
-import { isProStructuralFieldId } from "../parsers/pro-transition";
 import { escapeHtml } from "../utils";
 import { getCachedCssAsset, getCachedHtmlAsset, getCachedJsAsset } from "../webview-assets";
 import { BinaryDocument } from "./binaryEditor-document";
@@ -273,7 +273,8 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
         // Compute display value
         const displayValue = resolveDisplayValue(format, fieldKey, fieldName, rawValue);
 
-        const structuralEdit = format === "pro" && isProStructuralFieldId(fieldId);
+        const adapter = formatAdapterRegistry.get(format);
+        const structuralEdit = adapter?.isStructuralFieldId?.(fieldId) ?? false;
         if (!structuralEdit) {
             refreshGate.beginIncrementalEdit();
         }

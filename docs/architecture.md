@@ -253,6 +253,7 @@ Implementation checklist and extension plan for new binary formats live in [`cli
 - The custom editor intentionally omits MAP tile data. Tiles are large, mostly low-signal bulk data for editor workflows, so the editor skips materializing them entirely and preserves their bytes only for round-trip save/revert.
 - The MAP editor hides a few script-entry struct slots that Fallout 2 CE still leaves as legacy or unknown internals. It keeps meaningful fields visible, renames them to match CE semantics where possible, and leaves the persisted program pointer slot read-only because the engine treats the saved pointer value as non-semantic.
 - The editor sends a lazy tree model to the webview rather than one large pre-expanded JSON payload. Enum/flag choices are attached per field node, and MAP projection now lives in the tree builder instead of a separate compacted parse-result layer.
+- Format-specific behaviour (snapshots, canonical rebuild, semantic key mapping, editor projection, structural edits) is encapsulated in `BinaryFormatAdapter` implementations registered in `client/src/parsers/format-adapter.ts`. Adding a new binary format requires implementing this interface alongside the parser. See `client/src/parsers/README.md` for the full checklist.
 - Dialog tree preview and binary editor now share the same inline webview asset-cache helper (`client/src/webview-assets.ts`) for HTML/CSS/JS shell loading.
 
 ## Server Architecture

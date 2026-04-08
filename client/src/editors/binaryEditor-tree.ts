@@ -1,4 +1,5 @@
 import type { ParseResult, ParsedField, ParsedGroup } from "../parsers";
+import { formatAdapterRegistry, type ProjectedEntry } from "../parsers/format-adapter";
 import { createFieldKey, resolveFieldPresentation, toSemanticFieldKey } from "../parsers/presentation-schema";
 import type { BinaryEditorNode } from "./binaryEditor-messages";
 import { isEditableFieldForFormat } from "./binaryEditor-editability";
@@ -28,49 +29,18 @@ function makeFieldId(sourceSegments: readonly string[]): string {
     return JSON.stringify(sourceSegments);
 }
 
-type ProjectedEntry =
-    | { readonly kind: "field"; readonly entry: ParsedField; readonly sourceSegments: readonly string[] }
-    | { readonly kind: "group"; readonly entry: ParsedGroup; readonly sourceSegments: readonly string[]; readonly children: readonly ProjectedEntry[] };
-
 export interface BinaryEditorTreeState {
     getInitMessagePayload(): { format: string; formatName: string; errors?: string[]; warnings?: string[]; rootChildren: BinaryEditorNode[] };
     getChildren(nodeId: string): BinaryEditorNode[];
 }
 
 function shouldHideFieldFromEditor(parseResult: ParseResult, entry: ParsedField): boolean {
-    // Keep parser fidelity for round-trip/debugging, but omit low-signal raw
-    // placeholders from the editor tree because they do not help end users edit
-    // the file safely.
     if (entry.name === "Unknown") {
         return true;
     }
 
-    if (parseResult.format !== "map") {
-        return false;
-    }
-
-    return entry.name === "Padding (field_3C)"
-        || entry.name === "Field 74"
-        // Fallout 2 CE only gives useful semantics for the persisted program slot
-        // and how_much value. The other script-entry fields below remain legacy or
-        // unknown engine internals, so the editor hides them from the normal tree.
-        || /^Entry \d+ (Next Script Link \(legacy\)|Unknown Field 0x48|Legacy Field 0x50)$/.test(entry.name);
-}
-
-function shouldHideMapGroupFromEditor(entry: ParsedGroup): boolean {
-    if (!entry.name.endsWith("Scripts")) {
-        return false;
-    }
-
-    if (entry.fields.length !== 1) {
-        return false;
-    }
-
-    const [firstField] = entry.fields;
-    return firstField !== undefined
-        && !isGroup(firstField)
-        && firstField.name === "Script Count"
-        && firstField.value === 0;
+    const adapter = formatAdapterRegistry.get(parseResult.format);
+    return adapter?.shouldHideField?.(entry) ?? false;
 }
 
 function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | ParsedGroup, sourceSegments: readonly string[]): ProjectedEntry | undefined {
@@ -88,7 +58,8 @@ function projectDisplayEntry(parseResult: ParseResult, entry: ParsedField | Pars
         return undefined;
     }
 
-    if (parseResult.format === "map" && shouldHideMapGroupFromEditor(group(
+    const adapter = formatAdapterRegistry.get(parseResult.format);
+    if (adapter?.shouldHideGroup?.(group(
         entry.name,
         projectedChildren.map((child) => child.entry),
         entry.expanded !== false,
@@ -105,36 +76,15 @@ function buildDisplayRoot(parseResult: ParseResult): ProjectedEntry[] {
         return [];
     }
 
-    if (parseResult.format !== "map") {
-        return parseResult.root.fields
-            .map((entry) => projectDisplayEntry(parseResult, entry, [entry.name]))
-            .filter((entry): entry is ProjectedEntry => entry !== undefined);
+    const adapter = formatAdapterRegistry.get(parseResult.format);
+    const customRoot = adapter?.projectDisplayRoot?.(parseResult, projectDisplayEntry);
+    if (customRoot) {
+        return customRoot;
     }
 
-    const projectedFields: ProjectedEntry[] = [];
-    let insertedTilesGroup = false;
-
-    for (const entry of parseResult.root.fields) {
-        if (isGroup(entry) && /^Elevation \d+ Tiles$/.test(entry.name)) {
-            if (!insertedTilesGroup) {
-                projectedFields.push({
-                    kind: "group",
-                    entry: group("Tiles", [], false),
-                    sourceSegments: ["Tiles"],
-                    children: [],
-                });
-                insertedTilesGroup = true;
-            }
-            continue;
-        }
-
-        const projectedEntry = projectDisplayEntry(parseResult, entry, [entry.name]);
-        if (projectedEntry) {
-            projectedFields.push(projectedEntry);
-        }
-    }
-
-    return projectedFields;
+    return parseResult.root.fields
+        .map((entry) => projectDisplayEntry(parseResult, entry, [entry.name]))
+        .filter((entry): entry is ProjectedEntry => entry !== undefined);
 }
 
 export function buildBinaryEditorTreeState(parseResult: ParseResult): BinaryEditorTreeState {

@@ -1,0 +1,280 @@
+import type { BinaryEditorNode } from "./binaryEditor-messages";
+import { formatEditableNumberValue } from "./binaryEditor-formatting";
+
+export function createNodeElement(node: BinaryEditorNode): HTMLElement {
+    return node.kind === "group" ? createGroupElement(node) : createFieldElement(node);
+}
+
+function createGroupElement(node: BinaryEditorNode): HTMLElement {
+    const groupEl = document.createElement("div");
+    groupEl.className = "group";
+    if (node.expanded) {
+        groupEl.classList.add("expanded");
+    }
+    groupEl.dataset.nodeId = node.id;
+
+    const headerEl = document.createElement("div");
+    headerEl.className = "group-header";
+    headerEl.dataset.nodeId = node.id;
+
+    const nameEl = document.createElement("span");
+    nameEl.className = "group-name";
+    nameEl.textContent = node.name;
+    headerEl.appendChild(nameEl);
+
+    const contentEl = document.createElement("div");
+    contentEl.className = "group-content";
+    contentEl.dataset.parentNodeId = node.id;
+
+    groupEl.append(headerEl, contentEl);
+    return groupEl;
+}
+
+function createFieldElement(node: BinaryEditorNode): HTMLElement {
+    const fieldEl = document.createElement("div");
+    fieldEl.className = "field";
+    if (node.fieldId) {
+        fieldEl.dataset.fieldId = node.fieldId;
+    }
+    if (node.fieldPath) {
+        fieldEl.dataset.path = node.fieldPath;
+    }
+
+    const nameEl = document.createElement("span");
+    nameEl.className = "field-name";
+    nameEl.textContent = `${node.name}:`;
+    fieldEl.appendChild(nameEl);
+
+    fieldEl.appendChild(createFieldValueElement(node));
+
+    const metaEl = document.createElement("span");
+    metaEl.className = "field-meta";
+
+    const offsetEl = document.createElement("span");
+    offsetEl.className = "field-offset";
+    offsetEl.textContent = `[${formatOffset(node.offset)}]`;
+    metaEl.appendChild(offsetEl);
+
+    const typeEl = document.createElement("span");
+    typeEl.className = "field-type";
+    typeEl.textContent = node.valueType ?? "";
+    metaEl.appendChild(typeEl);
+
+    fieldEl.appendChild(metaEl);
+
+    const errorEl = document.createElement("span");
+    errorEl.className = "field-error";
+    if (node.fieldId) {
+        errorEl.dataset.errorFor = node.fieldId;
+    }
+    fieldEl.appendChild(errorEl);
+
+    return fieldEl;
+}
+
+function createFieldValueElement(node: BinaryEditorNode): HTMLElement {
+    const fieldId = node.fieldId ?? "";
+    const fieldPath = node.fieldPath ?? "";
+    const enumTable = node.enumOptions;
+    const flagTable = node.flagOptions;
+
+    if (node.editable && enumTable && node.valueType === "enum") {
+        return createEnumSelect(fieldId, fieldPath, node, enumTable);
+    }
+
+    if (flagTable && node.valueType === "flags") {
+        return createFlagsInput(fieldId, fieldPath, node, flagTable, node.editable === true);
+    }
+
+    if (node.editable && isNumericType(node.valueType ?? "")) {
+        return createNumberInput(fieldId, fieldPath, node);
+    }
+
+    const valueEl = document.createElement("span");
+    valueEl.className = `field-value ${getValueClass(node.valueType ?? "")}`.trim();
+    valueEl.textContent = node.value ?? "";
+    return valueEl;
+}
+
+function createNumberInput(fieldId: string, fieldPath: string, node: BinaryEditorNode): HTMLElement {
+    const raw = typeof node.rawValue === "number" ? node.rawValue : Number(node.value ?? 0);
+    const numericFormat = node.numericFormat ?? "decimal";
+    const container = document.createElement("span");
+    container.className = `field-number-group ${numericFormat === "hex32" ? "hex" : "decimal"}`.trim();
+
+    const decrement = document.createElement("button");
+    decrement.type = "button";
+    decrement.className = "field-step";
+    decrement.dataset.field = fieldId;
+    decrement.dataset.fieldPath = fieldPath;
+    decrement.dataset.delta = "-1";
+    decrement.textContent = "\u2212";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = `field-input number ${numericFormat === "hex32" ? "hex" : "decimal"}`.trim();
+    input.dataset.field = fieldId;
+    input.dataset.fieldPath = fieldPath;
+    input.dataset.numericFormat = numericFormat;
+    input.dataset.valueType = node.valueType ?? "";
+    input.value = formatEditableNumberValue(Number.isNaN(raw) ? 0 : raw, numericFormat);
+
+    const increment = document.createElement("button");
+    increment.type = "button";
+    increment.className = "field-step";
+    increment.dataset.field = fieldId;
+    increment.dataset.fieldPath = fieldPath;
+    increment.dataset.delta = "1";
+    increment.textContent = "+";
+
+    if (numericFormat === "hex32") {
+        const editor = document.createElement("span");
+        editor.className = "field-number-editor";
+
+        const prefix = document.createElement("span");
+        prefix.className = "field-input-prefix";
+        prefix.textContent = "0x";
+
+        editor.append(prefix, input);
+        container.append(editor, decrement, increment);
+        return container;
+    }
+
+    container.append(input, decrement, increment);
+    return container;
+}
+
+function createEnumSelect(
+    fieldId: string,
+    fieldPath: string,
+    node: BinaryEditorNode,
+    lookup: Record<number, string>,
+): HTMLSelectElement {
+    const raw = typeof node.rawValue === "number" ? node.rawValue : 0;
+    const select = document.createElement("select");
+    select.className = "field-input enum";
+    select.dataset.field = fieldId;
+    select.dataset.fieldPath = fieldPath;
+
+    for (const [key, value] of Object.entries(lookup)) {
+        const numericKey = Number(key);
+        const option = document.createElement("option");
+        option.value = String(numericKey);
+        option.textContent = formatEnumDisplayValue(value, numericKey);
+        option.selected = numericKey === raw;
+        select.appendChild(option);
+    }
+
+    return select;
+}
+
+function createFlagsInput(
+    fieldId: string,
+    fieldPath: string,
+    node: BinaryEditorNode,
+    flagDefs: Record<number, string>,
+    editable: boolean,
+): HTMLElement {
+    const raw = typeof node.rawValue === "number" ? node.rawValue : 0;
+    const container = document.createElement("span");
+    container.className = `field-flags ${editable ? "editable" : "readonly"}`.trim();
+    const zeroFlagLabel = flagDefs[0];
+
+    if (editable && zeroFlagLabel !== undefined) {
+        const zeroState = document.createElement("span");
+        zeroState.className = "flag-zero-state";
+        zeroState.dataset.zeroStateFor = fieldId;
+        zeroState.textContent = zeroFlagLabel;
+        zeroState.classList.toggle("hidden", raw !== 0);
+        container.appendChild(zeroState);
+    }
+
+    for (const [bit, name] of Object.entries(flagDefs)) {
+        const bitValue = Number(bit);
+        if (bitValue === 0) {
+            continue;
+        }
+
+        const label = document.createElement("label");
+        label.className = `flag-label ${editable ? "editable" : "readonly"}`.trim();
+
+        const checkbox = document.createElement("span");
+        checkbox.className = `flag-checkbox ${editable ? "editable" : "readonly"}`.trim();
+        const activation = node.flagActivation?.[String(bitValue)] ?? (bitValue === 0 ? "equal" : "set");
+        if (isReadonlyFlagEnabled(bitValue, raw, activation)) {
+            checkbox.classList.add("checked");
+        }
+        checkbox.setAttribute("role", "checkbox");
+        checkbox.setAttribute("aria-checked", checkbox.classList.contains("checked") ? "true" : "false");
+        checkbox.setAttribute("aria-disabled", editable ? "false" : "true");
+        if (editable) {
+            checkbox.setAttribute("tabindex", "0");
+            checkbox.dataset.field = fieldId;
+            checkbox.dataset.fieldPath = fieldPath;
+            checkbox.dataset.bit = String(bitValue);
+        }
+
+        label.append(checkbox, document.createTextNode(name));
+        container.appendChild(label);
+    }
+
+    return container;
+}
+
+function isReadonlyFlagEnabled(
+    bitValue: number,
+    rawValue: number,
+    activation: "set" | "clear" | "equal",
+): boolean {
+    if (activation === "equal") {
+        return rawValue === bitValue;
+    }
+    if (bitValue === 0) {
+        return activation === "clear" ? rawValue !== 0 : rawValue === 0;
+    }
+    const isSet = (rawValue & bitValue) !== 0;
+    return activation === "set" ? isSet : !isSet;
+}
+
+export function renderMessages(container: Element | null, className: string, messages?: string[]): void {
+    if (!container) {
+        return;
+    }
+
+    container.replaceChildren();
+    if (!messages || messages.length === 0) {
+        return;
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = className;
+    for (const message of messages) {
+        const line = document.createElement("div");
+        line.textContent = message;
+        wrapper.appendChild(line);
+    }
+    container.appendChild(wrapper);
+}
+
+function formatEnumDisplayValue(label: string, rawValue: number): string {
+    return label === String(rawValue) ? label : `${label} (${rawValue})`;
+}
+
+function isNumericType(type: string): boolean {
+    return type.includes("int") || type.includes("uint");
+}
+
+function getValueClass(type: string): string {
+    if (type.includes("int") || type.includes("uint")) {
+        return "number";
+    }
+    if (type === "enum") {
+        return "enum";
+    }
+    return "";
+}
+
+function formatOffset(offset?: number): string {
+    const numericOffset = typeof offset === "number" ? offset : 0;
+    return `0x${numericOffset.toString(16).toUpperCase().padStart(4, "0")}`;
+}

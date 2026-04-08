@@ -6,9 +6,7 @@
 
 import * as vscode from "vscode";
 import { BinaryParser, ParseOptions, ParseResult, ParsedField, ParsedGroup } from "../parsers";
-import { rebuildMapCanonicalDocument } from "../parsers/map-canonical";
-import { rebuildProCanonicalDocument } from "../parsers/pro-canonical";
-import { buildProStructuralTransitionBytes, isProStructuralFieldId } from "../parsers/pro-transition";
+import { formatAdapterRegistry, type BinaryFormatAdapter } from "../parsers/format-adapter";
 
 /**
  * Represents a single field edit for undo/redo.
@@ -104,8 +102,9 @@ export class BinaryDocument implements vscode.CustomDocument {
      * Returns the edit if successful, undefined if field not found.
      */
     applyEdit(fieldId: string, fieldPath: string, newRawValue: number, newDisplayValue: string): FieldEdit | undefined {
-        if (this._parseResult.format === "pro" && this.codec.parse && isProStructuralFieldId(fieldId)) {
-            return this.applyStructuralEdit(fieldId, fieldPath, newRawValue, newDisplayValue);
+        const adapter = formatAdapterRegistry.get(this._parseResult.format);
+        if (adapter?.isStructuralFieldId?.(fieldId) && this.codec.parse) {
+            return this.applyStructuralEdit(adapter, fieldId, fieldPath, newRawValue, newDisplayValue);
         }
 
         const field = this.findFieldById(fieldId);
@@ -158,7 +157,7 @@ export class BinaryDocument implements vscode.CustomDocument {
         }
     }
 
-    private applyStructuralEdit(fieldId: string, fieldPath: string, newRawValue: number, newDisplayValue: string): FieldEdit | undefined {
+    private applyStructuralEdit(adapter: BinaryFormatAdapter, fieldId: string, fieldPath: string, newRawValue: number, newDisplayValue: string): FieldEdit | undefined {
         const field = this.findFieldById(fieldId);
         if (!field || !this.codec.parse) {
             return undefined;
@@ -166,7 +165,7 @@ export class BinaryDocument implements vscode.CustomDocument {
 
         const oldRawValue = typeof field.rawValue === "number" ? field.rawValue : (typeof field.value === "number" ? field.value : 0);
         const oldDisplayValue = String(field.value);
-        const nextBytes = buildProStructuralTransitionBytes(this._parseResult, fieldId, newRawValue);
+        const nextBytes = adapter.buildStructuralTransitionBytes?.(this._parseResult, fieldId, newRawValue);
         if (!nextBytes) {
             return undefined;
         }
@@ -230,13 +229,9 @@ export class BinaryDocument implements vscode.CustomDocument {
 
     private refreshCanonicalDocument(): void {
         try {
-            if (this._parseResult.format === "pro") {
-                this._parseResult.document = rebuildProCanonicalDocument(this._parseResult);
-                return;
-            }
-            if (this._parseResult.format === "map") {
-                this._parseResult.document = rebuildMapCanonicalDocument(this._parseResult);
-                return;
+            const adapter = formatAdapterRegistry.get(this._parseResult.format);
+            if (adapter) {
+                this._parseResult.document = adapter.rebuildCanonicalDocument(this._parseResult) as ParseResult["document"];
             }
         } catch {
             this._parseResult.document = undefined;

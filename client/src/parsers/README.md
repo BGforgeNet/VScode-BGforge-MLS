@@ -15,7 +15,8 @@ Extensible system for parsing binary file formats.
 
 1. Create `<format>.ts` implementing `BinaryParser`
 2. Register in `index.ts`: `parserRegistry.register(myParser)`
-3. Add extension pattern to `package.json` customEditors selector
+3. Create `<format>-format-adapter.ts` implementing `BinaryFormatAdapter` and register it in `format-adapter.ts`
+4. Add extension pattern to `package.json` customEditors selector
 
 ## New Binary Format Checklist
 
@@ -102,42 +103,20 @@ Notes:
 - `--load` does not support legacy snapshots without `schemaVersion`.
 - Ambiguous MAP snapshots still require `--graceful-map` again on load.
 
-## Extensibility Refactor Plan
+## Format Adapter
 
-Current architecture is extensible but still hardcodes `pro`/`map` in a few places. The plan below removes those switches while keeping current behavior.
+Format-specific behavior is encapsulated in `BinaryFormatAdapter` implementations registered in `format-adapter.ts`. Each adapter provides:
 
-1. Introduce a format adapter registry
+- **Snapshots**: `createJsonSnapshot` / `loadJsonSnapshot` — canonical snapshot create and load.
+- **Canonical rebuild**: `rebuildCanonicalDocument` — reconstruct canonical data after tree edits.
+- **Semantic keys**: `toSemanticFieldKey` — map display-path segments to semantic field keys for presentation lookup.
+- **Editor projection** (optional): `shouldHideField`, `shouldHideGroup`, `projectDisplayRoot` — control what the editor tree shows.
+- **Structural edits** (optional): `isStructuralFieldId`, `buildStructuralTransitionBytes` — handle edits that change the file's field layout.
 
-- Define a `BinaryFormatAdapter` interface (canonical snapshot create/load, optional presentation schema, optional editor projection hooks).
-- Register adapters by parser `id`.
+### Adding adapter support for a new format
 
-2. Move snapshot routing from hardcoded switches to adapter lookup
-
-- Replace format `if (format === "pro" | "map")` branches in `json-snapshot.ts` with adapter dispatch.
-- Keep generic v1 snapshot fallback only when no adapter exists.
-
-3. Decouple canonical document typing from a fixed union
-
-- Replace `BinaryCanonicalDocument = ProCanonicalDocument | MapCanonicalDocument` with an extensible type strategy:
-    - either `unknown` at `ParseResult.document` boundary + adapter-level validation, or
-    - a map-style generic keyed by format id.
-
-4. Move presentation schema to per-format registration
-
-- Register `FormatPresentationSchema` via adapter instead of `if (format === "pro" || format === "map")`.
-- Keep shared helper utilities (`resolveFieldPresentation`, option conversion) generic.
-
-5. Isolate format-specific editor projection logic
-
-- Keep common tree traversal generic.
-- Move format-specific hide/group transforms (for example MAP tile projection) behind adapter hooks.
-
-6. Migration strategy
-
-- Phase 1: Introduce adapter registry with `pro` and `map` backfills.
-- Phase 2: Switch snapshot/presentation dispatch to adapters.
-- Phase 3: Remove old hardcoded branches and dead helper code.
-- Phase 4: Add one pilot third format to validate the new extension path.
+1. Create `<format>-format-adapter.ts` implementing `BinaryFormatAdapter`.
+2. Import and register it in `format-adapter.ts` alongside the existing adapters.
 
 ## Testing
 

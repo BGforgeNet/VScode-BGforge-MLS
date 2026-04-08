@@ -1,9 +1,8 @@
 import { z } from "zod";
 import { resolveRawValueFromDisplay, resolveStoredFieldValue } from "./display-lookups";
-import { createCanonicalMapJsonSnapshot, loadCanonicalMapJsonSnapshot } from "./map-json-snapshot";
+import { formatAdapterRegistry } from "./format-adapter";
 import { buildParsedTreeNode } from "./parsed-tree-codec";
 import { createFieldKey, toSemanticFieldKey } from "./presentation-schema";
-import { createCanonicalProJsonSnapshot, loadCanonicalProJsonSnapshot } from "./pro-json-snapshot";
 import type { ParseOpaqueRange, ParsedField, ParsedGroup, ParseOptions, ParseResult } from "./types";
 import { getScalarFieldLookupKey, parseScalarFieldValue, slugify } from "./snapshot-common";
 
@@ -231,11 +230,9 @@ function fromBinaryJsonDocument(document: BinaryJsonDocumentV1): ParseResult {
 }
 
 export function createBinaryJsonSnapshot(parseResult: ParseResult): string {
-    if (parseResult.format === "pro") {
-        return createCanonicalProJsonSnapshot(parseResult);
-    }
-    if (parseResult.format === "map") {
-        return createCanonicalMapJsonSnapshot(parseResult);
+    const adapter = formatAdapterRegistry.get(parseResult.format);
+    if (adapter) {
+        return adapter.createJsonSnapshot(parseResult);
     }
     const document = binaryJsonDocumentV1Schema.parse(createBinaryJsonDocument(parseResult));
     return `${JSON.stringify(document, null, 2)}\n`;
@@ -251,11 +248,17 @@ export function loadBinaryJsonSnapshot(
 ): { parseResult: ParseResult; bytes?: Uint8Array } {
     try {
         const parsed = JSON.parse(jsonText) as unknown;
-        if (typeof parsed === "object" && parsed !== null && "format" in parsed && (parsed as { format?: unknown }).format === "pro") {
-            return loadCanonicalProJsonSnapshot(jsonText, options?.proParseOptions);
-        }
-        if (typeof parsed === "object" && parsed !== null && "format" in parsed && (parsed as { format?: unknown }).format === "map") {
-            return loadCanonicalMapJsonSnapshot(jsonText, options?.mapParseOptions);
+        if (typeof parsed === "object" && parsed !== null && "format" in parsed) {
+            const format = (parsed as { format?: unknown }).format;
+            if (typeof format === "string") {
+                const adapter = formatAdapterRegistry.get(format);
+                if (adapter) {
+                    const parseOptions = format === "pro" ? options?.proParseOptions
+                        : format === "map" ? options?.mapParseOptions
+                            : undefined;
+                    return adapter.loadJsonSnapshot(jsonText, parseOptions);
+                }
+            }
         }
 
         const document = binaryJsonDocumentV1Schema.parse(parsed);

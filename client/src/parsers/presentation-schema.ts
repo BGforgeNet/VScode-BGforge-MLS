@@ -28,7 +28,7 @@ import {
     ScriptFlags,
     Skill,
 } from "./map-types";
-import { slugify } from "./snapshot-common";
+import { formatAdapterRegistry } from "./format-adapter";
 
 const numericFormatSchema = z.enum(["decimal", "hex32"]);
 const flagActivationSchema = z.enum(["set", "clear", "equal"]);
@@ -65,108 +65,12 @@ export function createFieldKey(segments: readonly string[]): string {
     return `/${segments.map((segment) => segment.replace(/~/g, "~0").replace(/\//g, "~1")).join("/")}`;
 }
 
-function toSemanticKeySegment(label: string): string {
-    return slugify(label);
-}
-
 export function toSemanticFieldKey(format: string, segments: readonly string[]): string | undefined {
-    if (format === "pro") {
-        if (segments.length === 0) {
-            return "pro";
-        }
-        return `pro.${segments.map((segment) => toSemanticKeySegment(segment)).join(".")}`;
+    const adapter = formatAdapterRegistry.get(format);
+    if (adapter) {
+        return adapter.toSemanticFieldKey(segments);
     }
-
-    if (format !== "map" || segments.length === 0) {
-        return undefined;
-    }
-
-    const [first, second, third, fourth, fifth] = segments;
-
-    if (first === "Header") {
-        return `map.header.${toSemanticKeySegment(second ?? "")}`;
-    }
-
-    if (first === "Global Variables") {
-        return "map.globalVariables[]";
-    }
-
-    if (first === "Local Variables") {
-        return "map.localVariables[]";
-    }
-
-    if (/^Elevation \d+ Tiles$/.test(first ?? "")) {
-        const fieldName = second ?? "";
-        const tileMatch = /^Tile \d+ (Floor|Floor Flags|Roof|Roof Flags)$/.exec(fieldName);
-        if (!tileMatch) {
-            return undefined;
-        }
-
-        const tileField = tileMatch[1] === "Floor"
-            ? "floorTileId"
-            : tileMatch[1] === "Floor Flags"
-                ? "floorFlags"
-                : tileMatch[1] === "Roof"
-                    ? "roofTileId"
-                    : "roofFlags";
-        return `map.tiles[].${tileField}`;
-    }
-
-    if (first?.endsWith("Scripts")) {
-        if (second === "Script Count") {
-            return "map.scripts[].count";
-        }
-        if (/^Extent \d+$/.test(second ?? "")) {
-            if (third === "Extent Length") {
-                return "map.scripts[].extents[].extentLength";
-            }
-            if (third === "Extent Next") {
-                return "map.scripts[].extents[].extentNext";
-            }
-            if (/^Slot \d+$/.test(third ?? "")) {
-                const entryName = (fourth ?? "").replace(/^Entry \d+ /, "");
-                return `map.scripts[].extents[].slots[].${toSemanticKeySegment(entryName)}`;
-            }
-        }
-        return undefined;
-    }
-
-    if (first === "Objects Section") {
-        if (second === "Total Objects") {
-            return "map.objects.totalObjects";
-        }
-        if (/^Elevation \d+ Objects$/.test(second ?? "")) {
-            if (third === "Object Count") {
-                return "map.objects.elevations[].objectCount";
-            }
-            if (/^Object \d+\.\d+ /.test(third ?? "")) {
-                if (!fourth) {
-                    return "map.objects.elevations[].objects[]";
-                }
-                if (fourth === "Inventory Header") {
-                    return `map.objects.elevations[].objects[].inventoryHeader.${toSemanticKeySegment(fifth ?? "")}`;
-                }
-                if (fourth === "Object Data") {
-                    return `map.objects.elevations[].objects[].objectData.${toSemanticKeySegment(fifth ?? "")}`;
-                }
-                if (fourth === "Exit Grid") {
-                    return `map.objects.elevations[].objects[].exitGrid.${toSemanticKeySegment(fifth ?? "")}`;
-                }
-                if (fourth === "Critter Data") {
-                    return `map.objects.elevations[].objects[].critterData.${toSemanticKeySegment(fifth ?? "")}`;
-                }
-                if (/^Inventory Entry \d+$/.test(fourth)) {
-                    if (fifth === "Quantity") {
-                        return "map.objects.elevations[].objects[].inventory[].quantity";
-                    }
-                    return `map.objects.elevations[].objects[].inventory[].${toSemanticKeySegment(fifth ?? "")}`;
-                }
-                return `map.objects.elevations[].objects[].base.${toSemanticKeySegment(fourth)}`;
-            }
-        }
-    }
-
-    return `map.${segments.map((segment) => toSemanticKeySegment(segment)).join(".")}`;
+    return undefined;
 }
 
 export function createSemanticFieldKeyFromId(format: string, fieldId: string): string | undefined {
@@ -314,27 +218,27 @@ function toFieldPresentation(entry: PatternFieldPresentation | CompiledPatternFi
 }
 
 export function getFormatPresentationSchema(format: string): FormatPresentationSchema | undefined {
-    if (format === "pro" || format === "map") {
-        return binaryPresentationSchemas[format];
-    }
-    return undefined;
+    return binaryPresentationSchemas[format as SupportedPresentationFormat];
 }
 
 export function resolveFieldPresentation(format: string, fieldKey: string, fieldName: string): FieldPresentation | undefined {
     const schema = getFormatPresentationSchema(format);
-    if (!schema || (format !== "pro" && format !== "map")) {
+    if (!schema) {
         return undefined;
     }
 
     let presentation: FieldPresentation = {};
-    for (const entry of compiledPatternSchemas[format]) {
-        if (!entry.pathRegex.test(fieldKey)) {
-            continue;
+    const patterns = compiledPatternSchemas[format as SupportedPresentationFormat];
+    if (patterns) {
+        for (const entry of patterns) {
+            if (!entry.pathRegex.test(fieldKey)) {
+                continue;
+            }
+            if (entry.fieldNameRegex && !entry.fieldNameRegex.test(fieldName)) {
+                continue;
+            }
+            presentation = mergePresentation(presentation, toFieldPresentation(entry));
         }
-        if (entry.fieldNameRegex && !entry.fieldNameRegex.test(fieldName)) {
-            continue;
-        }
-        presentation = mergePresentation(presentation, toFieldPresentation(entry));
     }
 
     const exact = schema.exactFields[fieldKey];
