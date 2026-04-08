@@ -279,6 +279,27 @@ describe("MAP parser - real maps", () => {
         expect(Buffer.from(serialized).equals(Buffer.from(mapData))).toBe(true);
     });
 
+    it("clamps invalid header values while rebuilding canonical data for save and JSON export", () => {
+        const mapData = loadMap(resolveMapPath("artemple.map"));
+        const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });
+
+        const header = findGroupByName(result.root.fields, "Header");
+        const defaultOrientation = findFieldByName(header.fields, "Default Orientation");
+        defaultOrientation.value = "invalid";
+        defaultOrientation.rawValue = 6;
+        result.document = undefined;
+
+        expect(() => createBinaryJsonSnapshot(result)).not.toThrow();
+        const snapshot = JSON.parse(createBinaryJsonSnapshot(result)) as {
+            document: { header: { defaultOrientation: number } };
+        };
+        expect(snapshot.document.header.defaultOrientation).toBe(5);
+
+        const serialized = mapParser.serialize!(result);
+        const view = new DataView(serialized.buffer, serialized.byteOffset, serialized.byteLength);
+        expect(view.getInt32(0x1C, false)).toBe(5);
+    });
+
     it("parses object section counts and leaves a TODO when subtype resolution is missing", () => {
         const mapData = loadMap(REAL_MAPS[2]);
         const result = mapParser.parse(mapData, { gracefulMapBoundaries: true });

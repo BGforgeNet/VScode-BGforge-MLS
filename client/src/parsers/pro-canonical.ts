@@ -1,7 +1,9 @@
 import { BufferWriter } from "typed-binary";
 import { z } from "zod";
+import { clampNumericValue, zodFieldNumber, zodNumericType } from "./binary-format-contract";
 import { resolveRawValueFromDisplay } from "./display-lookups";
 import { createFieldKey, toSemanticFieldKey } from "./presentation-schema";
+import { parseWithSchemaValidation } from "./schema-validation";
 import {
     ammoSchema,
     armorSchema,
@@ -39,11 +41,11 @@ import {
 } from "./pro-types";
 import type { ParsedField, ParsedGroup, ParseResult } from "./types";
 
-const int32Schema = z.number().int().min(-0x8000_0000).max(0x7fff_ffff);
-const uint8Schema = z.number().int().min(0).max(0xff);
-const uint16Schema = z.number().int().min(0).max(0xffff);
-const uint24Schema = z.number().int().min(0).max(0x00ff_ffff);
-const uint32Schema = z.number().int().min(0).max(0xffff_ffff);
+const int32Schema = zodNumericType("int32");
+const uint8Schema = zodNumericType("uint8");
+const uint16Schema = zodNumericType("uint16");
+const uint24Schema = zodNumericType("uint24");
+const uint32Schema = zodNumericType("uint32");
 
 const scriptRefSchema = z.strictObject({
     type: z.number().int().min(-1).max(0xff),
@@ -306,12 +308,12 @@ const proCanonicalSectionsSchema = z.strictObject({
         soundId: uint8Schema,
     }).optional(),
     doorProperties: z.strictObject({
-        walkThrough: uint32Schema,
+        walkThrough: zodFieldNumber("pro", "pro.doorProperties.walkThrough", "uint32"),
         unknown: uint32Schema,
     }).optional(),
     stairsProperties: z.strictObject({
-        destTile: uint32Schema,
-        destElevation: uint32Schema,
+        destTile: zodFieldNumber("pro", "pro.stairsProperties.destTile", "uint32"),
+        destElevation: zodFieldNumber("pro", "pro.stairsProperties.destElevation", "uint32"),
         destMap: uint32Schema,
     }).optional(),
     elevatorProperties: z.strictObject({
@@ -319,8 +321,8 @@ const proCanonicalSectionsSchema = z.strictObject({
         elevatorLevel: uint32Schema,
     }).optional(),
     ladderProperties: z.strictObject({
-        destTile: uint32Schema,
-        destElevation: uint32Schema,
+        destTile: zodFieldNumber("pro", "pro.ladderProperties.destTile", "uint32"),
+        destElevation: zodFieldNumber("pro", "pro.ladderProperties.destElevation", "uint32"),
     }).optional(),
     genericProperties: z.strictObject({
         unknown: uint32Schema,
@@ -346,8 +348,8 @@ const proCanonicalDocumentSchema = z.strictObject({
         textId: uint32Schema,
         frmType: uint8Schema,
         frmId: uint24Schema,
-        lightRadius: uint32Schema,
-        lightIntensity: uint32Schema,
+        lightRadius: zodFieldNumber("pro", "pro.header.lightRadius", "uint32"),
+        lightIntensity: zodFieldNumber("pro", "pro.header.lightIntensity", "uint32"),
         flags: uint32Schema,
     }),
     sections: proCanonicalSectionsSchema,
@@ -503,6 +505,10 @@ function mapGroupFields(group: ParsedGroup, mapping: ReadonlyArray<readonly [fie
     return Object.fromEntries(mapping.map(([fieldName, key]) => [key, readFieldNumber(group, fieldName, `${group.name}`)]));
 }
 
+function readClampedFieldNumber(group: ParsedGroup, fieldName: string, sectionName: string, fieldKey: string, type: string): number {
+    return clampNumericValue(readFieldNumber(group, fieldName, sectionName), type, { format: "pro", fieldKey });
+}
+
 function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnapshot {
     const header = getGroup(parseResult.root, "Header");
     const sections: Record<string, unknown> = {};
@@ -513,8 +519,8 @@ function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnap
         textId: readFieldNumber(header, "Text ID", "Header"),
         frmType: readFieldNumber(header, "FRM Type", "Header"),
         frmId: readFieldNumber(header, "FRM ID", "Header"),
-        lightRadius: readFieldNumber(header, "Light Radius", "Header"),
-        lightIntensity: readFieldNumber(header, "Light Intensity", "Header"),
+        lightRadius: readClampedFieldNumber(header, "Light Radius", "Header", "pro.header.lightRadius", "uint32"),
+        lightIntensity: readClampedFieldNumber(header, "Light Intensity", "Header", "pro.header.lightIntensity", "uint32"),
         flags: readFieldNumber(header, "Flags", "Header"),
     };
 
@@ -731,7 +737,13 @@ function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnap
     const doorProperties = getOptionalGroup(parseResult.root, "Door Properties");
     if (doorProperties) {
         sections.doorProperties = {
-            walkThrough: readFieldNumber(doorProperties, "Walk Through", "Door Properties"),
+            walkThrough: readClampedFieldNumber(
+                doorProperties,
+                "Walk Through",
+                "Door Properties",
+                "pro.doorProperties.walkThrough",
+                "uint32"
+            ),
             unknown: readFieldNumber(doorProperties, "Unknown", "Door Properties"),
         };
     }
@@ -739,8 +751,20 @@ function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnap
     const stairsProperties = getOptionalGroup(parseResult.root, "Stairs Properties");
     if (stairsProperties) {
         sections.stairsProperties = {
-            destTile: readFieldNumber(stairsProperties, "Dest Tile", "Stairs Properties"),
-            destElevation: readFieldNumber(stairsProperties, "Dest Elevation", "Stairs Properties"),
+            destTile: readClampedFieldNumber(
+                stairsProperties,
+                "Dest Tile",
+                "Stairs Properties",
+                "pro.stairsProperties.destTile",
+                "uint32"
+            ),
+            destElevation: readClampedFieldNumber(
+                stairsProperties,
+                "Dest Elevation",
+                "Stairs Properties",
+                "pro.stairsProperties.destElevation",
+                "uint32"
+            ),
             destMap: readFieldNumber(stairsProperties, "Dest Map", "Stairs Properties"),
         };
     }
@@ -756,8 +780,20 @@ function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnap
     const ladderProperties = getOptionalGroup(parseResult.root, "Ladder Properties");
     if (ladderProperties) {
         sections.ladderProperties = {
-            destTile: readFieldNumber(ladderProperties, "Dest Tile", "Ladder Properties"),
-            destElevation: readFieldNumber(ladderProperties, "Dest Elevation", "Ladder Properties"),
+            destTile: readClampedFieldNumber(
+                ladderProperties,
+                "Dest Tile",
+                "Ladder Properties",
+                "pro.ladderProperties.destTile",
+                "uint32"
+            ),
+            destElevation: readClampedFieldNumber(
+                ladderProperties,
+                "Dest Elevation",
+                "Ladder Properties",
+                "pro.ladderProperties.destElevation",
+                "uint32"
+            ),
         };
     }
 
@@ -795,7 +831,7 @@ function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnap
         };
     }
 
-    return proCanonicalSnapshotSchema.parse({
+    return parseWithSchemaValidation(proCanonicalSnapshotSchema, {
         schemaVersion: 1,
         format: "pro",
         formatName: parseResult.formatName,
@@ -803,18 +839,18 @@ function rebuildProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnap
             header: headerData,
             sections,
         },
-    });
+    }, "Invalid PRO canonical snapshot");
 }
 
 export function createProCanonicalSnapshot(parseResult: ParseResult): ProCanonicalSnapshot {
     const embeddedDocument = getProCanonicalDocument(parseResult);
     if (embeddedDocument) {
-        return proCanonicalSnapshotSchema.parse({
+        return parseWithSchemaValidation(proCanonicalSnapshotSchema, {
             schemaVersion: 1,
             format: "pro",
             formatName: parseResult.formatName,
             document: embeddedDocument,
-        });
+        }, "Invalid PRO canonical document");
     }
 
     return rebuildProCanonicalSnapshot(parseResult);
@@ -1076,12 +1112,12 @@ export function serializeProCanonicalSnapshot(snapshot: ProCanonicalSnapshot): U
 }
 
 export function serializeProCanonicalDocument(document: ProCanonicalDocument, formatName = "Fallout PRO (Prototype)"): Uint8Array {
-    return serializeProCanonicalSnapshot(proCanonicalSnapshotSchema.parse({
+    return serializeProCanonicalSnapshot(parseWithSchemaValidation(proCanonicalSnapshotSchema, {
         schemaVersion: 1,
         format: "pro",
         formatName,
         document,
-    }));
+    }, "Invalid PRO canonical document"));
 }
 
 export function getProCanonicalDocument(parseResult: ParseResult): ProCanonicalDocument | undefined {

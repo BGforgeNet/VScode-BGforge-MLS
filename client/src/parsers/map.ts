@@ -974,7 +974,12 @@ class MapParser implements BinaryParser {
             opaqueRanges: opaqueRanges.length > 0 ? opaqueRanges : undefined,
             errors: errors.length > 0 ? errors : undefined,
         };
-        result.document = rebuildMapCanonicalDocument(result);
+        try {
+            result.document = rebuildMapCanonicalDocument(result);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            result.warnings = [...(result.warnings ?? []), `Canonical MAP document unavailable: ${message}`];
+        }
         return result;
     }
 }

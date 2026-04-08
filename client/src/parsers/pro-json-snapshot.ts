@@ -1,5 +1,6 @@
 import { createProCanonicalSnapshot, proCanonicalSnapshotSchema, serializeProCanonicalSnapshot, type ProCanonicalSnapshot } from "./pro-canonical";
 import { proParser } from "./pro";
+import { parseWithSchemaValidation } from "./schema-validation";
 import type { ParseOptions, ParseResult } from "./types";
 
 interface LoadedCanonicalProSnapshot {
@@ -13,7 +14,11 @@ export function createCanonicalProJsonSnapshot(parseResult: ParseResult): string
 }
 
 export function loadCanonicalProJsonSnapshot(jsonText: string, parseOptions?: ParseOptions): LoadedCanonicalProSnapshot {
-    const snapshot = proCanonicalSnapshotSchema.parse(JSON.parse(jsonText));
+    const snapshot = parseWithSchemaValidation(
+        proCanonicalSnapshotSchema,
+        JSON.parse(jsonText),
+        "Invalid canonical PRO snapshot",
+    );
     const bytes = serializeProCanonicalSnapshot(snapshot);
     const reparsed = proParser.parse(bytes, parseOptions);
     if (reparsed.errors && reparsed.errors.length > 0) {

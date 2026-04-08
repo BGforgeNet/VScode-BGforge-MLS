@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 import { BufferReader, BufferWriter } from "typed-binary";
+import { createBinaryJsonSnapshot } from "../src/parsers/json-snapshot";
 import { proParser } from "../src/parsers/pro";
 import {
     headerSchema, itemCommonSchema, armorSchema, containerSchema, drugSchema,
@@ -168,5 +169,38 @@ describe("PRO round-trip via serializer (parse -> serialize -> byte-identical)",
         parsed.document = undefined;
 
         expect(() => proParser.serialize!(parsed)).toThrow(/required for critter PRO snapshots/i);
+    });
+
+    it("clamps invalid header values while rebuilding canonical data for save and JSON export", () => {
+        const proPath = path.join(FIXTURES, "misc", "00000001.pro");
+        const input = new Uint8Array(fs.readFileSync(proPath));
+        const parsed = proParser.parse(input);
+        expect(parsed.errors).toBeUndefined();
+
+        const header = parsed.root.fields[0];
+        expect(header && "fields" in header).toBe(true);
+        if (!header || !("fields" in header)) {
+            throw new Error("Expected header group");
+        }
+
+        const lightRadius = header.fields.find((entry) => !("fields" in entry) && entry.name === "Light Radius");
+        expect(lightRadius && !("fields" in lightRadius)).toBe(true);
+        if (!lightRadius || "fields" in lightRadius) {
+            throw new Error("Expected Light Radius field");
+        }
+
+        lightRadius.value = 9;
+        lightRadius.rawValue = 9;
+        parsed.document = undefined;
+
+        expect(() => createBinaryJsonSnapshot(parsed)).not.toThrow();
+        const snapshot = JSON.parse(createBinaryJsonSnapshot(parsed)) as {
+            document: { header: { lightRadius: number } };
+        };
+        expect(snapshot.document.header.lightRadius).toBe(8);
+
+        const output = proParser.serialize!(parsed);
+        const view = new DataView(output.buffer, output.byteOffset, output.byteLength);
+        expect(view.getUint32(0x0C, false)).toBe(8);
     });
 });

@@ -1,5 +1,7 @@
 import { z } from "zod";
+import { clampNumericValue, zodFieldNumber, zodNumericType } from "./binary-format-contract";
 import { decodeOpaqueRange } from "./opaque-range";
+import { parseWithSchemaValidation } from "./schema-validation";
 import {
     HEADER_SIZE,
     TILES_PER_ELEVATION,
@@ -18,10 +20,10 @@ const PID_TYPE_WALL = 3;
 const PID_TYPE_TILE = 4;
 const PID_TYPE_MISC = 5;
 
-const int32Schema = z.number().int().min(-0x8000_0000).max(0x7fff_ffff);
-const uint8Schema = z.number().int().min(0).max(0xff);
-const uint16Schema = z.number().int().min(0).max(0xffff);
-const uint32Schema = z.number().int().min(0).max(0xffff_ffff);
+const int32Schema = zodNumericType("int32");
+const uint8Schema = zodNumericType("uint8");
+const uint16Schema = zodNumericType("uint16");
+const uint32Schema = zodNumericType("uint32");
 
 const opaqueRangeSchema = z.strictObject({
     label: z.string().min(1),
@@ -34,8 +36,8 @@ const mapHeaderSchema = z.strictObject({
     version: uint32Schema,
     filename: z.string(),
     defaultPosition: int32Schema,
-    defaultElevation: int32Schema,
-    defaultOrientation: int32Schema,
+    defaultElevation: zodFieldNumber("map", "map.header.defaultElevation", "int32"),
+    defaultOrientation: zodFieldNumber("map", "map.header.defaultOrientation", "int32"),
     numLocalVars: int32Schema,
     scriptId: int32Schema,
     flags: uint32Schema,
@@ -140,8 +142,8 @@ const mapObjectDataSchema = z.strictObject({
 const mapExitGridSchema = z.strictObject({
     destinationMap: int32Schema,
     destinationTile: int32Schema,
-    destinationElevation: int32Schema,
-    destinationRotation: int32Schema,
+    destinationElevation: zodFieldNumber("map", "map.objects.elevations[].objects[].exitGrid.destinationElevation", "int32"),
+    destinationRotation: zodFieldNumber("map", "map.objects.elevations[].objects[].exitGrid.destinationRotation", "int32"),
 });
 
 interface MapCanonicalObject {
@@ -236,6 +238,10 @@ function readNumber(group: ParsedGroup, name: string): number {
         return field.value;
     }
     throw new Error(`Field is not numeric: ${group.name}.${name}`);
+}
+
+function readClampedNumber(group: ParsedGroup, name: string, fieldKey: string, type: string): number {
+    return clampNumericValue(readNumber(group, name), type, { format: "map", fieldKey });
 }
 
 function readString(group: ParsedGroup, name: string): string {
@@ -487,8 +493,18 @@ function parseMapObject(group: ParsedGroup): z.infer<typeof mapObjectSchema> {
         object.exitGrid = {
             destinationMap: readNumber(exitGrid, "Destination Map"),
             destinationTile: readNumber(exitGrid, "Destination Tile"),
-            destinationElevation: readNumber(exitGrid, "Destination Elevation"),
-            destinationRotation: readNumber(exitGrid, "Destination Rotation"),
+            destinationElevation: readClampedNumber(
+                exitGrid,
+                "Destination Elevation",
+                "map.objects.elevations[].objects[].exitGrid.destinationElevation",
+                "int32"
+            ),
+            destinationRotation: readClampedNumber(
+                exitGrid,
+                "Destination Rotation",
+                "map.objects.elevations[].objects[].exitGrid.destinationRotation",
+                "int32"
+            ),
         };
     }
 
@@ -528,8 +544,8 @@ export function rebuildMapCanonicalDocument(parseResult: ParseResult): MapCanoni
         version: readNumber(headerGroup, "Version") >>> 0,
         filename: readString(headerGroup, "Filename"),
         defaultPosition: readNumber(headerGroup, "Default Position"),
-        defaultElevation: readNumber(headerGroup, "Default Elevation"),
-        defaultOrientation: readNumber(headerGroup, "Default Orientation"),
+        defaultElevation: readClampedNumber(headerGroup, "Default Elevation", "map.header.defaultElevation", "int32"),
+        defaultOrientation: readClampedNumber(headerGroup, "Default Orientation", "map.header.defaultOrientation", "int32"),
         numLocalVars: readNumber(headerGroup, "Num Local Vars"),
         scriptId: readNumber(headerGroup, "Script ID"),
         flags: readNumber(headerGroup, "Map Flags") >>> 0,
@@ -556,14 +572,14 @@ export function rebuildMapCanonicalDocument(parseResult: ParseResult): MapCanoni
 
     const objects = parseObjects(getGroup(parseResult.root, "Objects Section"));
 
-    return mapCanonicalDocumentSchema.parse({
+    return parseWithSchemaValidation(mapCanonicalDocumentSchema, {
         header,
         globalVariables,
         localVariables,
         tiles,
         scripts,
         objects,
-    });
+    }, "Invalid MAP canonical document");
 }
 
 export function getMapCanonicalDocument(parseResult: ParseResult): MapCanonicalDocument | undefined {
@@ -573,7 +589,7 @@ export function getMapCanonicalDocument(parseResult: ParseResult): MapCanonicalD
 
 export function createMapCanonicalSnapshot(parseResult: ParseResult): MapCanonicalSnapshot {
     const document = getMapCanonicalDocument(parseResult) ?? rebuildMapCanonicalDocument(parseResult);
-    return mapCanonicalSnapshotSchema.parse({
+    return parseWithSchemaValidation(mapCanonicalSnapshotSchema, {
         schemaVersion: 1,
         format: "map",
         formatName: parseResult.formatName,
@@ -581,7 +597,7 @@ export function createMapCanonicalSnapshot(parseResult: ParseResult): MapCanonic
         opaqueRanges: parseResult.opaqueRanges,
         warnings: parseResult.warnings,
         errors: parseResult.errors,
-    });
+    }, "Invalid MAP canonical snapshot");
 }
 
 function writeInt32(view: DataView, offset: number, value: number): void {

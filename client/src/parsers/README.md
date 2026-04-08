@@ -85,6 +85,7 @@ Use this end-to-end checklist when adding a new binary format to avoid missing o
 - Presentation lookups use stable semantic field IDs such as `pro.header.objectType` and `map.objects.elevations[].objects[].base.pid`, not escaped display-path keys.
 - Binary serialization should prefer the canonical document over the display tree.
 - Dump and load must validate against the format schema and re-parse bytes as a round-trip check.
+- When rebuilding canonical data from a parsed editor tree, serializer-facing code must clamp legacy out-of-range numeric values to supported domain bounds instead of emitting invalid bytes.
 
 ## CLI
 

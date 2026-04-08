@@ -72,6 +72,13 @@ describe("validateNumericRange", () => {
     it("returns undefined for unknown types", () => {
         expect(validateNumericRange(42, "unknown")).toBeUndefined();
     });
+
+    it("applies domain-specific ranges when field context is provided", () => {
+        expect(validateNumericRange(8, "uint32", { format: "pro", fieldKey: "pro.header.lightRadius" })).toBeUndefined();
+        expect(validateNumericRange(9, "uint32", { format: "pro", fieldKey: "pro.header.lightRadius" })).toContain("allowed range");
+        expect(validateNumericRange(2, "int32", { format: "map", fieldKey: "map.header.defaultElevation" })).toBeUndefined();
+        expect(validateNumericRange(3, "int32", { format: "map", fieldKey: "map.header.defaultElevation" })).toContain("allowed range");
+    });
 });
 
 describe("validateEnum", () => {
@@ -124,5 +131,15 @@ describe("validateFieldEdit", () => {
     it("validates flag fields against the declared mask", () => {
         expect(validateFieldEdit(0x03, "flags", undefined, { 0x01: "A", 0x02: "B" })).toBeUndefined();
         expect(validateFieldEdit(0x08, "flags", undefined, { 0x01: "A", 0x02: "B" })).toContain("Invalid flag bits");
+    });
+
+    it("enforces domain-specific constraints for numeric field edits", () => {
+        expect(validateFieldEdit(
+            9,
+            "uint32",
+            undefined,
+            undefined,
+            { format: "pro", fieldKey: "pro.header.lightRadius" },
+        )).toContain("allowed range");
     });
 });

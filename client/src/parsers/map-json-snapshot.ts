@@ -5,6 +5,7 @@ import {
     serializeMapCanonicalDocument,
     type MapCanonicalSnapshot,
 } from "./map-canonical";
+import { parseWithSchemaValidation } from "./schema-validation";
 import type { ParseOptions, ParseResult } from "./types";
 
 interface LoadedCanonicalMapSnapshot {
@@ -50,7 +51,11 @@ export function createCanonicalMapJsonSnapshot(parseResult: ParseResult): string
 }
 
 export function loadCanonicalMapJsonSnapshot(jsonText: string, _parseOptions?: ParseOptions): LoadedCanonicalMapSnapshot {
-    const snapshot = mapCanonicalSnapshotSchema.parse(JSON.parse(jsonText));
+    const snapshot = parseWithSchemaValidation(
+        mapCanonicalSnapshotSchema,
+        JSON.parse(jsonText),
+        "Invalid canonical MAP snapshot",
+    );
     ensureSupportedMapSnapshotEncoding(snapshot);
     const bytes = serializeMapCanonicalDocument(snapshot.document, snapshot.opaqueRanges);
     const effectiveParseOptions: ParseOptions = {

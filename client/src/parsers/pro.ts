@@ -644,7 +644,12 @@ class ProParser implements BinaryParser {
             root: group("PRO File", groups),
             errors: errors.length > 0 ? errors : undefined,
         };
-        result.document = createProCanonicalSnapshot(result).document;
+        try {
+            result.document = createProCanonicalSnapshot(result).document;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            result.warnings = [...(result.warnings ?? []), `Canonical PRO document unavailable: ${message}`];
+        }
         return result;
     }
 }

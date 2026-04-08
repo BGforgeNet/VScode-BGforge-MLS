@@ -3,6 +3,7 @@
 ## 3.6.0
 
 - Added syntax highlighting for `weidu.log`.
+- Binary editor save and JSON export now clamp out-of-range PRO and MAP values to the nearest supported in-format value instead of writing invalid data.
 
 ## 3.5.0
 

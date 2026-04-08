@@ -260,7 +260,10 @@ class BinaryEditorProvider implements vscode.CustomEditorProvider<BinaryDocument
 
         const enumTable = resolveEnumLookup(format, fieldKey, fieldName);
         const flagTable = resolveFlagLookup(format, fieldKey, fieldName);
-        const validationError = validateFieldEdit(rawValue, field.type, enumTable, flagTable);
+        const validationError = validateFieldEdit(rawValue, field.type, enumTable, flagTable, {
+            format,
+            fieldKey,
+        });
         if (validationError) {
             const msg: ExtensionToWebview = { type: "validationError", fieldId, fieldPath, message: validationError };
             webview.postMessage(msg);

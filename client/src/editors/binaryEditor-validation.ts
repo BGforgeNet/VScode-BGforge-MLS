@@ -3,36 +3,18 @@
  * Returns an error message string if invalid, undefined if valid.
  */
 
-/** Numeric range limits by type name */
-const RANGES: Record<string, [min: number, max: number]> = {
-    uint8: [0, 0xFF],
-    uint16: [0, 0xFFFF],
-    uint24: [0, 0xFFFFFF],
-    uint32: [0, 0xFFFFFFFF],
-    int8: [-128, 127],
-    int16: [-32768, 32767],
-    int24: [-8388608, 8388607],
-    int32: [-2147483648, 2147483647],
-};
+import { validateNumericValue } from "../parsers/binary-format-contract";
 
 /**
  * Validate that a numeric value is within the range for its type.
  * Returns an error message if invalid, undefined if valid.
  */
-export function validateNumericRange(value: number, type: string): string | undefined {
-    if (!Number.isFinite(value) || !Number.isInteger(value)) {
-        return `Value must be an integer, got ${value}`;
-    }
-
-    const range = RANGES[type];
-    if (!range) return undefined;
-
-    const [min, max] = range;
-    if (value < min || value > max) {
-        return `Value ${value} out of range for ${type} (${min} to ${max})`;
-    }
-
-    return undefined;
+export function validateNumericRange(
+    value: number,
+    type: string,
+    context?: { readonly format?: string; readonly fieldKey?: string },
+): string | undefined {
+    return validateNumericValue(value, type, context);
 }
 
 /**
@@ -71,6 +53,7 @@ export function validateFieldEdit(
     type: string,
     enumLookup?: Record<number, string>,
     flagDefs?: Record<number, string>,
+    context?: { readonly format?: string; readonly fieldKey?: string },
 ): string | undefined {
     if (type === "enum") {
         return enumLookup ? validateEnum(value, enumLookup) : undefined;
@@ -81,7 +64,7 @@ export function validateFieldEdit(
     }
 
     if (type.includes("int") || type.includes("uint")) {
-        return validateNumericRange(value, type);
+        return validateNumericRange(value, type, context);
     }
 
     return undefined;
