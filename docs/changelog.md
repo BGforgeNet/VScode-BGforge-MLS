@@ -7,6 +7,7 @@
 - `weidu.log`: go to definition on `~mod/path.tp2~` navigates to the corresponding `.tp2` file (case-insensitive path resolution).
 - Added syntax highlighting for `weidu.log`.
 - Binary editor save and JSON export now clamp out-of-range PRO and MAP values to the nearest supported in-format value instead of writing invalid data.
+- Binary editor JSON dump now produces strict canonical JSON.
 
 ## 3.5.0
 
