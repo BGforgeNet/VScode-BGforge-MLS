@@ -5,6 +5,7 @@
  * preventing inconsistencies where one store is updated but the other is not.
  */
 
+import type { NormalizedUri } from "./normalized-uri";
 import type { IndexedSymbol } from "./symbol";
 import type { ParseResult } from "./parse-result";
 import { Symbols } from "./symbol-index";
@@ -19,13 +20,13 @@ export class FileIndex {
     readonly refs = new ReferencesIndex();
 
     /** Update both stores from a unified parse result. */
-    updateFile(uri: string, result: ParseResult): void {
+    updateFile(uri: NormalizedUri, result: ParseResult): void {
         this.symbols.updateFile(uri, result.symbols);
         this.refs.updateFile(uri, result.refs);
     }
 
     /** Remove a file from both stores. */
-    removeFile(uri: string): void {
+    removeFile(uri: NormalizedUri): void {
         this.symbols.clearFile(uri);
         this.refs.removeFile(uri);
     }

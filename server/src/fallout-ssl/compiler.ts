@@ -28,6 +28,7 @@ import {
     tmpDir,
     uriToPath,
 } from "../common";
+import type { NormalizedUri } from "../core/normalized-uri";
 import { getConnection, getDocuments } from "../lsp-connection";
 import { showError, showErrorWithActions, showInfo } from "../user-messages";
 import { SSLsettings } from "../settings";
@@ -155,7 +156,7 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
 let successfulCompilerPath: string | null = null;
 
 /** Track in-flight compilations per URI so we can cancel stale ones. */
-const activeCompiles = new Map<string, AbortController>();
+const activeCompiles = new Map<NormalizedUri, AbortController>();
 
 /**
  * Reset cached compiler path. Exported for testing only — module-level
@@ -205,7 +206,7 @@ function getValidationOutputPath(uri: string, base: string) {
 }
 
 export async function compile(
-    uri: string,
+    uri: NormalizedUri,
     sslSettings: SSLsettings,
     interactive = false,
     text: string,

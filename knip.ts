@@ -69,8 +69,6 @@ const config: KnipConfig = {
         "@oxlint/plugins",
         // used by scripts/ (pnpm exec tsx scripts/...)
         "tsx",
-        // invoked in scripts/*.sh build scripts, not visible to knip
-        "esbuild",
         // invoked via pnpm vsce in scripts/package.sh
         "@vscode/vsce",
         // loaded by remark CLI via --use in package.json scripts, not statically imported

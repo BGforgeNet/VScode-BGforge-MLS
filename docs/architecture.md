@@ -276,7 +276,10 @@ Two recent behavior points are easy to miss:
 
 ### Providers
 
-Each provider implements a subset of the `LanguageProvider` interface:
+Each provider implements `ProviderBase` plus relevant capability interfaces from `core/capabilities.ts`
+(e.g., `FormattingCapability`, `CompletionCapability`). The `LanguageProvider` type is a
+`Partial<>` intersection of all capabilities — providers declare explicit `implements` clauses
+for compile-time enforcement:
 
 | Provider | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc |
 |----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -302,6 +305,11 @@ Source (.tssl/.tbaf/.td)
   +-> Write output file
   +-> Optional: chain native compilation
 ```
+
+**Shared pipeline** (`shared/transpiler-pipeline.ts`): `createTranspiler()` factory
+handles the common orchestration — extension validation, @tra tag extraction, file I/O,
+and logging. TBAF and TD use this factory; TSSL has custom entry points due to its
+batch state and non-standard output path.
 
 **Shared utilities** (`transpiler-utils.ts`): variable substitution, loop unrolling
 (max 1000 iterations), array spread/destructuring, helper fixups (obj/tra/tlk),

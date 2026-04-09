@@ -1,12 +1,11 @@
 /**
- * Tree-sitter parser for WeiDU BAF with caching.
+ * Tree-sitter parser for WeiDU BAF — thin re-export from ParserManager.
  */
 
-import { createCachedParserModule } from "../shared/parser-factory";
+import { parserManager } from "../core/parser-manager";
+import { LANG_WEIDU_BAF } from "../core/languages";
 
-const parserModule = createCachedParserModule("tree-sitter-baf.wasm", "BAF");
-
-export const initParser = () => parserModule.init();
-export const getParser = () => parserModule.getParser();
-export const isInitialized = () => parserModule.isInitialized();
-export const parseWithCache = (text: string) => parserModule.parseWithCache(text);
+export const initParser = () => parserManager.initOne(LANG_WEIDU_BAF, "tree-sitter-baf.wasm", "BAF");
+export const getParser = () => parserManager.getParser(LANG_WEIDU_BAF);
+export const isInitialized = () => parserManager.isInitialized(LANG_WEIDU_BAF);
+export const parseWithCache = (text: string) => parserManager.parseWithCache(LANG_WEIDU_BAF, text);

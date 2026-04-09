@@ -7,12 +7,13 @@
 
 import type { CompletionItem, DocumentSymbol, FoldingRange, Location, Position } from "vscode-languageserver/node";
 import { conlog } from "../common";
+import type { NormalizedUri } from "../core/normalized-uri";
 import { EXT_WEIDU_D, LANG_WEIDU_D } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
 import { SourceType } from "../core/symbol";
 import { FileIndex } from "../core/file-index";
 import { loadStaticSymbols } from "../core/static-loader";
-import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { type FormatResult, type LanguageProvider, type ProviderContext, type ProviderBase, type FormattingCapability, type SymbolCapability, type FoldingCapability, type NavigationCapability, type RenameCapability, type HoverCapability, type CompletionCapability, type DataCapability, type CompilationCapability, type IndexingCapability, type FeatureGateCapability, type WorkspaceSymbolCapability } from "../language-provider";
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
@@ -44,7 +45,7 @@ const D_FOLDABLE_TYPES = new Set([
 
 const dFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, D_FOLDABLE_TYPES);
 
-class WeiduDProvider implements LanguageProvider {
+class WeiduDProvider implements ProviderBase, FormattingCapability, SymbolCapability, FoldingCapability, NavigationCapability, RenameCapability, HoverCapability, CompletionCapability, DataCapability, CompilationCapability, IndexingCapability, FeatureGateCapability, WorkspaceSymbolCapability {
     readonly id = LANG_WEIDU_D;
     readonly indexExtensions = [EXT_WEIDU_D];
 
@@ -129,12 +130,14 @@ class WeiduDProvider implements LanguageProvider {
     reloadFileData(uri: string, text: string): void {
         if (isInitialized() && this.fileIndex) {
             const result = parseFile(uri, text, this.storedContext?.workspaceRoot);
-            this.fileIndex.updateFile(uri, result);
+            // uri is guaranteed normalized by the ProviderRegistry gateway
+            this.fileIndex.updateFile(uri as NormalizedUri, result);
         }
     }
 
     onWatchedFileDeleted(uri: string): void {
-        this.fileIndex?.removeFile(uri);
+        // uri is guaranteed normalized by the ProviderRegistry gateway
+        this.fileIndex?.removeFile(uri as NormalizedUri);
     }
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {
@@ -142,7 +145,8 @@ class WeiduDProvider implements LanguageProvider {
             conlog("WeiDU D provider not initialized, cannot compile");
             return;
         }
-        await weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
+        // uri is guaranteed normalized by the ProviderRegistry gateway
+        await weiduCompile(uri as NormalizedUri, this.storedContext.settings.weidu, interactive, text);
     }
 }
 

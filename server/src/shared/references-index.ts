@@ -7,32 +7,32 @@
  */
 
 import { Location } from "vscode-languageserver/node";
+import type { NormalizedUri } from "../core/normalized-uri";
 
 /**
  * Index of cross-file references for workspace-wide Find References.
  * Stores reference locations per file, keyed by symbol name.
  *
- * URI keys are plain strings, not NormalizedUri branded type. All callers go
- * through reloadFileData/scanWorkspaceFiles, which receive URIs already
- * normalized by the ProviderRegistry gateway.
+ * URI keys use the NormalizedUri branded type to enforce consistent encoding.
+ * All callers go through ProviderRegistry gateway which normalizes URIs.
  */
 export class ReferencesIndex {
     /** uri -> (symbolName -> Location[]) */
-    private readonly files: Map<string, ReadonlyMap<string, readonly Location[]>> = new Map();
+    private readonly files: Map<NormalizedUri, ReadonlyMap<string, readonly Location[]>> = new Map();
 
     /**
      * Replace all references for a file.
      * @param uri Normalized file URI (guaranteed by ProviderRegistry gateway)
      * @param refs Map of symbolName -> Location[] extracted from the file
      */
-    updateFile(uri: string, refs: ReadonlyMap<string, readonly Location[]>): void {
+    updateFile(uri: NormalizedUri, refs: ReadonlyMap<string, readonly Location[]>): void {
         this.files.set(uri, refs);
     }
 
     /**
      * Remove all references for a file.
      */
-    removeFile(uri: string): void {
+    removeFile(uri: NormalizedUri): void {
         this.files.delete(uri);
     }
 

@@ -1,12 +1,11 @@
 /**
- * Tree-sitter parser for WeiDU D with caching.
+ * Tree-sitter parser for WeiDU D — thin re-export from ParserManager.
  */
 
-import { createCachedParserModule } from "../shared/parser-factory";
+import { parserManager } from "../core/parser-manager";
+import { LANG_WEIDU_D } from "../core/languages";
 
-const parserModule = createCachedParserModule("tree-sitter-weidu_d.wasm", "WeiDU D");
-
-export const initParser = () => parserModule.init();
-export const getParser = () => parserModule.getParser();
-export const isInitialized = () => parserModule.isInitialized();
-export const parseWithCache = (text: string) => parserModule.parseWithCache(text);
+export const initParser = () => parserManager.initOne(LANG_WEIDU_D, "tree-sitter-weidu_d.wasm", "WeiDU D");
+export const getParser = () => parserManager.getParser(LANG_WEIDU_D);
+export const isInitialized = () => parserManager.isInitialized(LANG_WEIDU_D);
+export const parseWithCache = (text: string) => parserManager.parseWithCache(LANG_WEIDU_D, text);

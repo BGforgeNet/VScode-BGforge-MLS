@@ -73,6 +73,8 @@ server/src/
 |   +-- symbol-index.ts       # Symbols class - unified storage & query
 |   +-- static-loader.ts      # Loads built-in symbols from JSON
 |   +-- normalized-uri.ts     # Branded NormalizedUri type, URI encoding canonicalization
+|   +-- parser-manager.ts     # Centralized tree-sitter parser lifecycle (registration, sequential init, caching)
+|   +-- capabilities.ts       # Provider capability interfaces (FormattingCapability, SymbolCapability, etc.)
 |   +-- languages.ts          # Language IDs & file extensions
 |   +-- patterns.ts           # Regex patterns
 |   +-- location-utils.ts     # Position/range helpers
@@ -80,7 +82,7 @@ server/src/
 +-- fallout-ssl/              # Fallout 1/2 scripting
 |   +-- tree-sitter.d.ts      # Generated SyntaxType enum
 |   +-- provider.ts
-|   +-- parser.ts             # Tree-sitter wrapper
+|   +-- parser.ts             # Thin re-export from ParserManager
 |   +-- format.ts
 |   +-- header-parser.ts      # .h file parsing
 |   +-- symbol.ts             # DocumentSymbol extraction (procedures with param/var children)
@@ -115,7 +117,8 @@ server/src/
 |
 +-- shared/
 |   +-- hash.ts               # Shared djb2 hash for cache keys
-|   +-- parser-factory.ts     # Cached tree-sitter parsers
+|   +-- parser-factory.ts     # Cached tree-sitter parser factory (used by ParserManager)
+|   +-- transpiler-pipeline.ts # Shared transpiler factory (createTranspiler)
 |   +-- references-index.ts   # ReferencesIndex for cross-file Find References
 |   +-- completion.ts         # Shared completion utilities
 |   +-- hover.ts              # Shared hover utilities
@@ -144,8 +147,14 @@ Extension Activated
        |
        v
 +------------------+     Sequential init     +------------------+
-| ProviderRegistry | ------------------->    | Each Provider    |
-| init()           |   (WASM constraint)     | init()           |
+| ParserManager    | ------------------->    | tree-sitter-     |
+| initAll()        |   (WASM constraint)     | {lang}.wasm      |
++------------------+                         +------------------+
+       |
+       v
++------------------+                         +------------------+
+| ProviderRegistry |  ------------------>    | Each Provider    |
+| init()           |                         | init()           |
 +------------------+                         +------------------+
        |                                            |
        v                                            v
@@ -156,13 +165,13 @@ Extension Activated
        |                                            |
        v                                            v
 +------------------+                         +------------------+
-| Parse .h/.tph    |                         | Symbols      |
+| Parse .h/.tph    |                         | Symbols          |
 | files            |                         | loadStatic()     |
 +------------------+                         +------------------+
        |
        v
 +------------------+
-| Symbols      |
+| Symbols          |
 | updateFile()     |
 +------------------+
 ```
@@ -379,18 +388,22 @@ Factory helpers: `HoverResult.found(hover)`, `HoverResult.empty()`, `HoverResult
 
 ```
 +------------------+     +------------------+     +------------------+
-| Provider init()  | --> | createCached     | --> | tree-sitter-     |
-|                  |     | ParserModule()   |     | {lang}.wasm      |
+| ParserManager    | --> | createCached     | --> | tree-sitter-     |
+| initAll()        |     | ParserModule()   |     | {lang}.wasm      |
 +------------------+     +------------------+     +------------------+
                                 |
                                 v
                          +------------------+
                          | Parser instance  |
-                         | (module-level)   |
+                         | (per language)   |
                          +------------------+
 ```
 
-**Important**: Parsers must initialize sequentially due to shared WASM `TRANSFER_BUFFER`.
+**ParserManager** (`core/parser-manager.ts`) centralizes parser lifecycle. Parsers are
+registered and initialized sequentially (WASM `TRANSFER_BUFFER` constraint) before
+providers start. Each language's `parser.ts` is a thin re-export that delegates to the
+manager. Tests can use `initOne()` to initialize a single parser without the full server
+startup.
 
 ### SyntaxType Enum
 
@@ -663,7 +676,8 @@ children, so valid variables inside an ACTION_IF with partial errors are still c
 ### 7. Sequential Parser Init
 
 Tree-sitter WASM constraint requires sequential initialization.
-Documented in provider-registry.ts.
+Managed by `ParserManager.initAll()` in `core/parser-manager.ts`, called
+before provider initialization in `server.ts`.
 
 ### 8. URI Normalization (Gateway Pattern)
 
@@ -674,12 +688,13 @@ vs `pathToUri` at startup).
 
 **Solution**: `NormalizedUri` branded type (`core/normalized-uri.ts`) canonicalizes
 `file://` URIs via a `fileURLToPath` -> `pathToFileURL` round-trip. `ProviderRegistry`
-normalizes all URIs at the gateway before passing to providers, protecting all downstream
-data structures (symbol index, workspace symbols, feature data, text cache) without
-modifying them.
+normalizes all URIs at the gateway before passing to providers.
 
-The branded type makes it a compile-time error to use raw strings where normalized URIs
-are expected.
+The branded type is enforced at storage boundaries: `Symbols.files`, `ReferencesIndex.files`,
+`FileIndex` methods, debounce maps in `server.ts`, and `activeCompiles` maps in compilers
+all use `Map<NormalizedUri, ...>`. `pathToUri()` returns `NormalizedUri` since it produces
+canonical encoding. Providers cast at the boundary where they pass URIs to storage
+(`uri as NormalizedUri`), documented with a comment explaining the gateway guarantee.
 
 ### 9. User-Facing Message Wrappers
 
@@ -734,14 +749,16 @@ The shared LSP connection mock is in `test/integration/setup.ts`, loaded via `se
 
 ## Adding a New Provider
 
-1. Create `src/{lang}/provider.ts` implementing `LanguageProvider`
+1. Add language ID to `core/languages.ts`
 2. Create tree-sitter grammar in `grammars/{lang}/`
 3. Add `@asgerf/dts-tree-sitter` devDependency and `generate:types` script to grammar's `package.json`
 4. Run `pnpm generate:types` to create `tree-sitter.d.ts` with `SyntaxType` enum
-5. Register in `provider-registry.ts`
-6. Add language ID to `core/languages.ts`
-7. Add static data to `data/{lang}.yml` (if needed)
-8. Run `pnpm build:grammar` to compile WASM
+5. Run `pnpm build:grammar` to compile WASM
+6. Register the parser in `server.ts` via `parserManager.register(LANG_ID, "tree-sitter-{lang}.wasm", "Name")`
+7. Create `src/{lang}/parser.ts` as a thin re-export from `ParserManager` (see existing parser.ts files)
+8. Create `src/{lang}/provider.ts` implementing `ProviderBase` and the relevant capability interfaces (e.g., `FormattingCapability`, `CompletionCapability`)
+9. Register provider in `server.ts` via `registry.register(provider)`
+10. Add static data to `data/{lang}.yml` (if needed)
 
 ## Performance Considerations
 

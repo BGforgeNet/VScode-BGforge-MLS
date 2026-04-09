@@ -10,12 +10,13 @@ import { type CompletionItem, CompletionItemKind, type DocumentSymbol, type Fold
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog, getLinePrefix } from "../common";
+import type { NormalizedUri } from "../core/normalized-uri";
 import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
 import { FileIndex } from "../core/file-index";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
-import { type FormatResult, HoverResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { type FormatResult, HoverResult, type LanguageProvider, type ProviderContext, type ProviderBase, type FormattingCapability, type SymbolCapability, type FoldingCapability, type NavigationCapability, type RenameCapability, type HoverCapability, type CompletionCapability, type DataCapability, type CompilationCapability, type IndexingCapability, type FeatureGateCapability, type SemanticTokenCapability, type WorkspaceSymbolCapability } from "../language-provider";
 import { getFormatOptions } from "../shared/format-options";
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { resolveSymbolWithLocal, formatWithValidation } from "../shared/provider-helpers";
@@ -238,7 +239,7 @@ function getJsdocCompletions(linePrefix: string): Tp2CompletionItem[] {
         .map((item) => ({ ...item, category: CompletionCategory.Jsdoc }));
 }
 
-class WeiduTp2Provider implements LanguageProvider {
+class WeiduTp2Provider implements ProviderBase, FormattingCapability, SymbolCapability, FoldingCapability, NavigationCapability, RenameCapability, HoverCapability, CompletionCapability, DataCapability, CompilationCapability, IndexingCapability, FeatureGateCapability, SemanticTokenCapability, WorkspaceSymbolCapability {
     readonly id = LANG_WEIDU_TP2;
     readonly indexExtensions = [...EXT_WEIDU_TP2];
 
@@ -360,12 +361,14 @@ class WeiduTp2Provider implements LanguageProvider {
         if (isInitialized() && this.fileIndex) {
             const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
             const result = parseFile(uri, text, { workspaceRoot: this.storedContext?.workspaceRoot, sourceType: st });
-            this.fileIndex.updateFile(uri, result);
+            // uri is guaranteed normalized by the ProviderRegistry gateway
+            this.fileIndex.updateFile(uri as NormalizedUri, result);
         }
     }
 
     onWatchedFileDeleted(uri: string): void {
-        this.fileIndex?.removeFile(uri);
+        // uri is guaranteed normalized by the ProviderRegistry gateway
+        this.fileIndex?.removeFile(uri as NormalizedUri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
@@ -381,7 +384,8 @@ class WeiduTp2Provider implements LanguageProvider {
             conlog("WeiDU TP2 provider not initialized, cannot compile");
             return;
         }
-        await weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
+        // uri is guaranteed normalized by the ProviderRegistry gateway
+        await weiduCompile(uri as NormalizedUri, this.storedContext.settings.weidu, interactive, text);
     }
 
     format(text: string, uri: string): FormatResult {

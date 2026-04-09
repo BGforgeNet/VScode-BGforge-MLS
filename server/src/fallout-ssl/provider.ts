@@ -11,6 +11,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type SignatureHelp, type SymbolInformation, type WorkspaceEdit } from "vscode-languageserver/node";
+import type { NormalizedUri } from "../core/normalized-uri";
 import { type IndexedSymbol, SourceType } from "../core/symbol";
 import { conlog, getLinePrefix } from "../common";
 import { EXT_FALLOUT_SSL_ALL, LANG_FALLOUT_SSL } from "../core/languages";
@@ -18,7 +19,7 @@ import { isHeaderFile } from "../core/location-utils";
 import { FileIndex } from "../core/file-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
-import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { type FormatResult, type LanguageProvider, type ProviderContext, type ProviderBase, type FormattingCapability, type SymbolCapability, type FoldingCapability, type NavigationCapability, type RenameCapability, type CompletionCapability, type DataCapability, type CompilationCapability, type IndexingCapability, type FeatureGateCapability, type SemanticTokenCapability, type WorkspaceSymbolCapability } from "../language-provider";
 import { formatWithValidation } from "../shared/provider-helpers";
 import { getJsdocCompletions } from "../shared/jsdoc-completions";
 import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
@@ -53,7 +54,7 @@ const SSL_FOLDABLE_TYPES = new Set([
 
 const sslFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, SSL_FOLDABLE_TYPES);
 
-class FalloutSslProvider implements LanguageProvider {
+class FalloutSslProvider implements ProviderBase, FormattingCapability, SymbolCapability, FoldingCapability, NavigationCapability, RenameCapability, CompletionCapability, DataCapability, CompilationCapability, IndexingCapability, FeatureGateCapability, SemanticTokenCapability, WorkspaceSymbolCapability {
     readonly id = LANG_FALLOUT_SSL;
     readonly indexExtensions = [...EXT_FALLOUT_SSL_ALL];
 
@@ -286,12 +287,14 @@ class FalloutSslProvider implements LanguageProvider {
         if (isInitialized() && this.fileIndex) {
             const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
             const result = parseFile(uri, text, this.storedContext?.workspaceRoot, st);
-            this.fileIndex.updateFile(uri, result);
+            // uri is guaranteed normalized by the ProviderRegistry gateway
+            this.fileIndex.updateFile(uri as NormalizedUri, result);
         }
     }
 
     onWatchedFileDeleted(uri: string): void {
-        this.fileIndex?.removeFile(uri);
+        // uri is guaranteed normalized by the ProviderRegistry gateway
+        this.fileIndex?.removeFile(uri as NormalizedUri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
@@ -307,7 +310,8 @@ class FalloutSslProvider implements LanguageProvider {
             conlog("Fallout SSL provider not initialized, cannot compile");
             return;
         }
-        await falloutCompile(uri, this.storedContext.settings.falloutSSL, interactive, text);
+        // uri is guaranteed normalized by the ProviderRegistry gateway
+        await falloutCompile(uri as NormalizedUri, this.storedContext.settings.falloutSSL, interactive, text);
     }
 }
 

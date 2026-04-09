@@ -12,6 +12,7 @@ import * as os from "os";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
+import type { NormalizedUri } from "./core/normalized-uri";
 import { REGEX_MSG_INLAY, REGEX_MSG_INLAY_FLOATER_RAND } from "./core/patterns";
 import { getConnection } from "./lsp-connection";
 import { showError, showInfo } from "./user-messages";
@@ -184,9 +185,14 @@ export function uriToPath(uri_string: string) {
     return fileURLToPath(uri_string);
 }
 
-export function pathToUri(filePath: string) {
+/**
+ * Convert a file path to a canonical file:// URI.
+ * Returns NormalizedUri since pathToFileURL produces the same canonical
+ * encoding as normalizeUri's round-trip (they both use Node's pathToFileURL).
+ */
+export function pathToUri(filePath: string): NormalizedUri {
     const uri = pathToFileURL(filePath);
-    return uri.toString();
+    return uri.toString() as NormalizedUri;
 }
 
 /** Extract the text from the start of the line up to the cursor position. */

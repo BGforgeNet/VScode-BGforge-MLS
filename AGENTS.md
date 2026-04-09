@@ -38,12 +38,11 @@ VSCode extension providing IDE features for niche scripting languages used in cl
 **How it works:**
 
 1. Client starts the LSP server over IPC
-2. Server registers language providers in a `ProviderRegistry`
-3. Each provider initializes its tree-sitter parser (sequentially, due to WASM constraints)
-4. Providers load YAML data files containing game engine definitions (functions, actions, triggers)
-5. On LSP requests, the registry routes to the correct provider by `languageId`
-6. Providers combine static YAML data with dynamic tree-sitter AST analysis to produce results
-7. Transpilers use `ts-morph` to parse TypeScript ASTs and emit target language code
+2. Server initializes tree-sitter parsers via `ParserManager` (sequentially, due to WASM constraints)
+3. Server registers language providers in a `ProviderRegistry`; each loads static data from YAML/JSON
+4. On LSP requests, the registry routes to the correct provider by `languageId`
+5. Providers combine static YAML data with dynamic tree-sitter AST analysis to produce results
+6. Transpilers use a shared pipeline (`createTranspiler`) + `ts-morph` to parse TypeScript ASTs and emit target language code
 
 ## Repository Structure
 

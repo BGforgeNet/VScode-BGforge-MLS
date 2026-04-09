@@ -76,15 +76,11 @@ class ProviderRegistry {
      */
     async init(context: ProviderContext): Promise<void> {
         this.context = context;
-        // Initialize sequentially to avoid race conditions in web-tree-sitter.
-        //
-        // web-tree-sitter uses a shared TRANSFER_BUFFER for JS/WASM communication
-        // (see https://github.com/tree-sitter/tree-sitter/pull/570). When multiple
-        // Language.load() calls run concurrently, they race on this buffer and
-        // corrupt parser state - parsing returns ERROR nodes for valid input.
-        //
-        // This is undocumented; the README only shows single-language examples:
-        // https://github.com/tree-sitter/tree-sitter/blob/master/lib/binding_web/README.md
+        // Tree-sitter parsers are already initialized by ParserManager.initAll()
+        // before this method is called. Providers can now init concurrently since
+        // they no longer need sequential parser initialization.
+        // However, we keep sequential init for simplicity — providers are cheap
+        // to init and the ordering makes debugging easier.
         for (const provider of this.providers.values()) {
             try {
                 await provider.init(context);

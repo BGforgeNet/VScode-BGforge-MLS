@@ -16,6 +16,7 @@ import {
     type Location,
     type SymbolInformation,
 } from "vscode-languageserver/node";
+import type { NormalizedUri } from "./normalized-uri";
 import {
     type IndexedSymbol,
     type CallableSymbol,
@@ -83,7 +84,7 @@ export class Symbols {
     // -------------------------------------------------------------------------
 
     /** Per-file symbol storage: uri -> symbols */
-    private readonly files: Map<string, readonly IndexedSymbol[]> = new Map();
+    private readonly files: Map<NormalizedUri, readonly IndexedSymbol[]> = new Map();
 
     /** Static symbols (built-in, from YAML/JSON) */
     private staticSymbols: readonly IndexedSymbol[] = [];
@@ -103,7 +104,7 @@ export class Symbols {
      * Update all symbols for a file.
      * Replaces any existing symbols for that file.
      */
-    updateFile(uri: string, symbols: readonly IndexedSymbol[]): void {
+    updateFile(uri: NormalizedUri, symbols: readonly IndexedSymbol[]): void {
         // Remove old symbols from indices
         this.removeFileFromIndices(uri);
 
@@ -119,7 +120,7 @@ export class Symbols {
     /**
      * Clear all symbols from a file.
      */
-    clearFile(uri: string): void {
+    clearFile(uri: NormalizedUri): void {
         this.removeFileFromIndices(uri);
         this.files.delete(uri);
     }
@@ -129,7 +130,7 @@ export class Symbols {
      * Returns empty array if file not found.
      * Callers must not mutate the returned array (enforced by readonly type).
      */
-    getFileSymbols(uri: string): readonly IndexedSymbol[] {
+    getFileSymbols(uri: NormalizedUri): readonly IndexedSymbol[] {
         return this.files.get(uri) ?? [];
     }
 
@@ -267,7 +268,7 @@ export class Symbols {
      * depends on Map iteration order (file load order). See query() TODO for details.
      * Currently not called by any provider - they use query() + local merge instead.
      */
-    getVisibleSymbols(uri: string, context?: QueryContext): readonly IndexedSymbol[] {
+    getVisibleSymbols(uri: NormalizedUri, context?: QueryContext): readonly IndexedSymbol[] {
         const results: IndexedSymbol[] = [];
         const seen = new Set<string>();
 
@@ -419,7 +420,7 @@ export class Symbols {
         }
     }
 
-    private removeFileFromIndices(uri: string): void {
+    private removeFileFromIndices(uri: NormalizedUri): void {
         const symbols = this.files.get(uri);
         if (!symbols) return;
 

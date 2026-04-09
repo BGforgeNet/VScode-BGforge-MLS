@@ -41,9 +41,11 @@ import {
     LANG_WEIDU_D,
     LANG_WEIDU_SLB,
     LANG_WEIDU_SSL,
+    LANG_WEIDU_TP2,
 } from "./core/languages";
 import { weiduLogProvider } from "./weidu-log/provider";
 import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
+import { parserManager } from "./core/parser-manager";
 import { registry } from "./provider-registry";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings, normalizeSettings, shouldValidateOnChange, shouldValidateOnSave } from "./settings";
@@ -87,16 +89,16 @@ let translation: Translation | undefined;
 let resolveInitialized: () => void;
 const initialized = new Promise<void>((resolve) => { resolveInitialized = resolve; });
 
-// Debouncing for file data reloads on content changes
-const pendingReloads = new Map<string, NodeJS.Timeout>();
+// Debouncing for file data reloads on content changes.
+// Uses NormalizedUri keys to ensure consistent matching regardless of URI encoding.
+const pendingReloads = new Map<NormalizedUri, NodeJS.Timeout>();
 const RELOAD_DEBOUNCE_MS = 300;
 
 // Debouncing for validate-on-type to avoid rapid-fire compilations.
 // Without this, every keystroke with validate="type"/"saveAndType" would spawn a new
 // compiler process. This is especially problematic for SSL compilation which
 // writes a shared .tmp.ssl file — concurrent compilations corrupt each other.
-// TODO: use NormalizedUri as key (like pendingReloads) for consistency with URI normalization guidelines.
-const pendingCompiles = new Map<string, NodeJS.Timeout>();
+const pendingCompiles = new Map<NormalizedUri, NodeJS.Timeout>();
 const COMPILE_DEBOUNCE_MS = 300;
 
 /** Log and swallow compile errors for fire-and-forget call sites. */
@@ -157,6 +159,14 @@ connection.onInitialized(async () => {
     for (const document of documents.all()) {
         translation.reloadFile(document.uri, document.languageId, document.getText());
     }
+    // Register tree-sitter parsers and initialize them sequentially
+    // (web-tree-sitter's shared TRANSFER_BUFFER requires sequential Language.load())
+    parserManager.register(LANG_FALLOUT_SSL, "tree-sitter-ssl.wasm", "SSL");
+    parserManager.register(LANG_WEIDU_BAF, "tree-sitter-baf.wasm", "BAF");
+    parserManager.register(LANG_WEIDU_D, "tree-sitter-weidu_d.wasm", "WeiDU D");
+    parserManager.register(LANG_WEIDU_TP2, "tree-sitter-weidu_tp2.wasm", "WeiDU TP2");
+    await parserManager.initAll();
+
     // Register and initialize providers
     registry.register(falloutSslProvider);
     registry.register(falloutWorldmapProvider);
@@ -453,10 +463,11 @@ documents.onDidSave(async (change) => {
     // Update consumer reverse index for consumer files
     translation?.reloadConsumer(uri, text, langId);
 
+    const normUri = normalizeUri(uri);
+
     // Skip compile for files touched by a recent multi-file rename.
     // Remove the URI so subsequent saves compile normally.
-    // Normalize to match the normalized URIs stored by the rename handler.
-    if (renameAffectedUris.delete(normalizeUri(uri))) {
+    if (renameAffectedUris.delete(normUri)) {
         return;
     }
 
@@ -464,10 +475,10 @@ documents.onDidSave(async (change) => {
     if (shouldValidateOnSave(validate)) {
         // Cancel any pending debounced compile for this URI — save takes priority
         // and must not race with a stale onDidChangeContent compilation.
-        const pendingCompile = pendingCompiles.get(uri);
+        const pendingCompile = pendingCompiles.get(normUri);
         if (pendingCompile) {
             clearTimeout(pendingCompile);
-            pendingCompiles.delete(uri);
+            pendingCompiles.delete(normUri);
         }
         void compile(uri, langId, false, text).catch(logCompileError);
     }
@@ -478,17 +489,19 @@ documents.onDidChangeContent(async (event) => {
     const langId = event.document.languageId;
     const text = event.document.getText();
 
+    const normUri = normalizeUri(uri);
+
     // Keep provider data (function index, etc.) and translation data up to date as content changes.
     // This ensures hover/definition work immediately after edits like rename.
     // Debounced to avoid excessive reloads during rapid typing.
-    const existing = pendingReloads.get(uri);
+    const existing = pendingReloads.get(normUri);
     if (existing) {
         clearTimeout(existing);
     }
     pendingReloads.set(
-        uri,
+        normUri,
         setTimeout(() => {
-            pendingReloads.delete(uri);
+            pendingReloads.delete(normUri);
             registry.reloadFileData(langId, uri, text);
             translation?.reloadFile(uri, langId, text);
             translation?.reloadConsumer(uri, text, langId);
@@ -500,8 +513,7 @@ documents.onDidChangeContent(async (event) => {
 
     // Skip compile for files touched by a recent multi-file rename.
     // Keep the URI in the set — onDidSave will remove it after the final skip.
-    // Normalize to match the normalized URIs stored by the rename handler.
-    if (renameAffectedUris.has(normalizeUri(uri))) {
+    if (renameAffectedUris.has(normUri)) {
         return;
     }
 
@@ -509,14 +521,14 @@ documents.onDidChangeContent(async (event) => {
 
     const validate = (await getDocumentSettings(uri)).validate;
     if (shouldValidateOnChange(validate)) {
-        const existingCompile = pendingCompiles.get(uri);
+        const existingCompile = pendingCompiles.get(normUri);
         if (existingCompile) {
             clearTimeout(existingCompile);
         }
         pendingCompiles.set(
-            uri,
+            normUri,
             setTimeout(() => {
-                pendingCompiles.delete(uri);
+                pendingCompiles.delete(normUri);
                 void compile(uri, langId, false, text).catch(logCompileError);
             }, COMPILE_DEBOUNCE_MS),
         );

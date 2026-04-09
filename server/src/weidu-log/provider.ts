@@ -6,10 +6,10 @@
 import { Location, Position } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_LOG } from "../core/languages";
-import type { LanguageProvider, ProviderContext } from "../language-provider";
+import type { LanguageProvider, ProviderContext, ProviderBase, NavigationCapability } from "../language-provider";
 import { getDefinition } from "./definition";
 
-class WeiduLogProvider implements LanguageProvider {
+class WeiduLogProvider implements ProviderBase, NavigationCapability {
     readonly id = LANG_WEIDU_LOG;
 
     async init(_context: ProviderContext): Promise<void> {

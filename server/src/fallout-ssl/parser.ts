@@ -1,12 +1,11 @@
 /**
- * Tree-sitter parser for Fallout SSL with caching.
+ * Tree-sitter parser for Fallout SSL — thin re-export from ParserManager.
  */
 
-import { createCachedParserModule } from "../shared/parser-factory";
+import { parserManager } from "../core/parser-manager";
+import { LANG_FALLOUT_SSL } from "../core/languages";
 
-const parserModule = createCachedParserModule("tree-sitter-ssl.wasm", "SSL");
-
-export const initParser = () => parserModule.init();
-export const getParser = () => parserModule.getParser();
-export const isInitialized = () => parserModule.isInitialized();
-export const parseWithCache = (text: string) => parserModule.parseWithCache(text);
+export const initParser = () => parserManager.initOne(LANG_FALLOUT_SSL, "tree-sitter-ssl.wasm", "SSL");
+export const getParser = () => parserManager.getParser(LANG_FALLOUT_SSL);
+export const isInitialized = () => parserManager.isInitialized(LANG_FALLOUT_SSL);
+export const parseWithCache = (text: string) => parserManager.parseWithCache(LANG_FALLOUT_SSL, text);

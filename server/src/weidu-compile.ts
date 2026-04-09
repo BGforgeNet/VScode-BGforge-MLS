@@ -22,9 +22,10 @@ import {
 } from "./common";
 import { showError, showInfo, showWarning } from "./user-messages";
 import { WeiDUsettings } from "./settings";
+import type { NormalizedUri } from "./core/normalized-uri";
 
 /** Track in-flight compilations per URI so we can cancel stale ones. */
-const activeCompiles = new Map<string, AbortController>();
+const activeCompiles = new Map<NormalizedUri, AbortController>();
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -99,7 +100,7 @@ function parseWeiduOutput(text: string) {
     return result;
 }
 
-export async function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
+export async function compile(uri: NormalizedUri, settings: WeiDUsettings, interactive = false, text: string) {
     const gamePath = settings.gamePath;
     const { executable: weiduPath, prefixArgs: weiduPrefixArgs } = parseCommandPath(settings.path);
     const filePath = uriToPath(uri);
