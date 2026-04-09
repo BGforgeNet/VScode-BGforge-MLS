@@ -565,7 +565,7 @@
         "tree-sitter-cli": "0.26.3",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
-        "vite": "^8.0.3",
+        "vite": "^8.0.5",
         "vitest": "^4.1.2",
         "vscode-oniguruma": "^2.0.1",
         "vscode-textmate": "^9.3.2",
