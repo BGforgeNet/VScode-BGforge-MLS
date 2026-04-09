@@ -12,7 +12,7 @@ Originally a VS Code extension, it now also works with various other editors. Se
 
 - [**Languages**](#languages): Fallout SSL; WeiDU BAF, D, TP2.
 - [**Transpilers**](#transpilers): TSSL, TBAF, TD.
-- [**Other formats**](#other-formats): TRA, MSG, 2DA, Fallout PRO, MAP, worldmap.txt and scripts.lst.
+- [**Other formats**](#other-formats): TRA, MSG, 2DA; Fallout PRO, MAP, worldmap.txt, scripts.lst; weidu.log.
 - [**Installation**](#installation)
 - [**Hotkeys**](#hotkeys)
 - **Screenshots**: [completion](#infinity-engine-highlighting-and-completion), [hover](#fallout-highlighting-and-hovers), [error reporting](#error-reporting), [dialog tree preview](#dialog-tree-preview).
@@ -21,24 +21,24 @@ Originally a VS Code extension, it now also works with various other editors. Se
 
 ## Languages
 
-| Feature | Fallout SSL | WeiDU BAF | WeiDU SSL | WeiDU D | WeiDU TP2 |
-| ------- | :---------: | :-------: | :-------: | :-----: | :-------: |
-| Extensions | `.ssl`, `.h` | `.baf` | `.slb`, `.ssl` | `.d` | `.tp2`, `.tpa`, `.tph`, `.tpp` |
-| Completion | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Hover | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Signature help | ✓ |  |  |  |  |
-| Go to definition | ✓ |  |  | ✓ | ✓ |
-| Find references | ✓ |  |  | ✓ | ✓ |
-| Formatting | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Document symbols | ✓ |  |  | ✓ | ✓ |
-| Workspace symbols | ✓ |  |  |  | ✓ |
-| Semantic tokens | ✓ |  |  |  | ✓ |
-| Rename | ✓ |  |  | ✓ | Same file |
-| Inlay hints | `.msg` | `.tra` | `.tra` | `.tra` | `.tra` |
-| Diagnostics | ✓ | ✓ | ✓ | ✓ | ✓ |
-| JSDoc | ✓ |  |  | ✓ | ✓ |
-| Folding | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Dialog preview | ✓ |  |  | ✓ |  |
+| Feature | Fallout SSL | WeiDU BAF/SSL | WeiDU D | WeiDU TP2 |
+| ------- | :---------: | :-----------: | :-----: | :-------: |
+| Extensions | `.ssl`, `.h` | `.baf`, `.ssl`, `.ssb` | `.d` | `.tp2`, `.tpa`, `.tph`, `.tpp` |
+| Completion | ✓ | ✓ | ✓ | ✓ |
+| Hover | ✓ | ✓ | ✓ | ✓ |
+| Signature help | ✓ |  |  |  |
+| Go to definition | ✓ |  | ✓ | ✓ |
+| Find references | ✓ |  | ✓ | ✓ |
+| Formatting | ✓ | ✓ | ✓ | ✓ |
+| Document symbols | ✓ |  | ✓ | ✓ |
+| Workspace symbols | ✓ |  |  | ✓ |
+| Semantic tokens | ✓ |  |  | ✓ |
+| Rename | ✓ |  | ✓ | Same file |
+| Inlay hints | `.msg` | `.tra` | `.tra` | `.tra` |
+| Diagnostics | ✓ | ✓ | ✓ | ✓ |
+| JSDoc | ✓ |  | ✓ | ✓ |
+| Folding | ✓ | ✓ | ✓ | ✓ |
+| Dialog preview | ✓ |  | ✓ |  |
 
 
 ## Transpilers
@@ -61,15 +61,17 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 
 ## Other formats
 
-| Format              | Extensions  | Support               |
-| ------------------- | ----------- | --------------------- |
-| Fallout worldmap    | worldmap.txt | Completion, hover, syntax highlighting |
-| Fallout MSG         | .msg        | Syntax highlighting, find references |
-| Fallout scripts.lst | scripts.lst | Syntax highlighting   |
-| Fallout PRO         | .pro        | Binary editor         |
-| Fallout MAP         | .map        | Binary editor         |
-| WeiDU TRA           | .tra        | Syntax highlighting, find references |
-| Infinity 2DA        | .2da        | Syntax highlighting   |
+| Format | Extensions | Highlighting | Completion | Hover | GoTo | References |
+| ------ | ---------- | :----------: | :--------: | :---: | :--: | :--------: |
+| Fallout worldmap    | worldmap.txt | ✓ | ✓ | ✓ |     |   |
+| Fallout MSG         | .msg         | ✓ |   |   |     | ✓ |
+| Fallout scripts.lst | scripts.lst  | ✓ |   |   |     |   |
+| WeiDU TRA           | .tra         | ✓ |   |   |     | ✓ |
+| WeiDU log           | weidu.log    | ✓ |   |   | tp2 |   |
+| Infinity 2DA        | .2da         | ✓ |   |   |     |   |
+
+### Binary formats
+Fallout PRO (`.pro`) and MAP (`.map`) files have a built-in binary editor with JSON dump/load support.
 
 ## Installation
 
