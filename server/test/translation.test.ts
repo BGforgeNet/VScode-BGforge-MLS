@@ -1,6 +1,6 @@
 /**
  * Unit tests for Translation service.
- * Tests TSSL (.msg) and TBAF (.tra) translation support: hover, inlay hints, and go-to-definition.
+ * Tests TSSL (.msg) and TBAF (.tra) translation support: hover, inlay hints, go-to-definition, and find-references.
  */
 
 import * as fs from "fs";
@@ -630,6 +630,202 @@ translation~`;
             expect(result).not.toBeNull();
             expect(result!.uri).toContain("test.msg");
             expect(result!.range.start.line).toBe(0);
+        });
+    });
+
+    describe("getReferences", () => {
+        it("finds references to a .tra entry from .baf consumer files", async () => {
+            // Create a .baf file that references @100
+            const bafContent = `IF\n  Global("test","GLOBAL",0)\nTHEN\n  RESPONSE #100\n    DisplayStringHead(Myself,@100)\nEND`;
+            fs.writeFileSync(path.join(tempDir, "test.baf"), bafContent);
+
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            // Cursor on @100 in the tra file (line 0, character 0)
+            const refs = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            expect(refs.length).toBe(1);
+            expect(refs[0]!.uri).toContain("test.baf");
+        });
+
+        it("finds references to a .msg entry from .ssl consumer files", async () => {
+            // Create a .ssl file that references mstr(100)
+            const sslContent = `procedure start begin\n  display_msg(mstr(100));\nend`;
+            fs.writeFileSync(path.join(tempDir, "test.ssl"), sslContent);
+
+            await translation.init();
+
+            const msgUri = `file://${tempDir}/test.msg`;
+            // Cursor on {100} in the msg file (line 0, character 0)
+            const refs = translation.getReferences(msgUri, "fallout-msg", { line: 0, character: 0 }, false);
+
+            expect(refs.length).toBe(1);
+            expect(refs[0]!.uri).toContain("test.ssl");
+        });
+
+        it("includes declaration when includeDeclaration is true", async () => {
+            const bafContent = `DisplayStringHead(Myself,@100)`;
+            fs.writeFileSync(path.join(tempDir, "test.baf"), bafContent);
+
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            const refs = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, true);
+
+            // Should include both the declaration in test.tra and the reference in test.baf
+            expect(refs.length).toBe(2);
+            expect(refs.some((r) => r.uri.includes("test.tra"))).toBe(true);
+            expect(refs.some((r) => r.uri.includes("test.baf"))).toBe(true);
+        });
+
+        it("finds references when cursor is on the string value", async () => {
+            const bafContent = `DisplayStringHead(Myself,@100)`;
+            fs.writeFileSync(path.join(tempDir, "test.baf"), bafContent);
+
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            // Cursor on "Hello" in "@100 = ~Hello from tra~" (line 0, character 10)
+            const refs = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 10 }, false);
+
+            expect(refs.length).toBe(1);
+            expect(refs[0]!.uri).toContain("test.baf");
+        });
+
+        it("finds references to multiline .tra entry values", async () => {
+            const multiTra = `@100 = ~This is a\nmulti-line\ntranslation~`;
+            fs.writeFileSync(path.join(tempDir, "multi.tra"), multiTra);
+            const bafContent = `DisplayStringHead(Myself,@100)`;
+            fs.writeFileSync(path.join(tempDir, "multi.baf"), bafContent);
+
+            const settings: ProjectTraSettings = {
+                directory: tempDir,
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const traUri = `file://${tempDir}/multi.tra`;
+            // Cursor on "multi-line" (line 1)
+            const refs = t.getReferences(traUri, "weidu-tra", { line: 1, character: 3 }, false);
+
+            expect(refs.length).toBe(1);
+            expect(refs[0]!.uri).toContain("multi.baf");
+        });
+
+        it("finds multiple MSG function references (mstr, NOption, etc.)", async () => {
+            const sslContent = `procedure start begin\n  display_msg(mstr(100));\n  NOption(100, "node", 1);\nend`;
+            fs.writeFileSync(path.join(tempDir, "test.ssl"), sslContent);
+
+            await translation.init();
+
+            const msgUri = `file://${tempDir}/test.msg`;
+            const refs = translation.getReferences(msgUri, "fallout-msg", { line: 0, character: 0 }, false);
+
+            expect(refs.length).toBe(2);
+        });
+
+        it("finds tra() references from transpiler files", async () => {
+            const tbafContent = `/** @tra test.tra */\nconst x = tra(100);`;
+            fs.writeFileSync(path.join(tempDir, "test.tbaf"), tbafContent);
+
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            const refs = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            expect(refs.length).toBe(1);
+            expect(refs[0]!.uri).toContain("test.tbaf");
+        });
+
+        it("returns empty array when cursor is not on an entry", async () => {
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            // Cursor on a blank line (beyond the entries)
+            const refs = translation.getReferences(traUri, "weidu-tra", { line: 10, character: 0 }, false);
+
+            expect(refs).toEqual([]);
+        });
+
+        it("returns empty array when not initialized", () => {
+            const traUri = `file://${tempDir}/test.tra`;
+            const refs = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            expect(refs).toEqual([]);
+        });
+
+        it("does not match partial entry numbers (@10 should not match @100)", async () => {
+            const traContent = `@10 = ~Entry ten~\n@100 = ~Entry hundred~`;
+            fs.writeFileSync(path.join(tempDir, "partial.tra"), traContent);
+            const bafContent = `DisplayStringHead(Myself,@100)`;
+            fs.writeFileSync(path.join(tempDir, "partial.baf"), bafContent);
+
+            const settings: ProjectTraSettings = {
+                directory: tempDir,
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const traUri = `file://${tempDir}/partial.tra`;
+            // Cursor on @10 (line 0) — should NOT find @100 references
+            const refs = t.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            expect(refs).toEqual([]);
+        });
+    });
+
+    describe("reloadConsumer", () => {
+        it("adds consumer file to reverse index", async () => {
+            await translation.init();
+
+            const bafContent = `DisplayStringHead(Myself,@100)`;
+            fs.writeFileSync(path.join(tempDir, "new.baf"), bafContent);
+
+            // Initially no consumers for test.tra (new.baf wasn't present at init)
+            const traUri = `file://${tempDir}/test.tra`;
+            const refsBefore = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            // After reloadConsumer, the file should be indexed
+            const bafUri = `file://${tempDir}/new.baf`;
+            const bafText = `/** @tra test.tra */\n${bafContent}`;
+            translation.reloadConsumer(bafUri, bafText, "weidu-baf");
+
+            const refsAfter = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            expect(refsAfter.length).toBeGreaterThan(refsBefore.length);
+        });
+
+        it("updates consumer mapping when @tra comment changes", async () => {
+            // Create two tra files
+            const tra2 = `@100 = ~Second tra~`;
+            fs.writeFileSync(path.join(tempDir, "other.tra"), tra2);
+
+            await translation.init();
+
+            const bafUri = `file://${tempDir}/test.baf`;
+            const bafContent = `DisplayStringHead(Myself,@100)`;
+            fs.writeFileSync(path.join(tempDir, "test.baf"), bafContent);
+
+            // Initially maps to test.tra by basename
+            translation.reloadConsumer(bafUri, bafContent, "weidu-baf");
+
+            // Now change @tra comment to point to other.tra — update both in-memory and on disk
+            const bafContentWithComment = `/** @tra other.tra */\n${bafContent}`;
+            fs.writeFileSync(path.join(tempDir, "test.baf"), bafContentWithComment);
+            translation.reloadConsumer(bafUri, bafContentWithComment, "weidu-baf");
+
+            const traUri = `file://${tempDir}/test.tra`;
+            const otherUri = `file://${tempDir}/other.tra`;
+
+            const testRefs = translation.getReferences(traUri, "weidu-tra", { line: 0, character: 0 }, false);
+            const otherRefs = translation.getReferences(otherUri, "weidu-tra", { line: 0, character: 0 }, false);
+
+            // Should no longer reference test.tra, should reference other.tra
+            expect(testRefs.length).toBe(0);
+            expect(otherRefs.length).toBe(1);
         });
     });
 

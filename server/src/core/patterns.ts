@@ -61,6 +61,33 @@ export const REGEX_TRANSPILER_TRA_HOVER = /^tra\((\d+)\)$/;
 export const REGEX_TRANSPILER_TRA_INLAY = /\btra\((\d+)\)/g;
 
 // =============================================================================
+// Reference-scanning patterns (for "Find References" from tra/msg files)
+// These produce a match per entry number, used to locate all usages in consumer files.
+// =============================================================================
+
+/**
+ * Builds a regex to find references to a specific TRA entry number.
+ * Matches both @{num} (native WeiDU) and tra({num}) (transpiler) patterns.
+ * The number must be followed by a non-digit to avoid partial matches (e.g., @12 in @123).
+ */
+export function REGEX_TRA_REF(entryNum: string): RegExp {
+    return new RegExp(`(?:@${entryNum}(?!\\d)|\\btra\\(${entryNum}\\))`, "g");
+}
+
+/**
+ * Builds a regex to find references to a specific MSG entry number.
+ * Matches all MSG function patterns: mstr(num), NOption(num), etc.
+ * Also matches floater_rand where the entry appears as the second argument.
+ * Combined into a single alternation for a single-pass scan.
+ */
+export function REGEX_MSG_REF(entryNum: string): RegExp {
+    return new RegExp(
+        `(?:${msgFunctionsPattern})\\(${entryNum}(?!\\d)|floater_rand\\(\\d+\\s*,\\s*${entryNum}(?!\\d)`,
+        "g"
+    );
+}
+
+// =============================================================================
 // @tra comment pattern
 // Matches: /** @tra filename.msg */ or /** @tra filename.tra */
 // =============================================================================

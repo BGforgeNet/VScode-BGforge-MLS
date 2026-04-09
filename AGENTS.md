@@ -33,7 +33,7 @@ VSCode extension providing IDE features for niche scripting languages used in cl
 - **SCS SSL/SLB** - Sword Coast Stratagems scripting (Infinity Engine AI mods)
 - **Transpilers** - TypeScript-like languages compiling to the above: TSSL->SSL, TBAF->BAF, TD->D
 
-**Features:** Completion, hover, go-to-definition, rename, document symbols, formatting, inlay hints (translation string previews from .msg/.tra), diagnostics (via sslc/weidu), JSDoc, signature help, dialog tree preview (webview), binary .pro file viewer.
+**Features:** Completion, hover, go-to-definition, find references, rename, document symbols, formatting, inlay hints (translation string previews from .msg/.tra), diagnostics (via sslc/weidu), JSDoc, signature help, dialog tree preview (webview), binary .pro file viewer.
 
 **How it works:**
 

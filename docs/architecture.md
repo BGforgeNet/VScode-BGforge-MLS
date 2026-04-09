@@ -95,7 +95,7 @@ vscode-mls/
 |   |   +-- provider-registry.ts    Routes requests to language providers
 |   |   +-- language-provider.ts    Provider interface
 |   |   +-- compile.ts              Compilation dispatch
-|   |   +-- translation.ts          .tra/.msg inlay hints and hover
+|   |   +-- translation.ts          .tra/.msg inlay hints, hover, definition, and find references
 |   |   +-- user-messages.ts        User message wrappers (auto-decode file:// URIs)
 |   |   +-- transpiler-utils.ts     Shared transpiler utilities
 |   |   +-- safe-eval.ts            Safe expression evaluator (no eval())

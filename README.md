@@ -64,11 +64,11 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 | Format              | Extensions  | Support               |
 | ------------------- | ----------- | --------------------- |
 | Fallout worldmap    | worldmap.txt | Completion, hover, syntax highlighting |
-| Fallout MSG         | .msg        | Syntax highlighting   |
+| Fallout MSG         | .msg        | Syntax highlighting, find references |
 | Fallout scripts.lst | scripts.lst | Syntax highlighting   |
 | Fallout PRO         | .pro        | Binary editor         |
 | Fallout MAP         | .map        | Binary editor         |
-| WeiDU TRA           | .tra        | Syntax highlighting   |
+| WeiDU TRA           | .tra        | Syntax highlighting, find references |
 | Infinity 2DA        | .2da        | Syntax highlighting   |
 
 ## Installation

@@ -2,6 +2,7 @@
 
 ## 3.6.0
 
+- Find references from `.tra` and `.msg` files: cursor on any entry finds all usages across consumer files (`.ssl`, `.baf`, `.d`, `.tp2`, `.tssl`, `.tbaf`, `.td`).
 - Fallout SSL: go to definition on `#include` path navigates to the included file.
 - `weidu.log`: go to definition on `~mod/path.tp2~` navigates to the corresponding `.tp2` file (case-insensitive path resolution).
 - Added syntax highlighting for `weidu.log`.

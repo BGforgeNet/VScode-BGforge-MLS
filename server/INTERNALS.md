@@ -507,7 +507,7 @@ onDidSave / onDidChangeContent / manual command
 
 ## Translation Service
 
-Centralized service (`translation.ts`) for `.tra`/`.msg` translation files. Provides hover, inlay hints, and go-to-definition for translation references. No provider implements these — it's a single shared implementation.
+Centralized service (`translation.ts`) for `.tra`/`.msg` translation files. Provides hover, inlay hints, go-to-definition, and find-references for translation references. No provider implements these — it's a single shared implementation.
 
 **Supported patterns** (by file type):
 
@@ -519,7 +519,9 @@ Centralized service (`translation.ts`) for `.tra`/`.msg` translation files. Prov
 
 **Inlay hints**: Shows truncated string previews (max 30 chars) as inline `/* text */` comments after each reference. Tooltip shows full text if truncated.
 
-**Caching**: All `.tra`/`.msg` files in configured translation directory loaded at startup. Updated incrementally on file save/change.
+**Find references**: From a `.tra`/`.msg` file, finds all usages of an entry across consumer files. Cursor can be on the entry number or anywhere in the value (including multiline). Uses a reverse index (`traFileKey → Set<consumerPath>`) built at startup and updated on document open/save/change. Consumer files are matched by `@tra` comment or basename convention.
+
+**Caching**: All `.tra`/`.msg` files in configured translation directory loaded at startup. Updated incrementally on file save/change. The consumer reverse index is updated atomically with the forward index.
 
 ### Rename (Scope-Aware)
 

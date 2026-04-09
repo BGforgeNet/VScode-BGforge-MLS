@@ -62,3 +62,27 @@ export const MSG_LANGUAGES: string[] = [
     LANG_FALLOUT_SSL,
     LANG_TYPESCRIPT, // TSSL uses .msg references
 ];
+
+/**
+ * File extensions of consumer files that reference .tra entries.
+ * Single source of truth for the extension-to-traExt mapping for TRA consumers.
+ * Used by the reverse index to discover which files may contain @123 or tra(123) references.
+ */
+export const CONSUMER_EXTENSIONS_TRA = [
+    ...EXT_WEIDU_TP2.map((e) => e.slice(1)),
+    EXT_WEIDU_D.slice(1),
+    EXT_WEIDU_BAF.slice(1),
+    EXT_TBAF.slice(1),
+    EXT_TD.slice(1),
+] as const;
+
+/**
+ * File extensions of consumer files that reference .msg entries.
+ * Single source of truth for the extension-to-traExt mapping for MSG consumers.
+ * Used by the reverse index to discover which files may contain mstr(123) etc. references.
+ */
+export const CONSUMER_EXTENSIONS_MSG = [
+    EXT_FALLOUT_SSL.slice(1),
+    "h",
+    EXT_TSSL.slice(1),
+] as const;

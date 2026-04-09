@@ -258,6 +258,9 @@ documents.onDidOpen(async (event) => {
 
     // Reload translation data if it's a translation file
     translation?.reloadFile(uri, langId, text);
+
+    // Update consumer reverse index for consumer files
+    translation?.reloadConsumer(uri, text, langId);
 });
 
 // This handler provides the initial list of the completion items.
@@ -447,6 +450,9 @@ documents.onDidSave(async (change) => {
     // Reload translation data if it's a translation file
     translation?.reloadFile(uri, langId, text);
 
+    // Update consumer reverse index for consumer files
+    translation?.reloadConsumer(uri, text, langId);
+
     // Skip compile for files touched by a recent multi-file rename.
     // Remove the URI so subsequent saves compile normally.
     // Normalize to match the normalized URIs stored by the rename handler.
@@ -485,6 +491,7 @@ documents.onDidChangeContent(async (event) => {
             pendingReloads.delete(uri);
             registry.reloadFileData(langId, uri, text);
             translation?.reloadFile(uri, langId, text);
+            translation?.reloadConsumer(uri, text, langId);
             if (isHeaderFile(uri)) {
                 connection.languages.semanticTokens.refresh();
             }
@@ -587,7 +594,19 @@ connection.onReferences((params) => {
         return [];
     }
 
-    return registry.references(langId, text, params.position, uri, params.context.includeDeclaration);
+    // Try provider references first (AST-based, e.g. variable/function references)
+    const providerResult = registry.references(langId, text, params.position, uri, params.context.includeDeclaration);
+    if (providerResult.length > 0) {
+        return providerResult;
+    }
+
+    // Try translation references (for tra/msg files — find usages across consumer files)
+    const traResult = translation?.getReferences(uri, langId, params.position, params.context.includeDeclaration);
+    if (traResult && traResult.length > 0) {
+        return traResult;
+    }
+
+    return [];
 });
 
 connection.onPrepareRename((params) => {

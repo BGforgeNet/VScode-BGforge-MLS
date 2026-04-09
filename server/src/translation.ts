@@ -1,7 +1,7 @@
 /**
  * Translation service for .tra and .msg files.
  * Self-contained service that loads translations and provides hover, inlay hints,
- * and go-to-definition for translation references.
+ * go-to-definition, and find-references for translation references.
  * Can be used by any consumer (providers, TSSL/TBAF handlers, etc.)
  */
 
@@ -9,9 +9,11 @@ import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { Hover, InlayHint, Location, MarkupContent, MarkupKind, Range } from "vscode-languageserver/node";
+import { Hover, InlayHint, Location, MarkupContent, MarkupKind, Position, Range } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath, pathToUri } from "./common";
 import {
+    CONSUMER_EXTENSIONS_MSG,
+    CONSUMER_EXTENSIONS_TRA,
     EXT_TBAF,
     EXT_TD,
     EXT_TSSL,
@@ -25,12 +27,14 @@ import {
     REGEX_MSG_HOVER,
     REGEX_MSG_INLAY,
     REGEX_MSG_INLAY_FLOATER_RAND,
+    REGEX_MSG_REF,
     REGEX_TRANSPILER_TRA_HOVER,
     REGEX_TRANSPILER_TRA_INLAY,
     REGEX_TRA_COMMENT,
     REGEX_TRA_COMMENT_EXT,
     REGEX_TRA_HOVER,
     REGEX_TRA_INLAY,
+    REGEX_TRA_REF,
 } from "./core/patterns";
 import { ProjectTraSettings } from "./settings";
 
@@ -43,6 +47,10 @@ interface TraEntry {
     line: number;
     /** 0-based character offset within the line */
     character: number;
+    /** 0-based end line of the full match (accounts for multiline values) */
+    endLine: number;
+    /** 0-based end character offset within the end line */
+    endCharacter: number;
 }
 
 /** Single file: index => entry */
@@ -101,6 +109,8 @@ type ResolveResult =
 export class Translation {
     private directory: string;
     private data: TraData;
+    /** Reverse index: traFileKey → set of absolute consumer file paths */
+    private consumers: Map<string, Set<string>>;
     private settings: ProjectTraSettings;
     private workspaceRoot: string | undefined;
     initialized: boolean;
@@ -112,10 +122,12 @@ export class Translation {
         this.workspaceRoot = workspaceRoot;
         this.initialized = false;
         this.data = new Map();
+        this.consumers = new Map();
     }
 
     async init(): Promise<void> {
         this.data = await this.loadDir(this.settings.directory);
+        this.buildConsumerIndex();
         this.initialized = true;
         conlog("Translation: initialized");
     }
@@ -194,6 +206,72 @@ export class Translation {
 
         const wsPath = getRelPath(wsRoot, filePath);
         this.reloadFileLines(wsPath, text);
+    }
+
+    /**
+     * Find all references to a translation entry from a .tra or .msg file.
+     * Cursor can be on the entry number (@123, {123}) or anywhere in the value.
+     * @param uri - Document URI of the .tra or .msg file
+     * @param langId - Language ID (weidu-tra or fallout-msg)
+     * @param position - Cursor position
+     * @param includeDeclaration - Whether to include the definition itself
+     * @returns Locations of all references, or empty array if not on a valid entry
+     */
+    getReferences(
+        uri: string,
+        langId: string,
+        position: Position,
+        includeDeclaration: boolean
+    ): Location[] {
+        if (!this.initialized) return [];
+        if (!languages.includes(langId)) return [];
+
+        const filePath = this.uriToPath(uri);
+
+        // Derive the tra file key: the file's path relative to the tra directory.
+        const traFileKey = this.filePathToTraKey(filePath);
+        if (!traFileKey) return [];
+
+        const traEntries = this.data.get(traFileKey);
+        if (!traEntries) return [];
+
+        // Find which entry the cursor is on
+        const entryNum = this.entryAtPosition(traEntries, position);
+        if (entryNum === undefined) return [];
+
+        const traExt = traFileKey.endsWith(".msg") ? "msg" : "tra";
+        return this.findReferencesInConsumers(traFileKey, entryNum, traExt, filePath, includeDeclaration);
+    }
+
+    /**
+     * Update the consumer reverse index for a single file.
+     * Call this when a consumer file (ssl, baf, d, tp2, tssl, tbaf, td) is opened, saved, or changed.
+     * Determines which tra/msg file the consumer references and updates the reverse index.
+     * @param uri - Document URI of the consumer file
+     * @param text - Full document text
+     * @param langId - Language ID
+     */
+    reloadConsumer(uri: string, text: string, langId: string): void {
+        if (!this.initialized) return;
+        if (!translatableLanguages.includes(langId)) return;
+
+        const filePath = this.uriToPath(uri);
+        const wsRoot = this.workspaceRoot;
+        if (wsRoot === undefined || !isSubpath(wsRoot, filePath)) return;
+
+        const wsRelPath = getRelPath(wsRoot, filePath);
+
+        // Remove this file from any existing consumer sets
+        for (const consumerSet of this.consumers.values()) {
+            consumerSet.delete(filePath);
+        }
+
+        // Resolve which tra/msg file this consumer maps to
+        const traFileKey = this.resolveTraFileKey(wsRelPath, text, langId);
+        if (!traFileKey) return;
+        if (!this.data.has(traFileKey)) return;
+
+        this.addConsumer(traFileKey, filePath);
     }
 
     /**
@@ -362,14 +440,30 @@ export class Translation {
             }
 
             // Track line/character position by scanning newlines up to match start.
-            // Advances lineStartIndex past \n (handles both \n and \r\n).
+            // This loop and the end-position loop below scan disjoint ranges
+            // (lineStartIndex..match.index and match.index..matchEnd) so newlines
+            // are never double-counted, even for multiline values.
             for (let i = lineStartIndex; i < match.index; i++) {
                 if (text[i] === "\n") {
                     currentLine++;
                     lineStartIndex = i + 1;
                 }
             }
+            const startLine = currentLine;
             const character = match.index - lineStartIndex;
+
+            // Compute end position by scanning newlines through the full match.
+            // This also advances currentLine/lineStartIndex past multiline values
+            // so the next iteration starts from the correct position.
+            const matchEnd = match.index + match[0].length;
+            for (let i = match.index; i < matchEnd; i++) {
+                if (text[i] === "\n") {
+                    currentLine++;
+                    lineStartIndex = i + 1;
+                }
+            }
+            const endLine = currentLine;
+            const endCharacter = matchEnd - lineStartIndex;
 
             const hover: Hover = {
                 contents: {
@@ -378,12 +472,15 @@ export class Translation {
                 },
             };
             const inlay = this.stringToInlay(str);
+
             const entry: TraEntry = {
                 source: str,
                 hover,
                 inlay,
-                line: currentLine,
+                line: startLine,
                 character,
+                endLine,
+                endCharacter,
             };
             if (`/* ${str} */` !== inlay) {
                 entry.inlayTooltip = str;
@@ -513,11 +610,9 @@ export class Translation {
 
     /** Resolve a tra-directory-relative file key to an absolute path */
     private resolveAbsolutePath(fileKey: string): string | undefined {
-        if (path.isAbsolute(this.directory)) {
-            return path.join(this.directory, fileKey);
-        }
-        if (!this.workspaceRoot) return undefined;
-        return path.join(this.workspaceRoot, this.directory, fileKey);
+        const traDir = this.resolveTraDir();
+        if (!traDir) return undefined;
+        return path.join(traDir, fileKey);
     }
 
     private getLineKey(word: string, ext: TraExt): string | undefined {
@@ -657,5 +752,248 @@ export class Translation {
             line = line.slice(0, 27) + "...";
         }
         return `/* ${line} */`;
+    }
+
+    // =========================================================================
+    // Find References helpers
+    // =========================================================================
+
+    /**
+     * Build the reverse index mapping each traFileKey to consumer file paths.
+     * Scans the workspace for files with consumer extensions, reads first line
+     * to check for @tra comment, falls back to basename matching.
+     */
+    private buildConsumerIndex(): void {
+        const wsRoot = this.workspaceRoot;
+        if (!wsRoot) return;
+
+        this.consumers = new Map();
+
+        // Determine which extensions to scan based on loaded tra data
+        const hasMsg = [...this.data.keys()].some((k) => k.endsWith(".msg"));
+        const hasTra = [...this.data.keys()].some((k) => k.endsWith(".tra"));
+
+        const extsToScan: string[] = [];
+        if (hasTra) {
+            extsToScan.push(...CONSUMER_EXTENSIONS_TRA);
+        }
+        if (hasMsg) {
+            extsToScan.push(...CONSUMER_EXTENSIONS_MSG);
+        }
+
+        // Deduplicate extensions
+        const uniqueExts = [...new Set(extsToScan)];
+
+        for (const ext of uniqueExts) {
+            const files = findFiles(wsRoot, ext);
+            for (const relFile of files) {
+                const absPath = path.join(wsRoot, relFile);
+                this.indexConsumerFile(absPath, relFile);
+            }
+        }
+
+        conlog(`Translation: built consumer index with ${this.consumers.size} tra/msg file mappings`);
+    }
+
+    /**
+     * Index a single consumer file into the reverse map.
+     * Reads the first line for @tra comment, falls back to basename matching.
+     * Uses synchronous I/O: this runs during init() after async tra loading completes,
+     * only reads 256 bytes per file, and typical mod projects have tens of consumer files.
+     */
+    private indexConsumerFile(absPath: string, wsRelPath: string): void {
+        let traFileKey: string | undefined;
+
+        // Try reading first line for @tra comment (only 256 bytes, not the whole file)
+        try {
+            const fd = fs.openSync(absPath, "r");
+            const buf = Buffer.alloc(256);
+            const bytesRead = fs.readSync(fd, buf, 0, 256, 0);
+            fs.closeSync(fd);
+            const firstLine = buf.subarray(0, bytesRead).toString("utf8").split(/\r?\n/)[0] ?? "";
+            const match = REGEX_TRA_COMMENT.exec(firstLine);
+            if (match && match[1]) {
+                traFileKey = match[1];
+            }
+        } catch {
+            // File might be inaccessible, skip
+            return;
+        }
+
+        // Fall back to basename matching
+        if (!traFileKey && this.settings.auto_tra) {
+            const basename = path.parse(wsRelPath).name;
+            const ext = path.extname(absPath).toLowerCase();
+            const traExt = this.consumerExtToTraExt(ext);
+            if (traExt) {
+                const candidate = `${basename}.${traExt}`;
+                if (this.data.has(candidate)) {
+                    traFileKey = candidate;
+                }
+            }
+        }
+
+        if (!traFileKey) return;
+        if (!this.data.has(traFileKey)) return;
+
+        this.addConsumer(traFileKey, absPath);
+    }
+
+    /** Add a file to the consumer set for a given tra file key. */
+    private addConsumer(traFileKey: string, absPath: string): void {
+        let consumerSet = this.consumers.get(traFileKey);
+        if (!consumerSet) {
+            consumerSet = new Set();
+            this.consumers.set(traFileKey, consumerSet);
+        }
+        consumerSet.add(absPath);
+    }
+
+    /**
+     * Convert an absolute file path of a tra/msg file to its tra file key.
+     * Handles both absolute and relative tra directory settings.
+     */
+    private filePathToTraKey(filePath: string): string | undefined {
+        const traDir = this.resolveTraDir();
+        if (!traDir) return undefined;
+        if (!isSubpath(traDir, filePath)) return undefined;
+        return getRelPath(traDir, filePath);
+    }
+
+    /** Resolve the tra directory to an absolute path. */
+    private resolveTraDir(): string | undefined {
+        if (path.isAbsolute(this.directory)) {
+            return this.directory;
+        }
+        if (!this.workspaceRoot) return undefined;
+        return path.join(this.workspaceRoot, this.directory);
+    }
+
+    /**
+     * Map a consumer file extension to its corresponding translation extension.
+     * Derived from CONSUMER_EXTENSIONS_TRA/MSG to maintain a single source of truth.
+     */
+    private consumerExtToTraExt(ext: string): TraExt | undefined {
+        const bare = ext.startsWith(".") ? ext.slice(1).toLowerCase() : ext.toLowerCase();
+        if (CONSUMER_EXTENSIONS_TRA.includes(bare as (typeof CONSUMER_EXTENSIONS_TRA)[number])) {
+            return "tra";
+        }
+        if (CONSUMER_EXTENSIONS_MSG.includes(bare as (typeof CONSUMER_EXTENSIONS_MSG)[number])) {
+            return "msg";
+        }
+        return undefined;
+    }
+
+    /**
+     * Find which entry number the cursor is on in a tra/msg file.
+     * Matches both the entry number/header and the value span (including multiline).
+     */
+    private entryAtPosition(entries: TraEntries, position: Position): string | undefined {
+        for (const [num, entry] of entries) {
+            // Check if position falls within this entry's range (start to end, inclusive)
+            if (position.line < entry.line) continue;
+            if (position.line > entry.endLine) continue;
+            if (position.line === entry.line && position.character < entry.character) continue;
+            if (position.line === entry.endLine && position.character > entry.endCharacter) continue;
+            return num;
+        }
+        return undefined;
+    }
+
+    /**
+     * Find all references to a specific entry number across consumer files.
+     * Uses synchronous file reads: LSP references requests are synchronous by protocol,
+     * and typical mod projects have a small number of consumer files per tra/msg entry.
+     */
+    private findReferencesInConsumers(
+        traFileKey: string,
+        entryNum: string,
+        traExt: TraExt,
+        traAbsPath: string,
+        includeDeclaration: boolean
+    ): Location[] {
+        const locations: Location[] = [];
+
+        // Optionally include the declaration itself
+        if (includeDeclaration) {
+            const entry = this.data.get(traFileKey)?.get(entryNum);
+            if (entry) {
+                locations.push({
+                    uri: pathToUri(traAbsPath),
+                    range: {
+                        start: { line: entry.line, character: entry.character },
+                        end: { line: entry.endLine, character: entry.endCharacter },
+                    },
+                });
+            }
+        }
+
+        const consumerFiles = this.consumers.get(traFileKey);
+        if (!consumerFiles) return locations;
+
+        for (const absPath of consumerFiles) {
+            let text: string;
+            try {
+                text = fs.readFileSync(absPath, "utf8");
+            } catch {
+                continue;
+            }
+            const refs = this.scanFileForReferences(text, entryNum, traExt);
+            const fileUri = pathToUri(absPath);
+            for (const ref of refs) {
+                locations.push({
+                    uri: fileUri,
+                    range: {
+                        start: { line: ref.line, character: ref.character },
+                        end: { line: ref.line, character: ref.endCharacter },
+                    },
+                });
+            }
+        }
+
+        return locations;
+    }
+
+    /**
+     * Scan a file's text for references to a specific entry number.
+     * Returns line/character positions for each match.
+     */
+    private scanFileForReferences(
+        text: string,
+        entryNum: string,
+        traExt: TraExt
+    ): Array<{ line: number; character: number; endCharacter: number }> {
+        const results: Array<{ line: number; character: number; endCharacter: number }> = [];
+        const lines = text.split("\n");
+
+        if (traExt === "tra") {
+            const regex = REGEX_TRA_REF(entryNum);
+            for (let i = 0; i < lines.length; i++) {
+                const lineText = lines[i]!;
+                for (const match of lineText.matchAll(regex)) {
+                    results.push({
+                        line: i,
+                        character: match.index!,
+                        endCharacter: match.index! + match[0].length,
+                    });
+                }
+            }
+        } else {
+            // MSG references: mstr(num), NOption(num), floater_rand(x, num), etc.
+            // Single combined regex handles both first-arg and floater_rand second-arg patterns.
+            const regex = REGEX_MSG_REF(entryNum);
+            for (let i = 0; i < lines.length; i++) {
+                const lineText = lines[i]!;
+                for (const match of lineText.matchAll(regex)) {
+                    results.push({
+                        line: i,
+                        character: match.index!,
+                        endCharacter: match.index! + match[0].length,
+                    });
+                }
+            }
+        }
+
+        return results;
     }
 }
