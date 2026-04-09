@@ -87,6 +87,8 @@ export async function activate(context: ExtensionContext) {
 
             { scheme: "file", language: "weidu-tra" },
 
+            { scheme: "file", language: "weidu-log" },
+
             { scheme: "file", pattern: "**/*.tbaf" },
             { scheme: "file", pattern: "**/*.tssl" },
             { scheme: "file", pattern: "**/*.td" },

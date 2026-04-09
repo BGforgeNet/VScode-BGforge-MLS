@@ -42,6 +42,7 @@ import {
     LANG_WEIDU_SLB,
     LANG_WEIDU_SSL,
 } from "./core/languages";
+import { weiduLogProvider } from "./weidu-log/provider";
 import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
 import { registry } from "./provider-registry";
 import * as settings from "./settings";
@@ -162,6 +163,7 @@ connection.onInitialized(async () => {
     registry.register(weiduBafProvider);
     registry.register(weiduDProvider);
     registry.register(weiduTp2Provider);
+    registry.register(weiduLogProvider);
 
     // Register language aliases (languages that share data with parent providers)
     registry.registerAlias(LANG_WEIDU_SLB, LANG_WEIDU_BAF);

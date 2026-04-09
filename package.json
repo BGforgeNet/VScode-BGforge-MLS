@@ -38,7 +38,8 @@
         "onLanguage:weidu-ssl",
         "onLanguage:weidu-slb",
         "onLanguage:weidu-tp2",
-        "onLanguage:weidu-tra"
+        "onLanguage:weidu-tra",
+        "onLanguage:weidu-log"
     ],
     "main": "./client/out/extension.js",
     "contributes": {

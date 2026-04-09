@@ -424,6 +424,7 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 | weidu-baf   |     Y      |   Y   |           |    n/a     |    n/a     |   Y    |         |        n/a        |  n/a   | .tra  |    Y    |      Y      |  n/a  |                 |
 | weidu-d     |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |                 |
 | weidu-tp2   |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |        Y        |
+| weidu-log   |    n/a     |  n/a  |    n/a    |     Y      |    n/a     |  n/a   |   n/a   |        n/a        |  n/a   |  n/a  |   n/a   |     n/a     |  n/a  |       n/a       |
 | worldmap    |     Y      |   Y   |    n/a    |    n/a     |    n/a     |  n/a   |   n/a   |        n/a        |  n/a   |  n/a  |   n/a   |     n/a     |  n/a  |       n/a       |
 
 ## Request Routing

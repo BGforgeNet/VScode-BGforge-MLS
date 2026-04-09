@@ -119,7 +119,7 @@ Three artifact streams, all triggered by `git tag vX.Y.Z` -> GitHub Actions. See
 
 LSP-based extension with provider-registry pattern. Monorepo with separate `client/` and `server/` packages. Build uses esbuild (not tsc) for all bundles.
 
-**Providers** (`server/src/*/provider.ts`): fallout-ssl, fallout-worldmap, weidu-baf, weidu-d, weidu-tp2
+**Providers** (`server/src/*/provider.ts`): fallout-ssl, fallout-worldmap, weidu-baf, weidu-d, weidu-log, weidu-tp2
 
 **Transpilers** (`server/src/*/`): tssl, tbaf, td + shared `transpiler-utils.ts`
 

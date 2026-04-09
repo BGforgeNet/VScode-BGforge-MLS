@@ -3,6 +3,7 @@
 ## 3.6.0
 
 - Fallout SSL: go to definition on `#include` path navigates to the included file.
+- `weidu.log`: go to definition on `~mod/path.tp2~` navigates to the corresponding `.tp2` file (case-insensitive path resolution).
 - Added syntax highlighting for `weidu.log`.
 - Binary editor save and JSON export now clamp out-of-range PRO and MAP values to the nearest supported in-format value instead of writing invalid data.
 
