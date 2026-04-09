@@ -2099,7 +2099,7 @@ patch_functions:
       doc: |-
         Adds flags to all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.
          - SPRINT `item_to_change` to the item the flags should be added to
-         - SPRINT `flags to flags` you need to add (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc).
+         - SPRINT `flags` you need to add (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc).
 
     - name: ADD_CRE_SCRIPT
       doc: |-
@@ -2112,7 +2112,8 @@ patch_functions:
 
     - name: ADD_ITEM_EFFECT
       doc: |-
-        Adds an extended effect to an item. All variables except `probability1`, type and `insert_point` are 0 by default. This is a PATCH macro and function.- SET `opcode` to opcode
+        Adds an extended effect to an item. All variables except `probability1`, type and `insert_point` are 0 by default. This is a PATCH macro and function.
+         - SET `opcode` to opcode
          - SET `target` to target type
          - SET `timing` to timing type
          - SET `parameter1` to first parameter
@@ -2134,7 +2135,8 @@ patch_functions:
 
     - name: ADD_ITEM_EQEFFECT
       doc: |-
-        Adds an equipping effect to an item. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.- SET `opcode` to opcode
+        Adds an equipping effect to an item. All variables except `probability1` are 0 by default. This is a PATCH macro and function.
+         - SET `opcode` to opcode
          - SET `target` to target type
          - SET `timing` to timing type
          - SET `parameter1` to first parameter
@@ -2610,52 +2612,154 @@ patch_functions:
          - STR_VAR `icon` to the resource reference to be used for matching if `match_icon` is 1, or the new ability icon if `match_icon` is 0.
 
     - name: CLONE_EFFECT
-      doc: |
-        This is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.
-        The first batch of variables are meta-variables which will help determine the scope of the function:
-        - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.
-        - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.
-        - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
-        - INT_VAR `header_type` to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
-        - INT_VAR `multi_match` to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).
-        - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).
-        - INT_VAR `silent` to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).
-        - STR_VAR `insert` to the relative position the cloned effect should be inserted at. A value of `below` puts the new, cloned effect immediately below the matched effect. Values of `first` or `last` will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to `above`, where the effect is added immediately before the matched effect (default is `above`).
-
-        The next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.
-        - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).
-        - INT_VAR `match_target` to the target of effects to be matched (default -1).
-        - INT_VAR `match_power` to the power of effects to be matched (default -1).
-        - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).
-        - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).
-        - INT_VAR `match_timing` to the timing of effects to be matched (default -1).
-        - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).
-        - INT_VAR `match_duration` to the duration of effects to be matched (default -1).
-        - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).
-        - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).
-        - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.
-        - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.
-        - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).
-        - INT_VAR `match_savebonus` to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.
-        - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.
-        - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").
-        Once a matching effect is found, a new effect is created (STR_VAR `insert` determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.
-        - INT_VAR `opcode` to the value the of the new effect's opcode.
-        - INT_VAR `target` to the new effect's target.
-        - INT_VAR `power` to the new effect's power.
-        - INT_VAR `parameter1` to the new effect's parameter1.
-        - INT_VAR `parameter2` to the new effect's parameter2.
-        - INT_VAR `timing` to the new effect's timing mode.
-        - INT_VAR `resist_dispel` to the new effect's resist/dispel setting.
-        - INT_VAR `duration` to the new effect's duration.
-        - INT_VAR `probability1` to the new effect's probability1 (the upper bound).
-        - INT_VAR `probability2` to the new effect's probability2 (the lower bound).
-        - INT_VAR `dicenumber` to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.
-        - INT_VAR `dicesize` to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.
-        - INT_VAR `savingthrow` to the new effect's saving-throw type.
-        - INT_VAR `savebonus` to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.
-        - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.
-        - STR_VAR `resource` to the new effect's resource reference.
+      doc: |-
+        Matches an existing effect on a creature, item, or spell file and creates a new one based on it. All unset match variables are ignored; all unset new-effect variables inherit from the matched effect.
+      type: patch
+      args:
+        - name: check_globals
+          type: int
+          doc: loop through global/equipping effects on items and spells (always 1 for creatures)
+          default: "1"
+        - name: check_headers
+          type: int
+          doc: loop through extended header effects on items and spells (ignored for creatures)
+          default: "1"
+        - name: header
+          type: int
+          doc: target a specific header (0-based); -1 matches all (ignored for creatures)
+          default: "-1"
+        - name: header_type
+          type: int
+          doc: restrict to extended headers of this type (1=melee, 2=ranged, etc.); -1 matches all
+          default: "-1"
+        - name: multi_match
+          type: int
+          doc: max number of effects to clone; 0 or negative treated as 1
+          default: "999"
+        - name: verbose
+          type: int
+          doc: print info on how many effects were added
+          default: "0"
+        - name: silent
+          type: int
+          doc: suppress warnings and verbose output
+          default: "0"
+        - name: match_opcode
+          type: int
+          doc: opcode to match; -1 = any
+          default: "-1"
+        - name: match_target
+          type: int
+          doc: target to match; -1 = any
+          default: "-1"
+        - name: match_power
+          type: int
+          doc: power to match; -1 = any
+          default: "-1"
+        - name: match_parameter1
+          type: int
+          doc: parameter1 to match; -1 = any
+          default: "-1"
+        - name: match_parameter2
+          type: int
+          doc: parameter2 to match; -1 = any
+          default: "-1"
+        - name: match_timing
+          type: int
+          doc: timing to match; -1 = any
+          default: "-1"
+        - name: match_resist_dispel
+          type: int
+          doc: resist/dispel to match; -1 = any
+          default: "-1"
+        - name: match_duration
+          type: int
+          doc: duration to match; -1 = any
+          default: "-1"
+        - name: match_probability1
+          type: int
+          doc: probability1 upper bound to match; -1 = any
+          default: "-1"
+        - name: match_probability2
+          type: int
+          doc: probability2 lower bound to match; -1 = any
+          default: "-1"
+        - name: match_dicenumber
+          type: int
+          doc: dice number to match (or max HD for some opcodes); -1 = any
+          default: "-1"
+        - name: match_dicesize
+          type: int
+          doc: dice size to match (or min HD for some opcodes); -1 = any
+          default: "-1"
+        - name: match_savingthrow
+          type: int
+          doc: saving throw type to match; -1 = any
+          default: "-1"
+        - name: match_savebonus
+          type: int
+          doc: saving throw bonus to match (down to -10); -11 = any
+          default: "-11"
+        - name: match_special
+          type: int
+          doc: special field to match (EE effects); -1 = any
+          default: "-1"
+        - name: opcode
+          type: int
+          doc: new effect's opcode (inherits from matched if unset)
+        - name: target
+          type: int
+          doc: new effect's target
+        - name: power
+          type: int
+          doc: new effect's power
+        - name: parameter1
+          type: int
+          doc: new effect's parameter1
+        - name: parameter2
+          type: int
+          doc: new effect's parameter2
+        - name: timing
+          type: int
+          doc: new effect's timing mode
+        - name: resist_dispel
+          type: int
+          doc: new effect's resist/dispel setting
+        - name: duration
+          type: int
+          doc: new effect's duration
+        - name: probability1
+          type: int
+          doc: new effect's probability1 upper bound
+        - name: probability2
+          type: int
+          doc: new effect's probability2 lower bound
+        - name: dicenumber
+          type: int
+          doc: new effect's dice number (or max HD for some opcodes)
+        - name: dicesize
+          type: int
+          doc: new effect's dice size (or min HD for some opcodes)
+        - name: savingthrow
+          type: int
+          doc: new effect's saving throw type
+        - name: savebonus
+          type: int
+          doc: new effect's saving throw bonus/penalty (down to -10)
+        - name: special
+          type: int
+          doc: new effect's special field (EE effects)
+        - name: insert
+          type: string
+          doc: placement of cloned effect relative to matched; above, below, first, or last
+          default: above
+        - name: match_resource
+          type: resref
+          doc: resource to match
+          default: SAME
+        - name: resource
+          type: resref
+          doc: new effect's resource reference (inherits from matched if unset)
 
     - name: DELETE_AREA_ITEM
       doc: |-
@@ -2664,7 +2768,7 @@ patch_functions:
 
     - name: DELETE_CRE_EFFECT
       doc: |-
-        Deletes all effects with specified opcode from a creature. (Warning":" doesn't check EFF version) This is a PATCH macro and function.
+        Deletes all effects with specified opcode from a creature. (Warning: doesn't check EFF version) This is a PATCH macro and function.
          - SET `opcode_to_delete` to the opcode of the effect you want to delete. Opcode of (-1) will match all effects.
 
     - name: DELETE_CRE_ITEM
