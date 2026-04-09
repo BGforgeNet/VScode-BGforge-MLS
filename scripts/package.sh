@@ -83,7 +83,7 @@ cp node_modules/bgforge-tssl-plugin/package.json node_modules/bgforge-tssl-plugi
 cp node_modules/bgforge-td-plugin/package.json node_modules/bgforge-td-plugin/index.js \
     "$inject_dir/extension/node_modules/bgforge-td-plugin/"
 
-(cd "$inject_dir" && zip -g "../$vsix_file" \
+(cd "$inject_dir" && zip -gX "../$vsix_file" \
     extension/node_modules/bgforge-tssl-plugin/package.json \
     extension/node_modules/bgforge-tssl-plugin/index.js \
     extension/node_modules/bgforge-td-plugin/package.json \
