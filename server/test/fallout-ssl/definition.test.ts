@@ -2,8 +2,12 @@
  * Unit tests for fallout-ssl/definition.ts - go to definition for local symbols.
  */
 
-import { describe, expect, it, beforeAll, vi } from "vitest";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
+import { describe, expect, it, beforeAll, afterAll, vi } from "vitest";
 import { Position } from "vscode-languageserver/node";
+import { pathToUri } from "../../src/common";
 
 // Mock the server module to avoid LSP connection issues
 vi.mock("../../src/server", () => ({
@@ -153,6 +157,62 @@ end
             expect(result?.uri).toBe(uri);
             // Should point to definition, not forward declaration
             expect(result?.range.start.line).toBe(7);
+        });
+
+        describe("#include directive", () => {
+            const tmpDir = path.join(os.tmpdir(), "bgforge-mls-test-definition");
+            const headersDir = path.join(tmpDir, "headers");
+            const headerFile = path.join(headersDir, "sfall.h");
+            const rootHeaderFile = path.join(tmpDir, "sfall.h");
+            const sslUri = pathToUri(path.join(tmpDir, "test.ssl"));
+
+            beforeAll(() => {
+                fs.mkdirSync(headersDir, { recursive: true });
+                fs.writeFileSync(headerFile, "// sfall header\n");
+                fs.writeFileSync(rootHeaderFile, "// root header\n");
+            });
+
+            afterAll(() => {
+                fs.rmSync(tmpDir, { recursive: true, force: true });
+            });
+
+            it("navigates to included file with quoted path", () => {
+                const text = `#include "headers/sfall.h"\n\nprocedure main begin end`;
+                // Cursor on the path string
+                const position: Position = { line: 0, character: 15 };
+                const result = getLocalDefinition(text, sslUri, position);
+
+                expect(result).not.toBeNull();
+                expect(result?.uri).toBe(pathToUri(headerFile));
+                expect(result?.range.start.line).toBe(0);
+                expect(result?.range.start.character).toBe(0);
+            });
+
+            it("navigates to included file with angle brackets", () => {
+                const text = `#include <sfall.h>\n\nprocedure main begin end`;
+                const position: Position = { line: 0, character: 12 };
+                const result = getLocalDefinition(text, sslUri, position);
+
+                expect(result).not.toBeNull();
+                expect(result?.uri).toBe(pathToUri(rootHeaderFile));
+            });
+
+            it("returns null when cursor is on #include keyword", () => {
+                const text = `#include "headers/sfall.h"\n\nprocedure main begin end`;
+                // Cursor on "#include" keyword, not on the path
+                const position: Position = { line: 0, character: 3 };
+                const result = getLocalDefinition(text, sslUri, position);
+
+                expect(result).toBeNull();
+            });
+
+            it("returns null when included file does not exist", () => {
+                const text = `#include "nonexistent.h"\n\nprocedure main begin end`;
+                const position: Position = { line: 0, character: 15 };
+                const result = getLocalDefinition(text, sslUri, position);
+
+                expect(result).toBeNull();
+            });
         });
 
         it("finds export_decl variable definition", () => {

@@ -225,8 +225,9 @@ Extension Activated
     |                                                                |
     |   1. Provider Definition (AST-based)                           |
     |   +------------------+                                         |
-    |   | provider         |  SSL: procedures/macros/vars/exports   |
-    |   | .definition()    |  TP2: variables/functions/INCLUDEs     |
+    |   | provider         |  SSL: procedures/macros/vars/exports/  |
+    |   | .definition()    |       #includes                        |
+    |   |                  |  TP2: variables/functions/INCLUDEs     |
     |   +------------------+  D: dialog-scoped state labels          |
     |           |                                                    |
     |           | null = not found locally                            |
