@@ -23,7 +23,7 @@ Originally a VS Code extension, it now also works with various other editors. Se
 
 | Feature | Fallout SSL | WeiDU BAF/SSL | WeiDU D | WeiDU TP2 |
 | ------- | :---------: | :-----------: | :-----: | :-------: |
-| Extensions | `.ssl`, `.h` | `.baf`, `.ssl`, `.ssb` | `.d` | `.tp2`, `.tpa`, `.tph`, `.tpp` |
+| Extensions | `.ssl`, `.h` | `.baf`, `.ssl`, `.slb` | `.d` | `.tp2`, `.tpa`, `.tph`, `.tpp` |
 | Completion | ✓ | ✓ | ✓ | ✓ |
 | Hover | ✓ | ✓ | ✓ | ✓ |
 | Signature help | ✓ |  |  |  |
