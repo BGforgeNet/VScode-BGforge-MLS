@@ -30,7 +30,7 @@ export const WEIDU_JSDOC_TYPES: ReadonlyMap<string, WeiduType> = new Map([
 ]);
 
 /** Base URL for type documentation on ielib.bgforge.net. */
-const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
+const IELIB_TYPES_URL = "https://ielib.bgforge.net/types#";
 
 /** Format a type name as a markdown link if it's a known WeiDU type, plain text otherwise.
  * Compound types (e.g., "resref offset") link to the base type. */

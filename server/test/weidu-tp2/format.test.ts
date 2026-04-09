@@ -785,7 +785,7 @@ INT_VAR count = 0
 BEGIN END`;
         const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
         const sym = findSymbol(symbols, "my_func");
-        expect(getHoverValue(sym?.hover.contents)).toContain("[int](https://ielib.bgforge.net/types/#int)");
+        expect(getHoverValue(sym?.hover.contents)).toContain("[int](https://ielib.bgforge.net/types#int)");
     });
 
     it("generates hover with default type int for INT_VAR", () => {

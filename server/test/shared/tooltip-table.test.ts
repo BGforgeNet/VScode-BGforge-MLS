@@ -27,7 +27,7 @@ describe("buildWeiduTable", () => {
             "| | | | |\n" +
             "|-:|:-|:-|:-|\n" +
             "|**INT**|**vars**|||\n" +
-            "|[int](https://ielib.bgforge.net/types/#int)|count||&nbsp;&nbsp;how many|"
+            "|[int](https://ielib.bgforge.net/types#int)|count||&nbsp;&nbsp;how many|"
         );
     });
 
@@ -39,7 +39,7 @@ describe("buildWeiduTable", () => {
             },
         ];
         const result = buildWeiduTable(sections);
-        expect(result).toContain("|[int](https://ielib.bgforge.net/types/#int)|count|=&nbsp;1|&nbsp;&nbsp;how many|");
+        expect(result).toContain("|[int](https://ielib.bgforge.net/types#int)|count|=&nbsp;1|&nbsp;&nbsp;how many|");
     });
 
     it("renders required marker", () => {
@@ -50,7 +50,7 @@ describe("buildWeiduTable", () => {
             },
         ];
         const result = buildWeiduTable(sections);
-        expect(result).toContain("|[int](https://ielib.bgforge.net/types/#int)|index|_required_|&nbsp;&nbsp;structure index|");
+        expect(result).toContain("|[int](https://ielib.bgforge.net/types#int)|index|_required_|&nbsp;&nbsp;structure index|");
     });
 
     it("renders row without description", () => {
@@ -61,7 +61,7 @@ describe("buildWeiduTable", () => {
             },
         ];
         const result = buildWeiduTable(sections);
-        expect(result).toContain("|[string](https://ielib.bgforge.net/types/#string)|text|||");
+        expect(result).toContain("|[string](https://ielib.bgforge.net/types#string)|text|||");
     });
 
     it("renders multiple sections", () => {
