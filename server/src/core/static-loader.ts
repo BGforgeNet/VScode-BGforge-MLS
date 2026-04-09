@@ -26,6 +26,7 @@ import { conlog } from "../common";
 import {
     type IndexedSymbol,
     type CallableSymbol,
+    type CallableParam,
     type VariableSymbol,
     type ConstantSymbol,
     type StateSymbol,
@@ -43,6 +44,14 @@ import {
 // Types
 // =============================================================================
 
+/** Serialized parameter categories written into completion JSON for WeiDU callables. */
+interface StaticParams {
+    readonly intVar: readonly CallableParam[];
+    readonly strVar: readonly CallableParam[];
+    readonly ret: readonly string[];
+    readonly retArray: readonly string[];
+}
+
 /**
  * Raw completion item from generated JSON.
  * Extends CompletionItem with category metadata from YAML source.
@@ -52,6 +61,8 @@ interface StaticCompletionItem extends CompletionItem {
     category?: string;
     /** Source identifier (always "builtin" for static data) */
     source?: string;
+    /** Parameter data for WeiDU callables; enables param name completion at runtime. */
+    params?: StaticParams;
 }
 
 /**
@@ -203,9 +214,12 @@ function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
         // to avoid false positives on worldmap or other non-TP2 stanzas that reuse
         // category names like "action" with different CompletionItemKind values.
         const meta = item.category ? CALLABLE_CATEGORY_META[item.category] : undefined;
-        const callable = (meta && item.kind === CompletionItemKind.Function)
+        const metaFields = (meta && item.kind === CompletionItemKind.Function)
             ? { context: meta.context, dtype: meta.dtype }
             : {};
+        const callable: CallableSymbol["callable"] = item.params
+            ? { ...metaFields, params: item.params }
+            : metaFields;
 
         return {
             ...base,

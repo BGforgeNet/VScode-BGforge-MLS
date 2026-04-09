@@ -55,6 +55,23 @@ interface MarkupContent {
     readonly value: string;
 }
 
+/** Serialized parameter data for a single variable. Shape matches CallableParam in symbol.ts. */
+interface CompletionParam {
+    readonly name: string;
+    readonly type?: string;
+    readonly defaultValue?: string;
+    readonly description?: string;
+    readonly required?: boolean;
+}
+
+/** Serialized parameter categories for WeiDU callables. */
+interface CompletionParams {
+    readonly intVar: readonly CompletionParam[];
+    readonly strVar: readonly CompletionParam[];
+    readonly ret: readonly string[];
+    readonly retArray: readonly string[];
+}
+
 interface CompletionResult {
     readonly label: string;
     readonly kind: number;
@@ -63,6 +80,8 @@ interface CompletionResult {
     readonly documentation?: MarkupContent;
     readonly tags?: readonly number[];
     readonly detail?: string;
+    /** Parameter data for WeiDU callables; enables param name completion at runtime. */
+    readonly params?: CompletionParams;
 }
 
 interface HoverResult {
@@ -235,6 +254,42 @@ function getFalloutDoc(item: DataItem): string {
     return doc;
 }
 
+/**
+ * Build serialized parameter data for a WeiDU callable.
+ * Returns undefined when the item has no args or rets (no params to complete).
+ */
+function buildCompletionParams(item: DataItem): CompletionParams | undefined {
+    const hasArgs = item.args !== undefined && item.args.length > 0;
+    const hasRets = item.rets !== undefined && item.rets.length > 0;
+    if (!hasArgs && !hasRets) {
+        return undefined;
+    }
+
+    const intVar: CompletionParam[] = [];
+    const strVar: CompletionParam[] = [];
+    for (const arg of item.args ?? []) {
+        const category = WEIDU_JSDOC_TYPES.get(arg.type)?.category;
+        const param: CompletionParam = {
+            name: arg.name,
+            type: arg.type,
+            ...(arg.doc ? { description: arg.doc } : {}),
+            ...(arg.required ? { required: true } : arg.default !== undefined ? { defaultValue: arg.default } : {}),
+        };
+        if (category === "int") {
+            intVar.push(param);
+        } else {
+            // Unknown types (not in WEIDU_JSDOC_TYPES) default to strVar as a conservative fallback.
+            strVar.push(param);
+        }
+    }
+
+    const ret = (item.rets ?? []).map(r => r.name);
+
+    // retArray is not representable in the YAML data format; always empty for built-ins.
+    // User-defined functions (from .tph headers) populate retArray via header-parser.ts.
+    return { intVar, strVar, ret, retArray: [] };
+}
+
 /** Map DataArg[] to VarRow[] for a given INT/STR category. */
 function mapArgsToRows(args: readonly DataArg[], category: "int" | "str"): readonly VarRow[] {
     return args
@@ -318,6 +373,7 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
 
             const deprecated = item.deprecated ?? false;
             const tags = deprecated ? [COMPLETION_TAG_DEPRECATED] as const : undefined;
+            const params = isWeiduFormat(item) ? buildCompletionParams(item) : undefined;
 
             const completionItem: CompletionResult = {
                 label,
@@ -329,6 +385,7 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
                 // Copy detail only for duplicate labels across stanzas.
                 // Non-null assertion is safe: label comes from the same data that built labelCounts.
                 ...(labelCounts.get(label)! > 1 ? { detail } : {}),
+                ...(params !== undefined ? { params } : {}),
             };
 
             result.push(completionItem);

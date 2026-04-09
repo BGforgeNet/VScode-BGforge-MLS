@@ -501,4 +501,68 @@ describe("static-loader", () => {
             });
         });
     });
+
+    describe("callable.params from static JSON", () => {
+        it("should populate callable.params.intVar and strVar from JSON", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "CLONE_EFFECT",
+                    kind: CompletionItemKind.Function,
+                    category: WEIDU_TP2_STANZAS.patch_functions,
+                    params: {
+                        intVar: [{ name: "opcode", type: "int", defaultValue: "-1", description: "Effect opcode" }],
+                        strVar: [{ name: "match_resource", type: "string" }],
+                        ret: [],
+                        retArray: [],
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const sym = result[0] as CallableSymbol;
+
+            expect(sym.callable.params).toBeDefined();
+            expect(sym.callable.params!.intVar).toHaveLength(1);
+            expect(sym.callable.params!.intVar[0]).toMatchObject({ name: "opcode", type: "int", defaultValue: "-1" });
+            expect(sym.callable.params!.strVar).toHaveLength(1);
+            expect(sym.callable.params!.strVar[0]).toMatchObject({ name: "match_resource", type: "string" });
+        });
+
+        it("should populate callable.params.ret from JSON", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "GET_ITEM_AC",
+                    kind: CompletionItemKind.Function,
+                    category: WEIDU_TP2_STANZAS.patch_functions,
+                    params: {
+                        intVar: [],
+                        strVar: [],
+                        ret: ["base_ac"],
+                        retArray: [],
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const sym = result[0] as CallableSymbol;
+
+            expect(sym.callable.params!.ret).toEqual(["base_ac"]);
+            expect(sym.callable.params!.retArray).toEqual([]);
+        });
+
+        it("should leave callable.params undefined when not in JSON", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "COPY",
+                    kind: CompletionItemKind.Function,
+                    category: "action",
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const sym = result[0] as CallableSymbol;
+
+            expect(sym.callable.params).toBeUndefined();
+        });
+    });
 });

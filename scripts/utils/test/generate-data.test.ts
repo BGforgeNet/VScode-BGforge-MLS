@@ -539,3 +539,93 @@ describe("generateSignatures", () => {
         expect(Object.keys(result)).toEqual(["beta", "zulu", "alpha", "zed"]);
     });
 });
+
+describe("generateCompletion params field (WeiDU)", () => {
+    it("includes params.intVar for WeiDU items with int args", () => {
+        const data = {
+            patch_functions: {
+                type: 3,
+                items: [{
+                    name: "CLONE_EFFECT",
+                    type: "patch",
+                    args: [
+                        { name: "opcode", type: "int", doc: "Effect opcode", default: "-1" },
+                        { name: "match_resource", type: "string", doc: "Resource" },
+                    ],
+                }],
+            },
+        };
+        const result = generateCompletion(data, "weidu-tp2-tooltip");
+        const item = result[0]!;
+        expect(item.params).toBeDefined();
+        expect(item.params!.intVar).toHaveLength(1);
+        expect(item.params!.intVar[0]).toMatchObject({ name: "opcode", type: "int", defaultValue: "-1", description: "Effect opcode" });
+        expect(item.params!.strVar).toHaveLength(1);
+        expect(item.params!.strVar[0]).toMatchObject({ name: "match_resource", type: "string", description: "Resource" });
+    });
+
+    it("includes params.ret for WeiDU items with rets", () => {
+        const data = {
+            patch_functions: {
+                type: 3,
+                items: [{
+                    name: "GET_ITEM_AC",
+                    type: "patch",
+                    rets: [{ name: "base_ac", type: "int", doc: "base AC" }],
+                }],
+            },
+        };
+        const result = generateCompletion(data, "weidu-tp2-tooltip");
+        const item = result[0]!;
+        expect(item.params).toBeDefined();
+        expect(item.params!.ret).toEqual(["base_ac"]);
+        expect(item.params!.retArray).toEqual([]);
+    });
+
+    it("does not include params for non-WeiDU format items (no patch/action/dimorphic type)", () => {
+        const data = {
+            funcs: {
+                type: 3,
+                items: [{
+                    name: "my_func",
+                    type: "int",
+                    args: [{ name: "x", type: "int", doc: "val" }],
+                }],
+            },
+        };
+        const result = generateCompletion(data, "fallout-ssl-tooltip");
+        expect(result[0]!.params).toBeUndefined();
+    });
+
+    it("does not include params for items without args or rets", () => {
+        const data = {
+            patch_functions: {
+                type: 3,
+                items: [{ name: "SIMPLE_MACRO", type: "patch" }],
+            },
+        };
+        const result = generateCompletion(data, "weidu-tp2-tooltip");
+        expect(result[0]!.params).toBeUndefined();
+    });
+
+    it("marks required params correctly", () => {
+        const data = {
+            patch_functions: {
+                type: 3,
+                items: [{
+                    name: "MY_FUNC",
+                    type: "patch",
+                    args: [
+                        { name: "mandatory", type: "int", required: true },
+                        { name: "optional", type: "int", default: "0" },
+                    ],
+                }],
+            },
+        };
+        const result = generateCompletion(data, "weidu-tp2-tooltip");
+        const params = result[0]!.params!;
+        expect(params.intVar[0]).toMatchObject({ name: "mandatory", required: true });
+        expect(params.intVar[1]).toMatchObject({ name: "optional", defaultValue: "0" });
+        expect(params.intVar[1]!.required).toBeFalsy();
+    });
+});

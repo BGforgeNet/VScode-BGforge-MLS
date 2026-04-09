@@ -1808,6 +1808,27 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\ndimorphic function FIND_FREE_PVRZ_INDEX\n```\n\n---\n\nAttempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.\nThis function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.\n\n| | | | |\n|-:|:-|:-|:-|\n|**INT**|**vars**|||\n|[int](https://ielib.bgforge.net/types#int)|num_to_reserve|=&nbsp;1|&nbsp;&nbsp;the minimum required size of the contiguous block of free indices (1-999)|\n|[int](https://ielib.bgforge.net/types#int)|start_index|=&nbsp;1000|&nbsp;&nbsp;the index the search should begin at|\n|**RET**|**vars**|||\n|[int](https://ielib.bgforge.net/types#int)|free_index||&nbsp;&nbsp;the first available index matching the specified parameters, -1 on errors|"
+        },
+        "params": {
+            "intVar": [
+                {
+                    "name": "num_to_reserve",
+                    "type": "int",
+                    "description": "the minimum required size of the contiguous block of free indices (1-999)",
+                    "defaultValue": "1"
+                },
+                {
+                    "name": "start_index",
+                    "type": "int",
+                    "description": "the index the search should begin at",
+                    "defaultValue": "1000"
+                }
+            ],
+            "strVar": [],
+            "ret": [
+                "free_index"
+            ],
+            "retArray": []
         }
     },
     {
@@ -1868,6 +1889,31 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\ndimorphic function SUBSTRING\n```\n\n---\n\nReturns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.\nThe function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.\n\n| | | | |\n|-:|:-|:-|:-|\n|**INT**|**vars**|||\n|[int](https://ielib.bgforge.net/types#int)|start||&nbsp;&nbsp;the string index (0 based) from which the start of the substring should be read|\n|[int](https://ielib.bgforge.net/types#int)|length||&nbsp;&nbsp;the length of the substring to be read|\n|**STR**|**vars**|||\n|[string](https://ielib.bgforge.net/types#string)|string||&nbsp;&nbsp;the string the substring should be read from|\n|**RET**|**vars**|||\n|[string](https://ielib.bgforge.net/types#string)|substring||&nbsp;&nbsp;the substring read from the provided string|"
+        },
+        "params": {
+            "intVar": [
+                {
+                    "name": "start",
+                    "type": "int",
+                    "description": "the string index (0 based) from which the start of the substring should be read"
+                },
+                {
+                    "name": "length",
+                    "type": "int",
+                    "description": "the length of the substring to be read"
+                }
+            ],
+            "strVar": [
+                {
+                    "name": "string",
+                    "type": "string",
+                    "description": "the string the substring should be read from"
+                }
+            ],
+            "ret": [
+                "substring"
+            ],
+            "retArray": []
         }
     },
     {
@@ -3675,6 +3721,238 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\npatch function CLONE_EFFECT\n```\n\n---\n\nMatches an existing effect on a creature, item, or spell file and creates a new one based on it. All unset match variables are ignored; all unset new-effect variables inherit from the matched effect.\n\n| | | | |\n|-:|:-|:-|:-|\n|**INT**|**vars**|||\n|[int](https://ielib.bgforge.net/types#int)|check_globals|=&nbsp;1|&nbsp;&nbsp;loop through global/equipping effects on items and spells (always 1 for creatures)|\n|[int](https://ielib.bgforge.net/types#int)|check_headers|=&nbsp;1|&nbsp;&nbsp;loop through extended header effects on items and spells (ignored for creatures)|\n|[int](https://ielib.bgforge.net/types#int)|header|=&nbsp;-1|&nbsp;&nbsp;target a specific header (0-based); -1 matches all (ignored for creatures)|\n|[int](https://ielib.bgforge.net/types#int)|header_type|=&nbsp;-1|&nbsp;&nbsp;restrict to extended headers of this type (1=melee, 2=ranged, etc.); -1 matches all|\n|[int](https://ielib.bgforge.net/types#int)|multi_match|=&nbsp;999|&nbsp;&nbsp;max number of effects to clone; 0 or negative treated as 1|\n|[int](https://ielib.bgforge.net/types#int)|verbose|=&nbsp;0|&nbsp;&nbsp;print info on how many effects were added|\n|[int](https://ielib.bgforge.net/types#int)|silent|=&nbsp;0|&nbsp;&nbsp;suppress warnings and verbose output|\n|[int](https://ielib.bgforge.net/types#int)|match_opcode|=&nbsp;-1|&nbsp;&nbsp;opcode to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_target|=&nbsp;-1|&nbsp;&nbsp;target to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_power|=&nbsp;-1|&nbsp;&nbsp;power to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_parameter1|=&nbsp;-1|&nbsp;&nbsp;parameter1 to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_parameter2|=&nbsp;-1|&nbsp;&nbsp;parameter2 to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_timing|=&nbsp;-1|&nbsp;&nbsp;timing to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_resist_dispel|=&nbsp;-1|&nbsp;&nbsp;resist/dispel to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_duration|=&nbsp;-1|&nbsp;&nbsp;duration to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_probability1|=&nbsp;-1|&nbsp;&nbsp;probability1 upper bound to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_probability2|=&nbsp;-1|&nbsp;&nbsp;probability2 lower bound to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_dicenumber|=&nbsp;-1|&nbsp;&nbsp;dice number to match (or max HD for some opcodes); -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_dicesize|=&nbsp;-1|&nbsp;&nbsp;dice size to match (or min HD for some opcodes); -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_savingthrow|=&nbsp;-1|&nbsp;&nbsp;saving throw type to match; -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_savebonus|=&nbsp;-11|&nbsp;&nbsp;saving throw bonus to match (down to -10); -11 = any|\n|[int](https://ielib.bgforge.net/types#int)|match_special|=&nbsp;-1|&nbsp;&nbsp;special field to match (EE effects); -1 = any|\n|[int](https://ielib.bgforge.net/types#int)|opcode||&nbsp;&nbsp;new effect's opcode (inherits from matched if unset)|\n|[int](https://ielib.bgforge.net/types#int)|target||&nbsp;&nbsp;new effect's target|\n|[int](https://ielib.bgforge.net/types#int)|power||&nbsp;&nbsp;new effect's power|\n|[int](https://ielib.bgforge.net/types#int)|parameter1||&nbsp;&nbsp;new effect's parameter1|\n|[int](https://ielib.bgforge.net/types#int)|parameter2||&nbsp;&nbsp;new effect's parameter2|\n|[int](https://ielib.bgforge.net/types#int)|timing||&nbsp;&nbsp;new effect's timing mode|\n|[int](https://ielib.bgforge.net/types#int)|resist_dispel||&nbsp;&nbsp;new effect's resist/dispel setting|\n|[int](https://ielib.bgforge.net/types#int)|duration||&nbsp;&nbsp;new effect's duration|\n|[int](https://ielib.bgforge.net/types#int)|probability1||&nbsp;&nbsp;new effect's probability1 upper bound|\n|[int](https://ielib.bgforge.net/types#int)|probability2||&nbsp;&nbsp;new effect's probability2 lower bound|\n|[int](https://ielib.bgforge.net/types#int)|dicenumber||&nbsp;&nbsp;new effect's dice number (or max HD for some opcodes)|\n|[int](https://ielib.bgforge.net/types#int)|dicesize||&nbsp;&nbsp;new effect's dice size (or min HD for some opcodes)|\n|[int](https://ielib.bgforge.net/types#int)|savingthrow||&nbsp;&nbsp;new effect's saving throw type|\n|[int](https://ielib.bgforge.net/types#int)|savebonus||&nbsp;&nbsp;new effect's saving throw bonus/penalty (down to -10)|\n|[int](https://ielib.bgforge.net/types#int)|special||&nbsp;&nbsp;new effect's special field (EE effects)|\n|**STR**|**vars**|||\n|[string](https://ielib.bgforge.net/types#string)|insert|=&nbsp;above|&nbsp;&nbsp;placement of cloned effect relative to matched; above, below, first, or last|\n|[resref](https://ielib.bgforge.net/types#resref)|match_resource|=&nbsp;SAME|&nbsp;&nbsp;resource to match|\n|[resref](https://ielib.bgforge.net/types#resref)|resource||&nbsp;&nbsp;new effect's resource reference (inherits from matched if unset)|"
+        },
+        "params": {
+            "intVar": [
+                {
+                    "name": "check_globals",
+                    "type": "int",
+                    "description": "loop through global/equipping effects on items and spells (always 1 for creatures)",
+                    "defaultValue": "1"
+                },
+                {
+                    "name": "check_headers",
+                    "type": "int",
+                    "description": "loop through extended header effects on items and spells (ignored for creatures)",
+                    "defaultValue": "1"
+                },
+                {
+                    "name": "header",
+                    "type": "int",
+                    "description": "target a specific header (0-based); -1 matches all (ignored for creatures)",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "header_type",
+                    "type": "int",
+                    "description": "restrict to extended headers of this type (1=melee, 2=ranged, etc.); -1 matches all",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "multi_match",
+                    "type": "int",
+                    "description": "max number of effects to clone; 0 or negative treated as 1",
+                    "defaultValue": "999"
+                },
+                {
+                    "name": "verbose",
+                    "type": "int",
+                    "description": "print info on how many effects were added",
+                    "defaultValue": "0"
+                },
+                {
+                    "name": "silent",
+                    "type": "int",
+                    "description": "suppress warnings and verbose output",
+                    "defaultValue": "0"
+                },
+                {
+                    "name": "match_opcode",
+                    "type": "int",
+                    "description": "opcode to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_target",
+                    "type": "int",
+                    "description": "target to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_power",
+                    "type": "int",
+                    "description": "power to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_parameter1",
+                    "type": "int",
+                    "description": "parameter1 to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_parameter2",
+                    "type": "int",
+                    "description": "parameter2 to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_timing",
+                    "type": "int",
+                    "description": "timing to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_resist_dispel",
+                    "type": "int",
+                    "description": "resist/dispel to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_duration",
+                    "type": "int",
+                    "description": "duration to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_probability1",
+                    "type": "int",
+                    "description": "probability1 upper bound to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_probability2",
+                    "type": "int",
+                    "description": "probability2 lower bound to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_dicenumber",
+                    "type": "int",
+                    "description": "dice number to match (or max HD for some opcodes); -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_dicesize",
+                    "type": "int",
+                    "description": "dice size to match (or min HD for some opcodes); -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_savingthrow",
+                    "type": "int",
+                    "description": "saving throw type to match; -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "match_savebonus",
+                    "type": "int",
+                    "description": "saving throw bonus to match (down to -10); -11 = any",
+                    "defaultValue": "-11"
+                },
+                {
+                    "name": "match_special",
+                    "type": "int",
+                    "description": "special field to match (EE effects); -1 = any",
+                    "defaultValue": "-1"
+                },
+                {
+                    "name": "opcode",
+                    "type": "int",
+                    "description": "new effect's opcode (inherits from matched if unset)"
+                },
+                {
+                    "name": "target",
+                    "type": "int",
+                    "description": "new effect's target"
+                },
+                {
+                    "name": "power",
+                    "type": "int",
+                    "description": "new effect's power"
+                },
+                {
+                    "name": "parameter1",
+                    "type": "int",
+                    "description": "new effect's parameter1"
+                },
+                {
+                    "name": "parameter2",
+                    "type": "int",
+                    "description": "new effect's parameter2"
+                },
+                {
+                    "name": "timing",
+                    "type": "int",
+                    "description": "new effect's timing mode"
+                },
+                {
+                    "name": "resist_dispel",
+                    "type": "int",
+                    "description": "new effect's resist/dispel setting"
+                },
+                {
+                    "name": "duration",
+                    "type": "int",
+                    "description": "new effect's duration"
+                },
+                {
+                    "name": "probability1",
+                    "type": "int",
+                    "description": "new effect's probability1 upper bound"
+                },
+                {
+                    "name": "probability2",
+                    "type": "int",
+                    "description": "new effect's probability2 lower bound"
+                },
+                {
+                    "name": "dicenumber",
+                    "type": "int",
+                    "description": "new effect's dice number (or max HD for some opcodes)"
+                },
+                {
+                    "name": "dicesize",
+                    "type": "int",
+                    "description": "new effect's dice size (or min HD for some opcodes)"
+                },
+                {
+                    "name": "savingthrow",
+                    "type": "int",
+                    "description": "new effect's saving throw type"
+                },
+                {
+                    "name": "savebonus",
+                    "type": "int",
+                    "description": "new effect's saving throw bonus/penalty (down to -10)"
+                },
+                {
+                    "name": "special",
+                    "type": "int",
+                    "description": "new effect's special field (EE effects)"
+                }
+            ],
+            "strVar": [
+                {
+                    "name": "insert",
+                    "type": "string",
+                    "description": "placement of cloned effect relative to matched; above, below, first, or last",
+                    "defaultValue": "above"
+                },
+                {
+                    "name": "match_resource",
+                    "type": "resref",
+                    "description": "resource to match",
+                    "defaultValue": "SAME"
+                },
+                {
+                    "name": "resource",
+                    "type": "resref",
+                    "description": "new effect's resource reference (inherits from matched if unset)"
+                }
+            ],
+            "ret": [],
+            "retArray": []
         }
     },
     {
