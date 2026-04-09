@@ -71,7 +71,7 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 | Infinity 2DA        | .2da         | ✓ |   |   |     |   |
 
 ### Binary formats
-Fallout PRO (`.pro`) and MAP (`.map`) files have a built-in binary editor with JSON dump/load support.
+Fallout PRO and MAP files have a built-in binary editor with JSON dump/load support.
 
 ## Installation
 
