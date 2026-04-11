@@ -8,6 +8,8 @@
  *
  * Chain parsing extracted to chain-parsing.ts.
  * Chain body processing extracted to chain-processing.ts.
+ * Transition call dispatch extracted to transition-calls.ts.
+ * Loop unrolling extracted to inline-and-unroll.ts.
  */
 
 import {
@@ -30,9 +32,7 @@ import * as utils from "../transpiler-utils";
 import type { VarsContext } from "../transpiler-utils";
 import {
     resolveStringExpr,
-    expressionToActionString,
     validateArgs,
-    resolveArrayElements,
     parseBooleanOption,
     parseRequiredNumber,
 } from "./parse-helpers";
@@ -44,6 +44,12 @@ import {
     isChainExpression,
     parseTransitionChain,
 } from "./chain-parsing";
+import {
+    processTransitionCall,
+    processTransitionStatement,
+    processExtendStatements,
+} from "./transition-calls";
+import { unrollForOf, unrollFor } from "./inline-and-unroll";
 
 /** Function info including optional entry trigger from if-wrapping */
 interface FuncInfo {
@@ -56,26 +62,6 @@ type FuncsContext = Map<string, FuncInfo>;
 
 /** TD say keyword constant */
 const SAY_KEYWORD = "say";
-
-/**
- * Merge transition fields from source into target, preserving target's trigger.
- * Used when merging a chain or inlined transition into an existing one
- * that already has its trigger set from the enclosing if block.
- *
- * Note: mutates target in place. This is part of the IR builder pattern used
- * throughout processTransitionStatement/processStateStatement — transitions are
- * created as skeletons and progressively filled. The mutation is contained
- * within a single parse pass and transitions are never shared or read concurrently.
- */
-function mergeTransitionFields(target: TDTransition, source: TDTransition): void {
-    target.reply = source.reply;
-    target.action = source.action;
-    target.next = source.next;
-    target.journal = source.journal;
-    target.solvedJournal = source.solvedJournal;
-    target.unsolvedJournal = source.unsolvedJournal;
-    if (source.flags !== undefined) target.flags = source.flags;
-}
 
 /**
  * Tracks the "pending" transition created by a statement-form `reply()` call.
@@ -225,6 +211,24 @@ function processStateStatement(
 // =========================================================================
 
 /**
+ * Build an inlining callback for processTransitionStatement that inlines a user
+ * function and returns the transitions it produced (spliced from state.transitions).
+ */
+function buildInlineCallback(
+    state: TDState,
+    vars: VarsContext,
+    funcs: FuncsContext,
+): (expr: CallExpression, funcName: string) => TDTransition[] {
+    return (expr, funcName) => {
+        const funcInfo = funcs.get(funcName);
+        if (!funcInfo) return [];
+        const prevCount = state.transitions.length;
+        inlineUserFunction(expr, funcInfo.func, state, vars, funcs);
+        return state.transitions.splice(prevCount);
+    };
+}
+
+/**
  * Process an if statement as a transition with trigger.
  * Also detects state-level wrapping if (where the if wraps the entire body
  * including say()), in which case it becomes a state trigger.
@@ -299,8 +303,9 @@ function processIfTransition(
     state.transitions.push(trans);
 
     // Process then block to fill in transition details
+    const onInline = buildInlineCallback(state, vars, funcs);
     for (const s of thenStmts) {
-        processTransitionStatement(s, trans, vars, state, funcs);
+        processTransitionStatement(s, trans, vars, onInline);
     }
 
     // Handle else branch (creates additional transitions)
@@ -329,282 +334,9 @@ function processIfElseBranch(
             next: { type: TDTransitionType.Exit },
         };
         state.transitions.push(elseTrans);
+        const onInline = buildInlineCallback(state, vars, funcs);
         for (const s of elseStmts) {
-            processTransitionStatement(s, elseTrans, vars, state, funcs);
-        }
-    }
-}
-
-/**
- * Process a statement that fills in transition details.
- * Optionally accepts state/funcs for user function inlining inside if blocks.
- */
-function processTransitionStatement(
-    stmt: Statement,
-    trans: TDTransition,
-    vars: VarsContext,
-    state?: TDState,
-    funcs?: FuncsContext,
-) {
-    if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-        const expr = stmt.getExpression();
-
-        // Check for chain expression inside if block:
-        // if (cond) { reply(x).goTo(y) }
-        if (isChainExpression(expr)) {
-            const chainTrans = parseTransitionChain(expr as CallExpression, vars);
-            mergeTransitionFields(trans, chainTrans);
-            return;
-        }
-
-        if (Node.isCallExpression(expr)) {
-            const funcName = expr.getExpression().getText();
-            const args = expr.getArguments();
-
-            // Special handling for reply() in single transition context
-            if (funcName === "reply") {
-                validateArgs("reply", args, 1, expr.getStartLineNumber());
-                trans.reply = expressionToText(args[0] as Expression, vars);
-                return;
-            }
-
-            // Create context wrapper for single transition.
-            // addTransition should never be called here — if blocks already have
-            // their transition created by processIfTransition.
-            const context = {
-                getLastTransition: () => trans,
-                addTransition: () => {
-                    throw new Error(
-                        `Unexpected addTransition() in single-transition context at line ${expr.getStartLineNumber()}`
-                    );
-                },
-            };
-
-            const handled = processTransitionCall(funcName, args, expr, context, vars);
-
-            // If not a transition call, try user function inlining.
-            // The inlined body adds transitions to state; we merge the first
-            // into the existing transition (preserving trigger) and leave
-            // any additional ones on state as siblings.
-            if (!handled && state && funcs) {
-                const funcInfo = funcs.get(funcName);
-                if (funcInfo) {
-                    const prevCount = state.transitions.length;
-                    inlineUserFunction(expr, funcInfo.func, state, vars, funcs);
-                    // Merge the first inlined transition into the current one
-                    if (state.transitions.length > prevCount) {
-                        const inlined = state.transitions.splice(prevCount, 1)[0]!;
-                        mergeTransitionFields(trans, inlined);
-                    }
-                }
-            }
-        }
-    }
-}
-
-/**
- * Process a transition-modifying call (reply, goTo, action, journal, etc.)
- * Works with state, single transition, or extend context.
- *
- * Context interface:
- *   - getLastTransition(): returns the last transition or undefined
- *   - addTransition(trans): adds a new transition
- */
-function processTransitionCall(
-    funcName: string,
-    args: Node[],
-    expr: CallExpression,
-    context: {
-        getLastTransition(): TDTransition | undefined;
-        addTransition(trans: TDTransition): void;
-    },
-    vars: VarsContext
-) {
-    const lineNumber = expr.getStartLineNumber();
-
-    switch (funcName) {
-        case "reply":
-            validateArgs("reply", args, 1, lineNumber);
-            context.addTransition({
-                reply: expressionToText(args[0] as Expression, vars),
-                next: { type: TDTransitionType.Exit },
-            });
-            break;
-
-        case "goTo": {
-            validateArgs("goTo", args, 1, lineNumber);
-            const target = resolveStringExpr(args[0] as Expression, vars);
-            const lastTrans = context.getLastTransition();
-            if (lastTrans) {
-                lastTrans.next = { type: TDTransitionType.Goto, target };
-            } else {
-                context.addTransition({ next: { type: TDTransitionType.Goto, target } });
-            }
-            break;
-        }
-
-        case "exit": {
-            const lastTrans = context.getLastTransition();
-            if (lastTrans) {
-                lastTrans.next = { type: TDTransitionType.Exit };
-            } else {
-                context.addTransition({ next: { type: TDTransitionType.Exit } });
-            }
-            break;
-        }
-
-        case "action": {
-            validateArgs("action", args, 1, lineNumber);
-            const actionStr = args.map(a => expressionToActionString(a as Expression, vars)).join(" ");
-            const lastTrans = context.getLastTransition();
-            if (lastTrans) {
-                lastTrans.action = actionStr;
-            } else {
-                context.addTransition({ action: actionStr, next: { type: TDTransitionType.Exit } });
-            }
-            break;
-        }
-
-        case "journal":
-            setTransitionTextField(context, "journal", args, lineNumber, funcName, vars);
-            break;
-
-        case "solvedJournal":
-            setTransitionTextField(context, "solvedJournal", args, lineNumber, funcName, vars);
-            break;
-
-        case "unsolvedJournal":
-            setTransitionTextField(context, "unsolvedJournal", args, lineNumber, funcName, vars);
-            break;
-
-        case "flags": {
-            validateArgs("flags", args, 1, lineNumber);
-            const lastTrans = context.getLastTransition();
-            if (!lastTrans) {
-                throw new Error(`flags() must come after a transition at ${lineNumber}`);
-            }
-            lastTrans.flags = parseRequiredNumber(args[0]!, "flags", lineNumber);
-            break;
-        }
-
-        case "extern": {
-            validateArgs("extern", args, 2, lineNumber);
-            const externNext: TDTransition["next"] = {
-                type: TDTransitionType.Extern,
-                filename: utils.stripQuotes(args[0]!.getText()), // Guaranteed by validateArgs
-                target: utils.stripQuotes(args[1]!.getText()), // Guaranteed by validateArgs
-            };
-            const lastTrans = context.getLastTransition();
-            if (lastTrans) {
-                lastTrans.next = externNext;
-            } else {
-                context.addTransition({ next: externNext });
-            }
-            break;
-        }
-
-        default:
-            return false; // Not handled
-    }
-
-    return true; // Handled
-}
-
-/**
- * Set a text field (journal/solvedJournal/unsolvedJournal) on last transition.
- * Inlined version that calls expressionToText directly with vars.
- */
-function setTransitionTextField(
-    context: { getLastTransition(): TDTransition | undefined },
-    field: "journal" | "solvedJournal" | "unsolvedJournal",
-    args: Node[],
-    lineNumber: number,
-    funcName: string,
-    vars: VarsContext
-) {
-    validateArgs(funcName, args, 1, lineNumber);
-    const lastTrans = context.getLastTransition();
-    if (!lastTrans) {
-        throw new Error(`${funcName}() must come after a transition at ${lineNumber}`);
-    }
-    lastTrans[field] = expressionToText(args[0] as Expression, vars);
-}
-
-// =========================================================================
-// Extend Processing
-// =========================================================================
-
-/**
- * Process statements in extend block to build transitions.
- * Similar to processStateStatement but builds transitions directly.
- */
-function processExtendStatements(
-    statements: Statement[],
-    transitions: TDTransition[],
-    vars: VarsContext
-) {
-    for (const stmt of statements) {
-        if (stmt.isKind(SyntaxKind.IfStatement)) {
-            // if (trigger) { ... } - transition with trigger
-            const ifStmt = stmt as IfStatement;
-            const trigger = expressionToTrigger(ifStmt.getExpression(), vars);
-            const thenStmts = utils.getBlockStatements(ifStmt.getThenStatement());
-
-            // Check if the then-block has a single chain expression
-            if (thenStmts.length === 1 && thenStmts[0]?.isKind(SyntaxKind.ExpressionStatement)) {
-                const innerExpr = thenStmts[0].getExpression();
-                if (isChainExpression(innerExpr)) {
-                    const trans = parseTransitionChain(innerExpr as CallExpression, vars);
-                    trans.trigger = trigger;
-                    transitions.push(trans);
-                    continue;
-                }
-            }
-
-            // Multi-statement then block or non-chain expression
-            const trans: TDTransition = {
-                trigger,
-                next: { type: TDTransitionType.Exit },
-            };
-
-            for (const s of thenStmts) {
-                processTransitionStatement(s, trans, vars);
-            }
-
-            transitions.push(trans);
-        } else if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-            const expr = stmt.getExpression();
-
-            // Check for method-chained transition
-            if (isChainExpression(expr)) {
-                const trans = parseTransitionChain(expr as CallExpression, vars);
-                transitions.push(trans);
-                continue;
-            }
-
-            // Expression statement - could be reply(), goTo(), action(), etc.
-            if (Node.isCallExpression(expr)) {
-                const funcName = expr.getExpression().getText();
-                const args = expr.getArguments();
-
-                // Create context for transitions array
-                const context = {
-                    getLastTransition: () => transitions[transitions.length - 1],
-                    addTransition: (trans: TDTransition) => transitions.push(trans),
-                };
-
-                processTransitionCall(funcName, args, expr, context, vars);
-            }
-        } else if (stmt.isKind(SyntaxKind.ForOfStatement)) {
-            // Unroll loop
-            unrollForOf(stmt as ForOfStatement, vars, (s) => {
-                processExtendStatements([s], transitions, vars);
-            });
-        } else if (stmt.isKind(SyntaxKind.ForStatement)) {
-            // Unroll loop
-            unrollFor(stmt as ForStatement, vars, (s) => {
-                processExtendStatements([s], transitions, vars);
-            });
+            processTransitionStatement(s, elseTrans, vars, onInline);
         }
     }
 }
@@ -648,134 +380,6 @@ function inlineUserFunction(
     for (const [key, value] of savedVars) {
         vars.set(key, value);
     }
-}
-
-// =========================================================================
-// Loop Unrolling
-// =========================================================================
-
-/**
- * Unroll a for-of loop.
- * Supports both simple variables and array destructuring patterns.
- */
-function unrollForOf(
-    forOf: ForOfStatement,
-    vars: VarsContext,
-    onStatement: (s: Statement) => void
-) {
-    const arrayExpr = forOf.getExpression();
-    const elements = resolveArrayElements(arrayExpr, vars);
-
-    if (!elements) {
-        throw new Error(`Cannot unroll for-of: array "${arrayExpr.getText()}" not resolvable`);
-    }
-
-    const initializer = forOf.getInitializer();
-    const bodyStmts = utils.getBlockStatements(forOf.getStatement());
-
-    // Check for array destructuring pattern: const [a, b, c] of array
-    const bindingPattern = initializer.getDescendantsOfKind(SyntaxKind.ArrayBindingPattern)[0];
-
-    if (bindingPattern) {
-        // Destructuring: extract binding element names
-        const bindingNames = utils.getBindingNames(bindingPattern);
-
-        for (const element of elements) {
-            const values = utils.parseArrayLiteral(element);
-            if (!values) {
-                throw new Error(`Cannot destructure "${element}" - not a valid array literal`);
-            }
-
-            // Set each destructured variable
-            for (let i = 0; i < bindingNames.length; i++) {
-                const name = bindingNames[i];
-                if (name) {
-                    vars.set(name, values[i] ?? "undefined");
-                }
-            }
-
-            for (const stmt of bodyStmts) {
-                onStatement(stmt);
-            }
-        }
-
-        // Clean up all destructured variables
-        for (const name of bindingNames) {
-            if (name) {
-                vars.delete(name);
-            }
-        }
-    } else {
-        // Simple variable: const item of array
-        const loopVar = initializer.getText().replace(/^const\s+/, "").replace(/^let\s+/, "");
-
-        for (const element of elements) {
-            vars.set(loopVar, element);
-            for (const stmt of bodyStmts) {
-                onStatement(stmt);
-            }
-        }
-
-        vars.delete(loopVar);
-    }
-}
-
-/**
- * Unroll a for loop.
- */
-function unrollFor(
-    forStmt: ForStatement,
-    vars: VarsContext,
-    onStatement: (s: Statement) => void
-) {
-    const initializer = forStmt.getInitializer();
-    if (!initializer || !initializer.isKind(SyntaxKind.VariableDeclarationList)) {
-        throw new Error("Cannot unroll for loop: complex initializer");
-    }
-
-    const decls = initializer.getDeclarations();
-    const firstDecl = decls[0];
-    if (!firstDecl) {
-        throw new Error("Cannot unroll for loop: no variable declaration");
-    }
-
-    const loopVar = firstDecl.getName();
-    const initValue = utils.evaluateNumeric(firstDecl.getInitializer(), vars);
-    if (initValue === undefined) {
-        throw new Error("Cannot unroll for loop: non-numeric initializer");
-    }
-
-    const condition = forStmt.getCondition();
-    if (!condition) {
-        throw new Error("Cannot unroll for loop: no condition");
-    }
-
-    const incrementor = forStmt.getIncrementor();
-    if (!incrementor) {
-        throw new Error("Cannot unroll for loop: no incrementor");
-    }
-
-    const increment = utils.parseIncrement(incrementor.getText());
-    const bodyStmts = utils.getBlockStatements(forStmt.getStatement());
-
-    let current = initValue;
-    let iterations = 0;
-
-    while (utils.evaluateCondition(condition.getText(), loopVar, current, vars)) {
-        if (iterations >= utils.MAX_LOOP_ITERATIONS) {
-            throw new Error(`Loop exceeded ${utils.MAX_LOOP_ITERATIONS} iterations`);
-        }
-
-        vars.set(loopVar, current.toString());
-        for (const stmt of bodyStmts) {
-            onStatement(stmt);
-        }
-
-        current += increment;
-        iterations++;
-    }
-
-    vars.delete(loopVar);
 }
 
 export {

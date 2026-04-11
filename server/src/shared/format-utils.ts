@@ -55,16 +55,27 @@ export function createFullDocumentEdit(originalText: string, newText: string): T
 const WEIDU_MULTI_TILDE_COUNT = 5;
 
 /**
- * Strip comments from WeiDU text, respecting string literals.
- * Handles: ~string~, "string", ~~~~~string~~~~~
+ * Options for stripCommentsCommon.
+ * When handleTildeStrings is true, tilde-delimited WeiDU string literals are
+ * preserved before the shared double-quote / comment handling runs.
  */
-export function stripCommentsWeidu(text: string): string {
+interface StripCommentsOptions {
+    readonly handleTildeStrings: boolean;
+}
+
+/**
+ * Shared comment-stripping implementation for Fallout SSL and WeiDU.
+ * Preserves double-quoted string literals and optionally tilde-delimited
+ * WeiDU string literals (~...~ and ~~~~~...~~~~~).
+ * Removes line comments (//) and block comments.
+ */
+function stripCommentsCommon(text: string, options: StripCommentsOptions): string {
     let result = "";
     let i = 0;
     while (i < text.length) {
         // Tilde strings: WeiDU uses 1 tilde or 5 tildes as delimiters
         // ~content~ or ~~~~~content~~~~~
-        if (text[i] === "~") {
+        if (options.handleTildeStrings && text[i] === "~") {
             const start = i;
             let tildeCount = 0;
             while (i < text.length && text[i] === "~") {
@@ -112,6 +123,14 @@ export function stripCommentsWeidu(text: string): string {
         result += text[i++];
     }
     return result;
+}
+
+/**
+ * Strip comments from WeiDU text, respecting string literals.
+ * Handles: ~string~, "string", ~~~~~string~~~~~
+ */
+export function stripCommentsWeidu(text: string): string {
+    return stripCommentsCommon(text, { handleTildeStrings: true });
 }
 
 /** WeiDU token types for formatting. */
@@ -266,33 +285,7 @@ export function normalizeWhitespaceWeidu(text: string): string {
  * Handles: "string" only
  */
 export function stripCommentsFalloutSsl(text: string): string {
-    let result = "";
-    let i = 0;
-    while (i < text.length) {
-        // Double-quoted strings
-        if (text[i] === '"') {
-            const start = i++;
-            while (i < text.length && text[i] !== '"') {
-                if (text[i] === "\\") i++; // Skip escaped char
-                i++;
-            }
-            result += text.slice(start, ++i);
-            continue;
-        }
-        // Block comments
-        if (text[i] === "/" && text[i + 1] === "*") {
-            const end = text.indexOf("*/", i + 2);
-            i = end !== -1 ? end + 2 : text.length;
-            continue;
-        }
-        // Line comments
-        if (text[i] === "/" && text[i + 1] === "/") {
-            while (i < text.length && text[i] !== "\n") i++;
-            continue;
-        }
-        result += text[i++];
-    }
-    return result;
+    return stripCommentsCommon(text, { handleTildeStrings: false });
 }
 
 /**

@@ -39,10 +39,10 @@ export const INT_TOKEN_TYPE = "int";
  */
 export const CELL_2DA_C0 = "2da-c0" as const;
 export const CELL_2DA_C1 = "2da-c1" as const;
-export const CELL_2DA_C2 = "2da-c2" as const;
-export const CELL_2DA_C3 = "2da-c3" as const;
-export const CELL_2DA_C4 = "2da-c4" as const;
-export const CELL_2DA_C5 = "2da-c5" as const;
+const CELL_2DA_C2 = "2da-c2" as const;
+const CELL_2DA_C3 = "2da-c3" as const;
+const CELL_2DA_C4 = "2da-c4" as const;
+const CELL_2DA_C5 = "2da-c5" as const;
 
 export const CELL_2DA_COL_TYPES = [
     CELL_2DA_C0,

@@ -6,6 +6,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { TranspileError } from "../server/src/shared/transpile-error";
 
 export type FileResult = "changed" | "unchanged" | "error";
 export type OutputMode = "save" | "stdout" | "check" | "save-and-check";
@@ -86,8 +87,16 @@ export async function safeProcess(
     try {
         return await fn();
     } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.error(`${filePath}: ${msg}`);
+        if (err instanceof TranspileError) {
+            const loc = err.location;
+            const file = loc.file ?? filePath;
+            const linePart = loc.line !== undefined ? `:${loc.line}` : "";
+            const colPart = loc.column !== undefined ? `:${loc.column}` : "";
+            console.error(`${file}${linePart}${colPart}: ${err.message}`);
+        } else {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.error(`${filePath}: ${msg}`);
+        }
         return "error";
     }
 }

@@ -6,19 +6,17 @@
 
 import { describe, expect, it } from "vitest";
 import { Project } from "ts-morph";
-import { TDParser } from "../src/td/parse";
+import { parse } from "../src/td/parse";
 import { emitD } from "../src/td/emit";
 import { extractTraTag } from "../src/transpiler-utils";
 import type { TDScript } from "../src/td/types";
 import { detectOrphansFromOriginal, mergeWarnings } from "../src/td/index";
 
 describe("TD state resolution", () => {
-    const parser = new TDParser();
-
     function parseIR(code: string): TDScript {
         const project = new Project({ useInMemoryFileSystem: true });
         const sourceFile = project.createSourceFile("test.td", code);
-        return { ...parser.parse(sourceFile), traTag: extractTraTag(code) };
+        return { ...parse(sourceFile), traTag: extractTraTag(code) };
     }
 
     function transpile(code: string): string {

@@ -15,6 +15,7 @@ import { promises as fsp } from "fs";
 import * as path from "path";
 import { conlog, uriToPath } from "../common";
 import { extractTraTag } from "../transpiler-utils";
+import { TranspileError } from "./transpile-error";
 
 /**
  * Configuration for a transpiler instance.
@@ -71,7 +72,12 @@ export function createTranspiler<TResult>(config: TranspilerConfig<TResult>) {
             validateExtension(filePath);
 
             const traTag = extractTraTag(text);
-            const result = await config.transpileCore(filePath, text, traTag);
+            let result: TResult;
+            try {
+                result = await config.transpileCore(filePath, text, traTag);
+            } catch (e) {
+                throw TranspileError.wrap(e, { file: filePath });
+            }
             const output = config.getOutput(result);
 
             const lowerPath = filePath.toLowerCase();
@@ -91,7 +97,11 @@ export function createTranspiler<TResult>(config: TranspilerConfig<TResult>) {
         async transpile(filePath: string, text: string): Promise<TResult> {
             validateExtension(filePath);
             const traTag = extractTraTag(text);
-            return config.transpileCore(filePath, text, traTag);
+            try {
+                return await config.transpileCore(filePath, text, traTag);
+            } catch (e) {
+                throw TranspileError.wrap(e, { file: filePath });
+            }
         },
     };
 }

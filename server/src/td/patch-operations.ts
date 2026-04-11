@@ -37,6 +37,7 @@ import {
     parseNumberArray,
     parseUnless,
 } from "./parse-helpers";
+import { TranspileError } from "../shared/transpile-error";
 import {
     expressionToTrigger,
     expressionToAction,
@@ -51,7 +52,7 @@ import type { FuncsContext } from "./state-transitions";
 function transformAlterTrans(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 4) {
-        throw new Error(`alterTrans() requires 4 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `alterTrans() requires 4 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -60,7 +61,7 @@ function transformAlterTrans(call: CallExpression, vars: VarsContext): TDConstru
     const changesObj = args[3];
 
     if (!Node.isObjectLiteralExpression(changesObj)) {
-        throw new Error(`alterTrans() fourth argument must be an object at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `alterTrans() fourth argument must be an object`);
     }
 
     const changes: TDAlterTrans["changes"] = {};
@@ -103,7 +104,7 @@ function transformAlterTrans(call: CallExpression, vars: VarsContext): TDConstru
 function transformAddStateTrigger(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 3) {
-        throw new Error(`addStateTrigger() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `addStateTrigger() requires at least 3 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -128,7 +129,7 @@ function transformAddStateTrigger(call: CallExpression, vars: VarsContext): TDCo
 function transformAddTransTrigger(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 3) {
-        throw new Error(`addTransTrigger() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `addTransTrigger() requires at least 3 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -176,7 +177,7 @@ function transformAddTransTrigger(call: CallExpression, vars: VarsContext): TDCo
 function transformAddTransAction(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 4) {
-        throw new Error(`addTransAction() requires at least 4 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `addTransAction() requires at least 4 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -209,7 +210,7 @@ function transformReplaceTrans(
     const funcName = op === TDPatchOp.ReplaceTransTrigger ? "replaceTransTrigger" : "replaceTransAction";
 
     if (args.length < 5) {
-        throw new Error(`${funcName}() requires at least 5 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `${funcName}() requires at least 5 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -245,7 +246,7 @@ function transformReplaceText(
     const funcName = op === TDPatchOp.ReplaceTriggerText ? "replaceTriggerText" : "replaceActionText";
 
     if (args.length < 3) {
-        throw new Error(`${funcName}() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `${funcName}() requires at least 3 arguments`);
     }
 
     const filenamesArg = args[0];
@@ -257,7 +258,7 @@ function transformReplaceText(
     } else if (Node.isArrayLiteralExpression(filenamesArg)) {
         filenames = filenamesArg.getElements().map((e) => resolveStringExpr(e as Expression, vars));
     } else {
-        throw new Error(`${funcName}() first argument must be a string or array of strings at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `${funcName}() first argument must be a string or array of strings`);
     }
 
     // Safe: args.length >= 3 validated above
@@ -282,7 +283,7 @@ function transformReplaceText(
 function transformSetWeight(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 3) {
-        throw new Error(`setWeight() requires 3 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `setWeight() requires 3 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -305,7 +306,7 @@ function transformSetWeight(call: CallExpression, vars: VarsContext): TDConstruc
 function transformReplaceSay(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 3) {
-        throw new Error(`replaceSay() requires 3 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `replaceSay() requires 3 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -328,7 +329,7 @@ function transformReplaceSay(call: CallExpression, vars: VarsContext): TDConstru
 function transformReplaceStateTrigger(call: CallExpression, vars: VarsContext): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 3) {
-        throw new Error(`replaceStateTrigger() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `replaceStateTrigger() requires at least 3 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
@@ -358,14 +359,14 @@ function transformReplace(
 ): TDConstruct[] | null {
     const args = call.getArguments();
     if (args.length < 2) {
-        throw new Error(`replace() requires 2 arguments at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `replace() requires 2 arguments`);
     }
 
     const filename = resolveStringExpr(args[0] as Expression, vars);
     const statesObj = args[1];
 
     if (!Node.isObjectLiteralExpression(statesObj)) {
-        throw new Error(`replace() second argument must be an object literal at ${call.getStartLineNumber()}`);
+        throw TranspileError.fromNode(call, `replace() second argument must be an object literal`);
     }
 
     const replacements = new Map<number, TDState>();
@@ -376,7 +377,7 @@ function transformReplace(
             const funcExpr = prop.getInitializer();
 
             if (!funcExpr || !Node.isFunctionExpression(funcExpr)) {
-                throw new Error(`replace() state ${stateNum} must be a function at ${call.getStartLineNumber()}`);
+                throw TranspileError.fromNode(call, `replace() state ${stateNum} must be a function`);
             }
 
             // FunctionExpression has similar structure to FunctionDeclaration for our parsing needs
@@ -385,7 +386,7 @@ function transformReplace(
             const state = transformFunctionToState(funcDecl, vars, funcs);
 
             if (!state) {
-                throw new Error(`replace() failed to parse state ${stateNum} at ${call.getStartLineNumber()}`);
+                throw TranspileError.fromNode(call, `replace() failed to parse state ${stateNum}`);
             }
 
             // Override label with the numeric state

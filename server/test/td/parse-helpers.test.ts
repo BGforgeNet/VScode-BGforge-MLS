@@ -183,11 +183,21 @@ describe("validateArgs", () => {
 
     it("throws when args below minimum", () => {
         const args = [stmtNode("1")];
-        expect(() => validateArgs("myFunc", args, 2, 5)).toThrow("myFunc() requires at least 2 arguments at 5");
+        expect(() => validateArgs("myFunc", args, 2, 5)).toThrow(
+            expect.objectContaining({
+                message: "myFunc() requires at least 2 arguments",
+                location: expect.objectContaining({ line: 5 }),
+            }),
+        );
     });
 
     it("uses singular 'argument' for minArgs=1", () => {
-        expect(() => validateArgs("myFunc", [], 1, 3)).toThrow("at least 1 argument at 3");
+        expect(() => validateArgs("myFunc", [], 1, 3)).toThrow(
+            expect.objectContaining({
+                message: expect.stringContaining("at least 1 argument"),
+                location: expect.objectContaining({ line: 3 }),
+            }),
+        );
     });
 });
 

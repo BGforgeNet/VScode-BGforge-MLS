@@ -18,6 +18,7 @@ import { BAFCondition, BAFOrGroup, BAFTopCondition } from "./ir";
 import { dnfToCnf } from "./cnf";
 import * as utils from "../transpiler-utils";
 import type { TransformerContext } from "./transformer-context";
+import { TranspileError } from "../shared/transpile-error";
 
 /**
  * Build a condition for a switch case by augmenting the switch expression with the case value.
@@ -40,7 +41,8 @@ function buildSwitchCondition(ctx: TransformerContext, switchExpr: Expression, c
         };
     }
 
-    throw new Error(
+    throw TranspileError.fromNode(
+        switchExpr,
         `Switch expression "${switchExpr.getText()}" is not supported. ` +
         `Only function call expressions (like Global()) are supported in switch statements.`
     );
@@ -99,7 +101,8 @@ function transformConditionExpr(ctx: TransformerContext, expr: Expression): BAFT
                 const inner = operand.getExpression();
                 if (Node.isBinaryExpression(inner) && inner.getOperatorToken().getKind() === SyntaxKind.BarBarToken) {
                     // !(a || b) → !a && !b - apply De Morgan
-                    throw new Error(
+                    throw TranspileError.fromNode(
+                        inner,
                         `Cannot represent "!(${inner.getText()})" in BAF.\n` +
                         `Negation of OR groups is not supported. Refactor to avoid this pattern.`
                     );
@@ -210,7 +213,7 @@ function inlineFunctionConditions(ctx: TransformerContext, call: CallExpression,
     // Parse the substituted return expression
     const expr = ctx.parseExpressionFromText(returnText);
     if (!expr) {
-        throw new Error("Failed to parse return expression");
+        throw new TranspileError("Failed to parse return expression");
     }
 
     // Transform the parsed expression using the full condition transformer
@@ -225,7 +228,7 @@ function inlineFunctionAsSingleCondition(ctx: TransformerContext, call: CallExpr
     const conditions = inlineFunctionConditions(ctx, call, funcDecl);
 
     if (conditions.length !== 1) {
-        throw new Error(
+        throw new TranspileError(
             `Cannot use function "${funcDecl.getName()}" inside OR group: ` +
             `it returns ${conditions.length} conditions, but OR elements must be single conditions.`
         );
@@ -233,10 +236,10 @@ function inlineFunctionAsSingleCondition(ctx: TransformerContext, call: CallExpr
 
     const cond = conditions[0];
     if (!cond) {
-        throw new Error(`Function "${funcDecl.getName()}" returned no conditions`);
+        throw new TranspileError(`Function "${funcDecl.getName()}" returned no conditions`);
     }
     if ("conditions" in cond) {
-        throw new Error(
+        throw new TranspileError(
             `Cannot use function "${funcDecl.getName()}" inside OR group: ` +
             `it returns an OR group, which cannot be nested inside another OR.`
         );

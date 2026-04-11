@@ -13,6 +13,7 @@ import {
 import { BAFAction } from "./ir";
 import * as utils from "../transpiler-utils";
 import type { TransformerContext } from "./transformer-context";
+import { TranspileError } from "../shared/transpile-error";
 
 /**
  * Unroll a for-of loop, calling the callback for each element.
@@ -24,7 +25,7 @@ function unrollForOf(ctx: TransformerContext, forOf: ForOfStatement, onIteration
     const elements = ctx.resolveArrayElements(arrayExpr);
 
     if (!elements) {
-        throw new Error(`Cannot unroll for-of: array expression "${arrayExpr.getText()}" is not resolvable`);
+        throw TranspileError.fromNode(arrayExpr, `Cannot unroll for-of: array expression "${arrayExpr.getText()}" is not resolvable`);
     }
 
     const initializer = forOf.getInitializer();
@@ -39,7 +40,7 @@ function unrollForOf(ctx: TransformerContext, forOf: ForOfStatement, onIteration
         for (const element of elements) {
             const values = utils.parseArrayLiteral(element);
             if (!values) {
-                throw new Error(`Cannot destructure "${element}" - not a valid array literal`);
+                throw new TranspileError(`Cannot destructure "${element}" - not a valid array literal`);
             }
 
             // Set each destructured variable
@@ -79,32 +80,32 @@ function unrollForOf(ctx: TransformerContext, forOf: ForOfStatement, onIteration
 function unrollFor(ctx: TransformerContext, forStmt: ForStatement, onIteration: () => void): void {
     const initializer = forStmt.getInitializer();
     if (!initializer || !initializer.isKind(SyntaxKind.VariableDeclarationList)) {
-        throw new Error("Cannot unroll for loop: complex initializer");
+        throw new TranspileError("Cannot unroll for loop: complex initializer");
     }
 
     const decls = initializer.getDeclarations();
     if (decls.length !== 1) {
-        throw new Error("Cannot unroll for loop: multi-variable initializer");
+        throw new TranspileError("Cannot unroll for loop: multi-variable initializer");
     }
 
     const firstDecl = decls[0];
     if (!firstDecl) {
-        throw new Error("Cannot unroll for loop: no declarations");
+        throw new TranspileError("Cannot unroll for loop: no declarations");
     }
     const loopVar = firstDecl.getName();
     const initValue = utils.evaluateNumeric(firstDecl.getInitializer(), ctx.vars);
     if (initValue === undefined) {
-        throw new Error("Cannot unroll for loop: non-numeric initializer");
+        throw new TranspileError("Cannot unroll for loop: non-numeric initializer");
     }
 
     const condition = forStmt.getCondition();
     if (!condition) {
-        throw new Error("Cannot unroll for loop: no condition");
+        throw new TranspileError("Cannot unroll for loop: no condition");
     }
 
     const incrementor = forStmt.getIncrementor();
     if (!incrementor) {
-        throw new Error("Cannot unroll for loop: no incrementor");
+        throw new TranspileError("Cannot unroll for loop: no incrementor");
     }
 
     const increment = utils.parseIncrement(incrementor.getText());
@@ -113,7 +114,7 @@ function unrollFor(ctx: TransformerContext, forStmt: ForStatement, onIteration: 
 
     while (utils.evaluateCondition(condition.getText(), loopVar, current, ctx.vars)) {
         if (iterations >= utils.MAX_LOOP_ITERATIONS) {
-            throw new Error(
+            throw new TranspileError(
                 `Loop exceeded maximum ${utils.MAX_LOOP_ITERATIONS} iterations. ` +
                 `This likely indicates an infinite loop or a design issue. ` +
                 `BAF scripts should not need many iterations.`

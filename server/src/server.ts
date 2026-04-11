@@ -56,6 +56,7 @@ import { weiduTp2Provider } from "./weidu-tp2/provider";
 import { initLspConnection } from "./lsp-connection";
 import { initSettingsService } from "./settings-service";
 import { getServerCapabilities } from "./server-capabilities";
+import { UriDebouncer } from "./core/uri-debouncer";
 import {
     LSP_COMMAND_PARSE_DIALOG,
     NOTIFICATION_LOAD_FINISHED,
@@ -92,15 +93,15 @@ const initialized = new Promise<void>((resolve) => { resolveInitialized = resolv
 
 // Debouncing for file data reloads on content changes.
 // Uses NormalizedUri keys to ensure consistent matching regardless of URI encoding.
-const pendingReloads = new Map<NormalizedUri, NodeJS.Timeout>();
 const RELOAD_DEBOUNCE_MS = 300;
+const fileReloadDebouncer = new UriDebouncer<NormalizedUri>(RELOAD_DEBOUNCE_MS);
 
 // Debouncing for validate-on-type to avoid rapid-fire compilations.
 // Without this, every keystroke with validate="type"/"saveAndType" would spawn a new
 // compiler process. This is especially problematic for SSL compilation which
 // writes a shared .tmp.ssl file — concurrent compilations corrupt each other.
-const pendingCompiles = new Map<NormalizedUri, NodeJS.Timeout>();
 const COMPILE_DEBOUNCE_MS = 300;
+const compileDebouncer = new UriDebouncer<NormalizedUri>(COMPILE_DEBOUNCE_MS);
 
 /** Log and swallow compile errors for fire-and-forget call sites. */
 function logCompileError(err: unknown) {
@@ -477,11 +478,7 @@ documents.onDidSave(async (change) => {
     if (shouldValidateOnSave(validate)) {
         // Cancel any pending debounced compile for this URI — save takes priority
         // and must not race with a stale onDidChangeContent compilation.
-        const pendingCompile = pendingCompiles.get(normUri);
-        if (pendingCompile) {
-            clearTimeout(pendingCompile);
-            pendingCompiles.delete(normUri);
-        }
+        compileDebouncer.cancel(normUri);
         void compile(uri, langId, false, text).catch(logCompileError);
     }
 });
@@ -496,22 +493,14 @@ documents.onDidChangeContent(async (event) => {
     // Keep provider data (function index, etc.) and translation data up to date as content changes.
     // This ensures hover/definition work immediately after edits like rename.
     // Debounced to avoid excessive reloads during rapid typing.
-    const existing = pendingReloads.get(normUri);
-    if (existing) {
-        clearTimeout(existing);
-    }
-    pendingReloads.set(
-        normUri,
-        setTimeout(() => {
-            pendingReloads.delete(normUri);
-            registry.reloadFileData(langId, uri, text);
-            translation?.reloadFile(uri, langId, text);
-            translation?.reloadConsumer(uri, text, langId);
-            if (isHeaderFile(uri)) {
-                connection.languages.semanticTokens.refresh();
-            }
-        }, RELOAD_DEBOUNCE_MS),
-    );
+    fileReloadDebouncer.schedule(normUri, () => {
+        registry.reloadFileData(langId, uri, text);
+        translation?.reloadFile(uri, langId, text);
+        translation?.reloadConsumer(uri, text, langId);
+        if (isHeaderFile(uri)) {
+            connection.languages.semanticTokens.refresh();
+        }
+    });
 
     // Skip compile for files touched by a recent multi-file rename.
     // Keep the URI in the set — onDidSave will remove it after the final skip.
@@ -523,17 +512,9 @@ documents.onDidChangeContent(async (event) => {
 
     const validate = (await getDocumentSettings(uri)).validate;
     if (shouldValidateOnChange(validate)) {
-        const existingCompile = pendingCompiles.get(normUri);
-        if (existingCompile) {
-            clearTimeout(existingCompile);
-        }
-        pendingCompiles.set(
-            normUri,
-            setTimeout(() => {
-                pendingCompiles.delete(normUri);
-                void compile(uri, langId, false, text).catch(logCompileError);
-            }, COMPILE_DEBOUNCE_MS),
-        );
+        compileDebouncer.schedule(normUri, () => {
+            void compile(uri, langId, false, text).catch(logCompileError);
+        });
     }
 });
 
@@ -673,10 +654,8 @@ connection.onRenameRequest((params) => {
 // Clean up timers on shutdown
 connection.onShutdown(() => {
     if (renameSuppressTimer) clearTimeout(renameSuppressTimer);
-    for (const timer of pendingReloads.values()) clearTimeout(timer);
-    pendingReloads.clear();
-    for (const timer of pendingCompiles.values()) clearTimeout(timer);
-    pendingCompiles.clear();
+    fileReloadDebouncer.dispose();
+    compileDebouncer.dispose();
 });
 
 connection.onDocumentFormatting((params) => {

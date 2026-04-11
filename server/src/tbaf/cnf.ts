@@ -7,6 +7,7 @@
  */
 
 import { BAFCondition, BAFOrGroup, BAFTopCondition } from "./ir";
+import { TranspileError } from "../shared/transpile-error";
 
 /** Maximum clauses to generate before erroring (prevents exponential blowup) */
 const MAX_CNF_CLAUSES = 128;
@@ -45,9 +46,9 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
     for (const term of nonEmptyTerms) {
         resultSize *= term.length;
         if (resultSize > maxClauses) {
-            throw new Error(
+            throw new TranspileError(
                 `Condition inversion would produce ${resultSize}+ clauses (limit: ${maxClauses}). ` +
-                    `Simplify the condition or avoid negating complex AND expressions.`,
+                    `Simplify the condition or avoid negating complex AND expressions.`
             );
         }
     }

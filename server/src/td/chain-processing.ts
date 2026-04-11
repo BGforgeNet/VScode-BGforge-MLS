@@ -31,6 +31,7 @@ import {
     expressionToActionString,
     validateArgs,
 } from "./parse-helpers";
+import { TranspileError } from "../shared/transpile-error";
 import {
     expressionToTrigger,
     expressionToText,
@@ -75,17 +76,17 @@ function transformFunctionToChain(
                 } else if (funcName === "action") {
                     // Action after current entry
                     if (args.length === 0) {
-                        throw new Error(`action() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                        throw TranspileError.fromNode(expr, `action() requires at least 1 argument`);
                     }
                     if (!currentEntry) {
-                        throw new Error(`action() must come after a say() statement at ${expr.getStartLineNumber()}`);
+                        throw TranspileError.fromNode(expr, `action() must come after a say() statement`);
                     }
                     currentEntry.action = args.map(a => a.getText()).join(" ");
                 } else if (funcName === "exit") {
                     epilogue = { type: TDEpilogueType.Exit };
                 } else if (funcName === "goTo") {
                     if (args.length < 1 || !args[0]) {
-                        throw new Error(`goTo() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                        throw TranspileError.fromNode(expr, `goTo() requires at least 1 argument`);
                     }
                     epilogue = {
                         type: TDEpilogueType.End,
@@ -147,14 +148,15 @@ function processSayInChain(
     } else if (args.length >= 1 && args[0]) {
         // say(text) - multisay continuation
         if (!currentEntry) {
-            throw new Error(
-                `say(text) without speaker - must use say(speaker, text) first at ${expr.getStartLineNumber()}`
+            throw TranspileError.fromNode(
+                expr,
+                `say(text) without speaker - must use say(speaker, text) first`
             );
         }
         currentEntry.texts.push(expressionToText(args[0] as Expression, vars));
         return currentEntry;
     } else {
-        throw new Error(`say() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+        throw TranspileError.fromNode(expr, `say() requires at least 1 argument`);
     }
 }
 
@@ -320,10 +322,10 @@ function processChainBody(
 
             case "action": {
                 if (args.length === 0) {
-                    throw new Error(`action() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                    throw TranspileError.fromNode(expr, `action() requires at least 1 argument`);
                 }
                 if (!currentEntry) {
-                    throw new Error(`action() must come after say() at ${expr.getStartLineNumber()}`);
+                    throw TranspileError.fromNode(expr, `action() must come after say()`);
                 }
                 currentEntry.action = args.map(a => expressionToActionString(a as Expression, vars)).join(" ");
                 break;
@@ -335,7 +337,7 @@ function processChainBody(
 
             case "goTo": {
                 if (args.length < 1 || !args[0]) {
-                    throw new Error(`goTo() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                    throw TranspileError.fromNode(expr, `goTo() requires at least 1 argument`);
                 }
                 epilogue = {
                     type: TDEpilogueType.End,

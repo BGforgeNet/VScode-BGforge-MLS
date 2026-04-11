@@ -10,6 +10,7 @@ import {
     RESERVED_VAR_NAMES,
     type TsslContext,
 } from './types';
+import { TranspileError } from '../shared/transpile-error';
 
 /**
  * Converts operators from TypeScript to SSL syntax using the AST
@@ -135,7 +136,7 @@ export function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
 
             // Check for forbidden globals
             if (FORBIDDEN_GLOBALS.has(obj)) {
-                throw new Error(`${obj}.${prop} is not available in SSL runtime`);
+                throw TranspileError.fromNode(node, `${obj}.${prop} is not available in SSL runtime`);
             }
 
             // Strip folib_exports. or similar _exports. prefixes
@@ -232,14 +233,14 @@ export function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
  */
 export function convertVarOrConstToVariable(stmt: Node, ctx: TsslContext): string {
     const varStmt = stmt.asKind(SyntaxKind.VariableStatement);
-    if (!varStmt) throw new Error("Statement is not a VariableStatement");
+    if (!varStmt) throw TranspileError.fromNode(stmt, "Statement is not a VariableStatement");
 
     const declList = varStmt.getDeclarationList();
     const keywordNode = declList.getFirstChild();
     const keywordKind = keywordNode ? keywordNode.getKind() : undefined;
 
     if (keywordKind !== SyntaxKind.LetKeyword && keywordKind !== SyntaxKind.ConstKeyword) {
-        throw new Error("VariableStatement is not a let/const declaration");
+        throw TranspileError.fromNode(stmt, "VariableStatement is not a let/const declaration");
     }
 
     // Use AST positions to do precise substitution
@@ -253,7 +254,7 @@ export function convertVarOrConstToVariable(stmt: Node, ctx: TsslContext): strin
     for (const decl of declList.getDeclarations()) {
         const varName = decl.getName();
         if (RESERVED_VAR_NAMES.has(varName)) {
-            throw new Error(`Variable name '${varName}' conflicts with folib export. Use a different name.`);
+            throw TranspileError.fromNode(decl, `Variable name '${varName}' conflicts with folib export. Use a different name.`);
         }
         const initializer = decl.getInitializer();
         if (initializer) {

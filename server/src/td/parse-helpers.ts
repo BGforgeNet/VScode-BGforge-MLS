@@ -14,6 +14,7 @@ import {
 } from "ts-morph";
 import * as utils from "../transpiler-utils";
 import type { VarsContext } from "../transpiler-utils";
+import { TranspileError } from "../shared/transpile-error";
 
 /** Helper functions that should be resolved at evaluation time, not stored as raw text. */
 const RESOLVED_HELPERS = new Set(["obj", "$obj", "tra", "$tra", "tlk", "$tlk"]);
@@ -163,7 +164,10 @@ function expressionToActionString(expr: Expression, vars: VarsContext): string {
 function validateArgs(funcName: string, args: Node[], minArgs: number, lineNumber: number) {
     if (args.length < minArgs) {
         const argWord = minArgs === 1 ? "argument" : "arguments";
-        throw new Error(`${funcName}() requires at least ${minArgs} ${argWord} at ${lineNumber}`);
+        throw new TranspileError(
+            `${funcName}() requires at least ${minArgs} ${argWord}`,
+            { line: lineNumber }
+        );
     }
 }
 
@@ -195,7 +199,7 @@ function parseStateList(expr: Expression, vars: VarsContext): (string | number)[
  */
 function parseNumberArray(expr: Expression): number[] {
     if (!Node.isArrayLiteralExpression(expr)) {
-        throw new Error(`Expected array of numbers at ${expr.getStartLineNumber()}`);
+        throw TranspileError.fromNode(expr, `Expected array of numbers`);
     }
 
     return expr.getElements().map((e) => Number(e.getText()));
@@ -257,7 +261,10 @@ function parseStringOption(arg: Node | undefined, propertyName: string): string 
 function parseRequiredNumber(arg: Node, context: string, lineNumber: number): number {
     const value = Number(arg.getText());
     if (Number.isNaN(value)) {
-        throw new Error(`Expected numeric value for ${context}, got "${arg.getText()}" at ${lineNumber}`);
+        throw new TranspileError(
+            `Expected numeric value for ${context}, got "${arg.getText()}"`,
+            { line: lineNumber }
+        );
     }
     return value;
 }

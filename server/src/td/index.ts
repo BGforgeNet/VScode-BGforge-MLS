@@ -17,7 +17,7 @@ import { EXT_TD } from "../core/languages";
 import { createTranspiler } from "../shared/transpiler-pipeline";
 import { bundle } from "../tbaf/bundle";
 import { emitD } from "./emit";
-import { TDParser } from "./parse";
+import { parse } from "./parse";
 import { collectExplicitLabels } from "./state-resolution";
 import { ORPHAN_WARNING_TEMPLATE, type TDScript, type TDWarning } from "./types";
 
@@ -45,8 +45,7 @@ const td = createTranspiler<TDTranspileResult>({
         const sourceFile = project.createSourceFile("bundled.ts", bundled);
 
         // 3. Parse AST to IR, using original file path for the header comment
-        const parser = new TDParser();
-        const ir = { ...parser.parse(sourceFile), sourceFile: filePath, traTag };
+        const ir = { ...parse(sourceFile), sourceFile: filePath, traTag };
 
         // 4. Detect orphans from original source (pre-bundling).
         // The parser's own orphan detection runs on bundled code, which may be

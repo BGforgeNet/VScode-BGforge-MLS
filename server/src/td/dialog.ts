@@ -9,7 +9,7 @@ import { uriToPath } from "../common";
 import { extractTraTag } from "../transpiler-utils";
 import { bundle } from "../tbaf/bundle";
 import { emitD } from "./emit";
-import { TDParser } from "./parse";
+import { parse } from "./parse";
 import { parseDDialog, DDialogData } from "../weidu-d/dialog";
 import { isInitialized } from "../weidu-d/parser";
 
@@ -49,8 +49,7 @@ export async function parseTDDialog(uri: string, text: string): Promise<DDialogD
     prevSourceFile = sourceFile;
 
     // 3. Parse AST to IR
-    const parser = new TDParser();
-    const ir = { ...parser.parse(sourceFile), sourceFile: filePath, traTag };
+    const ir = { ...parse(sourceFile), sourceFile: filePath, traTag };
 
     // 4. Emit D text
     const dText = emitD(ir);

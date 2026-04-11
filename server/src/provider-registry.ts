@@ -1,21 +1,16 @@
 /**
  * Provider Registry - manages all language providers and routes requests.
  *
- * This is the central hub for language features. It:
- * 1. Registers providers for each language
- * 2. Initializes them at startup
- * 3. Routes feature requests to the appropriate provider
+ * Central hub for language features: registers providers, initializes them at
+ * startup, and routes feature requests to the appropriate provider.
  *
- * URI normalization: All public methods that accept URIs normalize them
- * before passing to providers. This ensures consistent encoding regardless
- * of whether the URI came from VSCode (may percent-encode e.g. ! as %21)
- * or from pathToFileURL (leaves ! unencoded). See core/normalized-uri.ts.
+ * URI normalization: All public methods that accept URIs normalize them before
+ * passing to providers. See core/normalized-uri.ts.
+ *
+ * File-watching logic: core/file-watcher-manager.ts
+ * Workspace startup indexing: core/workspace-scanner.ts
  */
 
-import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { extname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import {
     CompletionItem,
     DocumentSymbol,
@@ -29,58 +24,43 @@ import {
     SemanticTokens,
     SignatureHelp,
     SymbolInformation,
-    WatchKind,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
-import { FormatResult, HoverResult, LanguageProvider, ProviderContext } from "./language-provider";
-import { conlog, findFiles, pathToUri } from "./common";
+import type { FormatResult, LanguageProvider, ProviderContext } from "./language-provider";
+import { HoverResult } from "./language-provider";
+import { conlog } from "./common";
 import { validLocationOrNull } from "./core/location-utils";
 import { normalizeUri } from "./core/normalized-uri";
 import { decodeWorkspaceSymbolQuery } from "../../shared/protocol";
 import { encodeSemanticTokens } from "./shared/semantic-tokens";
+import { FileWatcherManager } from "./core/file-watcher-manager";
+import { scanWorkspaceFiles } from "./core/workspace-scanner";
 
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
     private context: ProviderContext | undefined;
     /** Maps alias language IDs to their parent provider ID */
     private aliases: Map<string, string> = new Map();
-    /** Maps indexed file extensions to providers (e.g., ".tph" -> weidu-tp2 provider) */
-    private extensionToProvider: Map<string, LanguageProvider> = new Map();
+    private fileWatcher: FileWatcherManager = new FileWatcherManager();
 
-    /**
-     * Register a language provider.
-     */
     register(provider: LanguageProvider): void {
         this.providers.set(provider.id, provider);
         conlog(`Registered provider: ${provider.id}`);
     }
 
-    /**
-     * Register an alias language ID that shares data with an existing provider.
-     * The alias language will use the parent provider for data features.
-     */
+    /** Register an alias language ID that shares data with an existing provider. */
     registerAlias(aliasLangId: string, parentLangId: string): void {
         this.aliases.set(aliasLangId, parentLangId);
         conlog(`Registered alias: ${aliasLangId} -> ${parentLangId}`);
     }
 
-    /**
-     * Resolve a language ID, following aliases if present.
-     */
     private resolveLangId(langId: string): string {
         return this.aliases.get(langId) ?? langId;
     }
 
-    /**
-     * Initialize all registered providers with the given context.
-     */
+    /** Initialize all registered providers sequentially (simpler debugging). */
     async init(context: ProviderContext): Promise<void> {
         this.context = context;
-        // Tree-sitter parsers are already initialized by ParserManager.initAll()
-        // before this method is called. Providers can now init concurrently since
-        // they no longer need sequential parser initialization.
-        // However, we keep sequential init for simplicity — providers are cheap
-        // to init and the ordering makes debugging easier.
         for (const provider of this.providers.values()) {
             try {
                 await provider.init(context);
@@ -89,82 +69,18 @@ class ProviderRegistry {
             }
         }
         conlog(`Initialized ${this.providers.size} providers`);
-
-        // Build extension -> provider map for file watching
-        this.buildExtensionMap();
-
-        // Scan workspace for indexed files and populate provider caches
-        await this.scanWorkspaceFiles(context.workspaceRoot);
+        this.fileWatcher.buildExtensionMap(this.providers.values());
+        await scanWorkspaceFiles(this.providers.values(), this, context.workspaceRoot);
     }
 
-    /**
-     * Build the extension -> provider map from all providers' indexExtensions.
-     */
-    private buildExtensionMap(): void {
-        for (const provider of this.providers.values()) {
-            if (!provider.indexExtensions) continue;
-            for (const ext of provider.indexExtensions) {
-                this.extensionToProvider.set(ext.toLowerCase(), provider);
-            }
-        }
-        conlog(`Built extension map with ${this.extensionToProvider.size} extensions`);
-    }
-
-    /**
-     * Scan workspace for indexed files and reload them through their providers.
-     * Called after providers are initialized to populate indices at startup.
-     *
-     * Uses each provider's indexExtensions to find files and reloadFileData to index them.
-     * This keeps startup scan, file watching, and delete cleanup on the same contract.
-     */
-    async scanWorkspaceFiles(workspaceRoot: string | undefined): Promise<void> {
-        if (!workspaceRoot) {
-            return;
-        }
-
-        for (const provider of this.providers.values()) {
-            if (!provider.indexExtensions || !provider.reloadFileData) {
-                continue;
-            }
-
-            for (const ext of provider.indexExtensions) {
-                // Remove leading dot for findFiles (e.g., ".tph" -> "tph")
-                const extWithoutDot = ext.startsWith(".") ? ext.slice(1) : ext;
-                const files = findFiles(workspaceRoot, extWithoutDot);
-
-                const results = await Promise.allSettled(
-                    files.map(async (relativePath) => {
-                        const absolutePath = join(workspaceRoot, relativePath);
-                        const uri = pathToUri(absolutePath);
-                        const text = await readFile(absolutePath, "utf-8");
-                        this.reloadFileData(provider.id, uri, text);
-                    }),
-                );
-
-                const failures = results.filter((result): result is PromiseRejectedResult => result.status === "rejected");
-                if (failures.length > 0) {
-                    conlog(`Startup scan for ${provider.id} (${ext}) had ${failures.length} read failures`);
-                }
-                if (files.length > 0) {
-                    conlog(`Scanned ${files.length} ${ext} files for ${provider.id}`);
-                }
-            }
-        }
-    }
-
-    /**
-     * Update settings on the shared context so all providers see the change
-     * without requiring a reload. Called from onDidChangeConfiguration.
-     */
+    /** Update settings on the shared context so all providers see the change without a reload. */
     updateSettings(settings: ProviderContext["settings"]): void {
         if (this.context) {
             this.context.settings = settings;
         }
     }
 
-    /**
-     * Get the initialization context. Throws if not initialized.
-     */
+    /** Get the initialization context. Throws if not initialized. */
     getContext(): ProviderContext {
         if (!this.context) {
             throw new Error("ProviderRegistry not initialized");
@@ -172,16 +88,11 @@ class ProviderRegistry {
         return this.context;
     }
 
-    /**
-     * Get a provider by language ID (resolves aliases).
-     */
+    /** Get a provider by language ID (resolves aliases). */
     get(langId: string): LanguageProvider | undefined {
         return this.providers.get(this.resolveLangId(langId));
     }
-
-    /**
-     * Check if a provider exists for the language (resolves aliases).
-     */
+    /** Returns true if a provider (or alias) is registered for the language. */
     has(langId: string): boolean {
         return this.providers.has(this.resolveLangId(langId)) || this.aliases.has(langId);
     }
@@ -312,17 +223,11 @@ class ProviderRegistry {
         if (!provider) {
             return [];
         }
-
-        // Get header/static completions
         const headerItems = provider.getCompletions ? provider.getCompletions(normUri) : [];
-
         let result = [...headerItems];
-
-        // Apply context-based filtering if provider supports it
         if (provider.filterCompletions && position) {
             result = provider.filterCompletions(result, text, position, normUri, triggerCharacter);
         }
-
         return result;
     }
 
@@ -338,10 +243,7 @@ class ProviderRegistry {
 
     /**
      * Get hover info using unified symbol resolution.
-     *
-     * Uses provider.resolveSymbol() which handles ALL merge logic:
-     * - Local symbols (fresh buffer) checked first
-     * - Indexed symbols (headers + static) as fallback, excluding current file
+     * provider.resolveSymbol() checks local symbols first, then indexed/static.
      */
     hover(langId: string, uri: string, symbol: string, text?: string): Hover | null {
         const normUri = normalizeUri(uri);
@@ -349,15 +251,12 @@ class ProviderRegistry {
         if (!provider) {
             return null;
         }
-
         if (text && provider.resolveSymbol) {
             const resolved = provider.resolveSymbol(symbol, text, normUri);
             if (resolved?.hover) {
                 return resolved.hover;
             }
-            return null;
         }
-
         return null;
     }
 
@@ -371,20 +270,15 @@ class ProviderRegistry {
         if (!provider) {
             return null;
         }
-
-        // Try local first (tree-sitter based for current file)
         if (provider.localSignature) {
             const local = provider.localSignature(text, symbol, paramIndex);
             if (local) {
                 return local;
             }
         }
-
-        // Fall back to headers/static
         if (provider.getSignature) {
             return provider.getSignature(normUri, symbol, paramIndex);
         }
-
         return null;
     }
 
@@ -424,72 +318,30 @@ class ProviderRegistry {
     }
 
     // =========================================================================
-    // File watching (for external changes to workspace files)
+    // File watching (delegates to FileWatcherManager)
     // =========================================================================
 
-    /**
-     * Get watch patterns for LSP registration.
-     * Collects all indexExtensions from providers and converts to glob patterns.
-     */
+    /** Get watch patterns for LSP registration. */
     getWatchPatterns(): { globPattern: string; kind: number }[] {
-        const patterns: { globPattern: string; kind: number }[] = [];
-        const watchAll = WatchKind.Create | WatchKind.Change | WatchKind.Delete;
-
-        for (const provider of this.providers.values()) {
-            if (!provider.indexExtensions) continue;
-            for (const ext of provider.indexExtensions) {
-                patterns.push({
-                    globPattern: `**/*${ext}`,
-                    kind: watchAll,
-                });
-            }
-        }
-        return patterns;
+        return this.fileWatcher.getWatchPatterns(this.providers.values());
     }
 
-    /**
-     * Handle a file change event from the workspace.
-     * Routes to the appropriate provider based on file extension.
-     */
+    /** Handle a file change event from the workspace. */
     handleWatchedFileChange(uri: string, changeType: FileChangeType): void {
-        const normUri = normalizeUri(uri);
-        const filePath = fileURLToPath(normUri);
-        const ext = extname(filePath).toLowerCase();
-        const provider = this.extensionToProvider.get(ext);
+        this.fileWatcher.handleWatchedFileChange(uri, changeType);
+    }
 
-        if (!provider) {
-            return;
-        }
-
-        if (changeType === FileChangeType.Deleted) {
-            if (provider.onWatchedFileDeleted) {
-                provider.onWatchedFileDeleted(normUri);
-                conlog(`File deleted, cleared from index: ${filePath}`);
-            }
-        } else {
-            // Created or Changed - reload the file data
-            try {
-                const text = readFileSync(filePath, "utf-8");
-                if (provider.reloadFileData) {
-                    provider.reloadFileData(normUri, text);
-                    conlog(`File ${changeType === FileChangeType.Created ? "created" : "changed"}, reloaded: ${filePath}`);
-                }
-            } catch (error) {
-                conlog(`Failed to read file ${filePath}: ${error}`);
-            }
-        }
+    /** Clear per-document cached data on document close. */
+    handleDocumentClosed(langId: string, uri: string): void {
+        this.fileWatcher.handleDocumentClosed(langId, uri, this);
     }
 
     /**
-     * Handle document close event.
-     * Clears per-document cached data (self maps) to avoid memory leaks.
+     * Scan workspace for indexed files and reload them through their providers.
+     * Called after providers are initialized to populate indices at startup.
      */
-    handleDocumentClosed(langId: string, uri: string): void {
-        const normUri = normalizeUri(uri);
-        const provider = this.get(langId);
-        if (provider?.onDocumentClosed) {
-            provider.onDocumentClosed(normUri);
-        }
+    async scanWorkspaceFiles(workspaceRoot: string | undefined): Promise<void> {
+        await scanWorkspaceFiles(this.providers.values(), this, workspaceRoot);
     }
 }
 

@@ -15,7 +15,7 @@ vi.mock("../../src/server", () => ({
     },
 }));
 
-import { TDParser } from "../../src/td/parse";
+import { parse } from "../../src/td/parse";
 import { emitD } from "../../src/td/emit";
 import { extractTraTag } from "../../src/transpiler-utils";
 import { parseDDialog } from "../../src/weidu-d/dialog";
@@ -23,13 +23,11 @@ import type { DDialogData } from "../../src/weidu-d/dialog";
 import { initParser } from "../../src/weidu-d/parser";
 import type { TDScript } from "../../src/td/types";
 
-const parser = new TDParser();
-
 /** Parse TD source to IR (same as td.test.ts). */
 function parseIR(code: string): TDScript {
     const project = new Project({ useInMemoryFileSystem: true });
     const sourceFile = project.createSourceFile("test.td", code);
-    return { ...parser.parse(sourceFile), traTag: extractTraTag(code) };
+    return { ...parse(sourceFile), traTag: extractTraTag(code) };
 }
 
 /** Full round-trip: TD source -> IR -> D text -> DDialogData. */

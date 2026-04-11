@@ -28,6 +28,7 @@ import type { VarsContext } from "../transpiler-utils";
 import type { FuncsContext, TransformerContext } from "./transformer-context";
 import { buildSwitchCondition, invertConditions, transformConditionExpr } from "./condition-algebra";
 import { unrollFor, unrollForOf, unrollForAsActions, unrollForOfAsActions } from "./loop-unroll";
+import { TranspileError } from "../shared/transpile-error";
 
 export class TBAFTransformer implements TransformerContext {
     vars: VarsContext = new Map();
@@ -209,7 +210,7 @@ export class TBAFTransformer implements TransformerContext {
             if (!clause.isKind(SyntaxKind.CaseClause)) {
                 // Default clauses are not supported in BAF
                 // BAF doesn't have a way to express "none of the above" conditions cleanly
-                throw new Error(
+                throw new TranspileError(
                     `Default case in switch statement is not supported. ` +
                     `BAF cannot represent "none of the above" logic. ` +
                     `Remove the default case or refactor to explicit case values.`

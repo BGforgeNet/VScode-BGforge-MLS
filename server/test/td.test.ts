@@ -5,19 +5,17 @@
 
 import { describe, expect, it } from "vitest";
 import { Project } from "ts-morph";
-import { TDParser } from "../src/td/parse";
+import { parse } from "../src/td/parse";
 import { emitD } from "../src/td/emit";
 import { extractTraTag } from "../src/transpiler-utils";
 import { transformEnums } from "../src/enum-transform";
 import type { TDScript } from "../src/td/types";
 
 describe("TD Transpiler", () => {
-    const parser = new TDParser();
-
     function parseIR(code: string): TDScript {
         const project = new Project({ useInMemoryFileSystem: true });
         const sourceFile = project.createSourceFile("test.td", code);
-        return { ...parser.parse(sourceFile), traTag: extractTraTag(code) };
+        return { ...parse(sourceFile), traTag: extractTraTag(code) };
     }
 
     function transpile(code: string): string {
@@ -1299,4 +1297,35 @@ begin("DLG", [start]);
     // Transitive state collection (Phase 9)
     // =========================================================================
 
+    // =========================================================================
+    // State isolation between parse() calls
+    // =========================================================================
+
+    describe("parse() state isolation", () => {
+        it("does not leak state between calls when first call throws", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+
+            // First call: invalid begin() with no arguments — should throw
+            const badSource = project.createSourceFile("bad.td", `begin();`);
+            expect(() => parse(badSource)).toThrow();
+
+            // Second call: valid source — must succeed without contamination
+            const goodSource = project.createSourceFile("good.td", `
+function start() {
+    say(tra(100));
+    exit();
+}
+begin("MYDLG", [start]);
+`);
+            const ir = parse(goodSource);
+            expect(ir.constructs).toHaveLength(1);
+            // Non-null safe: guarded by toHaveLength(1) assertion above
+            expect(ir.constructs[0]!.type).toBe("begin");
+            if (ir.constructs[0]?.type === "begin") {
+                expect(ir.constructs[0].states).toHaveLength(1);
+                // Non-null safe: guarded by toHaveLength(1) assertion above
+                expect(ir.constructs[0].states[0]!.label).toBe("start");
+            }
+        });
+    });
 });
