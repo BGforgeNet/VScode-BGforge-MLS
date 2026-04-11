@@ -57,6 +57,11 @@ export default defineConfig({
                 "src/td/types.ts",
                 "src/tssl/types.ts",
 
+                // Formatters with no parser dependency
+                "src/infinity-2da/format.ts",
+                "src/weidu-tra/format.ts",
+                "src/fallout-msg/format.ts",
+
                 // weidu-tp2 (most is unit-testable)
                 "src/weidu-tp2/**/*.ts",
                 "src/weidu-d/definition.ts",

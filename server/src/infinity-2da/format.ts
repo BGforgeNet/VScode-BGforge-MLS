@@ -38,11 +38,9 @@ interface Parsed {
     readonly defaultValue: string | null;
     readonly columnNames: readonly string[];
     readonly dataRows: readonly DataRow[];
-    readonly trailingNewline: boolean;
 }
 
 function parse(text: string): Parsed {
-    const trailingNewline = text.endsWith("\n");
     const lines = text.split("\n").map((l) => l.trimEnd());
 
     let cursor = 0;
@@ -85,7 +83,7 @@ function parse(text: string): Parsed {
         dataRows.push({ label, values });
     }
 
-    return { signature, defaultValue, columnNames, dataRows, trailingNewline };
+    return { signature, defaultValue, columnNames, dataRows };
 }
 
 /**
@@ -96,7 +94,7 @@ function parse(text: string): Parsed {
 export function format2da(rawText: string): FormatResult {
     // Strip BOM before any processing; the original is kept only for the document-edit range.
     const text = stripBom(rawText);
-    const { signature, defaultValue, columnNames, dataRows, trailingNewline } = parse(text);
+    const { signature, defaultValue, columnNames, dataRows } = parse(text);
 
     // Bail out only when there is truly nothing to format (no header, no columns, no data).
     // Header-only files (signature + default value, no data) still go through formatting so
@@ -151,7 +149,7 @@ export function format2da(rawText: string): FormatResult {
         outputLines.push((label.padEnd(maxLabelWidth + MIN_GAP) + parts.join("")).trimEnd());
     }
 
-    const formatted = outputLines.join("\n") + (trailingNewline ? "\n" : "");
+    const formatted = outputLines.join("\n") + "\n";
 
     // Identity check against rawText so BOM-only differences still produce an edit.
     if (formatted === rawText) {

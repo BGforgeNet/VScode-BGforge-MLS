@@ -91,9 +91,9 @@ describe("infinity-2da/format", () => {
         expect(fmt(input)).toMatch(/\n$/);
     });
 
-    it("does not add trailing newline when original lacks one", () => {
+    it("adds trailing newline when original lacks one", () => {
         const input = "2DA V1.0\n****\n   Col1\nrow1 val1";
-        expect(fmt(input)).not.toMatch(/\n$/);
+        expect(fmt(input)).toMatch(/\n$/);
     });
 
     it("works without a signature (header-absent files)", () => {

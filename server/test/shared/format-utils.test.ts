@@ -7,6 +7,9 @@ import {
     createFullDocumentEdit,
     stripCommentsWeidu,
     stripCommentsFalloutSsl,
+    stripCommentsTra,
+    stripCommentsFalloutMsg,
+    stripComments2da,
     validateFormatting,
 } from "../../src/shared/format-utils";
 
@@ -243,6 +246,133 @@ describe("shared/format-utils", () => {
             const result = validateFormatting(original, formatted, stripCommentsWeidu);
 
             expect(result).toBeNull();
+        });
+    });
+
+    describe("stripCommentsTra()", () => {
+        it("should remove line comments", () => {
+            const result = stripCommentsTra("@1 = ~text~ // comment\n@2 = ~more~");
+            expect(result).not.toContain("// comment");
+            expect(result).toContain("1");
+            expect(result).toContain("text");
+        });
+
+        it("should remove block comments", () => {
+            const result = stripCommentsTra("/* block */ @1 = ~text~");
+            expect(result).not.toContain("block");
+            expect(result).toContain("text");
+        });
+
+        it("should strip single tilde delimiters, keeping content", () => {
+            const result = stripCommentsTra("@1 = ~hello world~");
+            expect(result).not.toContain("~");
+            expect(result).toContain("hello world");
+        });
+
+        it("should strip multi-tilde delimiters, keeping content", () => {
+            const result = stripCommentsTra("@1 = ~~~~~text with ~ tildes~~~~~");
+            expect(result).not.toContain("~~~~~");
+            expect(result).toContain("text with ~ tildes");
+        });
+
+        it("should strip double-quote delimiters, keeping content", () => {
+            const result = stripCommentsTra('@1 = "double quoted"');
+            expect(result).not.toContain('"');
+            expect(result).toContain("double quoted");
+        });
+
+        it("should handle backslash escapes in double-quoted strings", () => {
+            const result = stripCommentsTra('@1 = "line one\\nnew"');
+            expect(result).not.toContain('"');
+            expect(result).toContain("line one\\nnew");
+        });
+
+        it("should remove [SOUNDFILE] sound references", () => {
+            const result = stripCommentsTra("@100 = ~text~ [SOUND01]");
+            expect(result).not.toContain("[SOUND01]");
+            expect(result).toContain("text");
+        });
+
+        it("should keep entry numbers and @ and = signs", () => {
+            const result = stripCommentsTra("@1 = ~text~");
+            expect(result).toContain("@");
+            expect(result).toContain("1");
+            expect(result).toContain("=");
+        });
+
+        it("should handle empty input", () => {
+            expect(stripCommentsTra("")).toBe("");
+        });
+
+        it("should handle text with no strings or comments", () => {
+            const input = "@1 = ";
+            const result = stripCommentsTra(input);
+            expect(result).toContain("@");
+            expect(result).toContain("1");
+        });
+    });
+
+    describe("stripCommentsFalloutMsg()", () => {
+        it("should remove comment lines (lines not starting with {)", () => {
+            const result = stripCommentsFalloutMsg("This is a comment\n{100}{}{text}");
+            expect(result).not.toContain("This is a comment");
+            expect(result).toContain("100");
+            expect(result).toContain("text");
+        });
+
+        it("should keep entry numbers and text content", () => {
+            const result = stripCommentsFalloutMsg("{100}{audio}{Hello world}");
+            expect(result).toContain("100");
+            expect(result).toContain("Hello world");
+        });
+
+        it("should remove braces from entries", () => {
+            const result = stripCommentsFalloutMsg("{100}{}{text}");
+            expect(result).not.toContain("{");
+            expect(result).not.toContain("}");
+        });
+
+        it("should remove the audio field", () => {
+            const result = stripCommentsFalloutMsg("{100}{audio_file}{text}");
+            expect(result).not.toContain("audio_file");
+            expect(result).toContain("100");
+            expect(result).toContain("text");
+        });
+
+        it("should handle multiline text fields", () => {
+            const result = stripCommentsFalloutMsg("{100}{}{line one\nline two}");
+            expect(result).toContain("100");
+            expect(result).toContain("line one");
+            expect(result).toContain("line two");
+        });
+
+        it("should handle empty input", () => {
+            expect(stripCommentsFalloutMsg("")).toBe("");
+        });
+
+        it("should handle multiple entries", () => {
+            const input = "{100}{}{first}\n{200}{}{second}";
+            const result = stripCommentsFalloutMsg(input);
+            expect(result).toContain("100");
+            expect(result).toContain("first");
+            expect(result).toContain("200");
+            expect(result).toContain("second");
+        });
+    });
+
+    describe("stripComments2da()", () => {
+        it("should return text unchanged (2DA has no comments)", () => {
+            const input = "2DA V1.0\nDEFAULT 0\n  COL1 COL2\nROW1  val1 val2";
+            expect(stripComments2da(input)).toBe(input);
+        });
+
+        it("should handle empty input", () => {
+            expect(stripComments2da("")).toBe("");
+        });
+
+        it("should preserve all tokens", () => {
+            const input = "  COL1 COL2\nROW1  val1 val2";
+            expect(stripComments2da(input)).toBe(input);
         });
     });
 });

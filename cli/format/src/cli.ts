@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * CLI tool to format Fallout SSL, WeiDU BAF, WeiDU D, and WeiDU TP2 files.
- * Usage: node format-cli.js <file.ssl|file.baf|file.d|file.tp2|dir> [--save] [-r] [-q] [--check]
+ * CLI tool to format Fallout SSL, WeiDU BAF, WeiDU D, WeiDU TP2, WeiDU TRA,
+ * Fallout MSG, and Infinity Engine 2DA files.
+ * Usage: node format-cli.js <file|dir> [--save] [-r] [-q] [--check]
+ * Supported extensions: .ssl, .baf, .d, .tp2 (/.tph/.tpa/.tpp), .tra, .msg, .2da
  */
 
 import * as fs from "fs";
@@ -26,17 +28,26 @@ import {
     initParser as initTp2Parser,
     getParser as getTp2Parser,
 } from "../../../server/src/weidu-tp2/parser";
+import { formatTra } from "../../../server/src/weidu-tra/format";
+import { formatMsg } from "../../../server/src/fallout-msg/format";
+import { format2da } from "../../../server/src/infinity-2da/format";
 import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
 import {
     validateFormatting,
     stripCommentsWeidu,
     stripCommentsFalloutSsl,
+    stripCommentsTra,
+    stripCommentsFalloutMsg,
+    stripComments2da,
 } from "../../../server/src/shared/format-utils";
 import {
     EXT_FALLOUT_SSL,
     EXT_WEIDU_BAF,
     EXT_WEIDU_D,
     EXT_WEIDU_TP2,
+    EXT_WEIDU_TRA,
+    EXT_FALLOUT_MSG,
+    EXT_INFINITY_2DA,
 } from "../../../server/src/core/languages";
 import {
     parseCliArgs,
@@ -48,9 +59,17 @@ import {
 } from "../../cli-utils";
 
 const DEFAULT_INDENT = 4;
-const EXTENSIONS = [EXT_FALLOUT_SSL, EXT_WEIDU_BAF, EXT_WEIDU_D, ...EXT_WEIDU_TP2];
+const EXTENSIONS = [
+    EXT_FALLOUT_SSL,
+    EXT_WEIDU_BAF,
+    EXT_WEIDU_D,
+    ...EXT_WEIDU_TP2,
+    EXT_WEIDU_TRA,
+    EXT_FALLOUT_MSG,
+    EXT_INFINITY_2DA,
+];
 
-type FileType = "ssl" | "baf" | "d" | "tp2";
+type FileType = "ssl" | "baf" | "d" | "tp2" | "tra" | "msg" | "2da";
 
 function getFileType(filePath: string): FileType | null {
     const ext = path.extname(filePath).toLowerCase();
@@ -58,6 +77,9 @@ function getFileType(filePath: string): FileType | null {
     if (ext === EXT_WEIDU_BAF) return "baf";
     if (ext === EXT_WEIDU_D) return "d";
     if ((EXT_WEIDU_TP2 as readonly string[]).includes(ext)) return "tp2";
+    if (ext === EXT_WEIDU_TRA) return "tra";
+    if (ext === EXT_FALLOUT_MSG) return "msg";
+    if (ext === EXT_INFINITY_2DA) return "2da";
     return null;
 }
 
@@ -70,6 +92,27 @@ function getFormatOptions(filePath: string): { indentSize: number; lineLimit: nu
 }
 
 type FormatResult = { text: string };
+
+/**
+ * Extract the formatted text from a FormatResult returned by tra/msg/2da formatters.
+ * These formatters return `{ edits: TextEdit[]; warning?: string }` rather than `{ text }`.
+ * A warning means the formatter detected a safety-check failure and declined to format.
+ */
+function extractFormatResultText(
+    original: string,
+    result: { edits: { newText: string }[]; warning?: string },
+): string {
+    if (result.warning) {
+        throw new Error(result.warning);
+    }
+    if (result.edits.length === 0) {
+        return original;
+    }
+    if (result.edits.length === 1 && result.edits[0] !== undefined) {
+        return result.edits[0].newText;
+    }
+    throw new Error("Unexpected edit count from formatter");
+}
 
 function parseAndFormat(
     text: string,
@@ -94,13 +137,22 @@ function parseAndFormat(
             indentSize: opts.indentSize,
             lineLimit: opts.lineLimit,
         });
-    } else {
+    } else if (fileType === "tp2") {
         const tree = getTp2Parser().parse(text);
         if (!tree) throw new Error("Failed to parse");
         return formatTp2Document(tree.rootNode, {
             indentSize: opts.indentSize,
             lineLimit: opts.lineLimit,
         });
+    } else if (fileType === "tra") {
+        // Pure string processing — no parser init required
+        return { text: extractFormatResultText(text, formatTra(text)) };
+    } else if (fileType === "msg") {
+        // Pure string processing — no parser init required
+        return { text: extractFormatResultText(text, formatMsg(text)) };
+    } else {
+        // 2da — pure string processing, no parser init required
+        return { text: extractFormatResultText(text, format2da(text)) };
     }
 }
 
@@ -124,7 +176,14 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
             return "error";
         }
 
-        const stripComments = fileType === "ssl" ? stripCommentsFalloutSsl : stripCommentsWeidu;
+        let stripComments;
+        switch (fileType) {
+            case "ssl": stripComments = stripCommentsFalloutSsl; break;
+            case "tra": stripComments = stripCommentsTra; break;
+            case "msg": stripComments = stripCommentsFalloutMsg; break;
+            case "2da": stripComments = stripComments2da; break;
+            default:    stripComments = stripCommentsWeidu; break;
+        }
         const validationError = validateFormatting(text, result.text, stripComments);
         if (validationError) {
             console.error(`${filePath}: Formatter bug: ${validationError}`);
@@ -165,7 +224,8 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
     });
 }
 
-const HELP = `Usage: format-cli <file.ssl|file.baf|file.d|file.tp2|dir> [--save] [--check] [--save-and-check] [-r] [-q]
+const HELP = `Usage: format-cli <file|dir> [--save] [--check] [--save-and-check] [-r] [-q]
+  Supported: .ssl, .baf, .d, .tp2 (/.tph/.tpa/.tpp), .tra, .msg, .2da
   --save            Write formatted output back to file(s)
   --check           Check if files are formatted (exit 1 if not)
   --save-and-check  Save formatted output and verify idempotency in one pass
@@ -184,8 +244,9 @@ async function main() {
     await runCli({
         args,
         extensions: EXTENSIONS,
-        description: ".ssl, .baf, .d, and .tp2",
+        description: ".ssl, .baf, .d, .tp2, .tra, .msg, and .2da",
         async init() {
+            // tra/msg/2da are pure string formatters — no parser init required
             if (isDir || fileType === "ssl") await initSslParser();
             if (isDir || fileType === "baf") await initBafParser();
             if (isDir || fileType === "d") await initDParser();

@@ -13,8 +13,8 @@ const EXT_FALLOUT_SSL_HEADERS = [".h"] as const;
 export const EXT_FALLOUT_SSL_ALL = [...EXT_FALLOUT_SSL_HEADERS, EXT_FALLOUT_SSL] as const;
 export const LANG_FALLOUT_SSL_TOOLTIP = "fallout-ssl-tooltip" as const;
 export const LANG_FALLOUT_WORLDMAP_TXT = "fallout-worldmap-txt" as const;
-// Used only in TRANSLATION_FILE_LANGUAGES below
-const LANG_FALLOUT_MSG = "fallout-msg" as const;
+export const LANG_FALLOUT_MSG = "fallout-msg" as const;
+export const EXT_FALLOUT_MSG = ".msg" as const;
 
 // TypeScript-based languages (TSSL, TBAF, TD)
 // These use "typescript" langId but are identified by file extension
@@ -39,8 +39,9 @@ export const LANG_WEIDU_LOG = "weidu-log" as const;
 
 // Infinity Engine languages
 export const LANG_INFINITY_2DA = "infinity-2da" as const;
-// Used only in TRANSLATION_FILE_LANGUAGES below
-const LANG_WEIDU_TRA = "weidu-tra" as const;
+export const EXT_INFINITY_2DA = ".2da" as const;
+export const LANG_WEIDU_TRA = "weidu-tra" as const;
+export const EXT_WEIDU_TRA = ".tra" as const;
 
 /**
  * Languages that support .tra translation references (@123 style).

@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",
-    "test": "tree-sitter test",
+    "test": "../../scripts/test-grammar.sh fallout-msg",
     "lint": "oxlint grammar.js",
     "playground": "tree-sitter playground"
   }

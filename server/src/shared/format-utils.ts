@@ -289,6 +289,151 @@ export function stripCommentsFalloutSsl(text: string): string {
 }
 
 /**
+ * Strip comments and string delimiters from WeiDU .tra translation text.
+ * Removes:
+ *   - Line comments (`// ...`) and block comments (`/* ... *\/`)
+ *   - Tilde string delimiters: ~content~ emits content; ~~~~~content~~~~~ emits content
+ *   - Double-quote delimiters: "content" emits content (handles backslash escapes)
+ *   - `[SOUNDFILE]` sound references (structural metadata)
+ * Keeps entry numbers, `@`, and `=` signs so validateFormatting can compare tokens.
+ */
+export function stripCommentsTra(text: string): string {
+    let result = "";
+    let i = 0;
+    while (i < text.length) {
+        // Block comments
+        if (text[i] === "/" && text[i + 1] === "*") {
+            const end = text.indexOf("*/", i + 2);
+            i = end !== -1 ? end + 2 : text.length;
+            continue;
+        }
+        // Line comments
+        if (text[i] === "/" && text[i + 1] === "/") {
+            while (i < text.length && text[i] !== "\n") i++;
+            continue;
+        }
+        // Tilde strings: strip delimiters, keep content
+        if (text[i] === "~") {
+            const start = i;
+            let tildeCount = 0;
+            while (i < text.length && text[i] === "~") {
+                tildeCount++;
+                i++;
+            }
+            const delimLen = tildeCount >= WEIDU_MULTI_TILDE_COUNT ? WEIDU_MULTI_TILDE_COUNT : 1;
+            // Rewind to just after the opening delimiter
+            i = start + delimLen;
+            const closer = "~".repeat(delimLen);
+            const end = text.indexOf(closer, i);
+            const contentEnd = end !== -1 ? end : text.length;
+            // Emit the content without delimiters
+            result += text.slice(i, contentEnd);
+            i = end !== -1 ? end + delimLen : text.length;
+            continue;
+        }
+        // Double-quoted strings: strip delimiters, keep content (handle escapes)
+        if (text[i] === '"') {
+            i++; // skip opening "
+            while (i < text.length && text[i] !== '"') {
+                if (text[i] === "\\") {
+                    // Emit the escape sequence verbatim
+                    result += text[i];
+                    i++;
+                    if (i < text.length) {
+                        result += text[i++];
+                    }
+                    continue;
+                }
+                result += text[i++];
+            }
+            if (i < text.length) i++; // skip closing "
+            continue;
+        }
+        // Sound references [SOUNDFILE] — remove entirely
+        if (text[i] === "[") {
+            const end = text.indexOf("]", i + 1);
+            if (end !== -1) {
+                i = end + 1;
+                continue;
+            }
+        }
+        result += text[i++];
+    }
+    return result;
+}
+
+/**
+ * Strip comment lines and structural braces from Fallout .msg text.
+ * Removes:
+ *   - Lines that do not start with `{` (they are comment lines in .msg format)
+ *   - Braces themselves from entry lines `{number}{audio}{text}`
+ *   - The audio field content
+ * Keeps entry numbers and text content so validateFormatting can compare tokens.
+ */
+export function stripCommentsFalloutMsg(text: string): string {
+    if (text.length === 0) return "";
+    let result = "";
+    let i = 0;
+    while (i < text.length) {
+        // Skip blank lines
+        if (text[i] === "\n") {
+            result += "\n";
+            i++;
+            continue;
+        }
+        // Entry line: starts with {
+        if (text[i] === "{") {
+            // Group 1: number — emit number, skip braces
+            i++; // skip {
+            const numStart = i;
+            while (i < text.length && text[i] !== "}") i++;
+            result += text.slice(numStart, i).trim();
+            if (i < text.length) i++; // skip }
+
+            // Group 2: audio — skip entirely
+            if (i < text.length && text[i] === "{") {
+                i++; // skip {
+                while (i < text.length && text[i] !== "}") i++;
+                if (i < text.length) i++; // skip }
+            }
+
+            // Group 3: text — emit content, skip braces
+            if (i < text.length && text[i] === "{") {
+                i++; // skip {
+                const textStart = i;
+                while (i < text.length && text[i] !== "}") i++;
+                result += " ";
+                result += text.slice(textStart, i);
+                if (i < text.length) i++; // skip }
+            }
+
+            // Advance past remainder of line
+            while (i < text.length && text[i] !== "\n") i++;
+            if (i < text.length) {
+                result += "\n";
+                i++; // skip \n
+            }
+            continue;
+        }
+        // Comment line: skip to end of line
+        while (i < text.length && text[i] !== "\n") i++;
+        if (i < text.length) {
+            i++; // skip \n
+        }
+    }
+    return result;
+}
+
+/**
+ * Pass-through stripper for Infinity Engine 2DA files.
+ * 2DA files have no comment syntax, so nothing needs stripping.
+ * validateFormatting compares the full token stream, which is correct for 2DA.
+ */
+export function stripComments2da(text: string): string {
+    return text;
+}
+
+/**
  * Validate that formatting only changed whitespace, not content.
  * Returns error message if content changed, null if OK.
  * @param stripComments Language-specific function to strip comments while respecting strings

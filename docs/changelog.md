@@ -2,7 +2,8 @@
 
 ## WIP
 
-- 2DA tables now have improved highlighting, and can be formatted.
+- Document formatting is now available for `.tra`, `.msg`, and `.2da` files.
+- New: 2DA tables have improved highlighting.
 
 ## 3.6.0
 

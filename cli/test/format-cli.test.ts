@@ -146,4 +146,120 @@ describe("format CLI integration", () => {
             expect(stderr).toContain("Not found");
         });
     });
+
+    describe(".tra format support", () => {
+        const unformatted = "@ 1  =  ~Messy whitespace~\n";
+        const formatted = "@1 = ~Messy whitespace~\n";
+
+        it("stdout mode outputs formatted content", () => {
+            const file = path.join(tmpDir, "test.tra");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file);
+            expect(code).toBe(0);
+            expect(stdout).toBe(formatted);
+        });
+
+        it("check mode exits 1 for unformatted file", () => {
+            const file = path.join(tmpDir, "bad.tra");
+            fs.writeFileSync(file, unformatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(1);
+        });
+
+        it("check mode exits 0 for already-formatted file", () => {
+            const file = path.join(tmpDir, "good.tra");
+            fs.writeFileSync(file, formatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(0);
+        });
+
+        it("save mode rewrites unformatted file", () => {
+            const file = path.join(tmpDir, "save.tra");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file, "--save");
+            expect(code).toBe(0);
+            expect(stdout).toContain("Formatted:");
+            expect(fs.readFileSync(file, "utf-8")).toBe(formatted);
+        });
+    });
+
+    describe(".msg format support", () => {
+        // The msg formatter trims number and audio fields but preserves text content verbatim.
+        // So "{ text }" becomes "{ text }" (spaces inside text field are kept).
+        const unformatted = "{ 100 }{ }{ text }\n";
+        const formatted = "{100}{}{ text }\n";
+
+        it("stdout mode outputs formatted content", () => {
+            const file = path.join(tmpDir, "test.msg");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file);
+            expect(code).toBe(0);
+            expect(stdout).toBe(formatted);
+        });
+
+        it("check mode exits 1 for unformatted file", () => {
+            const file = path.join(tmpDir, "bad.msg");
+            fs.writeFileSync(file, unformatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(1);
+        });
+
+        it("check mode exits 0 for already-formatted file", () => {
+            const file = path.join(tmpDir, "good.msg");
+            fs.writeFileSync(file, formatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(0);
+        });
+
+        it("save mode rewrites unformatted file", () => {
+            const file = path.join(tmpDir, "save.msg");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file, "--save");
+            expect(code).toBe(0);
+            expect(stdout).toContain("Formatted:");
+            expect(fs.readFileSync(file, "utf-8")).toBe(formatted);
+        });
+    });
+
+    describe(".2da format support", () => {
+        // Unformatted: columns not aligned with MIN_GAP=4 between each
+        const unformatted = "2DA V1.0\n0\n  COL1 COL2\nROW1 a b\n";
+        // The formatter aligns columns; just test that it runs and produces output
+        it("stdout mode outputs formatted content", () => {
+            const file = path.join(tmpDir, "test.2da");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file);
+            expect(code).toBe(0);
+            // Formatted output should contain the same tokens
+            expect(stdout).toContain("COL1");
+            expect(stdout).toContain("ROW1");
+        });
+
+        it("check mode exits 1 for unformatted file", () => {
+            const file = path.join(tmpDir, "bad.2da");
+            fs.writeFileSync(file, unformatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(1);
+        });
+
+        it("save mode rewrites unformatted file", () => {
+            const file = path.join(tmpDir, "save.2da");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file, "--save");
+            expect(code).toBe(0);
+            expect(stdout).toContain("Formatted:");
+            const result = fs.readFileSync(file, "utf-8");
+            expect(result).not.toBe(unformatted);
+            expect(result).toContain("COL1");
+        });
+
+        it("check mode exits 0 for already-formatted file", () => {
+            // Format once then check
+            const file = path.join(tmpDir, "good.2da");
+            fs.writeFileSync(file, unformatted);
+            run(file, "--save");
+            const { code } = run(file, "--check");
+            expect(code).toBe(0);
+        });
+    });
 });
