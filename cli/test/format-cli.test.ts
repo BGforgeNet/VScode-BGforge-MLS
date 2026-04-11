@@ -262,4 +262,48 @@ describe("format CLI integration", () => {
             expect(code).toBe(0);
         });
     });
+
+    describe("scripts.lst format support", () => {
+        // Unformatted: misaligned column spacing (LF input, CRLF output)
+        const unformatted = "AR0100.int  ;  Arroyo\n";
+        const formatted = "AR0100.int    ; Arroyo\r\n";
+
+        it("stdout mode outputs formatted content", () => {
+            const file = path.join(tmpDir, "scripts.lst");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file);
+            expect(code).toBe(0);
+            expect(stdout).toBe(formatted);
+        });
+
+        it("check mode exits 1 for unformatted file", () => {
+            const file = path.join(tmpDir, "scripts.lst");
+            fs.writeFileSync(file, unformatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(1);
+        });
+
+        it("check mode exits 0 for already-formatted file", () => {
+            const file = path.join(tmpDir, "scripts.lst");
+            fs.writeFileSync(file, formatted);
+            const { code } = run(file, "--check");
+            expect(code).toBe(0);
+        });
+
+        it("save mode rewrites unformatted file", () => {
+            const file = path.join(tmpDir, "scripts.lst");
+            fs.writeFileSync(file, unformatted);
+            const { code, stdout } = run(file, "--save");
+            expect(code).toBe(0);
+            expect(stdout).toContain("Formatted:");
+            expect(fs.readFileSync(file, "utf-8")).toBe(formatted);
+        });
+
+        it("recursive directory mode discovers scripts.lst by exact filename", () => {
+            const file = path.join(tmpDir, "scripts.lst");
+            fs.writeFileSync(file, unformatted);
+            const { code } = run(tmpDir, "-r", "--check", "-q");
+            expect(code).toBe(1);
+        });
+    });
 });

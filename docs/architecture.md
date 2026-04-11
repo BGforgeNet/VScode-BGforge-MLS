@@ -361,9 +361,10 @@ Standalone command-line tools that reuse server modules without VSCode dependenc
 node format-cli.js <file|dir> [--save] [--check] [-r] [-q]
 ```
 
-Formats Fallout SSL, WeiDU BAF/D/TP2, WeiDU TRA, Fallout MSG, and Infinity Engine 2DA
-files. Parser-based formats (SSL/BAF/D/TP2) use tree-sitter and respect `.editorconfig`.
-String-based formats (TRA/MSG/2DA) require no parser. Includes WASM parser modules.
+Formats Fallout SSL, WeiDU BAF/D/TP2, WeiDU TRA, Fallout MSG, Infinity Engine 2DA, and
+Fallout scripts.lst files. Parser-based formats (SSL/BAF/D/TP2) use tree-sitter and
+respect `.editorconfig`. String-based formats (TRA/MSG/2DA/scripts.lst) require no parser.
+Includes WASM parser modules.
 
 ### Transpile CLI
 

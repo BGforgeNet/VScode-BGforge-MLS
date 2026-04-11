@@ -31,6 +31,7 @@
         "workspaceContains:**/*.td",
         "onLanguage:fallout-ssl",
         "onLanguage:fallout-msg",
+        "onLanguage:fallout-scripts-lst",
         "onLanguage:fallout-worldmap-txt",
         "onLanguage:infinity-2da",
         "onLanguage:weidu-baf",

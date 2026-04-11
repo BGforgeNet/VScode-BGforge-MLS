@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
  * CLI tool to format Fallout SSL, WeiDU BAF, WeiDU D, WeiDU TP2, WeiDU TRA,
- * Fallout MSG, and Infinity Engine 2DA files.
+ * Fallout MSG, Infinity Engine 2DA, and Fallout scripts.lst files.
  * Usage: node format-cli.js <file|dir> [--save] [-r] [-q] [--check]
- * Supported extensions: .ssl, .baf, .d, .tp2 (/.tph/.tpa/.tpp), .tra, .msg, .2da
+ * Supported extensions: .ssl, .baf, .d, .tp2 (/.tph/.tpa/.tpp), .tra, .msg, .2da, scripts.lst
  */
 
 import * as fs from "fs";
@@ -31,6 +31,7 @@ import {
 import { formatTra } from "../../../server/src/weidu-tra/format";
 import { formatMsg } from "../../../server/src/fallout-msg/format";
 import { format2da } from "../../../server/src/infinity-2da/format";
+import { formatScriptsLst } from "../../../server/src/fallout-scripts-lst/format";
 import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
 import {
     validateFormatting,
@@ -39,6 +40,7 @@ import {
     stripCommentsTra,
     stripCommentsFalloutMsg,
     stripComments2da,
+    stripCommentsFalloutScriptsLst,
 } from "../../../server/src/shared/format-utils";
 import {
     EXT_FALLOUT_SSL,
@@ -48,6 +50,7 @@ import {
     EXT_WEIDU_TRA,
     EXT_FALLOUT_MSG,
     EXT_INFINITY_2DA,
+    FILENAME_FALLOUT_SCRIPTS_LST,
 } from "../../../server/src/core/languages";
 import {
     parseCliArgs,
@@ -67,11 +70,15 @@ const EXTENSIONS = [
     EXT_WEIDU_TRA,
     EXT_FALLOUT_MSG,
     EXT_INFINITY_2DA,
+    // Matched by exact filename; endsWith("scripts.lst") is safe in practice
+    FILENAME_FALLOUT_SCRIPTS_LST,
 ];
 
-type FileType = "ssl" | "baf" | "d" | "tp2" | "tra" | "msg" | "2da";
+type FileType = "ssl" | "baf" | "d" | "tp2" | "tra" | "msg" | "2da" | "scripts-lst";
 
 function getFileType(filePath: string): FileType | null {
+    // Check exact filename before extension to avoid false-positives on .lst
+    if (path.basename(filePath).toLowerCase() === FILENAME_FALLOUT_SCRIPTS_LST) return "scripts-lst";
     const ext = path.extname(filePath).toLowerCase();
     if (ext === EXT_FALLOUT_SSL) return "ssl";
     if (ext === EXT_WEIDU_BAF) return "baf";
@@ -150,6 +157,9 @@ function parseAndFormat(
     } else if (fileType === "msg") {
         // Pure string processing — no parser init required
         return { text: extractFormatResultText(text, formatMsg(text)) };
+    } else if (fileType === "scripts-lst") {
+        // Pure string processing — no parser init required
+        return { text: extractFormatResultText(text, formatScriptsLst(text)) };
     } else {
         // 2da — pure string processing, no parser init required
         return { text: extractFormatResultText(text, format2da(text)) };
@@ -178,11 +188,12 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 
         let stripComments;
         switch (fileType) {
-            case "ssl": stripComments = stripCommentsFalloutSsl; break;
-            case "tra": stripComments = stripCommentsTra; break;
-            case "msg": stripComments = stripCommentsFalloutMsg; break;
-            case "2da": stripComments = stripComments2da; break;
-            default:    stripComments = stripCommentsWeidu; break;
+            case "ssl":         stripComments = stripCommentsFalloutSsl; break;
+            case "tra":         stripComments = stripCommentsTra; break;
+            case "msg":         stripComments = stripCommentsFalloutMsg; break;
+            case "2da":         stripComments = stripComments2da; break;
+            case "scripts-lst": stripComments = stripCommentsFalloutScriptsLst; break;
+            default:            stripComments = stripCommentsWeidu; break;
         }
         const validationError = validateFormatting(text, result.text, stripComments);
         if (validationError) {
@@ -225,7 +236,7 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 }
 
 const HELP = `Usage: format-cli <file|dir> [--save] [--check] [--save-and-check] [-r] [-q]
-  Supported: .ssl, .baf, .d, .tp2 (/.tph/.tpa/.tpp), .tra, .msg, .2da
+  Supported: .ssl, .baf, .d, .tp2 (/.tph/.tpa/.tpp), .tra, .msg, .2da, scripts.lst
   --save            Write formatted output back to file(s)
   --check           Check if files are formatted (exit 1 if not)
   --save-and-check  Save formatted output and verify idempotency in one pass
@@ -244,7 +255,7 @@ async function main() {
     await runCli({
         args,
         extensions: EXTENSIONS,
-        description: ".ssl, .baf, .d, .tp2, .tra, .msg, and .2da",
+        description: ".ssl, .baf, .d, .tp2, .tra, .msg, .2da, and scripts.lst",
         async init() {
             // tra/msg/2da are pure string formatters — no parser init required
             if (isDir || fileType === "ssl") await initSslParser();

@@ -442,6 +442,7 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 | weidu-tra   |            |   Y   |           |     Y      |     Y      |   Y    |         |                   |        |       |         |             |       |                 |
 | fallout-msg |            |   Y   |           |     Y      |     Y      |   Y    |         |                   |        |       |         |             |       |                 |
 | infinity-2da|            |       |           |            |            |   Y    |         |                   |        |       |         |             |       |        Y        |
+| scripts-lst |            |       |           |            |            |   Y    |         |                   |        |       |         |             |       |                 |
 
 ## Request Routing
 

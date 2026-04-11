@@ -73,6 +73,7 @@ export async function activate(context: ExtensionContext) {
             { scheme: "file", language: "infinity-2da" },
 
             { scheme: "file", language: "fallout-msg" },
+            { scheme: "file", language: "fallout-scripts-lst" },
             { scheme: "file", language: "fallout-ssl" },
             { scheme: "file", language: "fallout-worldmap-txt" },
 

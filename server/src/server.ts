@@ -47,6 +47,7 @@ import { weiduLogProvider } from "./weidu-log/provider";
 import { infinity2daProvider } from "./infinity-2da/provider";
 import { weiduTraProvider } from "./weidu-tra/provider";
 import { falloutMsgProvider } from "./fallout-msg/provider";
+import { falloutScriptsLstProvider } from "./fallout-scripts-lst/provider";
 import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
 import { parserManager } from "./core/parser-manager";
 import { registry } from "./provider-registry";
@@ -181,6 +182,7 @@ connection.onInitialized(async () => {
     registry.register(infinity2daProvider);
     registry.register(weiduTraProvider);
     registry.register(falloutMsgProvider);
+    registry.register(falloutScriptsLstProvider);
 
     // Register language aliases (languages that share data with parent providers)
     registry.registerAlias(LANG_WEIDU_SLB, LANG_WEIDU_BAF);

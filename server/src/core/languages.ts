@@ -43,6 +43,11 @@ export const EXT_INFINITY_2DA = ".2da" as const;
 export const LANG_WEIDU_TRA = "weidu-tra" as const;
 export const EXT_WEIDU_TRA = ".tra" as const;
 
+// Fallout scripts list
+export const LANG_FALLOUT_SCRIPTS_LST = "fallout-scripts-lst" as const;
+/** Matched by exact filename rather than extension. Used for file discovery in CLI. */
+export const FILENAME_FALLOUT_SCRIPTS_LST = "scripts.lst" as const;
+
 /**
  * Languages that support .tra translation references (@123 style).
  */

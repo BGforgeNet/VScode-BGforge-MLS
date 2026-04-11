@@ -434,6 +434,16 @@ export function stripComments2da(text: string): string {
 }
 
 /**
+ * Strip comments from Fallout scripts.lst text for formatting validation.
+ * The scripts.lst formatter only rearranges whitespace between columns without
+ * removing any text content, so no stripping is needed — all non-whitespace
+ * tokens are preserved exactly.
+ */
+export function stripCommentsFalloutScriptsLst(text: string): string {
+    return text;
+}
+
+/**
  * Validate that formatting only changed whitespace, not content.
  * Returns error message if content changed, null if OK.
  * @param stripComments Language-specific function to strip comments while respecting strings
