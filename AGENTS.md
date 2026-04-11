@@ -148,6 +148,8 @@ See `server/INTERNALS.md` for the full feature matrix and cross-language feature
 - **BAF Symbols/Definition/Rename**: BAF files are flat sequences of IF/THEN/RESPONSE blocks with no named procedures, functions, or reusable constructs.
 - **BAF JSDoc**: No user-defined constructs to document.
 - **Worldmap**: Simple key-value config file, no programming constructs.
+- **TP2 Signature Help**: TP2 function calls use named keyword parameters (`INT_VAR`/`STR_VAR`/`RET` blocks), not positional arguments. Signature help is designed for positional parameter tracking and does not apply. Parameter documentation is surfaced via hover and completion instead.
+- **TP2 Parameter Inlay Hints**: Not needed. Parameters are already named explicitly in the source (`INT_VAR foo = 0`) and documented via hover and completion. There is nothing implicit to annotate.
 
 ## Documentation Index
 
