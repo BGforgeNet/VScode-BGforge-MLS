@@ -36,6 +36,9 @@ export const LANG_WEIDU_D_TOOLTIP = "weidu-d-tooltip" as const;
 export const LANG_WEIDU_SLB = "weidu-slb" as const;
 export const LANG_WEIDU_SSL = "weidu-ssl" as const;
 export const LANG_WEIDU_LOG = "weidu-log" as const;
+
+// Infinity Engine languages
+export const LANG_INFINITY_2DA = "infinity-2da" as const;
 // Used only in TRANSLATION_FILE_LANGUAGES below
 const LANG_WEIDU_TRA = "weidu-tra" as const;
 

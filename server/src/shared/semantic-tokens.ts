@@ -33,6 +33,27 @@ export const DWORD_TOKEN_TYPE = "dword";
 export const INT_TOKEN_TYPE = "int";
 
 /**
+ * Semantic token types for 2DA table cells, one per column slot (cycling mod 6).
+ * Each column index maps to `CELL_2DA_COL_TYPES[colIndex % 6]`, giving six distinct
+ * colors that repeat across wider tables.
+ */
+export const CELL_2DA_C0 = "2da-c0" as const;
+export const CELL_2DA_C1 = "2da-c1" as const;
+export const CELL_2DA_C2 = "2da-c2" as const;
+export const CELL_2DA_C3 = "2da-c3" as const;
+export const CELL_2DA_C4 = "2da-c4" as const;
+export const CELL_2DA_C5 = "2da-c5" as const;
+
+export const CELL_2DA_COL_TYPES = [
+    CELL_2DA_C0,
+    CELL_2DA_C1,
+    CELL_2DA_C2,
+    CELL_2DA_C3,
+    CELL_2DA_C4,
+    CELL_2DA_C5,
+] as const;
+
+/**
  * Maps JSDoc @type prefixes to custom semantic token types.
  * Used to look up which token type to assign to a constant based on its annotated type.
  * IESDP types have distinct theme styling (byte/char=italic, dword=bold, resref=underline).
@@ -56,6 +77,12 @@ export const semanticTokensLegend: SemanticTokensLegend = {
         CHAR_TOKEN_TYPE,
         DWORD_TOKEN_TYPE,
         INT_TOKEN_TYPE,
+        CELL_2DA_C0,
+        CELL_2DA_C1,
+        CELL_2DA_C2,
+        CELL_2DA_C3,
+        CELL_2DA_C4,
+        CELL_2DA_C5,
     ],
     tokenModifiers: [],
 };

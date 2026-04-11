@@ -5,6 +5,11 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { TextEdit } from "vscode-languageserver/node";
 
+/** Strips a leading UTF-8 BOM (\uFEFF) from text if present. */
+export function stripBom(text: string): string {
+    return text.startsWith("\uFEFF") ? text.slice(1) : text;
+}
+
 /** Function that strips comments from text while respecting string literals. */
 export type CommentStripper = (text: string) => string;
 

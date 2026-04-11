@@ -1,5 +1,9 @@
 # Changelog
 
+## WIP
+
+- 2DA tables now have improved highlighting, and can be formatted.
+
 ## 3.6.0
 
 - Find references from `.tra` and `.msg` files: cursor on any entry finds all usages across consumer files (`.ssl`, `.baf`, `.d`, `.tp2`, `.tssl`, `.tbaf`, `.td`).

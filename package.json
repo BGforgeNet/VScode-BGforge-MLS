@@ -63,6 +63,30 @@
             {
                 "id": "int",
                 "description": "Integer constant (user-defined or inferred)"
+            },
+            {
+                "id": "2da-c0",
+                "description": "2DA table cell: column slot 0 (and every 6th column thereafter)"
+            },
+            {
+                "id": "2da-c1",
+                "description": "2DA table cell: column slot 1 (and every 6th column thereafter)"
+            },
+            {
+                "id": "2da-c2",
+                "description": "2DA table cell: column slot 2 (and every 6th column thereafter)"
+            },
+            {
+                "id": "2da-c3",
+                "description": "2DA table cell: column slot 3 (and every 6th column thereafter)"
+            },
+            {
+                "id": "2da-c4",
+                "description": "2DA table cell: column slot 4 (and every 6th column thereafter)"
+            },
+            {
+                "id": "2da-c5",
+                "description": "2DA table cell: column slot 5 (and every 6th column thereafter)"
             }
         ],
         "semanticTokenScopes": [

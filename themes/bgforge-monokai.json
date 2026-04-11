@@ -561,6 +561,24 @@
 		},
 		"dword": {
 			"fontStyle": "bold"
+		},
+		"2da-c0": {
+			"foreground": "#E6DB74"
+		},
+		"2da-c1": {
+			"foreground": "#FD971F"
+		},
+		"2da-c2": {
+			"foreground": "#AE81FF"
+		},
+		"2da-c3": {
+			"foreground": "#F92672"
+		},
+		"2da-c4": {
+			"foreground": "#66D9EF"
+		},
+		"2da-c5": {
+			"foreground": "#A6E22E"
 		}
 	}
 }
