@@ -34,7 +34,7 @@
               "name": "constant.language.infinity-2da"
             }
           },
-          "end": "(\\w+)",
+          "end": "(\\S+)",
           "endCaptures": {
             "1": {
               "name": "constant.language.infinity-2da"
