@@ -1,9 +1,9 @@
 # Changelog
 
-## WIP
+## 3.7.0
 
 - Document formatting is now available for `.tra`, `.msg`, `.2da`, and `scripts.lst` files.
-- New: 2DA tables have improved highlighting.
+- 2DA tables have improved highlighting.
 
 ## 3.6.0
 
