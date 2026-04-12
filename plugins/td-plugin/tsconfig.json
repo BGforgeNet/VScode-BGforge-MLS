@@ -5,7 +5,8 @@
         "lib": ["es2022"],
         "allowImportingTsExtensions": true,
         "esModuleInterop": true,
-        "noEmit": true
+        "noEmit": true,
+        "tsBuildInfoFile": "../../tmp/td-plugin.tsbuildinfo"
     },
     "include": [
         "src"

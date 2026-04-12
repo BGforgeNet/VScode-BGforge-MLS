@@ -22,6 +22,8 @@ source "$SCRIPT_DIR/parallel-lib.sh"
 
 step "Resetting External Repos"
 "$SCRIPT_DIR/reset-external.sh"
+# Consumed by test-external.sh to skip its own redundant reset when called from this script.
+export EXTERNAL_REPOS_CLEAN=1
 
 # --- Phase 1: Static analysis + unit tests + dead code (all independent, run in parallel) ---
 step "Phase 1: Static Analysis + Unit Tests + Dead Code"
@@ -49,16 +51,20 @@ parallel \
     "Format CLI" "$SCRIPT_DIR/build-format-cli.sh" \
     "Bin CLI" "$SCRIPT_DIR/build-bin-cli.sh"
 
-# --- Phase 3: Tests that need builds (all in parallel) ---
-step "Phase 3: Smoke + Samples + External"
+# Support early exit for test-all.sh (runs its own Phase 3 with extended tests interleaved)
+if [[ "${TEST_STOP_AFTER_BUILD:-}" == "1" ]]; then
+    timing_summary "Phases 1-2 passed (build-only mode)"
+    exit 0
+fi
+
+# --- Phase 3: Tests that need builds + integration (all in parallel) ---
+# Keep in sync with test-all.sh Phase 3 block (adds grammar + transpile-external jobs).
+# External + Integration are chained: external tests reset repos via EXIT trap,
+# then integration tests run on clean repo state.
+step "Phase 3: Smoke + Samples + External + Integration"
 parallel \
     "Smoke test" "(cd server && pnpm exec vitest run --config vitest.smoke.config.ts)" \
     "Sample + CLI tests" "./server/test/td/test.sh && ./server/test/tbaf/test.sh && pnpm test:cli" \
-    "External tests" "$SCRIPT_DIR/test-external.sh"
-
-# Integration tests read files from external/ repos — must run after external tests finish.
-step "Phase 4: Integration Tests"
-parallel \
-    "Integration tests" "(cd server && pnpm exec vitest run --config vitest.integration.config.ts)"
+    "External + Integration" "$SCRIPT_DIR/test-external.sh && (cd server && pnpm exec vitest run --config vitest.integration.config.ts)"
 
 timing_summary "All tests passed"

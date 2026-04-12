@@ -8,7 +8,8 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noEmit": true,
-        "rootDir": "../.."
+        "rootDir": "../..",
+        "tsBuildInfoFile": "../../tmp/tssl-plugin.tsbuildinfo"
     },
     "include": [
         "src"

@@ -1,6 +1,7 @@
 *.log
 *.tgz
 *.vsix
+*.tsbuildinfo
 *.tmbundle
 *.zip
 dist/

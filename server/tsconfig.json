@@ -13,7 +13,8 @@
         "rootDir": "..",
         "outDir": "out",
         "resolveJsonModule": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "tsBuildInfoFile": "../tmp/server.tsbuildinfo"
     },
     "include": [
         "src",

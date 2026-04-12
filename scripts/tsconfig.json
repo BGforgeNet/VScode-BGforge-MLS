@@ -13,7 +13,8 @@
         "skipLibCheck": true,
         "outDir": "out",
         "sourceMap": true,
-        "noEmit": true
+        "noEmit": true,
+        "tsBuildInfoFile": "../tmp/scripts.tsbuildinfo"
     },
     "include": [
         "ie-update/src",
