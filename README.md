@@ -60,14 +60,14 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 
 ## Other formats
 
-| Format | Extensions | Highlighting | Completion | Hover | GoTo | References |
-| ------ | ---------- | :----------: | :--------: | :---: | :--: | :--------: |
-| Fallout worldmap    | worldmap.txt | ✓ | ✓ | ✓ |     |   |
-| Fallout MSG         | .msg         | ✓ |   |   |     | ✓ |
-| Fallout scripts.lst | scripts.lst  | ✓ |   |   |     |   |
-| WeiDU TRA           | .tra         | ✓ |   |   |     | ✓ |
-| WeiDU log           | weidu.log    | ✓ |   |   | tp2 |   |
-| Infinity 2DA        | .2da         | ✓ |   |   |     |   |
+| Format / Extensions | Highlighting | Completion | Hover | GoTo | References | Formatting |
+| ------------------- | :----------: | :--------: | :---: | :--: | :--------: | :--------: |
+| Fallout worldmap.txt | ✓ | ✓ | ✓ |     |   |   |
+| Fallout MSG              | ✓ |   |   |     | ✓ | ✓ |
+| Fallout scripts.lst             | ✓ |   |   |     |   | ✓ |
+| WeiDU TRA                | ✓ |   |   |     | ✓ | ✓ |
+| WeiDU.log           | ✓ |   |   | tp2 |   |   |
+| Infinity 2DA             | ✓ |   |   |     |   | ✓ |
 
 ### Binary formats
 Fallout PRO and MAP files have a built-in binary editor with JSON dump/load support.
