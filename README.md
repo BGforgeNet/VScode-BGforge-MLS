@@ -70,7 +70,7 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 | Infinity 2DA             | ✓ |   |   |     |   | ✓ |
 
 ### Binary formats
-Fallout PRO and MAP files have a built-in binary editor with JSON dump/load support.
+Fallout PRO and MAP files have a built-in [binary editor](#binary-editor) with JSON dump/load support.
 
 ## Installation
 
@@ -109,3 +109,7 @@ Visual dialog tree for SSL, TSSL, D, and TD files. Open with `CTRL+SHIFT+V` or t
 ### Error reporting
 
 ![error reporting example](docs/error_reporting.png)
+
+### Binary editor
+
+![binary editor example](docs/binary-editor.png)
