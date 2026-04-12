@@ -3,19 +3,13 @@
  * Standalone config (not part of the main build).
  */
 {
+    "extends": "../tsconfig.base.json",
     "compilerOptions": {
-        "target": "es2022",
         "lib": ["es2022"],
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
         "esModuleInterop": true,
         "allowImportingTsExtensions": true,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUncheckedIndexedAccess": true,
         "skipLibCheck": true,
         "outDir": "out",
         "sourceMap": true,

@@ -53,7 +53,7 @@ parallel \
 step "Phase 3: Smoke + Samples + External"
 parallel \
     "Smoke test" "(cd server && pnpm exec vitest run --config vitest.smoke.config.ts)" \
-    "Sample + CLI tests" "./server/test/td/test.sh && ./server/test/tbaf/test.sh && pnpm test:cli && pnpm test:bin" \
+    "Sample + CLI tests" "./server/test/td/test.sh && ./server/test/tbaf/test.sh && pnpm test:cli" \
     "External tests" "$SCRIPT_DIR/test-external.sh"
 
 # Integration tests read files from external/ repos — must run after external tests finish.

@@ -1,19 +1,13 @@
 {
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es2022",
         "lib": [
             "es2022"
         ],
         "outDir": "out",
         "rootDir": "src",
-        "sourceMap": true,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUncheckedIndexedAccess": true
+        "sourceMap": true
     },
     "include": [
         "src"
