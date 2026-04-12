@@ -4,6 +4,7 @@
 
 - Document formatting is now available for `.tra`, `.msg`, `.2da`, and `scripts.lst` files.
 - 2DA tables have improved highlighting.
+- Built-in WeiDU functions has their parameters data structured, enabling better intellisense.
 
 ## 3.6.0
 
