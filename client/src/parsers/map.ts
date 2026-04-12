@@ -974,12 +974,44 @@ class MapParser implements BinaryParser {
             opaqueRanges: opaqueRanges.length > 0 ? opaqueRanges : undefined,
             errors: errors.length > 0 ? errors : undefined,
         };
-        try {
-            result.document = rebuildMapCanonicalDocument(result);
-        } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            result.warnings = [...(result.warnings ?? []), `Canonical MAP document unavailable: ${message}`];
-        }
+
+        // Lazy canonical document: rebuildMapCanonicalDocument is expensive (Zod validation,
+        // O(n) field lookups per object) and the 6x gracefulMapBoundaries parse candidates
+        // multiply the cost. Deferring to first access keeps parse() fast for display-only
+        // consumers (editor tree, symbol outline). The document is materialized when the
+        // binary editor opens a MAP for editing, or when serializing to JSON/bytes.
+        //
+        // Design notes:
+        // - `resolved` is set true BEFORE the try block to prevent infinite recursion if
+        //   rebuildMapCanonicalDocument reads result.document internally.
+        // - On failure, document stays undefined permanently (no retry) — matches the
+        //   original eager behavior where a failed rebuild left document as undefined.
+        // - enumerable: true so JSON.stringify (used by cloneParseResult) triggers the
+        //   getter and includes the property. The clone gets a plain property, not a getter.
+        // - configurable: true so binaryEditor-document.ts can reassign via the setter
+        //   after field edits (refreshCanonicalDocument) or reset to undefined.
+        let cachedDocument: ParseResult["document"];
+        let resolved = false;
+        Object.defineProperty(result, "document", {
+            get() {
+                if (!resolved) {
+                    resolved = true;
+                    try {
+                        cachedDocument = rebuildMapCanonicalDocument(result);
+                    } catch (error) {
+                        const message = error instanceof Error ? error.message : String(error);
+                        result.warnings = [...(result.warnings ?? []), `Canonical MAP document unavailable: ${message}`];
+                    }
+                }
+                return cachedDocument;
+            },
+            set(value: ParseResult["document"]) {
+                cachedDocument = value;
+                resolved = true;
+            },
+            enumerable: true,
+            configurable: true,
+        });
         return result;
     }
 }
