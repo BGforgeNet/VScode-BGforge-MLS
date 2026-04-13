@@ -12,7 +12,7 @@ import {
     forEachCodeSegment,
     replaceOutsideStrings,
     cleanupEsbuildOutput,
-} from "../src/esbuild-utils";
+} from "../../transpilers/common/esbuild-utils";
 
 // -- skipString --
 

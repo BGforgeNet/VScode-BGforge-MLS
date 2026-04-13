@@ -18,7 +18,8 @@
     },
     "include": [
         "src",
-        "../shared"
+        "../shared",
+        "../transpilers"
     ],
     "exclude": [
         "node_modules",

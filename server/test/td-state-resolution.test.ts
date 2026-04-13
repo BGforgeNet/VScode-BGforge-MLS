@@ -6,11 +6,11 @@
 
 import { describe, expect, it } from "vitest";
 import { Project } from "ts-morph";
-import { parse } from "../src/td/parse";
-import { emitD } from "../src/td/emit";
-import { extractTraTag } from "../src/transpiler-utils";
-import type { TDScript } from "../src/td/types";
-import { detectOrphansFromOriginal, mergeWarnings } from "../src/td/index";
+import { parse } from "../../transpilers/td/src/parse";
+import { emitD } from "../../transpilers/td/src/emit";
+import { extractTraTag } from "../../transpilers/common/transpiler-utils";
+import type { TDScript } from "../../transpilers/td/src/types";
+import { detectOrphansFromOriginal, mergeWarnings } from "../../transpilers/td/src/index";
 
 describe("TD state resolution", () => {
     function parseIR(code: string): TDScript {

@@ -11,13 +11,18 @@ import { getConnection } from "./lsp-connection";
 import { showError, showInfo, showWarning } from "./user-messages";
 import { registry } from "./provider-registry";
 import { getDocumentSettings } from "./settings-service";
-import * as tbaf from "./tbaf/index";
-import * as td from "./td/index";
-import * as tssl from "./tssl";
+import * as tbaf from "../../transpilers/tbaf/src/index";
+import * as td from "../../transpilers/td/src/index";
+import * as tssl from "../../transpilers/tssl/src/index";
 import * as weidu from "./weidu-compile";
 import { LSP_COMMAND_COMPILE } from "../../shared/protocol";
+import type { TranspilerEvent } from "../../transpilers/common/transpiler-pipeline";
 
 export const COMMAND_compile = LSP_COMMAND_COMPILE;
+
+function findOutputWrittenEvent(events: readonly TranspilerEvent[] | undefined): TranspilerEvent | undefined {
+    return events?.find((event) => event.code === "output_written");
+}
 
 export function clearDiagnostics(uri: string) {
     // Clear old diagnostics (fire-and-forget notification)
@@ -53,15 +58,17 @@ export async function compile(uri: string, langId: string, interactive = false, 
         if (uri.toLowerCase().endsWith(EXT_TD)) {
             clearDiagnostics(uri);
             try {
-                const { dPath, warnings } = await td.compile(uri, text);
+                const { dPath, warnings, events } = await td.compile(uri, text);
                 const dName = path.basename(dPath);
+                const outputEvent = findOutputWrittenEvent(events);
                 if (interactive) {
                     if (warnings.length > 0) {
                         const orphanNames = warnings.map(w => w.message.match(/^Function "(.+)" /)?.[1] ?? "?");
-                        const msg = `Transpiled to ${dName}. Orphan states: ${orphanNames.join(", ")}`;
+                        const baseMessage = outputEvent?.message ?? `Transpiled to ${dName}`;
+                        const msg = `${baseMessage}. Orphan states: ${orphanNames.join(", ")}`;
                         showWarning(msg);
                     } else {
-                        showInfo(`Transpiled to ${dName}`);
+                        showInfo(outputEvent?.message ?? `Transpiled to ${dName}`);
                     }
                 }
                 // Chain D compilation if weidu and game path are configured
@@ -81,10 +88,11 @@ export async function compile(uri: string, langId: string, interactive = false, 
         if (uri.toLowerCase().endsWith(EXT_TBAF)) {
             clearDiagnostics(uri);
             try {
-                const bafPath = await tbaf.compile(uri, text);
+                const { bafPath, events } = await tbaf.compile(uri, text);
                 const bafName = path.basename(bafPath);
+                const outputEvent = findOutputWrittenEvent(events);
                 if (interactive) {
-                    showInfo(`Transpiled to ${bafName}`);
+                    showInfo(outputEvent?.message ?? `Transpiled to ${bafName}`);
                 }
                 // Chain BAF compilation if weidu and game path are configured
                 if (settings.weidu.path && settings.weidu.gamePath) {

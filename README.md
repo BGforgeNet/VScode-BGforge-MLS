@@ -52,11 +52,11 @@ They bring the TypeScript type system, many TypeScript features, and better tool
 | TBAF       | .tbaf     | .baf   |    .tra     |                |
 | TD         | .td       | .d     |    .tra     |       ✓        |
 
-**[TSSL](transpilers/tssl/README.md)** (.tssl) compiles to Fallout SSL. Companion project: [FOlib](https://github.com/BGforgeNet/folib).
+**[TSSL](transpilers/tssl/docs/README.md)** (.tssl) compiles to Fallout SSL. Companion project: [FOlib](https://github.com/BGforgeNet/folib).
 
-**[TBAF](transpilers/tbaf/README.md)** (.tbaf) compiles to WeiDU BAF. Important additions include functions, loops, variables, arrays, enums. Companion project: [IETS](https://github.com/BGforgeNet/iets).
+**[TBAF](transpilers/tbaf/docs/README.md)** (.tbaf) compiles to WeiDU BAF. Important additions include functions, loops, variables, arrays, enums. Companion project: [IETS](https://github.com/BGforgeNet/iets).
 
-**[TD](transpilers/td/README.md)** (.td) compiles to WeiDU D. Same features as TBAF, but has different structure. Also uses IETS.
+**[TD](transpilers/td/docs/README.md)** (.td) compiles to WeiDU D. Same features as TBAF, but has different structure. Also uses IETS.
 
 ## Other formats
 

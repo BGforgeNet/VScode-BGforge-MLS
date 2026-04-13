@@ -13,7 +13,7 @@ import {
     stripQuotes,
     substituteVars,
     VarsContext,
-} from "../src/transpiler-utils";
+} from "../../transpilers/common/transpiler-utils";
 
 describe("evaluateCondition", () => {
     const emptyVars: VarsContext = new Map();

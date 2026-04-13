@@ -7,9 +7,9 @@ import { describe, expect, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 import { Project } from "ts-morph";
-import { generateInlineMacros, extractInlineFunctionsFromFiles } from "../src/tssl/inline-functions";
-import { isEnumConstant, collectReferencedIdentifiers } from "../src/tssl/emit";
-import type { InlineFunc } from "../src/tssl/types";
+import { generateInlineMacros, extractInlineFunctionsFromFiles } from "../../transpilers/tssl/src/inline-functions";
+import { isEnumConstant, collectReferencedIdentifiers } from "../../transpilers/tssl/src/emit";
+import type { InlineFunc } from "../../transpilers/tssl/src/types";
 
 describe("generateInlineMacros", () => {
     it("generates basic inline macro without params", () => {

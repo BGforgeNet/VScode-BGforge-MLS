@@ -4,3 +4,7 @@ packages:
   - grammars/*
   - cli/*
   - plugins/*
+  - transpilers/common
+  - transpilers/tssl
+  - transpilers/tbaf
+  - transpilers/td

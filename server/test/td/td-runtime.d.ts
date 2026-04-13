@@ -1,1 +1,1 @@
-../../src/td/td-runtime.d.ts
+../../../transpilers/td/src/td-runtime.d.ts

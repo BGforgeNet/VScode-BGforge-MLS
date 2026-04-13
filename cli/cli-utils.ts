@@ -6,7 +6,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { TranspileError } from "../server/src/shared/transpile-error";
+import { TranspileError } from "../transpilers/common/transpile-error";
 
 export type FileResult = "changed" | "unchanged" | "error";
 export type OutputMode = "save" | "stdout" | "check" | "save-and-check";

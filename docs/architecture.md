@@ -97,7 +97,6 @@ vscode-mls/
 |   |   +-- compile.ts              Compilation dispatch
 |   |   +-- translation.ts          .tra/.msg inlay hints, hover, definition, and find references
 |   |   +-- user-messages.ts        User message wrappers (auto-decode file:// URIs)
-|   |   +-- transpiler-utils.ts     Shared transpiler utilities
 |   |   +-- safe-eval.ts            Safe expression evaluator (no eval())
 |   |   +-- common.ts               Logging, file utilities
 |   |   +-- settings.ts             User settings
@@ -108,10 +107,9 @@ vscode-mls/
 |   |   +-- weidu-baf/              WeiDU BAF provider (format + compile)
 |   |   +-- weidu-d/                WeiDU D provider (symbols, definition, rename, JSDoc hover)
 |   |   +-- weidu-log/              WeiDU log provider (go-to-definition for mod paths)
-|   +-- weidu-tp2/              WeiDU TP2 provider (full IDE support)
-|   |   +-- tssl/                   TSSL transpiler (.tssl -> .ssl)
-|   |   +-- tbaf/                   TBAF transpiler (.tbaf -> .baf)
-|   |   +-- td/                     TD transpiler (.td -> .d)
+|   |   +-- weidu-tp2/              WeiDU TP2 provider (full IDE support)
+|   |   +-- tssl/                   TSSL dialog bridge (depends on tree-sitter + LSP)
+|   |   +-- td/                     TD dialog bridge (depends on tree-sitter + LSP)
 |   +-- data/                   YAML data files (game engine definitions)
 |   +-- test/                   Unit tests (vitest)
 |   +-- out/                    esbuild output + WASM files + JSON data
@@ -144,6 +142,11 @@ vscode-mls/
 +-- themes/                 Color theme (BGforge Monokai) + icon theme
 +-- snippets/               Code snippets (SSL, BAF, TP2)
 +-- scripts/                Build, test, data generation scripts
++-- transpilers/            Transpiler implementations + user documentation
+|   +-- common/                 Shared utilities (no package.json)
+|   +-- tssl/                   @bgforge/tssl: TypeScript to Fallout SSL
+|   +-- tbaf/                   @bgforge/tbaf: TypeScript to WeiDU BAF
+|   +-- td/                     @bgforge/td: TypeScript to WeiDU D
 +-- external/               Game data (Fallout, Infinity Engine)
 +-- resources/              Extension icon
 +-- docs/                   Documentation
@@ -306,16 +309,18 @@ Source (.tssl/.tbaf/.td)
   +-> Optional: chain native compilation
 ```
 
-**Shared pipeline** (`shared/transpiler-pipeline.ts`): `createTranspiler()` factory
+**Shared pipeline** (`transpilers/common/transpiler-pipeline.ts`): `createTranspiler()` factory
 handles the common orchestration — extension validation, @tra tag extraction, file I/O,
-and logging. TBAF and TD use this factory; TSSL has custom entry points due to its
-batch state and non-standard output path.
+and structured compile events such as `output_written`. The shared pipeline does not
+write to stdout; host-specific callers decide whether to surface those events as LSP
+messages, CLI stderr output, or ignore them. TBAF and TD use this factory; TSSL has
+custom entry points due to its batch state and non-standard output path.
 
-**Shared utilities** (`transpiler-utils.ts`): variable substitution, loop unrolling
+**Shared utilities** (`transpilers/common/transpiler-utils.ts`): variable substitution, loop unrolling
 (max 1000 iterations), array spread/destructuring, helper fixups (obj/tra/tlk),
 point tuple conversion (`[x, y]` -> `[x.y]`), @tra tag extraction.
 
-**Shared bundler** (`tbaf/bundle.ts`): esbuild-wasm with externalized `.d.ts` imports,
+**Shared bundler** (`transpilers/tbaf/src/bundle.ts`): esbuild-wasm with externalized `.d.ts` imports,
 enum transformation plugin, extensionless import resolution. Used by TBAF and TD
 directly; TSSL calls `bundleWithEsbuild()` directly with preserved-function tracking.
 TBAF/TD skip bundling for import-free files (`hasImports()` guard); TSSL always bundles
@@ -333,7 +338,7 @@ with state machines, method chain parsing, and dual-pass orphan detection.
 | TBAF | `.tbaf` | `.baf` | for/for-of, arrays, spread, destructuring, function inlining, point tuples |
 | TD | `.td` | `.d` | All TBAF features + conditionals, method chains, transitive state collection, orphan warnings, dialog preview |
 
-**TD module structure** (`server/src/td/`):
+**TD module structure** (`transpilers/td/src/`):
 
 | Module | Purpose |
 |--------|---------|
@@ -348,8 +353,9 @@ with state machines, method chain parsing, and dual-pass orphan detection.
 | `patch-operations.ts` | Patch operation transforms (ALTER_TRANS, etc.) |
 | `emit.ts` | IR -> D text serialization |
 | `types.ts` | IR types (TDScript, TDConstruct, TDState, TDSay, etc.) |
-| `dialog.ts` | Dialog tree preview parsing (parseTDDialog) |
 | `td-runtime.d.ts` | TypeScript declarations for TD API |
+
+`dialog.ts` (dialog tree preview, `parseTDDialog`) lives in `server/src/td/` — it depends on tree-sitter parsers and LSP infrastructure and was not extracted.
 
 ## CLI Tools
 

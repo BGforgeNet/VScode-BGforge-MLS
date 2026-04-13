@@ -4,8 +4,8 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { dnfToCnf } from "../../src/tbaf/cnf";
-import type { BAFCondition, BAFTopCondition, BAFOrGroup } from "../../src/tbaf/ir";
+import { dnfToCnf } from "../../../transpilers/tbaf/src/cnf";
+import type { BAFCondition, BAFTopCondition, BAFOrGroup } from "../../../transpilers/tbaf/src/ir";
 
 /** Helper to create a simple BAFCondition */
 function cond(name: string, negated = false): BAFCondition {

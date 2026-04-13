@@ -7,7 +7,7 @@
 import { uriToPath } from "../common";
 import { parseDialog, type DialogData } from "../dialog";
 import { isInitialized } from "../fallout-ssl/parser";
-import { transpile } from "./index";
+import { transpile } from "../../../transpilers/tssl/src/index";
 
 /**
  * Transpile TSSL source and parse it into DialogData for dialog tree preview.

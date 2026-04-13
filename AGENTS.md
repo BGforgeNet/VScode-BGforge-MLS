@@ -48,7 +48,7 @@ VSCode extension providing IDE features for niche scripting languages used in cl
 
 ```
 client/                  # VSCode extension client (LSP client, webviews, binary editor)
-server/                  # LSP server (providers, transpilers, symbol system, compilation)
+server/                  # LSP server (providers, symbol system, compilation, dialog bridges)
   data/                  # YAML engine definitions (functions, actions, triggers)
 shared/                  # Shared pure TypeScript helpers used by runtime and build-time code
 grammars/                # Tree-sitter grammars (6 dirs: 4 LSP + 2 highlight-only)
@@ -60,7 +60,11 @@ themes/                  # Color themes (bgforge-monokai) + icon theme
 language-configurations/ # VSCode language config files (brackets, comments, indentation)
 snippets/                # Code snippets: fallout-ssl.json, weidu-baf.json, weidu-tp2.json
 scripts/                 # Build, test, data generation scripts
-transpilers/             # Transpiler user documentation (TSSL, TBAF, TD guides + llms.txt)
+transpilers/             # Transpiler implementations + user documentation
+  common/                # Shared transpiler utilities (not a package)
+  tssl/                  # @bgforge/tssl package: TypeScript to Fallout SSL
+  tbaf/                  # @bgforge/tbaf package: TypeScript to WeiDU BAF
+  td/                    # @bgforge/td package: TypeScript to WeiDU D
 docs/                    # User docs, editor setup guides, architecture, changelog
 external/                # Third-party mod sources (test fixtures, not project code)
 ```
@@ -120,7 +124,7 @@ LSP-based extension with provider-registry pattern. Monorepo with separate `clie
 
 **Providers** (`server/src/*/provider.ts`): fallout-ssl, fallout-worldmap, weidu-baf, weidu-d, weidu-log, weidu-tp2
 
-**Transpilers** (`server/src/*/`): tssl, tbaf, td + shared `transpiler-utils.ts`
+**Transpilers** (`transpilers/*/src/`): tssl, tbaf, td + shared `transpilers/common/`
 
 For detailed architecture, see:
 
@@ -161,7 +165,7 @@ See `server/INTERNALS.md` for the full feature matrix and cross-language feature
 | Changelog          | `docs/changelog.md`                                                                                    |
 | Editor setup       | `docs/editors/` (neovim, emacs, helix, zed, kate, sublime, jetbrains, geany, notepadpp)                |
 | TS plugins         | `docs/editors/typescript-plugins.md`                                                                   |
-| Transpiler guides  | `transpilers/tssl/`, `transpilers/tbaf/`, `transpilers/td/` (each has README, writing guide, llms.txt) |
+| Transpiler guides  | `transpilers/tssl/docs/`, `transpilers/tbaf/docs/`, `transpilers/td/docs/` (each has README, writing guide, llms.txt) |
 | Server npm package | `server/README.md`                                                                                     |
 | Data files         | `server/data/README.md`                                                                                |
 | Data pipeline      | `docs/data-pipeline.md`                                                                                |

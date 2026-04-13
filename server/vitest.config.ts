@@ -40,10 +40,8 @@ export default defineConfig({
                 "src/compile.ts",
                 "src/common.ts",
                 "src/provider-registry.ts",
-                "src/safe-eval.ts",
                 "src/settings.ts",
                 "src/translation.ts",
-                "src/transpiler-utils.ts",
                 "src/weidu-compile.ts",
                 "src/sslc/ssl_compiler.ts",
 
@@ -52,11 +50,6 @@ export default defineConfig({
                 "src/fallout-ssl/header-parser.ts",
                 "src/fallout-ssl/macro-utils.ts",
                 "src/fallout-ssl/utils.ts",
-                "src/tbaf/cnf.ts",
-                "src/tbaf/ir.ts",
-                "src/tbaf/emit.ts",
-                "src/td/types.ts",
-                "src/tssl/types.ts",
 
                 // Formatters with no parser dependency
                 "src/infinity-2da/format.ts",

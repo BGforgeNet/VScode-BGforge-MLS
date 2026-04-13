@@ -6,8 +6,8 @@
 import { describe, expect, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
-import { transformEnums, expandEnumPropertyAccess, extractDeclareEnumNames } from "../src/enum-transform";
-import { bundle } from "../src/tbaf/bundle";
+import { transformEnums, expandEnumPropertyAccess, extractDeclareEnumNames } from "../../transpilers/common/enum-transform";
+import { bundle } from "../../transpilers/common/bundle";
 
 describe("transformEnums", () => {
     it("transforms numeric enum with auto-increment", () => {

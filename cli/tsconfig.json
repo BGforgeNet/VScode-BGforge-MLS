@@ -9,7 +9,8 @@
     "include": [
         ".",
         "../server/src",
-        "../client/src/parsers"
+        "../client/src/parsers",
+        "../transpilers"
     ],
     "exclude": [
         "node_modules",

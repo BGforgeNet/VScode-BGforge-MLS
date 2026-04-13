@@ -7,10 +7,10 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { EXT_TD, EXT_TBAF, EXT_TSSL } from "../../../server/src/core/languages";
-import { transpile as transpileTBAF } from "../../../server/src/tbaf/index";
-import { transpile as transpileTD } from "../../../server/src/td/index";
-import { transpile as transpileTSSL, createBatchState, type TranspileBatchState } from "../../../server/src/tssl";
+import { EXT_TD, EXT_TBAF, EXT_TSSL } from "../../../transpilers/common/extensions";
+import { transpile as transpileTBAF } from "../../../transpilers/tbaf/src/index";
+import { transpile as transpileTD } from "../../../transpilers/td/src/index";
+import { transpile as transpileTSSL, createBatchState, type TranspileBatchState } from "../../../transpilers/tssl/src/index";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 type TranspileType = "td" | "tbaf" | "tssl";

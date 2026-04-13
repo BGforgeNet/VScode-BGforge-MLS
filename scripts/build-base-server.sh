@@ -21,4 +21,4 @@ esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js \
 copy_wasm_to server/out
 
 # Copy TD runtime declarations (used by the TD TypeScript plugin)
-cp server/src/td/td-runtime.d.ts server/out/
+cp transpilers/td/src/td-runtime.d.ts server/out/

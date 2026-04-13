@@ -111,14 +111,12 @@ server/src/
 |   +-- call-sites.ts         # Call-site extractor for cross-file references index
 +-- fallout-worldmap/         # Fallout worldmap.txt
 |
-+-- tssl/                     # TypeScript -> SSL transpiler
-+-- tbaf/                     # TypeScript -> BAF transpiler
-+-- td/                       # TypeScript -> D transpiler
++-- tssl/                     # TSSL dialog bridge (depends on tree-sitter + LSP)
++-- td/                       # TD dialog bridge (depends on tree-sitter + LSP)
 |
 +-- shared/
 |   +-- hash.ts               # Shared djb2 hash for cache keys
 |   +-- parser-factory.ts     # Cached tree-sitter parser factory (used by ParserManager)
-|   +-- transpiler-pipeline.ts # Shared transpiler factory (createTranspiler)
 |   +-- references-index.ts   # ReferencesIndex for cross-file Find References
 |   +-- completion.ts         # Shared completion utilities
 |   +-- hover.ts              # Shared hover utilities

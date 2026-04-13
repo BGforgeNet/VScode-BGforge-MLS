@@ -4,7 +4,9 @@
  * at server/out/server.js (run `pnpm build:base:server` first).
  */
 
+import { mkdir, mkdtemp, rm, writeFile, access } from "node:fs/promises";
 import { spawn, type ChildProcess } from "node:child_process";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it, expect, afterEach } from "vitest";
 
@@ -76,14 +78,32 @@ function notify(
     proc.stdin!.write(encode(msg));
 }
 
+async function waitForFile(filePath: string, timeoutMs = 10_000): Promise<void> {
+    const start = Date.now();
+    while (Date.now() - start < timeoutMs) {
+        try {
+            await access(filePath);
+            return;
+        } catch {
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+    }
+    throw new Error(`Timed out waiting for file ${filePath}`);
+}
+
 describe("LSP stdio smoke test", () => {
     let proc: ChildProcess | undefined;
+    let tempDir: string | undefined;
 
     afterEach(() => {
         if (proc && proc.exitCode === null) {
             proc.kill("SIGKILL");
         }
+        if (tempDir) {
+            void rm(tempDir, { recursive: true, force: true });
+        }
         proc = undefined;
+        tempDir = undefined;
     });
 
     it("initializes, responds with capabilities, and shuts down", { timeout: 30_000 }, async () => {
@@ -147,5 +167,77 @@ describe("LSP stdio smoke test", () => {
         });
 
         expect(exitCode, `Server exited uncleanly. stderr:\n${stderr}`).toBe(0);
+    });
+
+    it("does not write raw compile logs to stdout during stdio save-triggered TD compile", { timeout: 30_000 }, async () => {
+        tempDir = await mkdtemp(join(tmpdir(), "bgforge-mls-stdio-"));
+        const sourcePath = join(tempDir, "dialog.td");
+        const outputPath = join(tempDir, "dialog.d");
+        const sourceUri = `file://${sourcePath}`;
+        const sourceText = `
+function start() {
+    say(tra(100));
+    exit();
+}
+begin("DIALOG", [start]);
+`.trimStart();
+
+        await mkdir(tempDir, { recursive: true });
+        await writeFile(sourcePath, sourceText, "utf8");
+
+        proc = spawn("node", [SERVER_PATH, "--stdio"], {
+            stdio: ["pipe", "pipe", "pipe"],
+        });
+
+        let stderr = "";
+        let stdout = "";
+        proc.stderr!.on("data", (chunk: Buffer) => {
+            stderr += chunk.toString();
+        });
+        proc.stdout!.on("data", (chunk: Buffer) => {
+            stdout += chunk.toString();
+        });
+
+        const initResponse = await request(proc, {
+            jsonrpc: "2.0",
+            id: 1,
+            method: "initialize",
+            params: {
+                processId: process.pid,
+                capabilities: {},
+                rootUri: null,
+                workspaceFolders: null,
+            },
+        });
+        expect(initResponse.result).toBeDefined();
+
+        notify(proc, { jsonrpc: "2.0", method: "initialized", params: {} });
+        notify(proc, {
+            jsonrpc: "2.0",
+            method: "textDocument/didOpen",
+            params: {
+                textDocument: {
+                    uri: sourceUri,
+                    languageId: "typescript",
+                    version: 1,
+                    text: sourceText,
+                },
+            },
+        });
+        notify(proc, {
+            jsonrpc: "2.0",
+            method: "textDocument/didSave",
+            params: {
+                textDocument: { uri: sourceUri },
+                text: sourceText,
+            },
+        });
+
+        await waitForFile(outputPath);
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        expect(stdout, `Unexpected raw stdout during stdio compile. stderr:\n${stderr}`).not.toContain(
+            `Transpiled to ${outputPath}`,
+        );
     });
 });

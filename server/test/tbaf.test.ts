@@ -5,10 +5,10 @@
 
 import { describe, expect, it } from "vitest";
 import { Project } from "ts-morph";
-import { TBAFTransformer } from "../src/tbaf/transform";
-import { emitBAF } from "../src/tbaf/emit";
-import { applyBAFFixups } from "../src/tbaf/index";
-import { transformEnums } from "../src/enum-transform";
+import { TBAFTransformer } from "../../transpilers/tbaf/src/transform";
+import { emitBAF } from "../../transpilers/tbaf/src/emit";
+import { applyBAFFixups } from "../../transpilers/tbaf/src/index";
+import { transformEnums } from "../../transpilers/common/enum-transform";
 
 describe("TBAF Transpiler", () => {
     const transformer = new TBAFTransformer();

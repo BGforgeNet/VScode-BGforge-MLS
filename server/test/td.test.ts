@@ -5,11 +5,11 @@
 
 import { describe, expect, it } from "vitest";
 import { Project } from "ts-morph";
-import { parse } from "../src/td/parse";
-import { emitD } from "../src/td/emit";
-import { extractTraTag } from "../src/transpiler-utils";
-import { transformEnums } from "../src/enum-transform";
-import type { TDScript } from "../src/td/types";
+import { parse } from "../../transpilers/td/src/parse";
+import { emitD } from "../../transpilers/td/src/emit";
+import { extractTraTag } from "../../transpilers/common/transpiler-utils";
+import { transformEnums } from "../../transpilers/common/enum-transform";
+import type { TDScript } from "../../transpilers/td/src/types";
 
 describe("TD Transpiler", () => {
     function parseIR(code: string): TDScript {

@@ -217,6 +217,33 @@ importers:
         specifier: https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz
         version: https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz
 
+  transpilers/common:
+    devDependencies:
+      esbuild-wasm:
+        specifier: ^0.24.2
+        version: 0.24.2
+      ts-morph:
+        specifier: ^24.0.0
+        version: 24.0.0
+
+  transpilers/tbaf:
+    devDependencies:
+      ts-morph:
+        specifier: ^24.0.0
+        version: 24.0.0
+
+  transpilers/td:
+    devDependencies:
+      ts-morph:
+        specifier: ^24.0.0
+        version: 24.0.0
+
+  transpilers/tssl:
+    devDependencies:
+      ts-morph:
+        specifier: ^24.0.0
+        version: 24.0.0
+
 packages:
 
   '@asgerf/dts-tree-sitter@0.21.0':

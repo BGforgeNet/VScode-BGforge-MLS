@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { safeEvaluate } from "../src/safe-eval";
+import { safeEvaluate } from "../../transpilers/common/safe-eval";
 
 describe("safeEvaluate", () => {
     describe("numeric literals", () => {
