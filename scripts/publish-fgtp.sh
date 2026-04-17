@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Build and publish the standalone transpile CLI package to npm.
+# Usage: ./scripts/publish-fgtp.sh [--dry-run]
+# Set SKIP_BUILD=1 to skip the CLI build (CI uses this).
+#
+# Prerequisites:
+#   - pnpm install
+#   - pnpm login (or NPM_TOKEN set)
+#   - @bgforge npm org must exist
+
+set -eu -o pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+cd "$ROOT_DIR"
+
+if [ "${SKIP_BUILD:-}" != "1" ]; then
+    echo "=== Building transpile CLI ==="
+    pnpm build:transpile-cli
+fi
+
+echo ""
+echo "=== Publishing @bgforge/fgtp ==="
+cd cli/transpile
+
+provenance=""
+if [ -n "${GITHUB_ACTIONS:-}" ]; then
+    provenance="--provenance"
+fi
+
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Error: Git working tree is not clean. Aborting publish."
+    git status --short
+    exit 1
+fi
+
+pnpm publish --access public --no-git-checks $provenance "$@"

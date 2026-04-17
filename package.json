@@ -552,7 +552,6 @@
         "test:coverage": "cd server && vitest run --coverage",
         "package": "./scripts/package.sh",
         "format": "node --no-warnings cli/format/out/format-cli.js",
-        "transpile": "node --no-warnings cli/transpile/out/transpile-cli.js",
         "bin": "node cli/bin/out/bin-cli.js",
         "lint": "pnpm exec oxlint && pnpm lint:scripts && pnpm lint:shell && pnpm lint:md-links",
         "lint:cli": "./scripts/lint-cli.sh",

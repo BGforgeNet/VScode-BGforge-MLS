@@ -8,9 +8,15 @@
 # shellcheck source=scripts/esbuild-lib.sh
 source "$(dirname "$0")/esbuild-lib.sh"
 
+rm -f \
+  cli/transpile/out/transpile.js \
+  cli/transpile/out/transpile.js.map \
+  cli/transpile/out/transpile-cli.js \
+  cli/transpile/out/transpile-cli.js.map
+
 esbuild ./cli/transpile/src/cli.ts \
   --bundle \
-  --outfile=cli/transpile/out/transpile-cli.js \
+  --outfile=cli/transpile/out/transpile.js \
   --alias:esbuild-wasm=esbuild \
   --external:esbuild \
   --format=cjs \

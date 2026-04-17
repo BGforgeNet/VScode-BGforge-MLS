@@ -2,7 +2,7 @@
 /**
  * CLI tool to transpile TD, TBAF, and TSSL files to WeiDU D, BAF, and Fallout SSL formats.
  * Auto-detects language by file extension.
- * Usage: node transpile-cli.js <file.td|file.tbaf|file.tssl|dir> [--save] [--check] [-r] [-q]
+ * Usage: fgtp <file.td|file.tbaf|file.tssl|dir> [--save] [--check] [-r] [-q]
  */
 
 import * as fs from "fs";
@@ -89,19 +89,19 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
     });
 }
 
-const HELP = `Usage: transpile-cli <file.td|file.tbaf|file.tssl|dir> [--save] [--check] [-r] [-q]
+const HELP = `Usage: fgtp <file.td|file.tbaf|file.tssl|dir> [--save] [--check] [-r] [-q]
   --save    Write output to file (default: stdout)
   --check   Check if output files are up to date (exit 1 if not)
   -r        Recursively transpile all .td, .tbaf, and .tssl files in directory
   -q        Quiet mode: suppress summary, only print changed files
 
 Examples:
-  transpile-cli mydialog.td              # Print D output to stdout
-  transpile-cli mydialog.td --save       # Write mydialog.d
-  transpile-cli myscript.tbaf --save     # Write myscript.baf
-  transpile-cli myscript.tssl --save     # Write myscript.ssl
-  transpile-cli src/ -r --save           # Transpile all .td, .tbaf, and .tssl files
-  transpile-cli src/ -r --check          # Check all outputs are up to date`;
+  fgtp mydialog.td              # Print D output to stdout
+  fgtp mydialog.td --save       # Write mydialog.d
+  fgtp myscript.tbaf --save     # Write myscript.baf
+  fgtp myscript.tssl --save     # Write myscript.ssl
+  fgtp src/ -r --save           # Transpile all .td, .tbaf, and .tssl files
+  fgtp src/ -r --check          # Check all outputs are up to date`;
 
 async function main() {
     const args = parseCliArgs(HELP);

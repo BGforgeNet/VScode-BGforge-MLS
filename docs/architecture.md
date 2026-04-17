@@ -58,7 +58,7 @@ High-level architecture of the BGforge MLS extension. For server-specific detail
 +-------------------+
 |   CLI Tools       |   Standalone, reuse server modules
 |  format-cli.js    |   No VSCode dependency
-|  transpile-cli.js |
+|   transpile.js    |
 |  bin-cli.js       |
 +-------------------+
 ```
@@ -166,7 +166,7 @@ All bundles use **esbuild** (not tsc). The monorepo uses **pnpm workspaces**.
 | TD Plugin | `plugins/td-plugin/src/index.ts` | `node_modules/bgforge-td-plugin/index.js` | CJS, standalone |
 | Webviews | `client/src/{dialog,binary}-webview.ts` | `client/out/*.js` | Browser context |
 | Format CLI | `cli/format/src/cli.ts` | `cli/format/out/format-cli.js` | CJS + WASM files |
-| Transpile CLI | `cli/transpile/src/cli.ts` | `cli/transpile/out/transpile-cli.js` | CJS |
+| Transpile CLI | `cli/transpile/src/cli.ts` | `cli/transpile/out/transpile.js` | CJS |
 | Binary CLI | `cli/bin/src/cli.ts` | `cli/bin/out/bin-cli.js` | CJS |
 | Grammars | `grammars/*/grammar.js` | `grammars/*/*.wasm` -> `server/out/` | tree-sitter build --wasm |
 | TextMate | `syntaxes/*.tmLanguage.yml` | `syntaxes/*.tmLanguage.json` | YAML -> JSON conversion |
@@ -374,12 +374,13 @@ Includes WASM parser modules.
 
 ### Transpile CLI
 
-```
-node transpile-cli.js <file|dir> [--save] [--check] [-r] [-q]
+```bash
+fgtp <file|dir> [--save] [--check] [-r] [-q]
 ```
 
 Transpiles `.tssl`, `.tbaf`, `.td` files to their target formats. Uses ts-morph
-and esbuild-wasm. Reports orphan warnings for TD files.
+and native esbuild in the standalone CLI build (`--alias:esbuild-wasm=esbuild`).
+Reports orphan warnings for TD files.
 
 ### Binary CLI
 

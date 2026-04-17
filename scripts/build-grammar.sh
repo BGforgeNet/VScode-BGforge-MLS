@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Build tree-sitter grammars to WASM and set up files for both production and testing.
-# Builds all 4 grammars in parallel, then copies WASM files and generates type definitions.
-# After building, copies WASM files to server/out/ and cli/format/out/, then creates
-# symlinks in server/src/shared/ so vitest can find them via __dirname resolution.
+# WASM builds run sequentially because tree-sitter shares a global wasi-sdk cache and
+# concurrent downloads/extracts can corrupt the archive on a cold cache. After building,
+# copy WASM files to server/out/ and cli/format/out/, then create symlinks in
+# server/src/shared/ so vitest can find them via __dirname resolution.
 
 set -eu -o pipefail
 
@@ -26,13 +27,18 @@ mkdir -p server/out cli/format/out
 
 TREE_SITTER="$ROOT_DIR/node_modules/.bin/tree-sitter"
 
-# Build all 4 grammars in parallel (generate C++ and compile to WASM)
+# Build all 4 grammars sequentially. tree-sitter uses a shared cache under
+# ~/.cache/tree-sitter for wasi-sdk, so parallel --wasm builds can race and leave
+# a truncated archive behind.
 step "Building grammar WASMs"
-parallel \
-    "fallout-ssl" "cd '$ROOT_DIR/grammars/fallout-ssl' && '$TREE_SITTER' generate && '$TREE_SITTER' build --wasm" \
-    "weidu-baf"   "cd '$ROOT_DIR/grammars/weidu-baf'   && '$TREE_SITTER' generate && '$TREE_SITTER' build --wasm" \
-    "weidu-d"     "cd '$ROOT_DIR/grammars/weidu-d'     && '$TREE_SITTER' generate && '$TREE_SITTER' build --wasm" \
-    "weidu-tp2"   "cd '$ROOT_DIR/grammars/weidu-tp2'   && '$TREE_SITTER' generate && '$TREE_SITTER' build --wasm"
+for dir in fallout-ssl weidu-baf weidu-d weidu-tp2; do
+    echo "[$dir]"
+    (
+        cd "$ROOT_DIR/grammars/$dir"
+        "$TREE_SITTER" generate
+        "$TREE_SITTER" build --wasm
+    )
+done
 
 # Copy WASM files to server and CLI output directories (sequential — depends on all builds)
 for dir in fallout-ssl weidu-baf weidu-d weidu-tp2; do

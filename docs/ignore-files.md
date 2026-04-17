@@ -12,7 +12,7 @@ Controls what git tracks. Most build output is ignored; checked-in data JSONs ar
 | -------------- | ---------------------------------------------------------------- |
 | `client/out`   | Client esbuild bundles (extension.js, webviews, etc.)            |
 | `server/out/*` | Server esbuild bundle, WASM files, generated runtime files       |
-| `cli/*/out`    | CLI bundles (format-cli.js, transpile-cli.js, bin-cli.js)        |
+| `cli/*/out`    | CLI bundles (format-cli.js, transpile.js, bin-cli.js)            |
 | `*.wasm`       | Tree-sitter WASM files (built from C sources by `build:grammar`) |
 | `coverage/`    | Vitest coverage reports                                          |
 

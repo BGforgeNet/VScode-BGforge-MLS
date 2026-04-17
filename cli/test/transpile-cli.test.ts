@@ -1,6 +1,6 @@
 /**
  * Integration tests for the transpile CLI.
- * Runs the built transpile-cli.js bundle as a child process to verify
+ * Runs the built transpile.js bundle as a child process to verify
  * exit codes, stdout output, and stderr diff reporting.
  */
 
@@ -8,8 +8,9 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
+import transpileCliPackage from "../transpile/package.json";
 
-const CLI = path.resolve("cli/transpile/out/transpile-cli.js");
+const CLI = path.resolve("cli/transpile", transpileCliPackage.bin.fgtp);
 const NODE = process.execPath;
 const SAMPLES_DIR = path.resolve("server/test/td/samples");
 const SAMPLES_EXPECTED = path.resolve("server/test/td/samples-expected");
@@ -33,7 +34,7 @@ describe("transpile CLI integration", () => {
 
     beforeEach(() => {
         if (!fs.existsSync(CLI)) {
-            throw new Error("transpile-cli.js not built. Run: pnpm build:transpile-cli");
+            throw new Error("transpile.js not built. Run: pnpm build:transpile-cli");
         }
         fs.mkdirSync(tmpDir, { recursive: true });
     });
